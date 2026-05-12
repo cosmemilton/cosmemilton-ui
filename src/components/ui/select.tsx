@@ -1,0 +1,337 @@
+"use client";
+
+import {
+  ReactNode,
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { cn } from "../../lib/utils";
+import { CmIcon } from "./icon";
+import { CmPortal } from "./portal";
+import { ChevronDown, Check } from "lucide-react";
+
+type SelectOption = {
+  value: string;
+  label: string;
+  icon?: string;
+};
+
+type SelectProps = {
+  value: string;
+  onChange: (value: string) => void;
+  options: SelectOption[];
+  name?: string;
+  required?: boolean;
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  success?: boolean;
+  helperText?: string;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  startButton?: ReactNode;
+  endButton?: ReactNode;
+  className?: string;
+  showOptionIcons?: boolean;
+  disabled?: boolean;
+  form?: string;
+  /** Customiza o texto exibido no gatilho após a seleção. O dropdown sempre exibe o label completo. */
+  renderSelected?: (option: SelectOption) => string;
+};
+
+type PortalThemeStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
+
+const portalThemeVars = [
+  "--color-card",
+  "--color-background",
+  "--color-foreground",
+  "--color-muted",
+  "--color-muted-foreground",
+  "--color-border",
+  "--color-primary",
+  "--color-primary-foreground",
+  "--radius-md",
+  "--shadow-lg",
+];
+
+function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
+  const styles = window.getComputedStyle(element);
+  const appTheme = element.closest<HTMLElement>("[data-app-theme]")
+    ?.dataset.appTheme;
+  const themeStyle = portalThemeVars.reduce<PortalThemeStyle>((style, variable) => {
+    style[variable as `--${string}`] = styles.getPropertyValue(variable);
+    return style;
+  }, {});
+
+  if (appTheme === "dark") {
+    themeStyle["--select-popover-background"] = "#151c3a";
+    themeStyle["--select-option-hover-background"] = "#1e274f";
+    themeStyle["--select-option-selected-background"] = "#202a55";
+  } else if (appTheme) {
+    themeStyle["--select-popover-background"] = "#f8fafc";
+    themeStyle["--select-option-hover-background"] = "#eef2ff";
+    themeStyle["--select-option-selected-background"] = "#ede9fe";
+  }
+
+  return themeStyle;
+}
+
+export function CmSelect({
+  value,
+  onChange,
+  options,
+  name,
+  required,
+  label,
+  placeholder,
+  error,
+  success,
+  helperText,
+  startIcon,
+  endIcon,
+  startButton,
+  endButton,
+  className,
+  showOptionIcons = false,
+  disabled,
+  form,
+  renderSelected,
+}: SelectProps) {
+  const [open, setOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>(
+    {},
+  );
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const hasValue = Boolean(value) || options.some((opt) => opt.value === value);
+  const hasInstruction = Boolean(helperText || placeholder);
+  const isFloating = isFocused || open || hasValue || hasInstruction;
+  const hasStartElement = Boolean(startIcon || startButton);
+
+  const selectedOption = options.find((opt) => opt.value === value);
+  const selectedIcon = showOptionIcons && selectedOption?.icon;
+
+  const handleSelect = useCallback(
+    (optValue: string) => {
+      onChange(optValue);
+      setOpen(false);
+    },
+    [onChange],
+  );
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(e.target as Node) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !triggerRef.current) return;
+    setPortalThemeStyle(readPortalThemeStyle(triggerRef.current));
+  }, [open]);
+
+  // Position the dropdown
+  useEffect(() => {
+    if (!open) return;
+    const updatePosition = () => {
+      if (!panelRef.current || !triggerRef.current) return;
+      const rect = triggerRef.current.getBoundingClientRect();
+      const panel = panelRef.current;
+      const vh = window.innerHeight;
+      const panelH = panel.offsetHeight;
+
+      let top = rect.bottom + 4;
+      if (top + panelH > vh) top = rect.top - panelH - 4;
+
+      panel.style.top = `${top}px`;
+      panel.style.left = `${rect.left}px`;
+      panel.style.minWidth = `${rect.width}px`;
+    };
+    requestAnimationFrame(() => requestAnimationFrame(updatePosition));
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [open]);
+
+  const getBorderColor = () => {
+    if (error) return "cm-floating-field--error";
+    if (success) return "cm-floating-field--success";
+    if (isFocused || open) return "cm-floating-field--focused";
+    return "";
+  };
+
+  const getLabelColor = () => {
+    if (error) return "cm-floating-field__label--error";
+    if (success) return "cm-floating-field__label--success";
+    if (isFocused || open) return "cm-floating-field__label--focused";
+    return "";
+  };
+
+  return (
+    <div className={cn("cm-select cm-floating-field", !label && "cm-floating-field--unlabeled", className)}>
+      {name ? (
+        <input
+          type="hidden"
+          name={name}
+          value={value}
+          required={required}
+          disabled={disabled}
+          form={form}
+        />
+      ) : null}
+
+      <div
+        className={cn(
+          "cm-floating-field__control",
+          getBorderColor(),
+        )}
+      >
+        {label && (
+          <label
+            className={cn(
+              "cm-floating-field__label",
+              getLabelColor(),
+              isFloating
+                ? "cm-floating-field__label--floating"
+                : hasStartElement
+                  ? "cm-floating-field__label--resting-with-start"
+                  : "cm-floating-field__label--resting",
+            )}
+          >
+            {label}
+          </label>
+        )}
+
+        {startIcon && (
+          <span className="cm-floating-field__adornment">
+            {startIcon}
+          </span>
+        )}
+        {startButton && <span className="cm-floating-field__adornment">{startButton}</span>}
+
+        {selectedIcon && (
+          <span className="cm-floating-field__adornment">
+            <CmIcon name={selectedIcon} size={20} />
+          </span>
+        )}
+
+        <button
+          ref={triggerRef}
+          type="button"
+          disabled={disabled}
+          onClick={() => !disabled && setOpen((o) => !o)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          aria-label={label || placeholder || "CmSelect option"}
+          className="cm-select__trigger"
+        >
+          <span
+            className={cn(
+              "cm-select__value",
+              selectedOption ? "" : "cm-select__value--placeholder",
+            )}
+          >
+            {selectedOption
+              ? renderSelected
+                ? renderSelected(selectedOption)
+                : selectedOption.label
+              : placeholder || ""}
+          </span>
+        </button>
+
+        <ChevronDown
+          className={cn(
+            "cm-select__chevron",
+            open && "cm-select__chevron--open",
+          )}
+        />
+
+        {endIcon && (
+          <span className="cm-floating-field__adornment">
+            {endIcon}
+          </span>
+        )}
+        {endButton && <span className="cm-floating-field__adornment">{endButton}</span>}
+      </div>
+
+      {(error || helperText) && (
+        <p
+          className={cn(
+            "cm-floating-field__message",
+            "cm-floating-field__message--static",
+            error ? "cm-floating-field__message--error" : "",
+          )}
+        >
+          {error || helperText}
+        </p>
+      )}
+
+      {open && (
+        <CmPortal>
+          <div
+            ref={panelRef}
+            role="listbox"
+            style={portalThemeStyle}
+            className="cm-select__popover"
+          >
+            {options.map((option) => {
+              const isSelected = option.value === value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => handleSelect(option.value)}
+                  className={cn(
+                    "cm-select__option",
+                    isSelected && "cm-select__option--selected",
+                  )}
+                >
+                  {showOptionIcons && option.icon && (
+                    <CmIcon name={option.icon} size={16} />
+                  )}
+                  <span className="cm-select__option-label">{option.label}</span>
+                  {isSelected && (
+                    <Check className="cm-select__check" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </CmPortal>
+      )}
+    </div>
+  );
+}
