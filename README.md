@@ -2,6 +2,12 @@
 
 Biblioteca de componentes React/Next para projetos Cosme Milton.
 
+## Links
+
+- Documentação: https://miltonjunior.dev.br/cosmemilton-ui
+- Repositório: https://github.com/cosmemilton/cosmemilton-ui
+- npm: https://www.npmjs.com/package/cosmemilton-ui
+
 ## Uso básico
 
 Importe o CSS público uma vez na aplicação:

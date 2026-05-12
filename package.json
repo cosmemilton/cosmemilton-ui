@@ -1,8 +1,24 @@
 {
   "name": "cosmemilton-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Biblioteca de componentes React/Next para projetos Cosme Milton.",
   "license": "ISC",
+  "homepage": "https://miltonjunior.dev.br/cosmemilton-ui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cosmemilton/cosmemilton-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cosmemilton/cosmemilton-ui/issues"
+  },
+  "keywords": [
+    "react",
+    "nextjs",
+    "components",
+    "ui",
+    "design-system",
+    "cosmemilton"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -79,5 +95,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "8.5.14"
   }
 }
