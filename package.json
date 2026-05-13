@@ -1,7 +1,7 @@
 {
   "name": "cosmemilton-ui",
-  "version": "1.0.1",
-  "description": "Biblioteca de componentes React/Next para projetos Cosme Milton.",
+  "version": "1.0.2",
+  "description": "Biblioteca de componentes React com suporte opcional a Next para projetos Cosme Milton.",
   "license": "ISC",
   "homepage": "https://miltonjunior.dev.br/cosmemilton-ui",
   "repository": {
@@ -81,6 +81,11 @@
     "next": ">=15 || >=16",
     "react": ">=18.2 || >=19",
     "react-dom": ">=18.2 || >=19"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

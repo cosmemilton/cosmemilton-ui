@@ -11,8 +11,8 @@ import {
   useState,
 } from "react";
 import { ChevronDown, X } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { CmPortal } from "./portal";
+import { cn } from "../../lib/utils.js";
+import { CmPortal } from "./portal.js";
 
 export type CmComboboxItem = {
   value: string;

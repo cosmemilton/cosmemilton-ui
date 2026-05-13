@@ -9,8 +9,8 @@ import {
   useState,
 } from "react";
 import { Check, ChevronDown } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { CmPortal } from "./portal";
+import { cn } from "../../lib/utils.js";
+import { CmPortal } from "./portal.js";
 
 export type CmMultiSelectOption = {
   value: string;

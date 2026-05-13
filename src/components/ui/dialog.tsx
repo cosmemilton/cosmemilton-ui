@@ -8,10 +8,10 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
-import { useCmTheme } from "../theme/theme-provider";
-import { CmPortal } from "./portal";
+import { useCmTheme } from "../theme/theme-provider.js";
+import { CmPortal } from "./portal.js";
 
 export type CmDialogSize = "sm" | "md" | "lg" | "default" | "large" | "xl";
 export type CmDialogTone = "default" | "danger" | "warning" | "info";

@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { CmDialog } from "./dialog";
-import { CmButton } from "./button";
+import { CmDialog } from "./dialog.js";
+import { CmButton } from "./button.js";
 
 type AlertDialogProps = {
   title: string;

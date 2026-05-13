@@ -15,7 +15,7 @@ import {
   type CustomThemeInput,
   type ThemeConfig,
   type ThemeRegistry,
-} from "../../lib/theme";
+} from "../../lib/theme/index.js";
 
 type ThemeContextValue = {
   theme: ThemeConfig;

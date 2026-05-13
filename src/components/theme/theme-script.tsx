@@ -1,10 +1,9 @@
-import Script from "next/script";
 import {
   defaultTheme,
   extendThemes,
   themeToCSSVars,
   type CustomThemeInput,
-} from "../../lib/theme";
+} from "../../lib/theme/index.js";
 
 const LOCAL_STORAGE_KEY = "cm-theme";
 
@@ -46,9 +45,9 @@ export function CmThemeScript({
   })();`;
 
   return (
-    <Script
+    <script
       id="cm-theme-script"
-      strategy="afterInteractive"
+      suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: script }}
     />
   );

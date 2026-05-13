@@ -1,6 +1,6 @@
 # CosmeMilton UI
 
-Biblioteca de componentes React/Next para projetos Cosme Milton.
+Biblioteca de componentes React com suporte opcional a Next para projetos Cosme Milton.
 
 ## Links
 
@@ -20,6 +20,152 @@ Depois importe os componentes pelo pacote:
 
 ```tsx
 import { CmAlert } from "cosmemilton-ui";
+```
+
+## React puro (Vite ou CRA)
+
+Instale o pacote junto com os peers React:
+
+```bash
+npm install cosmemilton-ui react react-dom
+```
+
+Em apps Vite ou Create React App, importe o CSS no ponto de entrada e envolva a aplicação com o provider quando for usar temas:
+
+```tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "cosmemilton-ui/styles.css";
+import { CmThemeProvider } from "cosmemilton-ui";
+import { App } from "./App";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <CmThemeProvider>
+      <App />
+    </CmThemeProvider>
+  </StrictMode>,
+);
+```
+
+Os componentes não exigem Next em runtime. Componentes de navegação usam `<a>` por padrão; em React Router, passe um adaptador via `linkComponent` e controle o item ativo com `activeHref`:
+
+```tsx
+import { Link, useLocation } from "react-router-dom";
+import { CmNavigationMenu } from "cosmemilton-ui";
+
+const RouterLink = ({
+  href,
+  ...props
+}: {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+}) => <Link to={href} {...props} />;
+
+export function MainNav() {
+  const location = useLocation();
+
+  return (
+    <CmNavigationMenu
+      activeHref={location.pathname}
+      linkComponent={RouterLink}
+      items={[
+        { href: "/", label: "Início" },
+        { href: "/clientes", label: "Clientes" },
+      ]}
+    />
+  );
+}
+```
+
+## Next opcional
+
+`next` é peer opcional. Se estiver em Next, você pode continuar usando os componentes normalmente e passar `next/link` como adaptador quando quiser navegação client-side:
+
+```tsx
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { CmNavigationMenu } from "cosmemilton-ui";
+
+export function MainNav() {
+  const pathname = usePathname();
+
+  return (
+    <CmNavigationMenu
+      activeHref={pathname}
+      linkComponent={Link}
+      items={[
+        { href: "/", label: "Início" },
+        { href: "/clientes", label: "Clientes" },
+      ]}
+    />
+  );
+}
+```
+
+## CmTreeView
+
+Use `CmTreeView` para renderizar uma árvore pesquisável, expansível e opcionalmente arrastável. O prop da árvore se chama `data`; cada item segue o shape `CmTreeNode`:
+
+```ts
+type CmTreeNode = {
+  id: string;
+  name: string;
+  slug?: string;
+  code?: string;
+  icon?: string;
+  children?: CmTreeNode[];
+  parentId?: string | null;
+  order?: number;
+  active?: boolean;
+  description?: string;
+  permissionId?: number;
+};
+```
+
+Campos obrigatórios:
+
+- `id`: identificador estável do nó, usado por expansão, drag and drop e seleção.
+- `name`: texto exibido no item.
+
+Campos opcionais mais usados:
+
+- `children`: subnós recursivos.
+- `code` e `slug`: entram na busca; `code` também aparece como badge.
+- `active`: quando `false`, renderiza o nó com estado visual inativo.
+- `permissionId`: usado em `selectionMode` para seleção de folhas via checkbox.
+
+Exemplo:
+
+```tsx
+import { CmTreeView, type CmTreeNode } from "cosmemilton-ui";
+
+const nodes: CmTreeNode[] = [
+  {
+    id: "catalogo",
+    name: "Catálogo",
+    slug: "catalogo",
+    children: [
+      {
+        id: "produtos",
+        name: "Produtos",
+        code: "PRD",
+        permissionId: 101,
+      },
+    ],
+  },
+];
+
+<CmTreeView
+  data={nodes}
+  expandedByDefault
+  onAdd={(parentId) => console.log("add", parentId)}
+  onEdit={(node) => console.log("edit", node)}
+  onDelete={(node) => console.log("delete", node)}
+/>;
 ```
 
 ## CmAlert

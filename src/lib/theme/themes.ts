@@ -1,4 +1,4 @@
-import type { ThemeConfig, ThemeRegistry } from "./types";
+import type { ThemeConfig, ThemeRegistry } from "./types.js";
 
 const sansStack = "var(--font-geist-sans, 'Inter', sans-serif)";
 const monoStack = "var(--font-geist-mono, 'JetBrains Mono', monospace)";

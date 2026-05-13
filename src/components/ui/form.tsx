@@ -1,5 +1,5 @@
 import { FormHTMLAttributes, ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type FormProps = FormHTMLAttributes<HTMLFormElement> & {
   title?: ReactNode;

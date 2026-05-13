@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { CmPortal } from "./portal";
-import { cn } from "../../lib/utils";
+import { CmPortal } from "./portal.js";
+import { cn } from "../../lib/utils.js";
 
 type PopoverTriggerControls = {
   open: boolean;

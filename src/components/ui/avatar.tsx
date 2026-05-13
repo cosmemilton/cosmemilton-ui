@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import type { ReactNode } from "react";
+import { cn } from "../../lib/utils.js";
 
 type AvatarProps = {
   src?: string;
@@ -30,12 +29,11 @@ export function CmAvatar({ src, alt, fallback, size = "md", className }: AvatarP
       )}
     >
       {src ? (
-        <Image
+        <img
           src={src}
           alt={alt ?? "CmAvatar"}
-          fill
-          sizes="80px"
-          unoptimized
+          loading="lazy"
+          decoding="async"
           className="cm-avatar__image"
         />
       ) : (

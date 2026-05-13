@@ -1,9 +1,9 @@
 "use client";
 
 import { ReactNode } from "react";
-import { CmDialog, CmDialogTone } from "./dialog";
-import { CmButton } from "./button";
-import type { CmButtonTone } from "./button";
+import { CmDialog, CmDialogTone } from "./dialog.js";
+import { CmButton } from "./button.js";
+import type { CmButtonTone } from "./button.js";
 
 type ConfirmDialogProps = {
   open: boolean;

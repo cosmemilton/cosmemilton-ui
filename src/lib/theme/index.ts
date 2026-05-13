@@ -1,3 +1,3 @@
-export * from "./types";
-export * from "./themes";
-export { themeToCSSVars } from "./theme-to-css";
+export * from "./types.js";
+export * from "./themes.js";
+export { themeToCSSVars } from "./theme-to-css.js";

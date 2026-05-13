@@ -1,5 +1,5 @@
 import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type LayoutElement = "div" | "section" | "article" | "header" | "footer" | "main" | "nav" | "aside";
 type LayoutGap = string | number;

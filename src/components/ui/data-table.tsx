@@ -1,18 +1,18 @@
 "use client";
 
 import { ReactNode, useMemo, useState } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
   SlidersHorizontal,
 } from "lucide-react";
-import { useTablePreference } from "../../hooks/use-table-preference";
-import { CmDialog } from "./dialog";
-import { CmButton } from "./button";
-import { CmCheckbox } from "./checkbox";
-import { CmPagination } from "./pagination";
+import { useTablePreference } from "../../hooks/use-table-preference.js";
+import { CmDialog } from "./dialog.js";
+import { CmButton } from "./button.js";
+import { CmCheckbox } from "./checkbox.js";
+import { CmPagination } from "./pagination.js";
 
 export type CmDataTableColumn<T> = {
   /** Identificador estável da coluna. Sem render, também é usado para ler row[key]. */

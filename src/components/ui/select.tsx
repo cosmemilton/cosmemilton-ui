@@ -8,9 +8,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { cn } from "../../lib/utils";
-import { CmIcon } from "./icon";
-import { CmPortal } from "./portal";
+import { cn } from "../../lib/utils.js";
+import { CmIcon } from "./icon.js";
+import { CmPortal } from "./portal.js";
 import { ChevronDown, Check } from "lucide-react";
 
 type SelectOption = {

@@ -1,27 +1,48 @@
-import Link from "next/link";
-import { cn } from "../../lib/utils";
+import type { ComponentType, ReactNode } from "react";
+import { cn } from "../../lib/utils.js";
 
 export type CmBreadcrumbItem = {
   href?: string;
-  label: string;
+  label: ReactNode;
+};
+
+type CmLinkComponentProps = {
+  href: string;
+  className?: string;
+  children: ReactNode;
 };
 
 type BreadcrumbProps = {
   items: CmBreadcrumbItem[];
   className?: string;
+  linkComponent?: ComponentType<CmLinkComponentProps>;
 };
 
-export function CmBreadcrumb({ items, className }: BreadcrumbProps) {
+export function CmBreadcrumb({
+  items,
+  className,
+  linkComponent: LinkComponent,
+}: BreadcrumbProps) {
   return (
     <nav aria-label="breadcrumb" className={cn("cm-breadcrumb", className)}>
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
+        const key =
+          typeof item.label === "string" ? item.label : item.href ?? index;
+        const linkClassName = "cm-breadcrumb__link";
+
         return (
-          <span key={item.label} className="cm-breadcrumb__item">
+          <span key={key} className="cm-breadcrumb__item">
             {item.href && !isLast ? (
-              <Link href={item.href} className="cm-breadcrumb__link">
-                {item.label}
-              </Link>
+              LinkComponent ? (
+                <LinkComponent href={item.href} className={linkClassName}>
+                  {item.label}
+                </LinkComponent>
+              ) : (
+                <a href={item.href} className={linkClassName}>
+                  {item.label}
+                </a>
+              )
             ) : (
               <span className={cn(isLast && "cm-breadcrumb__current")}>{item.label}</span>
             )}

@@ -1,5 +1,5 @@
 import { LabelHTMLAttributes, forwardRef } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
   optional?: boolean;

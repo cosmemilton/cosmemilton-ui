@@ -1,5 +1,5 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type CardVariant = "surface" | "soft" | "outline" | "ghost";
 type CardTone =

@@ -2,7 +2,7 @@
 
 import { forwardRef, InputHTMLAttributes } from "react";
 import { Check } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;

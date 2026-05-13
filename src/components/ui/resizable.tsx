@@ -1,7 +1,7 @@
 "use client";
 
 import { MouseEvent as ReactMouseEvent, ReactNode, useRef, useState, type CSSProperties } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type ResizableProps = {
   minWidth?: number;

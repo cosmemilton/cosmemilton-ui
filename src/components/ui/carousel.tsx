@@ -2,8 +2,8 @@
 
 import { type CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { CmButton } from "./button";
-import { cn } from "../../lib/utils";
+import { CmButton } from "./button.js";
+import { cn } from "../../lib/utils.js";
 
 type CarouselItem = {
   id: string;

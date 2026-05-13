@@ -1,5 +1,5 @@
 import { Icon as IconifyIcon } from "@iconify/react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 interface IconProps {
   name: string;

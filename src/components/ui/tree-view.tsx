@@ -36,11 +36,11 @@ import {
   FolderTree,
   FolderOpen,
 } from "lucide-react";
-import { CmInput } from "./input";
-import { CmButton } from "./button";
-import { CmCheckbox } from "./checkbox";
-import { CmSwitch } from "./switch";
-import { cn } from "../../lib/utils";
+import { CmInput } from "./input.js";
+import { CmButton } from "./button.js";
+import { CmCheckbox } from "./checkbox.js";
+import { CmSwitch } from "./switch.js";
+import { cn } from "../../lib/utils.js";
 
 export interface CmTreeNode {
   id: string;

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
-import { CmButton } from "./button";
-import { CmPortal } from "./portal";
+import { CmButton } from "./button.js";
+import { CmPortal } from "./portal.js";
 
 type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
 type CmButtonTone =

@@ -2,7 +2,7 @@
 
 import { KeyboardEvent, ReactNode, useEffect, useId, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { CmDialog } from "./dialog";
+import { CmDialog } from "./dialog.js";
 
 export type CmCommandItem = {
   id: string;

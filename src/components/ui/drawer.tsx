@@ -7,8 +7,8 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { CmPortal } from "./portal";
-import { cn } from "../../lib/utils";
+import { CmPortal } from "./portal.js";
+import { cn } from "../../lib/utils.js";
 
 type DrawerSide = "left" | "right" | "bottom" | "top";
 

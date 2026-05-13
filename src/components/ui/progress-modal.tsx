@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CmDialog } from "./dialog";
-import { CmProgress } from "./progress";
+import { CmDialog } from "./dialog.js";
+import { CmProgress } from "./progress.js";
 import { CheckCircle2, Loader2 } from "lucide-react";
 
 interface Step {

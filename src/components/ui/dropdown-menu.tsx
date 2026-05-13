@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { CmPopover } from "./popover";
-import { cn } from "../../lib/utils";
+import { CmPopover } from "./popover.js";
+import { cn } from "../../lib/utils.js";
 
 type DropdownMenuItem = {
   id: string;

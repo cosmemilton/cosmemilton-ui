@@ -15,7 +15,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 export type CmSidebarItem = {
   id: string;

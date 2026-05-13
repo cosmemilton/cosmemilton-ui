@@ -1,5 +1,5 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type TextSize = "xs" | "sm" | "md" | "lg";
 type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary";

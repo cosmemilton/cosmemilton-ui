@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, ReactNode, TextareaHTMLAttributes, useState } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string;

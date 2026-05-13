@@ -1,8 +1,8 @@
 "use client";
 
 import { MouseEvent as ReactMouseEvent, ReactNode, useEffect, useRef, useState } from "react";
-import { CmPortal } from "./portal";
-import { cn } from "../../lib/utils";
+import { CmPortal } from "./portal.js";
+import { cn } from "../../lib/utils.js";
 
 type ContextMenuItem = {
   id: string;

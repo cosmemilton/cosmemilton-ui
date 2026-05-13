@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, type ReactNode } from "react";
-import { CmButton } from "./button";
-import { cn } from "../../lib/utils";
+import { CmButton } from "./button.js";
+import { cn } from "../../lib/utils.js";
 
 type PaginationMode = "pages" | "compact";
 

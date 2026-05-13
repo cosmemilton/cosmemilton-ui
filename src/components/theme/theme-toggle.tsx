@@ -1,8 +1,8 @@
 "use client";
 
-import { useCmTheme } from "./theme-provider";
-import { cn } from "../../lib/utils";
-import { CmButton } from "../ui/button";
+import { useCmTheme } from "./theme-provider.js";
+import { cn } from "../../lib/utils.js";
+import { CmButton } from "../ui/button.js";
 
 export function CmThemeToggle({ className }: { className?: string }) {
   const { theme, themes, setThemeByName } = useCmTheme();
