@@ -11,6 +11,8 @@ import {
   useMemo,
   useRef,
   useState,
+  type ComponentPropsWithoutRef,
+  type ElementType,
   type FocusEvent,
   type MouseEvent,
   type ReactNode,
@@ -21,12 +23,34 @@ export type CmSidebarItem = {
   id: string;
   label: string;
   href?: string;
+  to?: string;
   icon?: ReactNode;
   active?: boolean;
+  isActive?: (context: CmSidebarActiveContext) => boolean;
   disabled?: boolean;
   badge?: ReactNode;
   onSelect?: (item: CmSidebarItem) => void;
 };
+
+type CmSidebarLinkBaseProps = Omit<ComponentPropsWithoutRef<"a">, "href">;
+
+export type CmSidebarHrefLinkComponentProps = CmSidebarLinkBaseProps & {
+  href: string;
+  to?: string;
+};
+
+export type CmSidebarToLinkComponentProps = CmSidebarLinkBaseProps & {
+  href?: string;
+  to: string;
+};
+
+export type CmSidebarLinkComponentProps =
+  | CmSidebarHrefLinkComponentProps
+  | CmSidebarToLinkComponentProps;
+
+export type CmSidebarLinkComponent =
+  | ElementType<CmSidebarHrefLinkComponentProps>
+  | ElementType<CmSidebarToLinkComponentProps>;
 
 export type CmSidebarGroup = {
   id: string;
@@ -36,6 +60,12 @@ export type CmSidebarGroup = {
   active?: boolean;
   defaultOpen?: boolean;
   direct?: boolean;
+};
+
+export type CmSidebarActiveContext = {
+  item: CmSidebarItem;
+  group: CmSidebarGroup;
+  pathname: string;
 };
 
 export type CmSidebarBrand = {
@@ -61,6 +91,9 @@ export type CmSidebarProps = {
   openGroupId?: string | null;
   defaultOpenGroupId?: string | null;
   onOpenGroupChange?: (groupId: string | null) => void;
+  activePathname?: string;
+  linkComponent?: CmSidebarLinkComponent;
+  isActive?: (context: CmSidebarActiveContext) => boolean;
   autoCollapse?: boolean;
   autoCollapseBelow?: number;
 };
@@ -73,6 +106,16 @@ function getInitial(label: ReactNode, fallback = "M") {
   return typeof label === "string" && label.trim()
     ? label.trim().charAt(0).toUpperCase()
     : fallback;
+}
+
+function getBrowserPathname() {
+  if (typeof window === "undefined") return "";
+  return window.location.pathname;
+}
+
+function normalizePathname(pathname: string | undefined) {
+  if (!pathname) return "";
+  return pathname.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
 }
 
 function useAutoCollapsed(enabled: boolean, breakpoint: number) {
@@ -110,6 +153,7 @@ function renderIcon(icon: ReactNode, label: ReactNode, className?: string) {
 }
 
 export function CmSidebar({
+  activePathname,
   autoCollapse = true,
   autoCollapseBelow = defaultAutoCollapseBelow,
   brand,
@@ -121,6 +165,8 @@ export function CmSidebar({
   defaultOpenGroupId,
   footer,
   groups,
+  isActive,
+  linkComponent,
   navLabel = "Navegação principal",
   onCollapsedChange,
   onOpenGroupChange,
@@ -131,12 +177,51 @@ export function CmSidebar({
     () => groups.filter((group) => group.items.length > 0),
     [groups],
   );
+  const [browserPathname, setBrowserPathname] = useState(
+    () => activePathname ?? getBrowserPathname(),
+  );
+  const pathname = activePathname ?? browserPathname;
+
+  useEffect(() => {
+    if (activePathname !== undefined) {
+      setBrowserPathname(activePathname);
+      return;
+    }
+
+    if (typeof window === "undefined") return;
+
+    const updatePathname = () => setBrowserPathname(getBrowserPathname());
+    updatePathname();
+    window.addEventListener("popstate", updatePathname);
+    window.addEventListener("hashchange", updatePathname);
+
+    return () => {
+      window.removeEventListener("popstate", updatePathname);
+      window.removeEventListener("hashchange", updatePathname);
+    };
+  }, [activePathname]);
+
+  const getItemActive = useCallback(
+    (item: CmSidebarItem, group: CmSidebarGroup) => {
+      if (item.active !== undefined) return item.active;
+
+      const context = { item, group, pathname };
+      const target = item.to ?? item.href;
+
+      return (
+        item.isActive?.(context) ??
+        isActive?.(context) ??
+        (target ? normalizePathname(pathname) === normalizePathname(target) : false)
+      );
+    },
+    [isActive, pathname],
+  );
   const activeGroupId = useMemo(
     () =>
-      visibleGroups.find((group) => group.active || group.items.some((item) => item.active))?.id ??
+      visibleGroups.find((group) => group.active || group.items.some((item) => getItemActive(item, group)))?.id ??
       visibleGroups.find((group) => group.defaultOpen)?.id ??
       visibleGroups[0]?.id,
-    [visibleGroups],
+    [getItemActive, visibleGroups],
   );
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState(defaultCollapsed);
   const [uncontrolledOpenGroupId, setUncontrolledOpenGroupId] = useState<string | null | undefined>(
@@ -298,7 +383,7 @@ export function CmSidebar({
         {brandContent}
         <nav className="cm-sidebar__nav" aria-label={navLabel}>
           {visibleGroups.map((group) => {
-            const groupActive = Boolean(group.active || group.items.some((item) => item.active));
+            const groupActive = Boolean(group.active || group.items.some((item) => getItemActive(item, group)));
             const groupOpen = visibleOpenGroupId === group.id;
             const firstItem = group.items[0];
             const direct = group.direct ?? group.items.length === 1;
@@ -310,11 +395,12 @@ export function CmSidebar({
                   key={group.id}
                 >
                   <SidebarItem
-                    active={groupActive || firstItem.active}
+                    active={groupActive || getItemActive(firstItem, group)}
                     collapsed={isCollapsed && !sidebarPreviewOpen}
                     groupLabel={group.label}
                     icon={group.icon ?? firstItem.icon}
                     item={firstItem}
+                    linkComponent={linkComponent}
                     onClick={handleItemClick}
                   />
                 </div>
@@ -344,10 +430,11 @@ export function CmSidebar({
                 <div className="cm-sidebar__group-items" aria-hidden={!groupOpen}>
                   {group.items.map((item) => (
                     <SidebarItem
-                      active={item.active}
+                      active={getItemActive(item, group)}
                       collapsed={isCollapsed && !sidebarPreviewOpen}
                       item={item}
                       key={item.id}
+                      linkComponent={linkComponent}
                       onClick={handleItemClick}
                     />
                   ))}
@@ -375,16 +462,18 @@ type SidebarItemProps = {
   groupLabel?: string;
   icon?: ReactNode;
   item: CmSidebarItem;
+  linkComponent?: CmSidebarLinkComponent;
   onClick: (event: MouseEvent<HTMLElement>, item: CmSidebarItem) => void;
 };
 
-function SidebarItem({ active, collapsed, groupLabel, icon, item, onClick }: SidebarItemProps) {
+function SidebarItem({ active, collapsed, groupLabel, icon, item, linkComponent, onClick }: SidebarItemProps) {
   const className = cn(
     "cm-sidebar__item",
     active && "cm-sidebar__item--active",
     item.disabled && "cm-sidebar__item--disabled",
   );
   const title = collapsed ? groupLabel ?? item.label : undefined;
+  const linkTarget = item.href ?? item.to;
   const content = (
     <>
       {renderIcon(icon ?? item.icon, groupLabel ?? item.label)}
@@ -393,16 +482,47 @@ function SidebarItem({ active, collapsed, groupLabel, icon, item, onClick }: Sid
     </>
   );
 
-  if (item.href) {
+  if (linkTarget) {
+    const linkProps: CmSidebarLinkBaseProps = {
+      "aria-current": active ? "page" : undefined,
+      "aria-disabled": item.disabled || undefined,
+      className,
+      tabIndex: item.disabled ? -1 : undefined,
+      title,
+      onClick: (event) => onClick(event, item),
+    };
+
+    if (linkComponent && !item.disabled) {
+      if (item.href) {
+        const LinkComponent = linkComponent as ElementType<CmSidebarHrefLinkComponentProps>;
+
+        return (
+          <LinkComponent
+            {...linkProps}
+            href={item.href}
+            {...(item.to ? { to: item.to } : {})}
+          >
+            {content}
+          </LinkComponent>
+        );
+      }
+
+      const LinkComponent = linkComponent as ElementType<CmSidebarToLinkComponentProps>;
+
+      return (
+        <LinkComponent
+          {...linkProps}
+          to={item.to ?? linkTarget}
+        >
+          {content}
+        </LinkComponent>
+      );
+    }
+
     return (
       <a
-        aria-current={active ? "page" : undefined}
-        aria-disabled={item.disabled || undefined}
-        className={className}
-        href={item.disabled ? undefined : item.href}
-        tabIndex={item.disabled ? -1 : undefined}
-        title={title}
-        onClick={(event) => onClick(event, item)}
+        {...linkProps}
+        href={item.disabled ? undefined : linkTarget}
       >
         {content}
       </a>

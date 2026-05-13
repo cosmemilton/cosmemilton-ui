@@ -1,19 +1,72 @@
 "use client";
 
+import { Check, ChevronDown, Palette } from "lucide-react";
 import { useCmTheme } from "./theme-provider.js";
+import type { ThemeConfig } from "../../lib/theme/index.js";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "../ui/button.js";
+import { CmDropdownMenu } from "../ui/dropdown-menu.js";
 
-export function CmThemeToggle({ className }: { className?: string }) {
+export type CmThemeTogglePresentation = "default" | "compact";
+
+export type CmThemeToggleProps = {
+  className?: string;
+  presentation?: CmThemeTogglePresentation;
+  align?: "start" | "center" | "end";
+  getThemeLabel?: (theme: ThemeConfig) => string;
+};
+
+const defaultGetThemeLabel = (theme: ThemeConfig) => theme.name.replace(/^cm-/, "");
+
+export function CmThemeToggle({
+  align = "end",
+  className,
+  getThemeLabel = defaultGetThemeLabel,
+  presentation = "default",
+}: CmThemeToggleProps) {
   const { theme, themes, setThemeByName } = useCmTheme();
+  const themeOptions = Object.values(themes);
+
+  if (presentation === "compact") {
+    return (
+      <CmDropdownMenu
+        align={align}
+        trigger={({ open, toggle, ref }) => (
+          <CmButton
+            ref={ref}
+            type="button"
+            variant="surface"
+            tone="primary"
+            size="sm"
+            shape="pill"
+            icon={<Palette size={16} />}
+            trailingIcon={<ChevronDown size={16} />}
+            aria-haspopup="menu"
+            aria-expanded={open}
+            onClick={toggle}
+            className={cn("cm-theme-toggle-compact", className)}
+          >
+            {getThemeLabel(theme)}
+          </CmButton>
+        )}
+        items={themeOptions.map((candidate) => ({
+          id: candidate.name,
+          label: getThemeLabel(candidate),
+          icon: candidate.name === theme.name ? <Check size={16} /> : undefined,
+          shortcut: candidate.name === theme.name ? "Atual" : undefined,
+          onSelect: () => setThemeByName(candidate.name),
+        }))}
+      />
+    );
+  }
 
   return (
     <div className={cn("cm-theme-toggle", className)}>
       <span className="cm-theme-toggle-label">
-        Tema atual: {theme.name.replace("cm-", "")}
+        Tema atual: {getThemeLabel(theme)}
       </span>
       <div className="cm-theme-toggle-options">
-        {Object.values(themes).map((candidate) => (
+        {themeOptions.map((candidate) => (
           <CmButton
             key={candidate.name}
             type="button"
@@ -28,7 +81,7 @@ export function CmThemeToggle({ className }: { className?: string }) {
               candidate.name === theme.name && "cm-theme-toggle-option-active",
             )}
           >
-            {candidate.name.replace("cm-", "")}
+            {getThemeLabel(candidate)}
           </CmButton>
         ))}
       </div>

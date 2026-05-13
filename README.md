@@ -48,6 +48,49 @@ createRoot(document.getElementById("root")!).render(
 );
 ```
 
+Para registrar temas próprios em React puro, passe `customThemes` direto no provider. O `CmThemeScript` é útil em Next/App Router para evitar flash visual antes da hidratação, mas não é obrigatório em Vite ou CRA:
+
+```tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "cosmemilton-ui/styles.css";
+import {
+  CmThemeProvider,
+  themes,
+  type ThemeConfig,
+} from "cosmemilton-ui";
+import { App } from "./App";
+
+const baseTheme = themes["cm-neutral"];
+
+const customThemes: ThemeConfig[] = [
+  {
+    ...baseTheme,
+    name: "cm-brand",
+    colors: {
+      ...baseTheme.colors,
+      background: "#f8fafc",
+      foreground: "#172033",
+      card: "#ffffff",
+      cardForeground: "#172033",
+      primary: "#006b5f",
+      primaryForeground: "#ffffff",
+      secondary: "#395b64",
+      secondaryForeground: "#ffffff",
+      border: "#d7dee7",
+    },
+  },
+];
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <CmThemeProvider customThemes={customThemes} defaultThemeName="cm-brand">
+      <App />
+    </CmThemeProvider>
+  </StrictMode>,
+);
+```
+
 Os componentes não exigem Next em runtime. Componentes de navegação usam `<a>` por padrão; em React Router, passe um adaptador via `linkComponent` e controle o item ativo com `activeHref`:
 
 ```tsx
@@ -78,6 +121,67 @@ export function MainNav() {
   );
 }
 ```
+
+### CmSidebar com React Router
+
+Use `href` quando quiser navegação nativa do navegador. Em SPAs com React Router, prefira `to` com `linkComponent`, ou `onSelect` com `navigate()` quando o item precisa executar lógica antes de navegar.
+
+```tsx
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { CmIcon, CmSidebar } from "cosmemilton-ui";
+
+export function AppShell() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  return (
+    <CmSidebar
+      linkComponent={NavLink}
+      activePathname={location.pathname}
+      isActive={({ item, pathname }) => pathname === (item.to ?? item.href)}
+      brand={{
+        title: "CosmeMilton",
+        subtitle: "Admin",
+      }}
+      groups={[
+        {
+          id: "cadastros",
+          label: "Cadastros",
+          items: [
+            {
+              id: "clientes",
+              label: "Clientes",
+              to: "/app/clientes",
+              icon: <CmIcon name="lucide:users" />,
+            },
+            {
+              id: "produtos",
+              label: "Produtos",
+              to: "/app/produtos",
+              icon: <CmIcon name="lucide:package" />,
+            },
+          ],
+        },
+        {
+          id: "relatorios",
+          label: "Relatórios",
+          direct: true,
+          items: [
+            {
+              id: "vendas",
+              label: "Vendas",
+              icon: <CmIcon name="lucide:bar-chart-3" />,
+              onSelect: () => navigate("/app/relatorios/vendas"),
+            },
+          ],
+        },
+      ]}
+    />
+  );
+}
+```
+
+`linkComponent` recebe `href`, `to`, `className`, `children`, `title`, `aria-current`, `aria-disabled`, `tabIndex` e `onClick`. Isso permite usar `NavLink`, `Link` do React Router, `next/link` ou um adaptador próprio sem recarregar a página.
 
 ## Next opcional
 
@@ -300,4 +404,501 @@ type CmAlertProps = {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
+```
+
+## Componentes controlados
+
+Componentes controlados recebem o estado atual e avisam mudanças por callback. Use `useState` no consumidor para fechar o ciclo.
+
+### CmDialog
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmButton, CmDialog } from "cosmemilton-ui";
+
+export function DialogDemo() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <CmButton onClick={() => setOpen(true)}>Abrir diálogo</CmButton>
+      <CmDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Excluir cliente"
+        description="Esta ação não pode ser desfeita."
+        tone="danger"
+        size="sm"
+        footer={
+          <>
+            <CmButton variant="ghost" onClick={() => setOpen(false)}>
+              Cancelar
+            </CmButton>
+            <CmButton tone="danger" onClick={() => setOpen(false)}>
+              Excluir
+            </CmButton>
+          </>
+        }
+      >
+        Confirme antes de continuar.
+      </CmDialog>
+    </>
+  );
+}
+```
+
+### CmDrawer
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmButton, CmDrawer } from "cosmemilton-ui";
+
+export function DrawerDemo() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <CmButton onClick={() => setOpen(true)}>Abrir painel</CmButton>
+      <CmDrawer
+        open={open}
+        onClose={() => setOpen(false)}
+        side="right"
+        title="Filtros"
+      >
+        Conteúdo do painel lateral.
+      </CmDrawer>
+    </>
+  );
+}
+```
+
+### CmPopover
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmButton, CmPopover } from "cosmemilton-ui";
+
+export function PopoverDemo() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <CmPopover
+      open={open}
+      onOpenChange={setOpen}
+      align="end"
+      trigger={({ open: isOpen, toggle, ref }) => (
+        <CmButton ref={ref} onClick={toggle} aria-expanded={isOpen}>
+          Opções
+        </CmButton>
+      )}
+    >
+      {({ close }) => (
+        <CmButton size="sm" onClick={close}>
+          Fechar popover
+        </CmButton>
+      )}
+    </CmPopover>
+  );
+}
+```
+
+### CmTabs
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import {
+  CmTabs,
+  CmTabsContent,
+  CmTabsList,
+  CmTabsTrigger,
+} from "cosmemilton-ui";
+
+export function TabsDemo() {
+  const [tab, setTab] = useState("dados");
+
+  return (
+    <CmTabs value={tab} onValueChange={setTab} variant="folder">
+      <CmTabsList>
+        <CmTabsTrigger value="dados">Dados</CmTabsTrigger>
+        <CmTabsTrigger value="permissoes">Permissões</CmTabsTrigger>
+      </CmTabsList>
+      <CmTabsContent value="dados">Dados cadastrais.</CmTabsContent>
+      <CmTabsContent value="permissoes">Permissões do usuário.</CmTabsContent>
+    </CmTabs>
+  );
+}
+```
+
+### CmToast
+
+```tsx
+"use client";
+
+import { CmButton, CmToastProvider, useCmToast } from "cosmemilton-ui";
+
+function SaveButton() {
+  const { toast } = useCmToast();
+
+  return (
+    <CmButton
+      onClick={() =>
+        toast("As alterações foram salvas.", {
+          title: "Tudo certo",
+          tone: "success",
+          duration: 4000,
+        })
+      }
+    >
+      Salvar
+    </CmButton>
+  );
+}
+
+export function ToastDemo() {
+  return (
+    <CmToastProvider>
+      <SaveButton />
+    </CmToastProvider>
+  );
+}
+```
+
+### CmTreeView
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmTreeView, type CmTreeNode } from "cosmemilton-ui";
+
+const permissionTree: CmTreeNode[] = [
+  {
+    id: "clientes",
+    name: "Clientes",
+    children: [
+      { id: "clientes.listar", name: "Listar", permissionId: 101 },
+      { id: "clientes.editar", name: "Editar", permissionId: 102 },
+    ],
+  },
+];
+
+export function TreeSelectionDemo() {
+  const [selectedIds, setSelectedIds] = useState(new Set<number>([101]));
+
+  return (
+    <CmTreeView
+      data={permissionTree}
+      expandedByDefault
+      selectionMode
+      selectedIds={selectedIds}
+      onSelectionChange={(permissionId, checked) => {
+        setSelectedIds((current) => {
+          const next = new Set(current);
+          if (checked) next.add(permissionId);
+          else next.delete(permissionId);
+          return next;
+        });
+      }}
+    />
+  );
+}
+```
+
+## Dados e callbacks
+
+### CmDataTable
+
+`columns`, `data` e `rowKey` são obrigatórios. `column.render(row)` customiza a célula, `column.sortValue(row)` controla ordenação e `tableKey` ativa persistência de colunas visíveis no `localStorage`.
+
+```tsx
+"use client";
+
+import { useMemo, useState } from "react";
+import {
+  CmButton,
+  CmDataTable,
+  type CmDataTableColumn,
+} from "cosmemilton-ui";
+
+type CustomerRow = {
+  id: string;
+  name: string;
+  email: string;
+  plan: "Starter" | "Pro" | "Enterprise";
+  status: "Ativo" | "Em teste" | "Bloqueado";
+  mrr: number;
+  lastSeen: Date;
+};
+
+const customers: CustomerRow[] = [
+  {
+    id: "cus_001",
+    name: "Ana Lima",
+    email: "ana@acme.com",
+    plan: "Pro",
+    status: "Ativo",
+    mrr: 890,
+    lastSeen: new Date("2026-05-10"),
+  },
+  {
+    id: "cus_002",
+    name: "Bruno Alves",
+    email: "bruno@orbit.com",
+    plan: "Starter",
+    status: "Em teste",
+    mrr: 190,
+    lastSeen: new Date("2026-05-08"),
+  },
+  {
+    id: "cus_003",
+    name: "Carla Rocha",
+    email: "carla@north.io",
+    plan: "Enterprise",
+    status: "Ativo",
+    mrr: 4200,
+    lastSeen: new Date("2026-05-12"),
+  },
+];
+
+const money = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+export function CustomersTableDemo() {
+  const [selectedId, setSelectedId] = useState<string>();
+
+  const columns = useMemo<CmDataTableColumn<CustomerRow>[]>(
+    () => [
+      { key: "name", header: "Cliente", sortable: true },
+      { key: "email", header: "Email", defaultHidden: true },
+      { key: "plan", header: "Plano", sortable: true },
+      { key: "status", header: "Status", sortable: true },
+      {
+        key: "mrr",
+        header: "MRR",
+        align: "right",
+        sortable: true,
+        render: (row) => money.format(row.mrr),
+      },
+      {
+        key: "lastSeen",
+        header: "Último acesso",
+        sortable: true,
+        sortValue: (row) => row.lastSeen,
+        render: (row) => row.lastSeen.toLocaleDateString("pt-BR"),
+      },
+      {
+        key: "actions",
+        header: "Ações",
+        align: "right",
+        hideable: false,
+        render: (row) => (
+          <CmButton
+            size="sm"
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log("Editar cliente", row.id);
+            }}
+          >
+            Editar
+          </CmButton>
+        ),
+      },
+    ],
+    [],
+  );
+
+  return (
+    <CmDataTable
+      columns={columns}
+      data={customers}
+      rowKey={(row) => row.id}
+      selectedRowKey={selectedId}
+      onRowClick={(row) => setSelectedId(row.id)}
+      tableKey="customers-table"
+      defaultSortKey="mrr"
+      defaultSortDirection="desc"
+      defaultRowsPerPage={5}
+      emptyMessage="Nenhum cliente encontrado."
+    />
+  );
+}
+```
+
+### Gráficos
+
+```tsx
+import { CmBarChart, CmChart, CmLineChart } from "cosmemilton-ui";
+
+const conversion = [
+  { label: "Visitas", value: 1200, color: "#2563eb" },
+  { label: "Leads", value: 420, color: "#16a34a" },
+  { label: "Vendas", value: 96, color: "#f97316" },
+];
+
+const revenue = [
+  { label: "Jan", value: 32000 },
+  { label: "Fev", value: 41000 },
+  { label: "Mar", value: 38000 },
+  { label: "Abr", value: 52000 },
+];
+
+export function ChartsDemo() {
+  return (
+    <>
+      <CmChart data={conversion} maxValue={1200} />
+      <CmBarChart data={conversion} height={280} showGrid showValues />
+      <CmLineChart data={revenue} height={240} tone="success" />
+    </>
+  );
+}
+```
+
+### CmCalendar
+
+`month` usa a convenção do JavaScript: `0` é janeiro, `4` é maio.
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmCalendar } from "cosmemilton-ui";
+
+export function CalendarDemo() {
+  const [date, setDate] = useState(new Date(2026, 4, 13));
+
+  return (
+    <CmCalendar
+      value={date}
+      month={4}
+      year={2026}
+      onSelect={(nextDate) => setDate(nextDate)}
+    />
+  );
+}
+```
+
+### CmCommand
+
+Selecionar um item chama `item.onSelect()` e fecha o modal.
+
+```tsx
+"use client";
+
+import { CmButton, CmCommand, type CmCommandItem } from "cosmemilton-ui";
+
+export function CommandDemo() {
+  const items: CmCommandItem[] = [
+    {
+      id: "new-customer",
+      label: "Novo cliente",
+      keywords: ["criar", "cadastro"],
+      shortcut: "N",
+      onSelect: () => console.log("Novo cliente"),
+    },
+    {
+      id: "open-invoices",
+      label: "Ver faturas abertas",
+      keywords: ["financeiro", "cobrança"],
+      shortcut: "F",
+      onSelect: () => console.log("Faturas"),
+    },
+  ];
+
+  return (
+    <CmCommand
+      items={items}
+      title="Ações rápidas"
+      placeholder="Digite uma ação..."
+      trigger={(open) => <CmButton onClick={open}>Abrir comandos</CmButton>}
+    />
+  );
+}
+```
+
+### CmCombobox
+
+`onChange` recebe o item selecionado ou `null` ao limpar. `onSearch` recebe a busca digitada com debounce de 300 ms.
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { CmCombobox, type CmComboboxItem } from "cosmemilton-ui";
+
+const assignees: CmComboboxItem[] = [
+  {
+    value: "usr_ana",
+    label: "Ana Lima",
+    description: "Customer Success",
+    keywords: "cs clientes contas",
+  },
+  {
+    value: "usr_bruno",
+    label: "Bruno Alves",
+    description: "Financeiro",
+    keywords: "cobrança faturas",
+  },
+];
+
+export function ComboboxDemo() {
+  const [selected, setSelected] = useState<CmComboboxItem | null>(assignees[0]);
+
+  return (
+    <CmCombobox
+      items={assignees}
+      value={selected?.value ?? ""}
+      onChange={setSelected}
+      onSearch={(query) => console.log("Buscar responsáveis por", query)}
+      name="assigneeId"
+      label="Responsável"
+      placeholder="Buscar pessoa ou equipe..."
+      helperText="A seleção também preenche o campo hidden do formulário."
+      emptyState={<span>Nenhum responsável encontrado.</span>}
+      selectedDisplay="label"
+    />
+  );
+}
+```
+
+## Header compacto com tema
+
+Para headers compactos, use `CmThemeToggle` com `presentation="compact"` ou componha o menu manualmente quando quiser controlar rótulos, ícones e ordenação.
+
+```tsx
+"use client";
+
+import { CmButton, CmDropdownMenu, useCmTheme } from "cosmemilton-ui";
+
+const themeLabel = (name: string) => name.replace("cm-", "");
+
+export function HeaderThemeMenu() {
+  const { theme, themes, setThemeByName } = useCmTheme();
+
+  return (
+    <CmDropdownMenu
+      align="end"
+      trigger={({ open, toggle, ref }) => (
+        <CmButton ref={ref} size="sm" variant="ghost" onClick={toggle}>
+          {themeLabel(theme.name)}
+        </CmButton>
+      )}
+      items={Object.values(themes).map((candidate) => ({
+        id: candidate.name,
+        label: themeLabel(candidate.name),
+        shortcut: candidate.name === theme.name ? "Atual" : undefined,
+        onSelect: () => setThemeByName(candidate.name),
+      }))}
+    />
+  );
+}
 ```
