@@ -11,6 +11,7 @@ type TextProps<TElement extends ElementType = "p"> = {
   as?: TElement;
   children: ReactNode;
   className?: string;
+  inline?: boolean;
   size?: TextSize;
   spacing?: TextSpacing;
   tone?: TextTone;
@@ -52,6 +53,7 @@ export function CmText<TElement extends ElementType = "p">({
   as,
   children,
   className,
+  inline = false,
   size = "sm",
   spacing = "none",
   tone = "default",
@@ -60,11 +62,12 @@ export function CmText<TElement extends ElementType = "p">({
   weight = "normal",
   ...props
 }: TextProps<TElement>) {
-  const Component = as ?? "p";
+  const Component: ElementType = as ?? (inline ? "span" : "p");
 
   return (
     <Component
       className={cn(
+        "cm-text",
         sizeClass[size],
         toneClass[tone],
         weightClass[weight],

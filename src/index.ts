@@ -31,6 +31,7 @@ export * from "./components/ui/form.js";
 export * from "./components/ui/grid.js";
 export * from "./components/ui/hover-card.js";
 export * from "./components/ui/icon.js";
+export * from "./components/ui/icon-badge.js";
 export * from "./components/ui/input.js";
 export * from "./components/ui/input-group.js";
 export * from "./components/ui/input-otp.js";

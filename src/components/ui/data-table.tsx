@@ -1,6 +1,15 @@
 "use client";
 
-import { ReactNode, useMemo, useState } from "react";
+import {
+  type CSSProperties,
+  type HTMLAttributes,
+  type ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "../../lib/utils.js";
 import {
   ArrowUp,
@@ -28,6 +37,15 @@ export type CmDataTableColumn<T> = {
   defaultHidden?: boolean; // se true, a coluna começa oculta (padrão antes de preferência do usuário)
 };
 
+export type CmDataTableActionsProps = HTMLAttributes<HTMLDivElement>;
+
+export function CmDataTableActions({
+  className,
+  ...props
+}: CmDataTableActionsProps) {
+  return <div className={cn("cm-data-table__actions", className)} {...props} />;
+}
+
 export type CmSortDirection = "asc" | "desc";
 
 export type CmDataTableProps<T> = {
@@ -44,6 +62,12 @@ export type CmDataTableProps<T> = {
   defaultSortKey?: string;
   defaultSortDirection?: CmSortDirection;
   tableKey?: string; // chave para persistir preferências de colunas do usuário
+  detailPanelEnabled?: boolean;
+  renderSelectedRowDetail?: (row: T) => ReactNode;
+  detailPanelWidth?: string | number;
+  detailPanelClassName?: string;
+  detailBridge?: boolean;
+  detailEmptyMessage?: ReactNode;
 };
 
 export function CmDataTable<T>({
@@ -60,6 +84,12 @@ export function CmDataTable<T>({
   defaultSortKey,
   defaultSortDirection = "asc",
   tableKey,
+  detailPanelEnabled = false,
+  renderSelectedRowDetail,
+  detailPanelWidth = 280,
+  detailPanelClassName,
+  detailBridge = true,
+  detailEmptyMessage,
 }: CmDataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
@@ -69,6 +99,11 @@ export function CmDataTable<T>({
   const [sortDirection, setSortDirection] =
     useState<CmSortDirection>(defaultSortDirection);
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
+  const detailTableWrapperRef = useRef<HTMLDivElement>(null);
+  const [selectedRowRect, setSelectedRowRect] = useState<{
+    top: number;
+    height: number;
+  } | null>(null);
 
   // Deriva os defaults de visibilidade a partir das definições de coluna
   const defaultHiddenKeys = useMemo(
@@ -148,6 +183,79 @@ export function CmDataTable<T>({
     ? sortedData.slice(indexOfFirstItem, indexOfLastItem)
     : sortedData;
 
+  const detailPanelActive = detailPanelEnabled && !!renderSelectedRowDetail;
+  const detailPanelSize =
+    typeof detailPanelWidth === "number"
+      ? `${detailPanelWidth}px`
+      : detailPanelWidth;
+  const selectedDetailRow = useMemo(() => {
+    if (!detailPanelActive || selectedRowKey == null) return null;
+    return currentData.find((row, rowIndex) => rowKey(row, rowIndex) === selectedRowKey) ?? null;
+  }, [currentData, detailPanelActive, rowKey, selectedRowKey]);
+
+  const measureSelectedRow = useCallback(() => {
+    const wrapper = detailTableWrapperRef.current;
+    if (!detailPanelActive || !selectedRowKey || !wrapper) {
+      setSelectedRowRect(null);
+      return;
+    }
+
+    const row = wrapper.querySelector<HTMLTableRowElement>("tr[data-selected]");
+    if (!row) {
+      setSelectedRowRect(null);
+      return;
+    }
+
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+    setSelectedRowRect({
+      top: rowRect.top - wrapperRect.top,
+      height: rowRect.height,
+    });
+  }, [detailPanelActive, selectedRowKey]);
+
+  useLayoutEffect(() => {
+    if (!detailPanelActive) {
+      setSelectedRowRect(null);
+      return;
+    }
+
+    let frameId = 0;
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(measureSelectedRow);
+    };
+
+    scheduleMeasure();
+
+    const wrapper = detailTableWrapperRef.current;
+    const resizeObserver =
+      wrapper && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(scheduleMeasure)
+        : null;
+
+    if (wrapper && resizeObserver) {
+      resizeObserver.observe(wrapper);
+    }
+
+    window.addEventListener("resize", scheduleMeasure);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", scheduleMeasure);
+    };
+  }, [
+    currentData,
+    detailPanelActive,
+    measureSelectedRow,
+    rowsPerPage,
+    selectedRowKey,
+    sortDirection,
+    sortKey,
+    visibleColumns.length,
+  ]);
+
   const handleChangeRowsPerPage = (value: string) => {
     setRowsPerPage(Number(value));
     setCurrentPage(1);
@@ -168,10 +276,11 @@ export function CmDataTable<T>({
     hiddenColumns?.has(String(c.key)),
   ).length;
 
-  return (
+  const table = (
     <div
       className={cn(
         "cm-data-table data-table-root",
+        detailPanelActive && "cm-data-table--detail-active",
         className,
       )}
     >
@@ -382,6 +491,67 @@ export function CmDataTable<T>({
           </div>
         </CmDialog>
       )}
+    </div>
+  );
+
+  if (!detailPanelActive) {
+    return table;
+  }
+
+  const detailLayoutStyle = {
+    "--cm-data-table-detail-panel-width": detailPanelSize,
+  } as CSSProperties;
+  const detailContent = selectedDetailRow
+    ? renderSelectedRowDetail?.(selectedDetailRow)
+    : detailEmptyMessage;
+
+  return (
+    <div
+      className="cm-data-table-detail-layout"
+      style={detailLayoutStyle}
+    >
+      <div
+        ref={detailTableWrapperRef}
+        className="cm-data-table-detail__table-wrap"
+      >
+        {table}
+        {detailBridge && selectedRowRect && (
+          <>
+            <span
+              className="cm-data-table-detail__tab"
+              style={{
+                top: selectedRowRect.top,
+                height: selectedRowRect.height,
+                width: selectedRowRect.height / 2,
+                left: -(selectedRowRect.height / 2),
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="cm-data-table-detail__ribbon"
+              style={{
+                top: selectedRowRect.top,
+                height: selectedRowRect.height,
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="cm-data-table-detail__bridge"
+              style={{
+                top: selectedRowRect.top,
+                height: selectedRowRect.height,
+              }}
+              aria-hidden="true"
+            />
+          </>
+        )}
+      </div>
+      <aside
+        className={cn("cm-data-table-detail__panel", detailPanelClassName)}
+        aria-label="Detalhes da linha selecionada"
+      >
+        {detailContent}
+      </aside>
     </div>
   );
 }

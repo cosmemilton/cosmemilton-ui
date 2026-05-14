@@ -28,6 +28,7 @@ export * from "./form.js";
 export * from "./grid.js";
 export * from "./hover-card.js";
 export * from "./icon.js";
+export * from "./icon-badge.js";
 export * from "./input.js";
 export * from "./input-group.js";
 export * from "./input-otp.js";
