@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 type FieldProps = {
   label?: ReactNode;
@@ -7,13 +8,14 @@ type FieldProps = {
   description?: ReactNode;
   error?: ReactNode;
   required?: boolean;
+  density?: CmDensity;
   className?: string;
   children: ReactNode;
 };
 
-export function CmField({ label, labelHint, description, error, required, className, children }: FieldProps) {
+export function CmField({ label, labelHint, description, error, required, density, className, children }: FieldProps) {
   return (
-    <div className={cn("cm-field", className)}>
+    <div className={cn("cm-field", cmDensityClass(density), className)}>
       {(label || labelHint) ? (
         <div className="cm-field__header">
           <div className="cm-field__label-row">

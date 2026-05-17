@@ -11,6 +11,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ComponentPropsWithoutRef,
   type ElementType,
   type FocusEvent,
@@ -18,6 +19,11 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../lib/utils.js";
+import {
+  cmDensityClass,
+  cmSizeValue,
+  type CmDensity,
+} from "./types.js";
 
 export type CmSidebarItem = {
   id: string;
@@ -96,6 +102,16 @@ export type CmSidebarProps = {
   isActive?: (context: CmSidebarActiveContext) => boolean;
   autoCollapse?: boolean;
   autoCollapseBelow?: number;
+  tone?: "surface" | "brand" | "neutral";
+  density?: CmDensity;
+  width?: string | number;
+  collapsedWidth?: string | number;
+  contentPadding?: string | number;
+  minHeight?: string | number;
+  groupItemsMaxHeight?: string | number;
+  lastGroupItemsMaxHeight?: string | number;
+  standalone?: boolean;
+  style?: CSSProperties;
 };
 
 const defaultAutoCollapseBelow = 1180;
@@ -144,10 +160,22 @@ function useAutoCollapsed(enabled: boolean, breakpoint: number) {
   return matches;
 }
 
-function renderIcon(icon: ReactNode, label: ReactNode, className?: string) {
+type SidebarIconFallback = "initial" | "marker";
+
+function renderIcon(icon: ReactNode, label: ReactNode, className?: string, fallback: SidebarIconFallback = "initial") {
+  const showMarker = !icon && fallback === "marker";
+
   return (
-    <span className={cn("cm-sidebar__nav-icon", !icon && "cm-sidebar__nav-icon--fallback", className)} aria-hidden="true">
-      {icon ?? getInitial(label)}
+    <span
+      className={cn(
+        "cm-sidebar__nav-icon",
+        !icon && !showMarker && "cm-sidebar__nav-icon--fallback",
+        showMarker && "cm-sidebar__nav-icon--marker",
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {icon ?? (showMarker ? null : getInitial(label))}
     </span>
   );
 }
@@ -167,11 +195,21 @@ export function CmSidebar({
   groups,
   isActive,
   linkComponent,
+  collapsedWidth,
+  contentPadding,
+  density,
+  groupItemsMaxHeight,
+  lastGroupItemsMaxHeight,
+  minHeight,
   navLabel = "Navegação principal",
   onCollapsedChange,
   onOpenGroupChange,
   openGroupId,
   sidebarClassName,
+  standalone = false,
+  style,
+  tone = "surface",
+  width,
 }: CmSidebarProps) {
   const visibleGroups = useMemo(
     () => groups.filter((group) => group.items.length > 0),
@@ -238,6 +276,19 @@ export function CmSidebar({
   const brandTitle = brand?.title ?? brand?.fallbackTitle ?? "Menu";
   const brandSubtitle = brand?.subtitle;
   const brandIcon = brand?.icon ?? getInitial(brandTitle);
+  const shellStyle = {
+    ...(width ? { "--cm-sidebar-expanded-width": cmSizeValue(width) } : {}),
+    ...(collapsedWidth ? { "--cm-sidebar-collapsed-width": cmSizeValue(collapsedWidth) } : {}),
+    ...(contentPadding ? { "--cm-sidebar-content-padding": cmSizeValue(contentPadding) } : {}),
+    ...(minHeight ? { "--cm-sidebar-min-height": cmSizeValue(minHeight) } : {}),
+    ...(groupItemsMaxHeight
+      ? { "--cm-sidebar-group-items-max-height": cmSizeValue(groupItemsMaxHeight) }
+      : {}),
+    ...(lastGroupItemsMaxHeight
+      ? { "--cm-sidebar-last-group-items-max-height": cmSizeValue(lastGroupItemsMaxHeight) }
+      : {}),
+    ...style,
+  } as CSSProperties;
 
   const clearPreviewTimer = useCallback(() => {
     if (previewTimerRef.current) {
@@ -369,11 +420,15 @@ export function CmSidebar({
         isCollapsed && "cm-sidebar-shell--collapsed",
         sidebarPreviewOpen && "cm-sidebar-shell--preview",
         autoCollapsed && "cm-sidebar-shell--auto-collapsed",
+        standalone && "cm-sidebar-shell--standalone",
+        `cm-sidebar-shell--tone-${tone}`,
+        cmDensityClass(density),
         className,
       )}
+      style={shellStyle}
     >
       <aside
-        className={cn("cm-sidebar", sidebarClassName)}
+        className={cn("cm-sidebar", `cm-sidebar--tone-${tone}`, sidebarClassName)}
         aria-label={navLabel}
         onMouseEnter={openSidebarPreview}
         onMouseLeave={() => closeSidebarPreview()}
@@ -445,13 +500,15 @@ export function CmSidebar({
         </nav>
         {footer ? <div className="cm-sidebar__footer">{footer}</div> : null}
       </aside>
-      <section className={cn("cm-sidebar__content", contentClassName)}>
-        {children ?? (
-          <div className="cm-sidebar__empty">
-            <PanelLeft size={22} aria-hidden="true" />
-          </div>
-        )}
-      </section>
+      {!standalone ? (
+        <section className={cn("cm-sidebar__content", contentClassName)}>
+          {children ?? (
+            <div className="cm-sidebar__empty">
+              <PanelLeft size={22} aria-hidden="true" />
+            </div>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -474,9 +531,10 @@ function SidebarItem({ active, collapsed, groupLabel, icon, item, linkComponent,
   );
   const title = collapsed ? groupLabel ?? item.label : undefined;
   const linkTarget = item.href ?? item.to;
+  const iconFallback = groupLabel ? "initial" : "marker";
   const content = (
     <>
-      {renderIcon(icon ?? item.icon, groupLabel ?? item.label)}
+      {renderIcon(icon ?? item.icon, groupLabel ?? item.label, undefined, iconFallback)}
       <span className="cm-sidebar__label">{groupLabel ?? item.label}</span>
       {item.badge ? <span className="cm-sidebar__badge">{item.badge}</span> : null}
     </>

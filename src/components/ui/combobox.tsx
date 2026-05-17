@@ -35,6 +35,7 @@ type ComboboxProps = {
   form?: string;
   placeholder?: string;
   emptyState?: ReactNode;
+  emptyMessage?: ReactNode;
   className?: string;
   initialValue?: string;
   disabled?: boolean;
@@ -86,6 +87,7 @@ export function CmCombobox({
   form,
   placeholder = "Selecionar...",
   emptyState,
+  emptyMessage = "Nada encontrado.",
   className,
   initialValue,
   disabled,
@@ -434,7 +436,7 @@ export function CmCombobox({
             {filtered.length === 0
               ? (emptyState ?? (
                   <div className="cm-combobox__empty">
-                    Nada encontrado.
+                    {emptyMessage}
                   </div>
                 ))
               : filtered.map((item) => (

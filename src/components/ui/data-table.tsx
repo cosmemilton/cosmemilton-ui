@@ -21,7 +21,9 @@ import { useTablePreference } from "../../hooks/use-table-preference.js";
 import { CmDialog } from "./dialog.js";
 import { CmButton } from "./button.js";
 import { CmCheckbox } from "./checkbox.js";
+import { CmEmpty } from "./empty.js";
 import { CmPagination } from "./pagination.js";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 export type CmDataTableColumn<T> = {
   /** Identificador estável da coluna. Sem render, também é usado para ler row[key]. */
@@ -54,9 +56,22 @@ export type CmDataTableProps<T> = {
   rowKey: (row: T, index: number) => string;
   zebra?: boolean;
   className?: string;
+  tableClassName?: string;
+  density?: CmDensity;
+  fullWidth?: boolean;
   pagination?: boolean;
   defaultRowsPerPage?: number;
   emptyMessage?: string;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyIcon?: ReactNode;
+  emptyActionLabel?: string;
+  onEmptyAction?: () => void;
+  header?: ReactNode;
+  title?: ReactNode;
+  description?: ReactNode;
+  toolbar?: ReactNode;
+  actions?: ReactNode;
   selectedRowKey?: string;
   onRowClick?: (row: T) => void;
   defaultSortKey?: string;
@@ -76,9 +91,22 @@ export function CmDataTable<T>({
   rowKey,
   zebra = true,
   className,
+  tableClassName,
+  density,
+  fullWidth = true,
   pagination = true,
   defaultRowsPerPage = 10,
   emptyMessage = "Nenhum registro encontrado",
+  emptyTitle,
+  emptyDescription,
+  emptyIcon,
+  emptyActionLabel,
+  onEmptyAction,
+  header,
+  title,
+  description,
+  toolbar,
+  actions,
   selectedRowKey,
   onRowClick,
   defaultSortKey,
@@ -261,12 +289,49 @@ export function CmDataTable<T>({
     setCurrentPage(1);
   };
 
+  const hasIntegratedHeader = Boolean(header || title || description || toolbar || actions);
+  const rootClassName = cn(
+    "cm-data-table data-table-root",
+    detailPanelActive && "cm-data-table--detail-active",
+    fullWidth && "cm-data-table--full-width",
+    cmDensityClass(density),
+    className,
+  );
+  const integratedHeader = hasIntegratedHeader ? (
+    <div className="cm-data-table__top">
+      {header ? (
+        <div className="cm-data-table__header-slot">{header}</div>
+      ) : (title || description) ? (
+        <div className="cm-data-table__heading">
+          {title ? <h3 className="cm-data-table__title">{title}</h3> : null}
+          {description ? (
+            <p className="cm-data-table__description">{description}</p>
+          ) : null}
+        </div>
+      ) : null}
+      {(toolbar || actions) ? (
+        <div className="cm-data-table__toolbar">
+          {toolbar}
+          {actions ? <CmDataTableActions>{actions}</CmDataTableActions> : null}
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   if (sortedData.length === 0) {
     return (
-      <div className={cn("cm-data-table-empty", className)}>
-        <p className="cm-data-table-empty__message">
-          {emptyMessage}
-        </p>
+      <div className={cn(rootClassName, "cm-data-table--empty")}>
+        {integratedHeader}
+        <div className="cm-data-table-empty">
+          <CmEmpty
+            className="cm-data-table-empty__content"
+            title={emptyTitle ?? emptyMessage}
+            description={emptyDescription}
+            icon={emptyIcon}
+            actionLabel={emptyActionLabel}
+            onAction={onEmptyAction}
+          />
+        </div>
       </div>
     );
   }
@@ -277,14 +342,9 @@ export function CmDataTable<T>({
   ).length;
 
   const table = (
-    <div
-      className={cn(
-        "cm-data-table data-table-root",
-        detailPanelActive && "cm-data-table--detail-active",
-        className,
-      )}
-    >
-      <table className="cm-data-table__table">
+    <div className={rootClassName}>
+      {integratedHeader}
+      <table className={cn("cm-data-table__table", tableClassName)}>
         <thead className="cm-data-table__head">
           <tr>
             {hasColumnToggle && (

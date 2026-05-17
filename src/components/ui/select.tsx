@@ -11,7 +11,8 @@ import {
 import { cn } from "../../lib/utils.js";
 import { CmIcon } from "./icon.js";
 import { CmPortal } from "./portal.js";
-import { ChevronDown, Check } from "lucide-react";
+import { ChevronDown, Check, X } from "lucide-react";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 type SelectOption = {
   value: string;
@@ -38,6 +39,10 @@ type SelectProps = {
   showOptionIcons?: boolean;
   disabled?: boolean;
   form?: string;
+  clearable?: boolean;
+  clearLabel?: string;
+  onClear?: () => void;
+  density?: CmDensity;
   /** Customiza o texto exibido no gatilho após a seleção. O dropdown sempre exibe o label completo. */
   renderSelected?: (option: SelectOption) => string;
 };
@@ -95,9 +100,13 @@ export function CmSelect({
   startButton,
   endButton,
   className,
+  clearable = false,
+  clearLabel = "Limpar seleção",
+  density,
   showOptionIcons = false,
   disabled,
   form,
+  onClear,
   renderSelected,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
@@ -108,13 +117,13 @@ export function CmSelect({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const hasValue = Boolean(value) || options.some((opt) => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
+  const hasValue = Boolean(value) || Boolean(selectedOption);
   const hasInstruction = Boolean(helperText || placeholder);
   const isFloating = isFocused || open || hasValue || hasInstruction;
   const hasStartElement = Boolean(startIcon || startButton);
-
-  const selectedOption = options.find((opt) => opt.value === value);
   const selectedIcon = showOptionIcons && selectedOption?.icon;
+  const canClear = clearable && Boolean(selectedOption) && !disabled;
 
   const handleSelect = useCallback(
     (optValue: string) => {
@@ -123,6 +132,14 @@ export function CmSelect({
     },
     [onChange],
   );
+
+  const handleClear = useCallback(() => {
+    if (disabled) return;
+    onChange("");
+    onClear?.();
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, [disabled, onChange, onClear]);
 
   // Close on outside click
   useEffect(() => {
@@ -197,7 +214,14 @@ export function CmSelect({
   };
 
   return (
-    <div className={cn("cm-select cm-floating-field", !label && "cm-floating-field--unlabeled", className)}>
+    <div
+      className={cn(
+        "cm-select cm-floating-field",
+        !label && "cm-floating-field--unlabeled",
+        cmDensityClass(density),
+        className,
+      )}
+    >
       {name ? (
         <input
           type="hidden"
@@ -276,6 +300,17 @@ export function CmSelect({
             open && "cm-select__chevron--open",
           )}
         />
+        {canClear ? (
+          <button
+            type="button"
+            className="cm-floating-field__clear"
+            aria-label={clearLabel}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={handleClear}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        ) : null}
 
         {endIcon && (
           <span className="cm-floating-field__adornment">

@@ -1,25 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import React, { useState, useMemo, useEffect, type DragEvent } from "react";
 import {
   GripVertical,
   ChevronDown,
@@ -106,11 +87,17 @@ interface SortableTreeItemProps {
   level: number;
   isExpanded: boolean;
   isHighlighted: boolean;
+  isDragging?: boolean;
+  isDropTarget?: boolean;
   onToggle: () => void;
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
   onSelect?: (node: CmTreeNode) => void;
+  onDragStart?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDragOver?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDrop?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDragEnd?: () => void;
   draggable?: boolean;
   maxDepth?: number;
   // Modo de seleção com checkbox (novo)
@@ -124,11 +111,17 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
   level,
   isExpanded,
   isHighlighted,
+  isDragging = false,
+  isDropTarget = false,
   onToggle,
   onAdd,
   onEdit,
   onDelete,
   onSelect,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
   draggable = true,
   maxDepth,
   selectionMode = false,
@@ -144,21 +137,7 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
     node.permissionId !== undefined &&
     Boolean(selectedIds?.has(node.permissionId));
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: node.id,
-    disabled: !draggable,
-  });
-
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
     opacity: isDragging ? 0.5 : 1,
   };
 
@@ -175,20 +154,23 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
 
   return (
     <div
-      ref={setNodeRef}
       style={style}
       className={cn(
         "cm-tree-view__item",
         isDragging && "cm-tree-view__item--dragging",
+        isDropTarget && "cm-tree-view__item--drop-target",
         !node.active && "cm-tree-view__item--inactive"
       )}
+      onDragOver={draggable ? (event) => onDragOver?.(event, node) : undefined}
+      onDrop={draggable ? (event) => onDrop?.(event, node) : undefined}
     >
       <div
         className={cn(
           "cm-tree-view__node",
           isHighlighted && "cm-tree-view__node--highlighted",
           isSelected && "cm-tree-view__node--selected",
-          isDragging && "cm-tree-view__node--dragging"
+          isDragging && "cm-tree-view__node--dragging",
+          isDropTarget && "cm-tree-view__node--drop-target"
         )}
         style={{ paddingLeft: `${level * 24 + 12}px` }}
         onMouseEnter={() => setShowActions(true)}
@@ -209,10 +191,12 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
         {/* Drag Handle */}
         {!selectionMode && draggable && (
           <button
-            {...attributes}
-            {...listeners}
+            type="button"
+            draggable
             className="cm-tree-view__drag-handle"
             aria-label="Drag to reorder"
+            onDragStart={(event) => onDragStart?.(event, node)}
+            onDragEnd={onDragEnd}
           >
             <GripVertical className="cm-tree-view__small-icon" />
           </button>
@@ -317,11 +301,17 @@ const TreeBranch: React.FC<{
   level: number;
   expandedNodes: Set<string>;
   highlightedNode: string | null;
+  activeId: string | null;
+  dropTargetId: string | null;
   onToggle: (nodeId: string) => void;
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
   onSelect?: (node: CmTreeNode) => void;
+  onDragStart?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDragOver?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDrop?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
+  onDragEnd?: () => void;
   draggable?: boolean;
   maxDepth?: number;
   selectionMode?: boolean;
@@ -332,11 +322,17 @@ const TreeBranch: React.FC<{
   level,
   expandedNodes,
   highlightedNode,
+  activeId,
+  dropTargetId,
   onToggle,
   onAdd,
   onEdit,
   onDelete,
   onSelect,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
   draggable,
   maxDepth,
   selectionMode,
@@ -352,11 +348,17 @@ const TreeBranch: React.FC<{
             level={level}
             isExpanded={expandedNodes.has(node.id)}
             isHighlighted={highlightedNode === node.id}
+            isDragging={activeId === node.id}
+            isDropTarget={dropTargetId === node.id && activeId !== node.id}
             onToggle={() => onToggle(node.id)}
             onAdd={onAdd}
             onEdit={onEdit}
             onDelete={onDelete}
             onSelect={onSelect}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onDragEnd={onDragEnd}
             draggable={draggable}
             maxDepth={maxDepth}
             selectionMode={selectionMode}
@@ -371,11 +373,17 @@ const TreeBranch: React.FC<{
                 level={level + 1}
                 expandedNodes={expandedNodes}
                 highlightedNode={highlightedNode}
+                activeId={activeId}
+                dropTargetId={dropTargetId}
                 onToggle={onToggle}
                 onAdd={onAdd}
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onSelect={onSelect}
+                onDragStart={onDragStart}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+                onDragEnd={onDragEnd}
                 draggable={draggable}
                 maxDepth={maxDepth}
                 selectionMode={selectionMode}
@@ -388,6 +396,128 @@ const TreeBranch: React.FC<{
     </>
   );
 };
+
+type TreeNodeLocation = {
+  node: CmTreeNode;
+  parentId: string | null;
+  index: number;
+};
+
+function findNodeLocation(
+  nodes: CmTreeNode[],
+  targetId: string,
+  parentId: string | null = null,
+): TreeNodeLocation | null {
+  for (let index = 0; index < nodes.length; index += 1) {
+    const node = nodes[index];
+    if (node.id === targetId) {
+      return { node, parentId, index };
+    }
+
+    if (node.children?.length) {
+      const childLocation = findNodeLocation(node.children, targetId, node.id);
+      if (childLocation) return childLocation;
+    }
+  }
+
+  return null;
+}
+
+function nodeContainsId(node: CmTreeNode, targetId: string): boolean {
+  if (node.id === targetId) return true;
+  return node.children?.some((child) => nodeContainsId(child, targetId)) ?? false;
+}
+
+function removeNodeFromTree(
+  nodes: CmTreeNode[],
+  targetId: string,
+): { nodes: CmTreeNode[]; removed: CmTreeNode | null } {
+  let removed: CmTreeNode | null = null;
+  const nextNodes: CmTreeNode[] = [];
+
+  for (const node of nodes) {
+    if (node.id === targetId) {
+      removed = node;
+      continue;
+    }
+
+    if (node.children?.length) {
+      const childResult = removeNodeFromTree(node.children, targetId);
+      if (childResult.removed) {
+        removed = childResult.removed;
+        nextNodes.push({ ...node, children: childResult.nodes });
+      } else {
+        nextNodes.push(node);
+      }
+      continue;
+    }
+
+    nextNodes.push(node);
+  }
+
+  return { nodes: nextNodes, removed };
+}
+
+function insertNodeIntoTree(
+  nodes: CmTreeNode[],
+  parentId: string | null,
+  nodeToInsert: CmTreeNode,
+  targetIndex: number,
+): CmTreeNode[] {
+  if (parentId === null) {
+    const nextNodes = [...nodes];
+    nextNodes.splice(targetIndex, 0, { ...nodeToInsert, parentId: null });
+    return nextNodes;
+  }
+
+  return nodes.map((node) => {
+    if (node.id === parentId) {
+      const children = [...(node.children ?? [])];
+      children.splice(targetIndex, 0, { ...nodeToInsert, parentId });
+      return { ...node, children };
+    }
+
+    if (node.children?.length) {
+      return {
+        ...node,
+        children: insertNodeIntoTree(
+          node.children,
+          parentId,
+          nodeToInsert,
+          targetIndex,
+        ),
+      };
+    }
+
+    return node;
+  });
+}
+
+function moveNodeBeforeTarget(
+  nodes: CmTreeNode[],
+  draggedId: string,
+  targetId: string,
+): { nodes: CmTreeNode[]; parentId: string | null; order: number } | null {
+  if (draggedId === targetId) return null;
+
+  const source = findNodeLocation(nodes, draggedId);
+  const target = findNodeLocation(nodes, targetId);
+  if (!source || !target || nodeContainsId(source.node, targetId)) return null;
+
+  const parentId = target.parentId;
+  const order =
+    source.parentId === parentId && source.index < target.index
+      ? Math.max(0, target.index - 1)
+      : target.index;
+  const removal = removeNodeFromTree(nodes, draggedId);
+  if (!removal.removed) return null;
+
+  return {
+    nodes: insertNodeIntoTree(removal.nodes, parentId, removal.removed, order),
+    parentId,
+    order,
+  };
+}
 
 export const CmTreeView: React.FC<CmTreeViewProps> = ({
   data,
@@ -442,13 +572,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   });
   const [selectedNode, setSelectedNode] = useState<CmTreeNode | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
 
   // Funções de controle
   const expandAll = () => {
@@ -602,21 +726,45 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
     return result;
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+  const handleDragStart = (
+    event: DragEvent<HTMLElement>,
+    node: CmTreeNode,
+  ) => {
+    if (!draggable || selectionMode) return;
+    setActiveId(node.id);
+    setDropTargetId(null);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", node.id);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragOver = (
+    event: DragEvent<HTMLElement>,
+    node: CmTreeNode,
+  ) => {
+    if (!activeId || activeId === node.id) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    setDropTargetId(node.id);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
+    event.preventDefault();
+    const draggedId = activeId ?? event.dataTransfer.getData("text/plain");
     setActiveId(null);
+    setDropTargetId(null);
 
-    if (!over || active.id === over.id) return;
+    if (!draggedId || draggedId === node.id) return;
 
-    // Aqui você implementaria a lógica de reordenação
-    // Por simplicidade, vamos apenas notificar o pai
-    if (onMove) {
-      onMove(active.id as string, null, 0);
-    }
+    const moved = moveNodeBeforeTarget(data, draggedId, node.id);
+    if (!moved) return;
+
+    onMove?.(draggedId, moved.parentId, moved.order);
+    onReorder?.(moved.nodes);
+  };
+
+  const handleDragEnd = () => {
+    setActiveId(null);
+    setDropTargetId(null);
   };
 
   // CmBreadcrumb path
@@ -800,68 +948,60 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
           showBorder && "cm-tree-view__panel--bordered"
         )}
       >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={allNodeIds}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="cm-tree-view__scroll">
-              {filteredData.length > 0 ? (
-                <TreeBranch
-                  nodes={filteredData}
-                  level={0}
-                  expandedNodes={expandedNodes}
-                  highlightedNode={highlightedNode}
-                  onToggle={toggleNode}
-                  onAdd={onAdd}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  onSelect={setSelectedNode}
-                  draggable={draggable}
-                  maxDepth={maxDepth}
-                  selectionMode={selectionMode}
-                  selectedIds={selectedIds}
-                  onSelectionChange={onSelectionChange}
-                />
-              ) : (
-                <div className="cm-tree-view__empty">
-                  <FolderOpen className="cm-tree-view__empty-icon" />
-                  <p className="cm-tree-view__empty-text">
-                    {searchQuery
-                      ? "Nenhuma categoria encontrada"
-                      : "Nenhuma categoria cadastrada"}
-                  </p>
-                  {!searchQuery && onAdd && (
-                    <CmButton
-                      onClick={() => onAdd(null)}
-                      className="cm-tree-view__empty-button"
-                    >
-                      <Plus className="cm-tree-view__button-icon" />
-                      Adicionar Primeira Categoria
-                    </CmButton>
-                  )}
-                </div>
+        <div className="cm-tree-view__scroll">
+          {filteredData.length > 0 ? (
+            <TreeBranch
+              nodes={filteredData}
+              level={0}
+              expandedNodes={expandedNodes}
+              highlightedNode={highlightedNode}
+              activeId={activeId}
+              dropTargetId={dropTargetId}
+              onToggle={toggleNode}
+              onAdd={onAdd}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onSelect={setSelectedNode}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onDragEnd={handleDragEnd}
+              draggable={draggable}
+              maxDepth={maxDepth}
+              selectionMode={selectionMode}
+              selectedIds={selectedIds}
+              onSelectionChange={onSelectionChange}
+            />
+          ) : (
+            <div className="cm-tree-view__empty">
+              <FolderOpen className="cm-tree-view__empty-icon" />
+              <p className="cm-tree-view__empty-text">
+                {searchQuery
+                  ? "Nenhuma categoria encontrada"
+                  : "Nenhuma categoria cadastrada"}
+              </p>
+              {!searchQuery && onAdd && (
+                <CmButton
+                  onClick={() => onAdd(null)}
+                  className="cm-tree-view__empty-button"
+                >
+                  <Plus className="cm-tree-view__button-icon" />
+                  Adicionar Primeira Categoria
+                </CmButton>
               )}
             </div>
-          </SortableContext>
+          )}
+        </div>
 
-          <DragOverlay>
-            {activeId ? (
-              <div className="cm-tree-view__drag-overlay">
-                <div className="cm-tree-view__drag-overlay-content">
-                  <GripVertical className="cm-tree-view__small-icon" />
-                  <Folder className="cm-tree-view__node-svg" />
-                  <span className="cm-tree-view__drag-text">Arrastando...</span>
-                </div>
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+        {activeId ? (
+          <div className="cm-tree-view__drag-overlay" aria-hidden="true">
+            <div className="cm-tree-view__drag-overlay-content">
+              <GripVertical className="cm-tree-view__small-icon" />
+              <Folder className="cm-tree-view__node-svg" />
+              <span className="cm-tree-view__drag-text">Arrastando...</span>
+            </div>
+          </div>
+        ) : null}
 
         {/* Footer */}
         {showFooter && (

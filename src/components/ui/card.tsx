@@ -1,5 +1,6 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 type CardVariant = "surface" | "soft" | "outline" | "ghost";
 type CardTone =
@@ -12,9 +13,10 @@ type CardTone =
   | "info";
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   padding?: "none" | "sm" | "md" | "lg";
+  bodyPadding?: "none" | "sm" | "md" | "lg";
   elevated?: boolean;
   variant?: CardVariant;
   tone?: CardTone;
@@ -22,6 +24,9 @@ type CardProps = HTMLAttributes<HTMLDivElement> & {
   accent?: "none" | "top" | "left";
   cover?: boolean | ReactNode;
   coverHeight?: string;
+  header?: ReactNode;
+  footer?: ReactNode;
+  density?: CmDensity;
 };
 
 const paddingMap: Record<NonNullable<CardProps["padding"]>, string> = {
@@ -42,10 +47,14 @@ const toneMap: Record<CardTone, string> = {
 };
 
 export function CmCard({
+  bodyPadding,
   children,
   className,
+  density,
   padding = "md",
   elevated = false,
+  footer,
+  header,
   variant = "surface",
   tone = "default",
   interactive = false,
@@ -56,6 +65,8 @@ export function CmCard({
   ...props
 }: CardProps) {
   const hasCover = Boolean(cover);
+  const hasStructuredContent = Boolean(header || footer || hasCover);
+  const resolvedBodyPadding = bodyPadding ?? padding;
 
   return (
     <div
@@ -66,7 +77,8 @@ export function CmCard({
         elevated ? "cm-card--elevated" : "cm-card--flat",
         interactive && "cm-card--interactive",
         accent !== "none" && `cm-card--accent-${accent}`,
-        !hasCover && paddingMap[padding],
+        !hasStructuredContent && paddingMap[padding],
+        cmDensityClass(density),
         className,
       )}
       style={{
@@ -75,12 +87,20 @@ export function CmCard({
       } as CSSProperties}
       {...props}
     >
-      {hasCover ? (
+      {hasStructuredContent ? (
         <>
-          <div className="cm-card__cover">
-            {cover === true ? null : cover}
-          </div>
-          <div className={paddingMap[padding]}>{children}</div>
+          {hasCover ? (
+            <div className="cm-card__cover">
+              {cover === true ? null : cover}
+            </div>
+          ) : null}
+          {header ? <div className="cm-card__header">{header}</div> : null}
+          {children ? (
+            <div className={cn("cm-card__body", paddingMap[resolvedBodyPadding])}>
+              {children}
+            </div>
+          ) : null}
+          {footer ? <div className="cm-card__footer">{footer}</div> : null}
         </>
       ) : (
         children

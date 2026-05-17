@@ -23,8 +23,20 @@ type CarouselProps = {
   showControls?: boolean;
   showDots?: boolean;
   height?: string;
+  mediaPadding?: "none" | "sm" | "md" | "lg" | string | number;
   variant?: "card" | "bleed";
 };
+
+function carouselPaddingValue(value: CarouselProps["mediaPadding"]) {
+  if (value === undefined || value === "none") return undefined;
+  if (typeof value === "number") return `${value}px`;
+  const preset: Record<string, string> = {
+    sm: "0.75rem",
+    md: "1.25rem",
+    lg: "2rem",
+  };
+  return preset[value] ?? value;
+}
 
 export function CmCarousel({
   items,
@@ -34,6 +46,7 @@ export function CmCarousel({
   showControls = true,
   showDots = true,
   height,
+  mediaPadding,
   variant = "card",
 }: CarouselProps) {
   const [index, setIndex] = useState(0);
@@ -70,6 +83,11 @@ export function CmCarousel({
     return null;
   }
 
+  const carouselStyle = {
+    ...(height ? { "--cm-carousel-height": height } : {}),
+    ...(mediaPadding ? { "--cm-carousel-media-padding": carouselPaddingValue(mediaPadding) } : {}),
+  } as CSSProperties;
+
   return (
     <div
       className={cn(
@@ -77,7 +95,7 @@ export function CmCarousel({
         `cm-carousel--${variant}`,
         className,
       )}
-      style={height ? { "--cm-carousel-height": height } as CSSProperties : undefined}
+      style={height || mediaPadding ? carouselStyle : undefined}
     >
       <div ref={trackRef} className="cm-carousel__track">
         {items.map((item) => (

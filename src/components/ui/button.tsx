@@ -8,6 +8,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { useCmTheme } from "../theme/theme-provider.js";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "surface" | "link" | "plain";
 export type CmButtonTone =
@@ -42,6 +43,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   presentation?: ButtonPresentation;
   fullWidth?: boolean;
   active?: boolean;
+  density?: CmDensity;
 };
 
 const toneMap: Record<
@@ -94,6 +96,7 @@ export const CmButton = forwardRef<HTMLButtonElement, ButtonProps>(
       active,
       children,
       className,
+      density,
       disabled,
       fullWidth = false,
       icon,
@@ -130,6 +133,7 @@ export const CmButton = forwardRef<HTMLButtonElement, ButtonProps>(
       shapeMap[shape],
       fullWidth && "cm-button--full-width",
       active && "cm-button--active",
+      cmDensityClass(density),
     );
 
     const leadingIcon = loading ? (

@@ -8,24 +8,62 @@ import { CmButton } from "../ui/button.js";
 import { CmDropdownMenu } from "../ui/dropdown-menu.js";
 
 export type CmThemeTogglePresentation = "default" | "compact";
+export type CmThemeToggleLabelVisibility = "always" | "desktop" | "hidden";
+export type CmThemeToggleThemeOption =
+  | string
+  | {
+      name: string;
+      label?: string;
+    };
 
 export type CmThemeToggleProps = {
   className?: string;
   presentation?: CmThemeTogglePresentation;
+  labelVisibility?: CmThemeToggleLabelVisibility;
   align?: "start" | "center" | "end";
   getThemeLabel?: (theme: ThemeConfig) => string;
+  themes?: CmThemeToggleThemeOption[];
 };
 
 const defaultGetThemeLabel = (theme: ThemeConfig) => theme.name.replace(/^cm-/, "");
+
+function resolveThemeOptions(
+  registry: Record<string, ThemeConfig>,
+  allowedThemes: CmThemeToggleThemeOption[] | undefined,
+  getThemeLabel: (theme: ThemeConfig) => string,
+) {
+  if (!allowedThemes?.length) {
+    return Object.values(registry).map((theme) => ({
+      theme,
+      label: getThemeLabel(theme),
+    }));
+  }
+
+  return allowedThemes
+    .map((option) => {
+      const name = typeof option === "string" ? option : option.name;
+      const theme = registry[name];
+      if (!theme) return null;
+
+      return {
+        theme,
+        label: typeof option === "string" ? getThemeLabel(theme) : option.label ?? getThemeLabel(theme),
+      };
+    })
+    .filter((option): option is { theme: ThemeConfig; label: string } => Boolean(option));
+}
 
 export function CmThemeToggle({
   align = "end",
   className,
   getThemeLabel = defaultGetThemeLabel,
+  labelVisibility = "always",
   presentation = "default",
+  themes: allowedThemes,
 }: CmThemeToggleProps) {
   const { theme, themes, setThemeByName } = useCmTheme();
-  const themeOptions = Object.values(themes);
+  const themeOptions = resolveThemeOptions(themes, allowedThemes, getThemeLabel);
+  const currentThemeLabel = getThemeLabel(theme);
 
   if (presentation === "compact") {
     return (
@@ -43,18 +81,25 @@ export function CmThemeToggle({
             trailingIcon={<ChevronDown size={16} />}
             aria-haspopup="menu"
             aria-expanded={open}
+            aria-label={`Selecionar tema: ${currentThemeLabel}`}
             onClick={toggle}
-            className={cn("cm-theme-toggle-compact", className)}
+            className={cn(
+              "cm-theme-toggle-compact",
+              `cm-theme-toggle-compact--label-${labelVisibility}`,
+              className,
+            )}
           >
-            {getThemeLabel(theme)}
+            <span className="cm-theme-toggle-compact__label">
+              {currentThemeLabel}
+            </span>
           </CmButton>
         )}
         items={themeOptions.map((candidate) => ({
-          id: candidate.name,
-          label: getThemeLabel(candidate),
-          icon: candidate.name === theme.name ? <Check size={16} /> : undefined,
-          shortcut: candidate.name === theme.name ? "Atual" : undefined,
-          onSelect: () => setThemeByName(candidate.name),
+          id: candidate.theme.name,
+          label: candidate.label,
+          icon: candidate.theme.name === theme.name ? <Check size={16} /> : undefined,
+          shortcut: candidate.theme.name === theme.name ? "Atual" : undefined,
+          onSelect: () => setThemeByName(candidate.theme.name),
         }))}
       />
     );
@@ -63,28 +108,32 @@ export function CmThemeToggle({
   return (
     <div className={cn("cm-theme-toggle", className)}>
       <span className="cm-theme-toggle-label">
-        Tema atual: {getThemeLabel(theme)}
+        Tema atual: {currentThemeLabel}
       </span>
       <div className="cm-theme-toggle-options">
         {themeOptions.map((candidate) => (
           <CmButton
-            key={candidate.name}
+            key={candidate.theme.name}
             type="button"
             variant="ghost"
             tone="primary"
             size="sm"
             shape="pill"
-            aria-current={candidate.name === theme.name ? "true" : undefined}
-            onClick={() => setThemeByName(candidate.name)}
+            aria-current={candidate.theme.name === theme.name ? "true" : undefined}
+            onClick={() => setThemeByName(candidate.theme.name)}
             className={cn(
               "cm-theme-toggle-option",
-              candidate.name === theme.name && "cm-theme-toggle-option-active",
+              candidate.theme.name === theme.name && "cm-theme-toggle-option-active",
             )}
           >
-            {getThemeLabel(candidate)}
+            {candidate.label}
           </CmButton>
         ))}
       </div>
     </div>
   );
+}
+
+export function CmThemeMenu(props: Omit<CmThemeToggleProps, "presentation">) {
+  return <CmThemeToggle presentation="compact" {...props} />;
 }

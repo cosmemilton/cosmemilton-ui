@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { CmDialog } from "./dialog.js";
+import { useEffect, useId } from "react";
+import { CmPortal } from "./portal.js";
 import { CmProgress } from "./progress.js";
 import { CheckCircle2, Loader2 } from "lucide-react";
+import { cn } from "../../lib/utils.js";
 
 interface Step {
   id: string;
@@ -27,18 +28,37 @@ export function CmProgressModal({
   title = "Processando...",
   description = "Por favor, aguarde enquanto processamos sua solicitação.",
 }: ProgressModalProps) {
+  const titleId = useId();
+  const descriptionId = useId();
   const completedSteps = steps.filter((s) => s.status === "completed").length;
   const totalSteps = steps.length;
-  const progress = (completedSteps / totalSteps) * 100;
+  const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  if (!open) return null;
 
   return (
-    <CmDialog open={open} onClose={() => {}}>
+    <CmPortal>
       <div className="cm-progress-modal__overlay">
-        <div className="cm-progress-modal__panel">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
+          className="cm-progress-modal__panel"
+        >
           {/* Header */}
           <div className="cm-progress-modal__header">
-            <h2 className="cm-progress-modal__title">{title}</h2>
-            <p className="cm-progress-modal__description">
+            <h2 id={titleId} className="cm-progress-modal__title">{title}</h2>
+            <p id={descriptionId} className="cm-progress-modal__description">
               {description}
             </p>
           </div>
@@ -61,10 +81,10 @@ export function CmProgressModal({
             {steps.map((step, index) => (
               <div
                 key={step.id}
-                className="cm-progress-modal__step"
-                style={{
-                  opacity: step.status === "pending" ? 0.5 : 1,
-                }}
+                className={cn(
+                  "cm-progress-modal__step",
+                  step.status === "pending" && "cm-progress-modal__step--pending",
+                )}
               >
                 {/* CmIcon */}
                 <div className="cm-progress-modal__status">
@@ -121,6 +141,6 @@ export function CmProgressModal({
           </div>
         </div>
       </div>
-    </CmDialog>
+    </CmPortal>
   );
 }

@@ -1,19 +1,65 @@
-import { FormHTMLAttributes, ReactNode } from "react";
+import { type CSSProperties, FormHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import {
+  cmDensityClass,
+  resolveResponsiveNumber,
+  type CmDensity,
+  type CmResponsiveNumber,
+} from "./types.js";
 
 type FormProps = FormHTMLAttributes<HTMLFormElement> & {
   title?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
+  layout?: "stack" | "grid";
+  columns?: CmResponsiveNumber;
+  gap?: string | number;
+  density?: CmDensity;
+  actionsAlign?: "start" | "end" | "between" | "stretch";
 };
 
-export function CmForm({ title, description, actions, className, children, ...props }: FormProps) {
+type CmFormStyle = CSSProperties & Partial<Record<`--${string}`, string | number>>;
+
+function spacingValue(value: string | number | undefined, fallback: string) {
+  if (value === undefined) return fallback;
+  return typeof value === "number" ? `${value}px` : value;
+}
+
+export function CmForm({
+  actions,
+  actionsAlign = "end",
+  children,
+  className,
+  columns = { base: 1, md: 2 },
+  density,
+  description,
+  gap,
+  layout = "stack",
+  style,
+  title,
+  ...props
+}: FormProps) {
+  const resolvedColumns = resolveResponsiveNumber(columns, 1);
+  const formStyle: CmFormStyle = {
+    "--cm-form-columns-base": resolvedColumns.base,
+    "--cm-form-columns-sm": resolvedColumns.sm,
+    "--cm-form-columns-md": resolvedColumns.md,
+    "--cm-form-columns-lg": resolvedColumns.lg,
+    "--cm-form-columns-xl": resolvedColumns.xl,
+    "--cm-form-gap": spacingValue(gap, "1rem"),
+    ...style,
+  };
+
   return (
     <form
       className={cn(
         "cm-form",
+        `cm-form--layout-${layout}`,
+        `cm-form--actions-${actionsAlign}`,
+        cmDensityClass(density),
         className,
       )}
+      style={formStyle}
       {...props}
     >
       {(title || description) && (

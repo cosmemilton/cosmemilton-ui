@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmSizeValue } from "./types.js";
+import type { CSSProperties } from "react";
 
 type ChartDatum = {
   label: string;
@@ -12,13 +14,20 @@ type ChartDatum = {
 type ChartProps = {
   data: ChartDatum[];
   maxValue?: number;
+  height?: string | number;
   className?: string;
 };
 
-export function CmChart({ data, maxValue, className }: ChartProps) {
+type ChartStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
+
+export function CmChart({ data, maxValue, height, className }: ChartProps) {
   const safeMax = maxValue ?? Math.max(...data.map((item) => item.value), 1);
+  const chartStyle: ChartStyle | undefined = height
+    ? { "--cm-chart-height": cmSizeValue(height) }
+    : undefined;
+
   return (
-    <div className={cn("cm-chart", className)}>
+    <div className={cn("cm-chart", className)} style={chartStyle}>
       <div className="cm-chart__bars">
         {data.map((item) => {
           const height = Math.round((item.value / safeMax) * 100);

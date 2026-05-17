@@ -1,10 +1,15 @@
 import { Icon as IconifyIcon } from "@iconify/react";
+import type { CSSProperties } from "react";
 import { cn } from "../../lib/utils.js";
 
 interface IconProps {
   name: string;
   className?: string;
   size?: number | string;
+  color?: string;
+  style?: CSSProperties;
+  title?: string;
+  "aria-hidden"?: boolean | "true" | "false";
 }
 
 /**
@@ -17,13 +22,20 @@ interface IconProps {
  * <CmIcon name="ph:address-book-fill" />
  * <CmIcon name="lucide:mail" />
  */
-export function CmIcon({ name, className, size = 20 }: IconProps) {
+export function CmIcon({ name, className, size = 20, color, style, title, "aria-hidden": ariaHidden }: IconProps) {
+  const accessibilityProps = title
+    ? { role: "img", "aria-label": title, "aria-hidden": ariaHidden }
+    : { "aria-hidden": ariaHidden };
+
   return (
     <IconifyIcon
       icon={name}
       className={cn("cm-icon", className)}
       width={size}
       height={size}
+      color={color}
+      style={style}
+      {...accessibilityProps}
     />
   );
 }

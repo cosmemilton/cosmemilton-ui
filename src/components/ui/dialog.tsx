@@ -29,6 +29,8 @@ interface DialogProps {
   tone?: CmDialogTone;
   portal?: boolean;
   presentation?: CmDialogPresentation;
+  dismissible?: boolean;
+  showClose?: boolean;
 }
 
 const sizeClasses: Record<CmDialogSize, string> = {
@@ -151,6 +153,8 @@ export function CmDialog({
   tone = "default",
   portal = false,
   presentation = "default",
+  dismissible = true,
+  showClose = true,
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -169,7 +173,7 @@ export function CmDialog({
     }
 
     const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && dismissible) {
         onClose();
       }
     };
@@ -180,7 +184,7 @@ export function CmDialog({
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
     };
-  }, [open, onClose, portal]);
+  }, [dismissible, open, onClose, portal]);
 
   const { invertHeader } = useCmTheme();
 
@@ -211,7 +215,7 @@ export function CmDialog({
         style={{
           background: "var(--color-overlay, rgba(2, 6, 23, 0.58))",
         }}
-        onClick={onClose}
+        onClick={dismissible ? onClose : undefined}
         aria-hidden="true"
       />
 
@@ -257,14 +261,16 @@ export function CmDialog({
                     borderBottom: "1px solid var(--color-border)",
                   }}
                 >
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="cm-dialog__close cm-dialog__close--header"
-                    aria-label="Fechar"
-                  >
-                    <X className="cm-dialog__close-icon" />
-                  </button>
+                  {showClose ? (
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="cm-dialog__close cm-dialog__close--header"
+                      aria-label="Fechar"
+                    >
+                      <X className="cm-dialog__close-icon" />
+                    </button>
+                  ) : null}
 
                   <div className="cm-dialog__heading">
                     {title ? (
@@ -286,6 +292,7 @@ export function CmDialog({
                   </div>
                 </div>
               ) : (
+                showClose ? (
                 <div className="cm-dialog__headerless-actions">
                   <button
                     type="button"
@@ -296,6 +303,7 @@ export function CmDialog({
                     <X className="cm-dialog__close-icon" />
                   </button>
                 </div>
+                ) : null
               )}
 
               {children ? (

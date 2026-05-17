@@ -2,7 +2,7 @@ import type { ElementType, HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type TextSize = "xs" | "sm" | "md" | "lg";
-type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary";
+type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary" | "inverse";
 type TextWeight = "normal" | "medium" | "semibold";
 type TextVariant = "default" | "modalTabDescription";
 type TextSpacing = "none" | "compact" | "normal" | "relaxed";
@@ -34,6 +34,7 @@ const toneClass: Record<TextTone, string> = {
   success: "cm-text--success",
   warning: "cm-text--warning",
   primary: "cm-text--primary",
+  inverse: "cm-text--inverse",
 };
 
 const weightClass: Record<TextWeight, string> = {
