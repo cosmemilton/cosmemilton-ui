@@ -1,10 +1,12 @@
 "use client";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { CmPopover } from "./popover.js";
+import { CmSeparator } from "./separator.js";
 import { cn } from "../../lib/utils.js";
 
-type DropdownMenuItem = {
+export type CmDropdownMenuActionItem = {
+  type?: "item";
   id: string;
   label: string;
   icon?: ReactNode;
@@ -15,14 +17,28 @@ type DropdownMenuItem = {
   title?: string;
 };
 
-type DropdownMenuProps = {
-  trigger: (controls: { open: boolean; toggle: () => void; ref: (element: HTMLButtonElement | null) => void }) => ReactNode;
-  items: DropdownMenuItem[];
+export type CmDropdownMenuSeparatorItem = {
+  type: "separator";
+  id: string;
+};
+
+export type CmDropdownMenuItem =
+  | CmDropdownMenuActionItem
+  | CmDropdownMenuSeparatorItem;
+
+export type CmDropdownMenuProps = {
+  trigger: (controls: {
+    open: boolean;
+    toggle: () => void;
+    ref: (element: HTMLButtonElement | null) => void;
+  }) => ReactNode;
+  items: CmDropdownMenuItem[];
+  header?: ReactNode;
   align?: "start" | "center" | "end";
   className?: string;
 };
 
-export function CmDropdownMenu({ trigger, items, align, className }: DropdownMenuProps) {
+export function CmDropdownMenu({ trigger, items, header, align, className }: CmDropdownMenuProps) {
   return (
     <CmPopover
       align={align}
@@ -35,34 +51,47 @@ export function CmDropdownMenu({ trigger, items, align, className }: DropdownMen
     >
       {({ close }) => (
         <div className="cm-dropdown-menu" role="menu">
-          {items.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              role="menuitem"
-              disabled={item.disabled}
-              title={item.title}
-              className={cn(
-                "cm-dropdown-menu__item",
-                item.danger
-                  ? "cm-dropdown-menu__item--danger"
-                  : "cm-dropdown-menu__item--default",
-              )}
-              onClick={() => {
-                if (item.disabled) return;
-                item.onSelect?.();
-                close();
-              }}
-            >
-              <span className="cm-dropdown-menu__label">
-                {item.icon}
-                {item.label}
-              </span>
-              {item.shortcut ? (
-                <span className="cm-dropdown-menu__shortcut">{item.shortcut}</span>
-              ) : null}
-            </button>
-          ))}
+          {header}
+          {items.map((item) => {
+            if (item.type === "separator") {
+              return (
+                <CmSeparator
+                  key={item.id}
+                  spacing="xs"
+                  className="cm-dropdown-menu__separator"
+                />
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="menuitem"
+                disabled={item.disabled}
+                title={item.title}
+                className={cn(
+                  "cm-dropdown-menu__item",
+                  item.danger
+                    ? "cm-dropdown-menu__item--danger"
+                    : "cm-dropdown-menu__item--default",
+                )}
+                onClick={() => {
+                  if (item.disabled) return;
+                  item.onSelect?.();
+                  close();
+                }}
+              >
+                <span className="cm-dropdown-menu__label">
+                  {item.icon}
+                  {item.label}
+                </span>
+                {item.shortcut ? (
+                  <span className="cm-dropdown-menu__shortcut">{item.shortcut}</span>
+                ) : null}
+              </button>
+            );
+          })}
         </div>
       )}
     </CmPopover>

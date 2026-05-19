@@ -266,6 +266,11 @@ export function CmSidebar({
     defaultOpenGroupId,
   );
   const [sidebarPreviewOpen, setSidebarPreviewOpen] = useState(false);
+  const [lastGroupItemsAvailableHeight, setLastGroupItemsAvailableHeight] = useState<number | null>(null);
+  const sidebarRef = useRef<HTMLElement | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+  const footerRef = useRef<HTMLDivElement | null>(null);
+  const groupItemsRefs = useRef(new Map<string, HTMLDivElement>());
   const previewTimerRef = useRef<number | null>(null);
   const autoCollapsed = useAutoCollapsed(autoCollapse, autoCollapseBelow);
   const manualCollapsed = collapsed ?? uncontrolledCollapsed;
@@ -273,6 +278,8 @@ export function CmSidebar({
   const controlledOpenGroup = openGroupId !== undefined;
   const currentOpenGroupId = controlledOpenGroup ? openGroupId : uncontrolledOpenGroupId;
   const visibleOpenGroupId = currentOpenGroupId === undefined ? activeGroupId : currentOpenGroupId;
+  const lastVisibleGroupId = visibleGroups[visibleGroups.length - 1]?.id;
+  const hasFooter = Boolean(footer);
   const brandTitle = brand?.title ?? brand?.fallbackTitle ?? "Menu";
   const brandSubtitle = brand?.subtitle;
   const brandIcon = brand?.icon ?? getInitial(brandTitle);
@@ -287,8 +294,45 @@ export function CmSidebar({
     ...(lastGroupItemsMaxHeight
       ? { "--cm-sidebar-last-group-items-max-height": cmSizeValue(lastGroupItemsMaxHeight) }
       : {}),
+    ...(lastGroupItemsAvailableHeight !== null
+      ? { "--cm-sidebar-last-group-items-available-height": `${lastGroupItemsAvailableHeight}px` }
+      : {}),
     ...style,
   } as CSSProperties;
+
+  const updateLastGroupItemsAvailableHeight = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    if (!visibleOpenGroupId || visibleOpenGroupId !== lastVisibleGroupId) {
+      setLastGroupItemsAvailableHeight((current) => (current === null ? current : null));
+      return;
+    }
+
+    const sidebarElement = sidebarRef.current;
+    const navElement = navRef.current;
+    const groupItemsElement = groupItemsRefs.current.get(visibleOpenGroupId);
+
+    if (!sidebarElement || !navElement || !groupItemsElement) {
+      setLastGroupItemsAvailableHeight((current) => (current === null ? current : null));
+      return;
+    }
+
+    const sidebarRect = sidebarElement.getBoundingClientRect();
+    const navRect = navElement.getBoundingClientRect();
+    const groupItemsRect = groupItemsElement.getBoundingClientRect();
+    const footerRect = footerRef.current?.getBoundingClientRect();
+    const sidebarStyles = window.getComputedStyle(sidebarElement);
+    const sidebarPaddingBottom = Number.parseFloat(sidebarStyles.paddingBottom) || 0;
+    const sidebarBottom = sidebarRect.bottom - sidebarPaddingBottom;
+    const lowerBoundary = Math.min(navRect.bottom, footerRect?.top ?? sidebarBottom, sidebarBottom);
+    const nextAvailableHeight = Math.max(0, Math.floor(lowerBoundary - groupItemsRect.top));
+
+    setLastGroupItemsAvailableHeight((current) => (
+      current !== null && Math.abs(current - nextAvailableHeight) < 1
+        ? current
+        : nextAvailableHeight
+    ));
+  }, [lastVisibleGroupId, visibleOpenGroupId]);
 
   const clearPreviewTimer = useCallback(() => {
     if (previewTimerRef.current) {
@@ -326,6 +370,60 @@ export function CmSidebar({
       setSidebarPreviewOpen(false);
     }
   }, [clearPreviewTimer, isCollapsed]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    let frameId: number | null = null;
+
+    const scheduleUpdate = () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        updateLastGroupItemsAvailableHeight();
+      });
+    };
+
+    scheduleUpdate();
+
+    const sidebarElement = sidebarRef.current;
+    const navElement = navRef.current;
+    const footerElement = footerRef.current;
+    const groupItemsElement = visibleOpenGroupId
+      ? groupItemsRefs.current.get(visibleOpenGroupId)
+      : undefined;
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? undefined
+      : new ResizeObserver(scheduleUpdate);
+
+    window.addEventListener("resize", scheduleUpdate);
+    navElement?.addEventListener("scroll", scheduleUpdate, { passive: true });
+
+    for (const element of [sidebarElement, navElement, footerElement, groupItemsElement]) {
+      if (element) {
+        resizeObserver?.observe(element);
+      }
+    }
+
+    return () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener("resize", scheduleUpdate);
+      navElement?.removeEventListener("scroll", scheduleUpdate);
+      resizeObserver?.disconnect();
+    };
+  }, [
+    isCollapsed,
+    sidebarPreviewOpen,
+    updateLastGroupItemsAvailableHeight,
+    hasFooter,
+    visibleGroups.length,
+    visibleOpenGroupId,
+  ]);
 
   const setCollapsed = useCallback((nextCollapsed: boolean) => {
     if (collapsed === undefined) {
@@ -428,6 +526,7 @@ export function CmSidebar({
       style={shellStyle}
     >
       <aside
+        ref={sidebarRef}
         className={cn("cm-sidebar", `cm-sidebar--tone-${tone}`, sidebarClassName)}
         aria-label={navLabel}
         onMouseEnter={openSidebarPreview}
@@ -436,7 +535,7 @@ export function CmSidebar({
         onBlur={handleSidebarBlur}
       >
         {brandContent}
-        <nav className="cm-sidebar__nav" aria-label={navLabel}>
+        <nav ref={navRef} className="cm-sidebar__nav" aria-label={navLabel}>
           {visibleGroups.map((group) => {
             const groupActive = Boolean(group.active || group.items.some((item) => getItemActive(item, group)));
             const groupOpen = visibleOpenGroupId === group.id;
@@ -482,7 +581,17 @@ export function CmSidebar({
                   <span className="cm-sidebar__label">{group.label}</span>
                   <ChevronRight className="cm-sidebar__chevron" size={16} aria-hidden="true" />
                 </button>
-                <div className="cm-sidebar__group-items" aria-hidden={!groupOpen}>
+                <div
+                  ref={(element) => {
+                    if (element) {
+                      groupItemsRefs.current.set(group.id, element);
+                    } else {
+                      groupItemsRefs.current.delete(group.id);
+                    }
+                  }}
+                  className="cm-sidebar__group-items"
+                  aria-hidden={!groupOpen}
+                >
                   {group.items.map((item) => (
                     <SidebarItem
                       active={getItemActive(item, group)}
@@ -498,7 +607,7 @@ export function CmSidebar({
             );
           })}
         </nav>
-        {footer ? <div className="cm-sidebar__footer">{footer}</div> : null}
+        {hasFooter ? <div ref={footerRef} className="cm-sidebar__footer">{footer}</div> : null}
       </aside>
       {!standalone ? (
         <section className={cn("cm-sidebar__content", contentClassName)}>

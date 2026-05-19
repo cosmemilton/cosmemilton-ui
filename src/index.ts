@@ -72,6 +72,7 @@ export * from "./components/ui/toolbar.js";
 export * from "./components/ui/topbar.js";
 export * from "./components/ui/tree-view.js";
 export * from "./components/ui/types.js";
+export * from "./components/ui/user-menu.js";
 export * from "./hooks/use-table-preference.js";
 export * from "./lib/theme/index.js";
 export * from "./lib/utils.js";

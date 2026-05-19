@@ -870,6 +870,58 @@ export function ComboboxDemo() {
 }
 ```
 
+## Menu de usuário no header
+
+Use `CmUserMenu` para o padrão de avatar no canto direito do header. No desktop, o botão mostra avatar, nome e subtítulo; abaixo de 1200 px ele fica compacto e o menu exibe os dados do usuário no topo quando `menuHeader="auto"`.
+
+```tsx
+"use client";
+
+import { LogOut, Settings, User } from "lucide-react";
+import { CmTopbar, CmUserMenu } from "cosmemilton-ui";
+
+export function Header() {
+  return (
+    <CmTopbar
+      title="Minha aplicação"
+      end={
+        <CmUserMenu
+          user={{
+            title: "Milton Junior",
+            subtitle: "Administrador",
+            email: "milton@email.com",
+            imageUrl: "/avatar.jpg",
+            initials: "MJ",
+          }}
+          items={[
+            {
+              id: "profile",
+              label: "Meu perfil",
+              icon: <User size={16} />,
+              onSelect: () => console.log("perfil"),
+            },
+            {
+              id: "settings",
+              label: "Configurações",
+              icon: <Settings size={16} />,
+              onSelect: () => console.log("configurações"),
+            },
+            { id: "account-separator", type: "separator" },
+            {
+              id: "logout",
+              label: "Sair",
+              icon: <LogOut size={16} />,
+              danger: true,
+              onSelect: () => console.log("sair"),
+            },
+          ]}
+        />
+      }
+    />
+  );
+}
+```
+
 ## Header compacto com tema
 
 Para headers compactos, use `CmThemeToggle` com `presentation="compact"` ou componha o menu manualmente quando quiser controlar rótulos, ícones e ordenação.
