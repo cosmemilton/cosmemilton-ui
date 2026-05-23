@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmSize, CmTone } from "./types.js";
 
-type IconBadgeTone = "default" | "primary" | "success" | "warning" | "danger" | "info";
-type IconBadgeSize = "xs" | "sm" | "md";
+type IconBadgeTone = CmTone;
+type IconBadgeSize = Extract<CmSize, "xs" | "sm" | "md">;
 
 export type CmIconBadgeProps = {
   icon: ReactNode;

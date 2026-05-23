@@ -190,7 +190,8 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
 
         {/* Drag Handle */}
         {!selectionMode && draggable && (
-          <button
+          <CmButton
+            unstyled
             type="button"
             draggable
             className="cm-tree-view__drag-handle"
@@ -199,12 +200,14 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
             onDragEnd={onDragEnd}
           >
             <GripVertical className="cm-tree-view__small-icon" />
-          </button>
+          </CmButton>
         )}
 
         {/* Expand/Collapse */}
         {hasChildren ? (
-          <button
+          <CmButton
+            unstyled
+            type="button"
             onClick={onToggle}
             className="cm-tree-view__toggle"
             aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -214,7 +217,7 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
             ) : (
               <ChevronRight className="cm-tree-view__small-icon" />
             )}
-          </button>
+          </CmButton>
         ) : (
           <div className="cm-tree-view__toggle-spacer" />
         )}
@@ -229,7 +232,9 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
         </div>
 
         {/* Name */}
-        <button
+        <CmButton
+          unstyled
+          type="button"
           onClick={() =>
             selectionMode && isLeaf && node.permissionId !== undefined
               ? onSelectionChange?.(
@@ -241,7 +246,7 @@ const SortableTreeItem: React.FC<SortableTreeItemProps> = ({
           className="cm-tree-view__node-name"
         >
           {node.name}
-        </button>
+        </CmButton>
 
         {/* Code/Slug CmBadge */}
         {node.code && (
@@ -833,13 +838,15 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
                 className="cm-tree-view__search-input"
               />
               {searchQuery && (
-                <button
+                <CmButton
+                  unstyled
+                  type="button"
                   aria-label="Limpar busca"
                   onClick={() => setSearchQuery("")}
                   className="cm-tree-view__search-clear"
                 >
                   <X className="cm-tree-view__small-icon" />
-                </button>
+                </CmButton>
               )}
             </div>
           )}
@@ -886,7 +893,9 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
                     {index > 0 && (
                       <ChevronRight className="cm-tree-view__tiny-icon" />
                     )}
-                    <button
+                    <CmButton
+                      unstyled
+                      type="button"
                       aria-label={`Navigate to ${node.name}`}
                       onClick={() => {
                         setSelectedNode(node);
@@ -900,7 +909,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
                       title={`Navigate to ${node.name}`}
                     >
                       {node.name}
-                    </button>
+                    </CmButton>
                   </React.Fragment>
                 ))}
               </>

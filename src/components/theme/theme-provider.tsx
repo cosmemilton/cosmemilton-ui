@@ -186,3 +186,7 @@ export function useCmTheme() {
   return ctx;
 }
 
+export function useOptionalCmTheme() {
+  return useContext(ThemeContext);
+}
+

@@ -1,13 +1,19 @@
 import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import {
+  cmSizeValue,
+  resolveResponsiveValue,
+  type CmMaxWidth,
+  type CmResponsiveValue,
+  type CmSpacing,
+} from "./types.js";
 
 type LayoutElement = "div" | "section" | "article" | "header" | "footer" | "main" | "nav" | "aside";
 type LayoutGap = string | number;
 type LayoutAlign = "start" | "center" | "end" | "stretch" | "baseline";
 type LayoutJustify = "start" | "center" | "end" | "between" | "around" | "evenly";
 type StackDirection = "vertical" | "horizontal";
-type Breakpoint = "base" | "sm" | "md" | "lg" | "xl";
-type ResponsiveDirection = StackDirection | Partial<Record<Breakpoint, StackDirection>>;
+type ResponsiveDirection = CmResponsiveValue<StackDirection>;
 
 type LayoutStyle = CSSProperties & Record<`--${string}`, string | number>;
 type LayoutRenderProps = HTMLAttributes<HTMLElement> &
@@ -38,14 +44,13 @@ export type CmStackProps = BaseLayoutProps & {
 export type CmContainerProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   as?: LayoutElement;
   children?: ReactNode;
-  maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "full" | string | number;
-  padding?: "none" | "sm" | "md" | "lg" | string | number;
+  maxWidth?: CmMaxWidth;
+  padding?: CmSpacing | string | number;
   fluid?: boolean;
 };
 
 function spacingValue(value: LayoutGap | undefined, fallback: string) {
-  if (value === undefined) return fallback;
-  return typeof value === "number" ? `${value}px` : value;
+  return cmSizeValue(value) ?? fallback;
 }
 
 function stackDirectionValue(value: StackDirection | undefined, fallback: StackDirection) {
@@ -54,18 +59,15 @@ function stackDirectionValue(value: StackDirection | undefined, fallback: StackD
 }
 
 function resolveStackDirections(direction: ResponsiveDirection | undefined) {
-  if (!direction || typeof direction === "string") {
-    const resolved = stackDirectionValue(direction, "vertical");
-    return { base: resolved, sm: resolved, md: resolved, lg: resolved, xl: resolved };
-  }
+  const resolved = resolveResponsiveValue<StackDirection>(direction, "vertical");
 
-  const base = stackDirectionValue(direction.base, "vertical");
-  const sm = stackDirectionValue(direction.sm, direction.base ?? "vertical");
-  const md = stackDirectionValue(direction.md, direction.sm ?? direction.base ?? "vertical");
-  const lg = stackDirectionValue(direction.lg, direction.md ?? direction.sm ?? direction.base ?? "vertical");
-  const xl = stackDirectionValue(direction.xl, direction.lg ?? direction.md ?? direction.sm ?? direction.base ?? "vertical");
-
-  return { base, sm, md, lg, xl };
+  return {
+    base: stackDirectionValue(resolved.base, "vertical"),
+    sm: stackDirectionValue(resolved.sm, "vertical"),
+    md: stackDirectionValue(resolved.md, "vertical"),
+    lg: stackDirectionValue(resolved.lg, "vertical"),
+    xl: stackDirectionValue(resolved.xl, "vertical"),
+  };
 }
 
 function containerWidth(value: CmContainerProps["maxWidth"]) {
@@ -87,6 +89,7 @@ function containerPadding(value: CmContainerProps["padding"]) {
   if (typeof value === "number") return `${value}px`;
   const preset: Record<string, string> = {
     none: "0",
+    xs: "clamp(0.5rem, 1.5vw, 0.75rem)",
     sm: "clamp(0.75rem, 2vw, 1.25rem)",
     md: "clamp(1rem, 3vw, 2.5rem)",
     lg: "clamp(1.5rem, 4vw, 4rem)",

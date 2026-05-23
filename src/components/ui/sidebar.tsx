@@ -19,6 +19,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import {
   cmDensityClass,
   cmSizeValue,
@@ -477,7 +478,8 @@ export function CmSidebar({
   const brandContent = (
     <div className="cm-sidebar__brand">
       {isCollapsed ? (
-        <button
+        <CmButton
+          unstyled
           type="button"
           className="cm-sidebar__brand-icon-button"
           aria-label={brand?.iconLabel ?? "Abrir menu lateral"}
@@ -487,7 +489,7 @@ export function CmSidebar({
           <span className="cm-sidebar__brand-icon" aria-hidden="true">
             {brandIcon}
           </span>
-        </button>
+        </CmButton>
       ) : (
         <span className="cm-sidebar__brand-icon" aria-hidden="true">
           {brandIcon}
@@ -498,7 +500,8 @@ export function CmSidebar({
         {brandSubtitle ? <span>{brandSubtitle}</span> : null}
       </div>
       {!autoCollapsed && (!isCollapsed || sidebarPreviewOpen) ? (
-        <button
+        <CmButton
+          unstyled
           type="button"
           className="cm-sidebar__toggle"
           aria-label={manualCollapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
@@ -506,7 +509,7 @@ export function CmSidebar({
           onClick={toggleSidebarState}
         >
           {manualCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-        </button>
+        </CmButton>
       ) : null}
     </div>
   );
@@ -570,7 +573,8 @@ export function CmSidebar({
                 )}
                 key={group.id}
               >
-                <button
+                <CmButton
+                  unstyled
                   type="button"
                   className={cn("cm-sidebar__group-trigger", groupActive && "cm-sidebar__group-trigger--active")}
                   aria-expanded={groupOpen}
@@ -580,7 +584,7 @@ export function CmSidebar({
                   {renderIcon(group.icon, group.label)}
                   <span className="cm-sidebar__label">{group.label}</span>
                   <ChevronRight className="cm-sidebar__chevron" size={16} aria-hidden="true" />
-                </button>
+                </CmButton>
                 <div
                   ref={(element) => {
                     if (element) {
@@ -697,7 +701,8 @@ function SidebarItem({ active, collapsed, groupLabel, icon, item, linkComponent,
   }
 
   return (
-    <button
+    <CmButton
+      unstyled
       type="button"
       aria-current={active ? "page" : undefined}
       className={className}
@@ -706,6 +711,6 @@ function SidebarItem({ active, collapsed, groupLabel, icon, item, linkComponent,
       onClick={(event) => onClick(event, item)}
     >
       {content}
-    </button>
+    </CmButton>
   );
 }

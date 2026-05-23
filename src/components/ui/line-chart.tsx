@@ -2,20 +2,14 @@
 
 import { useMemo } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmTone } from "./types.js";
 
 export type CmLineChartDataPoint = {
   label: string;
   value: number;
 };
 
-export type CmLineChartTone =
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+export type CmLineChartTone = Exclude<CmTone, "default">;
 
 export type CmLineChartProps = {
   data: CmLineChartDataPoint[];

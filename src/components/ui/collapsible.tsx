@@ -2,6 +2,7 @@
 
 import { ReactNode, useId, useState } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 type CollapsibleProps = {
   trigger: ReactNode;
@@ -16,7 +17,8 @@ export function CmCollapsible({ trigger, children, defaultOpen = false, classNam
 
   return (
     <div className={cn("cm-collapsible", className)}>
-      <button
+      <CmButton
+        unstyled
         type="button"
         aria-expanded={open}
         aria-controls={contentId}
@@ -28,7 +30,7 @@ export function CmCollapsible({ trigger, children, defaultOpen = false, classNam
         <span className="cm-collapsible__indicator">
           {open ? "Ocultar" : "Mostrar"}
         </span>
-      </button>
+      </CmButton>
       {open ? <div id={contentId} className="cm-collapsible__content">{children}</div> : null}
     </div>
   );

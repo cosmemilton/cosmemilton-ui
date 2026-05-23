@@ -7,20 +7,19 @@ import {
 } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
-import { useCmTheme } from "../theme/theme-provider.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import { useOptionalCmTheme } from "../theme/theme-provider.js";
+import { cmDensityClass, type CmDensity, type CmSize, type CmTone } from "./types.js";
 
-type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "surface" | "link" | "plain";
-export type CmButtonTone =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "danger"
-  | "warning"
-  | "success"
-  | "info";
+export type CmButtonVariant =
+  | "solid"
+  | "outline"
+  | "ghost"
+  | "soft"
+  | "surface"
+  | "link"
+  | "plain";
+export type CmButtonTone = CmTone;
 
-type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 type ButtonShape = "default" | "pill" | "square";
 type ButtonPresentation =
   | "default"
@@ -30,10 +29,10 @@ type ButtonPresentation =
   | "modalClose"
   | "modalPrimaryAction";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
+export type CmButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: CmButtonVariant;
   tone?: CmButtonTone;
-  size?: ButtonSize;
+  size?: CmSize;
   shape?: ButtonShape;
   icon?: ReactNode;
   trailingIcon?: ReactNode;
@@ -44,6 +43,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   fullWidth?: boolean;
   active?: boolean;
   density?: CmDensity;
+  unstyled?: boolean;
 };
 
 const toneMap: Record<
@@ -53,13 +53,14 @@ const toneMap: Record<
   default: { className: "cm-button--tone-default" },
   primary: { className: "cm-button--tone-primary" },
   secondary: { className: "cm-button--tone-secondary" },
+  accent: { className: "cm-button--tone-accent" },
   danger: { className: "cm-button--tone-danger" },
   warning: { className: "cm-button--tone-warning" },
   success: { className: "cm-button--tone-success" },
   info: { className: "cm-button--tone-info" },
 };
 
-const sizeMap: Record<ButtonSize, string> = {
+const sizeMap: Record<CmSize, string> = {
   xs: "cm-button--xs",
   sm: "cm-button--sm",
   md: "cm-button--md",
@@ -67,7 +68,7 @@ const sizeMap: Record<ButtonSize, string> = {
   xl: "cm-button--xl",
 };
 
-const iconOnlySizeMap: Record<ButtonSize, string> = {
+const iconOnlySizeMap: Record<CmSize, string> = {
   xs: "cm-button--icon-xs",
   sm: "cm-button--icon-sm",
   md: "cm-button--icon-md",
@@ -90,7 +91,7 @@ const presentationMap: Record<ButtonPresentation, string | undefined> = {
   modalPrimaryAction: "cm-button--modal-primary-action",
 };
 
-export const CmButton = forwardRef<HTMLButtonElement, ButtonProps>(
+export const CmButton = forwardRef<HTMLButtonElement, CmButtonProps>(
   (
     {
       active,
@@ -110,12 +111,14 @@ export const CmButton = forwardRef<HTMLButtonElement, ButtonProps>(
       tone = "default",
       trailingIcon,
       type = "button",
+      unstyled = false,
       variant = "solid",
       ...props
     },
     ref,
   ) => {
-    const { invertHeader } = useCmTheme();
+    const theme = useOptionalCmTheme();
+    const invertHeader = theme?.invertHeader ?? false;
 
     // Quando invertHeader ativo, botoes solid danger/warning usam primary para harmonia com o tema.
     const effectiveTone =
@@ -151,7 +154,9 @@ export const CmButton = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         aria-busy={loading || undefined}
         aria-pressed={active || undefined}
-        className={cn(base, presentationMap[presentation], className)}
+        className={
+          unstyled ? className : cn(base, presentationMap[presentation], className)
+        }
         style={style}
         {...props}
       >

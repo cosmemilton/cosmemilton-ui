@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import { CmIcon } from "./icon.js";
 import { CmPortal } from "./portal.js";
 import { ChevronDown, Check, X } from "lucide-react";
@@ -268,7 +269,8 @@ export function CmSelect({
           </span>
         )}
 
-        <button
+        <CmButton
+          unstyled
           ref={triggerRef}
           type="button"
           disabled={disabled}
@@ -292,7 +294,7 @@ export function CmSelect({
                 : selectedOption.label
               : placeholder || ""}
           </span>
-        </button>
+        </CmButton>
 
         <ChevronDown
           className={cn(
@@ -301,7 +303,8 @@ export function CmSelect({
           )}
         />
         {canClear ? (
-          <button
+          <CmButton
+            unstyled
             type="button"
             className="cm-floating-field__clear"
             aria-label={clearLabel}
@@ -309,7 +312,7 @@ export function CmSelect({
             onClick={handleClear}
           >
             <X size={14} aria-hidden="true" />
-          </button>
+          </CmButton>
         ) : null}
 
         {endIcon && (
@@ -343,7 +346,8 @@ export function CmSelect({
             {options.map((option) => {
               const isSelected = option.value === value;
               return (
-                <button
+                <CmButton
+                  unstyled
                   key={option.value}
                   type="button"
                   role="option"
@@ -361,7 +365,7 @@ export function CmSelect({
                   {isSelected && (
                     <Check className="cm-select__check" />
                   )}
-                </button>
+                </CmButton>
               );
             })}
           </div>

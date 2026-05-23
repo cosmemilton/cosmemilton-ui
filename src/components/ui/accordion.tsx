@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 type AccordionItem = {
   id: string;
@@ -24,7 +25,8 @@ export function CmAccordion({ items, defaultOpen, className }: AccordionProps) {
         const isOpen = openId === item.id;
         return (
           <div key={item.id} className="cm-accordion__item">
-            <button
+            <CmButton
+              unstyled
               type="button"
               aria-expanded={isOpen}
               aria-controls={`${item.id}-content`}
@@ -36,7 +38,7 @@ export function CmAccordion({ items, defaultOpen, className }: AccordionProps) {
               <span className="cm-accordion__indicator">
                 {isOpen ? "−" : "+"}
               </span>
-            </button>
+            </CmButton>
             {isOpen ? (
               <div id={`${item.id}-content`} className="cm-accordion__content">
                 {item.content}

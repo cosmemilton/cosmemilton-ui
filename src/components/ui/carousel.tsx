@@ -4,6 +4,7 @@ import { type CSSProperties, ReactNode, useEffect, useRef, useState } from "reac
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CmButton } from "./button.js";
 import { cn } from "../../lib/utils.js";
+import { cmSizeValue, type CmSpacing } from "./types.js";
 
 type CarouselItem = {
   id: string;
@@ -23,14 +24,15 @@ type CarouselProps = {
   showControls?: boolean;
   showDots?: boolean;
   height?: string;
-  mediaPadding?: "none" | "sm" | "md" | "lg" | string | number;
+  mediaPadding?: CmSpacing | string | number;
   variant?: "card" | "bleed";
 };
 
 function carouselPaddingValue(value: CarouselProps["mediaPadding"]) {
   if (value === undefined || value === "none") return undefined;
-  if (typeof value === "number") return `${value}px`;
+  if (typeof value === "number") return cmSizeValue(value);
   const preset: Record<string, string> = {
+    xs: "0.5rem",
     sm: "0.75rem",
     md: "1.25rem",
     lg: "2rem",
@@ -127,7 +129,8 @@ export function CmCarousel({
       {showDots && length > 1 ? (
       <div className="cm-carousel__dots">
         {items.map((item, idx) => (
-          <button
+          <CmButton
+            unstyled
             key={item.id}
             type="button"
             className={cn(

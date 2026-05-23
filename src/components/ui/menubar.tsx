@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 export type CmMenubarItem = {
   id: string;
@@ -31,7 +32,8 @@ export function CmMenubar({
     >
       <nav className="cm-menubar__nav" aria-label={ariaLabel}>
         {items.map((item) => (
-          <button
+          <CmButton
+            unstyled
             key={item.id}
             type="button"
             aria-current={item.active ? "page" : undefined}
@@ -43,7 +45,7 @@ export function CmMenubar({
             )}
           >
             {item.label}
-          </button>
+          </CmButton>
         ))}
       </nav>
       {trailing ? <div className="cm-menubar__trailing">{trailing}</div> : null}

@@ -2,6 +2,7 @@
 
 import { KeyboardEvent, ReactNode, useEffect, useId, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { CmButton } from "./button.js";
 import { CmDialog } from "./dialog.js";
 
 export type CmCommandItem = {
@@ -125,7 +126,8 @@ export function CmCommand({
             </div>
           ) : (
             filtered.map((item, index) => (
-              <button
+              <CmButton
+                unstyled
                 key={item.id}
                 id={getItemId(item)}
                 type="button"
@@ -144,7 +146,7 @@ export function CmCommand({
                     {item.shortcut}
                   </kbd>
                 ) : null}
-              </button>
+              </CmButton>
             ))
           )}
         </div>

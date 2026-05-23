@@ -5,15 +5,18 @@ import type {
   ReactNode,
 } from "react";
 import { cn } from "../../lib/utils.js";
+import {
+  cmSizeValue,
+  resolveResponsiveNumber,
+  type CmResponsiveNumber,
+} from "./types.js";
 
-type Breakpoint = "base" | "sm" | "md" | "lg" | "xl";
-type ResponsiveNumber = number | Partial<Record<Breakpoint, number>>;
 type GridStyle = CSSProperties & Record<`--${string}`, string | number>;
 type GridContainerVariant = "default" | "actions";
 
 type GridContainerBaseProps = {
   children?: ReactNode;
-  columns?: ResponsiveNumber;
+  columns?: CmResponsiveNumber;
   gap?: string | number;
   rowGap?: string | number;
   columnGap?: string | number;
@@ -26,31 +29,11 @@ type GridContainerProps =
   | (GridContainerBaseProps & FormHTMLAttributes<HTMLFormElement> & { as: "form" });
 
 type GridProps = HTMLAttributes<HTMLDivElement> & {
-  span?: ResponsiveNumber;
+  span?: CmResponsiveNumber;
 };
 
-const breakpoints: Breakpoint[] = ["base", "sm", "md", "lg", "xl"];
-
-function resolveResponsiveValue(value: ResponsiveNumber | undefined, fallback: number) {
-  const resolved = {} as Record<Breakpoint, number>;
-
-  if (typeof value === "number") {
-    for (const breakpoint of breakpoints) resolved[breakpoint] = value;
-    return resolved;
-  }
-
-  let current = value?.base ?? fallback;
-  for (const breakpoint of breakpoints) {
-    current = value?.[breakpoint] ?? current;
-    resolved[breakpoint] = current;
-  }
-
-  return resolved;
-}
-
 function spacingValue(value: string | number | undefined, fallback: string) {
-  if (value === undefined) return fallback;
-  return typeof value === "number" ? `${value}px` : value;
+  return cmSizeValue(value) ?? fallback;
 }
 
 function gridContainerClassName(variant: GridContainerVariant, className?: string) {
@@ -69,7 +52,7 @@ export function CmGridContainer({
   style,
   ...props
 }: GridContainerProps) {
-  const resolvedColumns = resolveResponsiveValue(columns, 1);
+  const resolvedColumns = resolveResponsiveNumber(columns, 1);
   const gridStyle: GridStyle = {
     "--grid-columns-base": resolvedColumns.base,
     "--grid-columns-sm": resolvedColumns.sm,
@@ -146,7 +129,7 @@ export function CmGrid({
   style,
   ...props
 }: GridProps) {
-  const resolvedSpan = resolveResponsiveValue(span, 1);
+  const resolvedSpan = resolveResponsiveNumber(span, 1);
   const gridStyle: GridStyle = {
     "--grid-span-base": resolvedSpan.base,
     "--grid-span-sm": resolvedSpan.sm,

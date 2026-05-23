@@ -2,8 +2,8 @@ import type { HTMLAttributes, KeyboardEvent, MouseEvent, ReactNode } from "react
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
-  type CmComponentTone,
   type CmDensity,
+  type CmTone,
 } from "./types.js";
 
 export type CmMetricCardAccent = "none" | "left" | "top";
@@ -15,7 +15,7 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   icon?: ReactNode;
   meta?: ReactNode;
   footer?: ReactNode;
-  tone?: CmComponentTone;
+  tone?: CmTone;
   accent?: CmMetricCardAccent;
   density?: CmDensity;
   interactive?: boolean;

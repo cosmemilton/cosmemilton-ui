@@ -9,6 +9,7 @@ import {
 } from "react";
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 type DrawerSide = "left" | "right" | "bottom" | "top";
 
@@ -103,13 +104,14 @@ export function CmDrawer({ open, onClose, side = "right", children, className, t
               {title ? (
                 <h2 className="cm-drawer__title">{title}</h2>
               ) : null}
-              <button
+              <CmButton
+                unstyled
                 type="button"
                 onClick={onClose}
                 className="cm-drawer__close"
               >
                 Fechar
-              </button>
+              </CmButton>
             </div>
             <div className="cm-drawer__body">
               {children}

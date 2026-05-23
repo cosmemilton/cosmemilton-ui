@@ -1,10 +1,16 @@
 import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import {
+  cmDensityClass,
+  cmSizeValue,
+  type CmDensity,
+  type CmMaxWidth,
+  type CmSpacing,
+} from "./types.js";
 
 type CmPageElement = "div" | "main" | "section" | "article";
-type CmPagePadding = "none" | "sm" | "md" | "lg" | string | number;
-type CmPageMaxWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "full" | string | number;
+type CmPagePadding = CmSpacing | string | number;
+type CmPageMaxWidth = CmMaxWidth;
 type CmPageStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
 export type CmPageProps = HTMLAttributes<HTMLElement> & {
@@ -19,14 +25,13 @@ export type CmPageProps = HTMLAttributes<HTMLElement> & {
 };
 
 function spacingValue(value: string | number | undefined, fallback: string) {
-  if (value === undefined) return fallback;
-  return typeof value === "number" ? `${value}px` : value;
+  return cmSizeValue(value) ?? fallback;
 }
 
 function maxWidthValue(value: CmPageMaxWidth | undefined, fullWidth: boolean) {
   if (fullWidth) return "100%";
   if (value === undefined) return "72rem";
-  if (typeof value === "number") return `${value}px`;
+  if (typeof value === "number") return cmSizeValue(value);
 
   const preset: Record<string, string> = {
     sm: "40rem",
@@ -42,10 +47,11 @@ function maxWidthValue(value: CmPageMaxWidth | undefined, fullWidth: boolean) {
 
 function paddingValue(value: CmPagePadding | undefined) {
   if (value === undefined) return "clamp(1rem, 2.5vw, 1.75rem)";
-  if (typeof value === "number") return `${value}px`;
+  if (typeof value === "number") return cmSizeValue(value);
 
   const preset: Record<string, string> = {
     none: "0",
+    xs: "clamp(0.5rem, 1.5vw, 0.75rem)",
     sm: "clamp(0.75rem, 1.8vw, 1rem)",
     md: "clamp(1rem, 2.5vw, 1.75rem)",
     lg: "clamp(1.25rem, 3vw, 2.5rem)",

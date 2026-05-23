@@ -2,25 +2,16 @@
 
 import { CSSProperties, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmRadius, CmTone } from "./types.js";
 
-type AspectRatioRadius = "none" | "sm" | "md" | "lg" | "full";
-type AspectRatioSurface =
-  | "none"
-  | "muted"
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+type AspectRatioSurface = "none" | CmTone;
 
 type AspectRatioProps = {
   ratio?: number;
   className?: string;
   center?: boolean;
   children: ReactNode;
-  radius?: AspectRatioRadius;
+  radius?: CmRadius;
   surface?: AspectRatioSurface;
 };
 

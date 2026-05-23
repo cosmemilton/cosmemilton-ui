@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import {
   cmDensityClass,
   cmSizeValue,
@@ -92,7 +93,8 @@ export function CmAppShell({
   );
 
   const mobileMenuButton = hasSidebar ? (
-    <button
+    <CmButton
+      unstyled
       type="button"
       className="cm-app-shell__mobile-menu-button"
       aria-label={mobileMenuLabel}
@@ -100,7 +102,7 @@ export function CmAppShell({
       onClick={toggleMobileSidebar}
     >
       <Menu size={18} aria-hidden="true" />
-    </button>
+    </CmButton>
   ) : null;
 
   const controls: CmAppShellControls = {
@@ -145,21 +147,23 @@ export function CmAppShell({
           className="cm-app-shell__mobile-layer"
           aria-hidden={!isMobileOpen}
         >
-          <button
+          <CmButton
+            unstyled
             type="button"
             className="cm-app-shell__mobile-backdrop"
             aria-label={mobileCloseLabel}
             onClick={closeMobileSidebar}
           />
           <aside className="cm-app-shell__mobile-drawer" aria-label="Menu">
-            <button
+            <CmButton
+              unstyled
               type="button"
               className="cm-app-shell__mobile-close"
               aria-label={mobileCloseLabel}
               onClick={closeMobileSidebar}
             >
               <X size={18} aria-hidden="true" />
-            </button>
+            </CmButton>
             {renderSidebarContent()}
           </aside>
         </div>

@@ -11,10 +11,15 @@ import {
 import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
 import { useCmTheme } from "../theme/theme-provider.js";
+import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
+import type {
+  CmDialogSize,
+  CmFeedbackTone,
+} from "./types.js";
 
-export type CmDialogSize = "sm" | "md" | "lg" | "default" | "large" | "xl";
-export type CmDialogTone = "default" | "danger" | "warning" | "info";
+export type { CmDialogSize } from "./types.js";
+export type CmDialogTone = CmFeedbackTone;
 export type CmDialogPresentation = "default" | "compact";
 
 interface DialogProps {
@@ -37,16 +42,16 @@ const sizeClasses: Record<CmDialogSize, string> = {
   sm: "cm-dialog__positioner--sm",
   md: "cm-dialog__positioner--md",
   lg: "cm-dialog__positioner--lg",
-  default: "cm-dialog__positioner--md",
-  large: "cm-dialog__positioner--large",
   xl: "cm-dialog__positioner--xl",
+  "2xl": "cm-dialog__positioner--2xl",
 };
 
 const toneColorMap: Record<CmDialogTone, string> = {
   default: "var(--color-primary)",
+  success: "var(--color-success)",
   danger: "var(--color-danger)",
   warning: "var(--color-warning)",
-  info: "var(--color-secondary)",
+  info: "var(--color-info)",
 };
 
 type DialogToneStyle = CSSProperties & {
@@ -148,7 +153,7 @@ export function CmDialog({
   description,
   children,
   footer,
-  size = "default",
+  size = "md",
   className,
   tone = "default",
   portal = false,
@@ -262,14 +267,15 @@ export function CmDialog({
                   }}
                 >
                   {showClose ? (
-                    <button
+                    <CmButton
+                      unstyled
                       type="button"
                       onClick={onClose}
                       className="cm-dialog__close cm-dialog__close--header"
                       aria-label="Fechar"
                     >
                       <X className="cm-dialog__close-icon" />
-                    </button>
+                    </CmButton>
                   ) : null}
 
                   <div className="cm-dialog__heading">
@@ -294,14 +300,15 @@ export function CmDialog({
               ) : (
                 showClose ? (
                 <div className="cm-dialog__headerless-actions">
-                  <button
+                  <CmButton
+                    unstyled
                     type="button"
                     onClick={onClose}
                     className="cm-dialog__close"
                     aria-label="Fechar"
                   >
                     <X className="cm-dialog__close-icon" />
-                  </button>
+                  </CmButton>
                 </div>
                 ) : null
               )}

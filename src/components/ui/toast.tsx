@@ -11,8 +11,10 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
+import type { CmFeedbackTone } from "./types.js";
 
-export type CmToastTone = "neutral" | "success" | "warning" | "danger" | "info";
+export type CmToastTone = CmFeedbackTone;
 
 type ToastOptions = {
   tone?: CmToastTone;
@@ -67,7 +69,7 @@ export function CmToastNotice({ title, description, tone = "info", duration }: T
 }
 
 const toneClasses: Record<CmToastTone, string> = {
-  neutral: "cm-toast__item--neutral",
+  default: "cm-toast__item--default",
   success: "cm-toast__item--success",
   warning: "cm-toast__item--warning",
   danger: "cm-toast__item--danger",
@@ -75,7 +77,7 @@ const toneClasses: Record<CmToastTone, string> = {
 };
 
 const icons: Record<CmToastTone, string> = {
-  neutral: "",
+  default: "",
   success: "✓",
   warning: "⚠",
   danger: "✕",
@@ -122,14 +124,15 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
           {item.message}
         </span>
       </span>
-      <button
+      <CmButton
+        unstyled
         type="button"
         onClick={handleClose}
         className="cm-toast__close"
         aria-label="Fechar"
       >
         ✕
-      </button>
+      </CmButton>
     </div>
   );
 }
@@ -151,7 +154,7 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
 
   const toast = useCallback(
     (message: string, options?: ToastOptions) => {
-      const key = `${options?.tone ?? "neutral"}|${options?.title ?? ""}|${message}`;
+      const key = `${options?.tone ?? "default"}|${options?.title ?? ""}|${message}`;
       const now = Date.now();
       const recent = recentToastRef.current;
 
@@ -165,7 +168,7 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
           id,
           title: options?.title,
           message,
-          tone: options?.tone ?? "neutral",
+          tone: options?.tone ?? "default",
           duration: options?.duration ?? 5000,
         },
       ]);

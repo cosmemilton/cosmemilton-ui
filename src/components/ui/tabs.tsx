@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 type TabsVariant = "default" | "modal" | "folder";
 
@@ -95,7 +96,8 @@ export function CmTabsTrigger({
   const isActive = context.value === value;
 
   return (
-    <button
+    <CmButton
+      unstyled
       type="button"
       role="tab"
       aria-selected={isActive}
@@ -110,7 +112,7 @@ export function CmTabsTrigger({
       onClick={() => context.onValueChange(value)}
     >
       {children}
-    </button>
+    </CmButton>
   );
 }
 

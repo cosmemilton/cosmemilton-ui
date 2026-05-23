@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
 
 export type CmMultiSelectOption = {
@@ -197,7 +198,8 @@ export function CmMultiSelect({
           </label>
         ) : null}
 
-        <button
+        <CmButton
+          unstyled
           ref={triggerRef}
           type="button"
           disabled={disabled}
@@ -217,7 +219,7 @@ export function CmMultiSelect({
           >
             {selectedOptions.length ? selectedLabel : placeholder}
           </span>
-        </button>
+        </CmButton>
 
         <ChevronDown
           className={cn(
@@ -251,7 +253,8 @@ export function CmMultiSelect({
             {options.map((option) => {
               const checked = selected.has(option.value);
               return (
-                <button
+                <CmButton
+                  unstyled
                   key={option.value}
                   type="button"
                   role="option"
@@ -271,7 +274,7 @@ export function CmMultiSelect({
                     <Check size={12} strokeWidth={3} />
                   </span>
                   <span className="cm-multi-select__option-label">{option.label}</span>
-                </button>
+                </CmButton>
               );
             })}
           </div>

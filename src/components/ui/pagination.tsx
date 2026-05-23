@@ -72,7 +72,8 @@ export function CmPagination({
         <div className="cm-pagination__pages">
           {pages.map((entry, index) =>
             typeof entry === "number" ? (
-              <button
+              <CmButton
+                unstyled
                 key={entry}
                 type="button"
                 onClick={() => onChange(entry)}
@@ -83,7 +84,7 @@ export function CmPagination({
                 )}
               >
                 {entry}
-              </button>
+              </CmButton>
             ) : (
               <span key={`ellipsis-${index}`} className="cm-pagination__ellipsis">
                 {entry}

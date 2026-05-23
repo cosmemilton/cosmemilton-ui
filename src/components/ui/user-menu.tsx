@@ -9,8 +9,9 @@ import {
   CmDropdownMenu,
   type CmDropdownMenuItem,
 } from "./dropdown-menu.js";
+import type { CmSize } from "./types.js";
 
-type CmUserMenuSize = "xs" | "sm" | "md" | "lg" | "xl";
+type CmUserMenuSize = CmSize;
 
 export type CmUserMenuHeaderMode = "auto" | "always" | "never";
 

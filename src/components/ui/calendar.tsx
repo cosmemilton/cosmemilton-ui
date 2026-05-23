@@ -2,6 +2,7 @@
 
 import { Fragment, useMemo } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 const dayLabels = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -82,7 +83,8 @@ export function CmCalendar({ value = new Date(), onSelect, month, year, classNam
               const isToday = isSameDay(date, new Date());
 
               return (
-                <button
+                <CmButton
+                  unstyled
                   key={date.toISOString()}
                   type="button"
                   aria-current={isToday ? "date" : undefined}
@@ -97,7 +99,7 @@ export function CmCalendar({ value = new Date(), onSelect, month, year, classNam
                   )}
                 >
                   {date.getDate()}
-                </button>
+                </CmButton>
               );
             })}
           </Fragment>

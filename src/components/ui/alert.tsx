@@ -2,8 +2,10 @@
 
 import { CSSProperties, ReactNode, useState } from "react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
+import type { CmStatusTone } from "./types.js";
 
-const toneMap = {
+const toneMap: Record<CmStatusTone, { color: string }> = {
   info: {
     color: "var(--color-info)",
   },
@@ -18,7 +20,7 @@ const toneMap = {
   },
 };
 
-export type CmAlertTone = keyof typeof toneMap;
+export type CmAlertTone = CmStatusTone;
 
 export type CmAlertProps = {
   title: string;
@@ -81,14 +83,15 @@ export function CmAlert({
       </div>
       {action ? <div className="cm-alert__action">{action}</div> : null}
       {dismissible ? (
-        <button
+        <CmButton
+          unstyled
           type="button"
           className="cm-alert__close"
           aria-label={closeLabel}
           onClick={dismiss}
         >
           ×
-        </button>
+        </CmButton>
       ) : null}
     </div>
   );

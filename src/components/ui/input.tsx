@@ -15,6 +15,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import { cmDensityClass, type CmDensity } from "./types.js";
 
 type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
@@ -302,7 +303,8 @@ export const CmInput = forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
           {canClear ? (
-            <button
+            <CmButton
+              unstyled
               type="button"
               className="cm-floating-field__clear"
               aria-label={clearLabel}
@@ -310,7 +312,7 @@ export const CmInput = forwardRef<HTMLInputElement, InputProps>(
               onClick={handleClear}
             >
               <X size={14} aria-hidden="true" />
-            </button>
+            </CmButton>
           ) : null}
           {endButton && (
             <span className="cm-floating-field__adornment cm-floating-field__adornment--flush">{endButton}</span>

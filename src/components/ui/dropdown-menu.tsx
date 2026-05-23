@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { CmButton } from "./button.js";
 import { CmPopover } from "./popover.js";
 import { CmSeparator } from "./separator.js";
 import { cn } from "../../lib/utils.js";
@@ -64,7 +65,8 @@ export function CmDropdownMenu({ trigger, items, header, align, className }: CmD
             }
 
             return (
-              <button
+              <CmButton
+                unstyled
                 key={item.id}
                 type="button"
                 role="menuitem"
@@ -89,7 +91,7 @@ export function CmDropdownMenu({ trigger, items, header, align, className }: CmD
                 {item.shortcut ? (
                   <span className="cm-dropdown-menu__shortcut">{item.shortcut}</span>
                 ) : null}
-              </button>
+              </CmButton>
             );
           })}
         </div>

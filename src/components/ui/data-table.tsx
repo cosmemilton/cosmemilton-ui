@@ -349,7 +349,8 @@ export function CmDataTable<T>({
           <tr>
             {hasColumnToggle && (
               <th className="cm-data-table__toggle-cell">
-                <button
+                <CmButton
+                  unstyled
                   type="button"
                   onClick={() => setColumnMenuOpen(true)}
                   className="cm-data-table__column-button"
@@ -362,7 +363,7 @@ export function CmDataTable<T>({
                       {hiddenCount}
                     </span>
                   )}
-                </button>
+                </CmButton>
               </th>
             )}
             {visibleColumns.map((column, colIndex) => {

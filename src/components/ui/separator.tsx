@@ -1,13 +1,12 @@
 import type { CSSProperties, HTMLAttributes } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmSizeValue } from "./types.js";
+import { cmSizeValue, type CmSpacing } from "./types.js";
 
-type SeparatorSpacing = "none" | "xs" | "sm" | "md";
 type SeparatorStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
 type SeparatorProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   orientation?: "horizontal" | "vertical";
-  spacing?: SeparatorSpacing;
+  spacing?: CmSpacing;
   length?: string | number;
 };
 

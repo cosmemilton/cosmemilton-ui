@@ -1,29 +1,26 @@
 import { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmTone } from "./types.js";
 
 type BadgeVariant = "solid" | "soft" | "outline";
-type BadgeTone =
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "danger";
+export type CmBadgeTone = CmTone;
 
 type BadgeProps = {
   children: ReactNode;
   className?: string;
   variant?: BadgeVariant;
-  tone?: BadgeTone;
+  tone?: CmBadgeTone;
 };
 
-const toneStyles: Record<BadgeTone, string> = {
-  neutral: "cm-badge--neutral",
+const toneStyles: Record<CmBadgeTone, string> = {
+  default: "cm-badge--default",
   primary: "cm-badge--primary",
   secondary: "cm-badge--secondary",
+  accent: "cm-badge--accent",
   success: "cm-badge--success",
   warning: "cm-badge--warning",
   danger: "cm-badge--danger",
+  info: "cm-badge--info",
 };
 
 const variantStyles: Record<BadgeVariant, string> = {
@@ -36,13 +33,13 @@ export function CmBadge({
   children,
   className,
   variant = "soft",
-  tone = "neutral",
+  tone = "default",
 }: BadgeProps) {
   return (
     <span
       className={cn(
         "cm-badge",
-        toneStyles[tone] ?? toneStyles["neutral"],
+        toneStyles[tone] ?? toneStyles["default"],
         variantStyles[variant],
         className,
       )}

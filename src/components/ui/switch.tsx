@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 export type CmSwitchProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -57,7 +58,8 @@ const CmSwitch = forwardRef<HTMLButtonElement, CmSwitchProps>(
 
     return (
       <>
-        <button
+        <CmButton
+          unstyled
           ref={ref}
           type="button"
           role="switch"
@@ -74,7 +76,7 @@ const CmSwitch = forwardRef<HTMLButtonElement, CmSwitchProps>(
           {...props}
         >
           <span className="cm-switch__thumb" data-state={state} />
-        </button>
+        </CmButton>
         {name ? (
           <input
             {...inputProps}

@@ -1,22 +1,21 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import {
+  cmDensityClass,
+  type CmDensity,
+  type CmSpacing,
+  type CmTone,
+} from "./types.js";
 
 type CardVariant = "surface" | "soft" | "outline" | "ghost";
-type CardTone =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+type CardPadding = Exclude<CmSpacing, "xs">;
+type CardTone = CmTone;
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode;
   className?: string;
-  padding?: "none" | "sm" | "md" | "lg";
-  bodyPadding?: "none" | "sm" | "md" | "lg";
+  padding?: CardPadding;
+  bodyPadding?: CardPadding;
   elevated?: boolean;
   variant?: CardVariant;
   tone?: CardTone;
@@ -40,6 +39,7 @@ const toneMap: Record<CardTone, string> = {
   default: "cm-card--tone-default",
   primary: "cm-card--tone-primary",
   secondary: "cm-card--tone-secondary",
+  accent: "cm-card--tone-accent",
   success: "cm-card--tone-success",
   warning: "cm-card--tone-warning",
   danger: "cm-card--tone-danger",

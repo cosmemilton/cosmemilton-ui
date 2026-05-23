@@ -12,6 +12,7 @@ import {
 } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
 
 export type CmComboboxItem = {
@@ -379,14 +380,15 @@ export function CmCombobox({
         </div>
 
         {active ? (
-          <button
+          <CmButton
+            unstyled
             type="button"
             onClick={handleClear}
             className="cm-combobox__clear"
             title="Limpar seleção"
           >
             <X size={14} />
-          </button>
+          </CmButton>
         ) : null}
 
         <ChevronDown className="cm-combobox__chevron" />
@@ -440,7 +442,8 @@ export function CmCombobox({
                   </div>
                 ))
               : filtered.map((item) => (
-                  <button
+                  <CmButton
+                    unstyled
                     key={item.value}
                     type="button"
                     disabled={item.disabled}
@@ -472,7 +475,7 @@ export function CmCombobox({
                         {item.description}
                       </span>
                     ) : null}
-                  </button>
+                  </CmButton>
                 ))}
           </div>
         </CmPortal>

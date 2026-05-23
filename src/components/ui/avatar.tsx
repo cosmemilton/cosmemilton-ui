@@ -2,11 +2,12 @@
 
 import type { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmSize } from "./types.js";
 
 type AvatarProps = {
   src?: string;
   alt?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: CmSize;
   fallback?: ReactNode;
   className?: string;
 };

@@ -1,12 +1,12 @@
 import { type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmSizeValue } from "./types.js";
+import { cmSizeValue, type CmSpacing } from "./types.js";
 
 type ButtonGroupProps = {
   children: ReactNode;
   className?: string;
   fullWidth?: boolean;
-  gap?: "none" | "xs" | "sm" | "md" | string | number;
+  gap?: CmSpacing | string | number;
   orientation?: "horizontal" | "vertical";
 };
 
@@ -15,6 +15,7 @@ const gapMap = {
   xs: "0.25rem",
   sm: "0.5rem",
   md: "0.75rem",
+  lg: "1rem",
 } as const;
 
 type ButtonGroupStyle = CSSProperties & Partial<Record<`--${string}`, string>>;

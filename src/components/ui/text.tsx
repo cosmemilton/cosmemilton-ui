@@ -1,7 +1,8 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import type { CmSize } from "./types.js";
 
-type TextSize = "xs" | "sm" | "md" | "lg";
+type TextSize = Exclude<CmSize, "xl">;
 type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary" | "inverse";
 type TextWeight = "normal" | "medium" | "semibold";
 type TextVariant = "default" | "modalTabDescription";

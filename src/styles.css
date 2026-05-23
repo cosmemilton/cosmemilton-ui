@@ -2467,7 +2467,7 @@ canvas {
   border-radius: var(--radius-full)
 }
 
-.cm-aspect-ratio--surface-muted {
+.cm-aspect-ratio--surface-default {
   border: 1px solid var(--color-border);
   background: var(--color-muted);
   color: var(--color-muted-foreground)
@@ -2576,7 +2576,7 @@ canvas {
   letter-spacing: 0
 }
 
-.cm-badge--neutral {
+.cm-badge--default {
   --cm-badge-bg: var(--color-muted);
   --cm-badge-fg: var(--color-muted-foreground);
   --cm-badge-solid-fg: var(--color-muted-foreground);
@@ -2595,6 +2595,13 @@ canvas {
   --cm-badge-fg: var(--color-secondary);
   --cm-badge-solid-fg: var(--color-secondary-foreground);
   --cm-badge-border: var(--color-secondary)
+}
+
+.cm-badge--accent {
+  --cm-badge-bg: var(--color-accent);
+  --cm-badge-fg: var(--color-accent);
+  --cm-badge-solid-fg: var(--color-accent-foreground);
+  --cm-badge-border: var(--color-accent)
 }
 
 .cm-badge--success {
@@ -2616,6 +2623,13 @@ canvas {
   --cm-badge-fg: var(--color-danger);
   --cm-badge-solid-fg: var(--color-danger-foreground);
   --cm-badge-border: var(--color-danger)
+}
+
+.cm-badge--info {
+  --cm-badge-bg: var(--color-info);
+  --cm-badge-fg: var(--color-info);
+  --cm-badge-solid-fg: var(--color-info-foreground);
+  --cm-badge-border: var(--color-info)
 }
 
 .cm-badge--solid {
@@ -2716,6 +2730,13 @@ canvas {
   --cm-button-border: var(--color-secondary)
 }
 
+.cm-button--tone-accent {
+  --cm-button-bg: var(--color-accent);
+  --cm-button-fg: var(--color-accent-foreground);
+  --cm-button-outline: var(--color-accent);
+  --cm-button-border: var(--color-accent)
+}
+
 .cm-button--tone-danger {
   --cm-button-bg: var(--color-danger);
   --cm-button-fg: var(--color-danger-foreground);
@@ -2738,10 +2759,10 @@ canvas {
 }
 
 .cm-button--tone-info {
-  --cm-button-bg: var(--color-secondary);
-  --cm-button-fg: var(--color-secondary-foreground);
-  --cm-button-outline: var(--color-secondary);
-  --cm-button-border: var(--color-secondary)
+  --cm-button-bg: var(--color-info);
+  --cm-button-fg: var(--color-info-foreground);
+  --cm-button-outline: var(--color-info);
+  --cm-button-border: var(--color-info)
 }
 
 .cm-button--solid {
@@ -4052,11 +4073,11 @@ canvas {
   max-width: 48rem
 }
 
-.cm-dialog__positioner--large {
+.cm-dialog__positioner--xl {
   max-width: 64rem
 }
 
-.cm-dialog__positioner--xl {
+.cm-dialog__positioner--2xl {
   max-width: 80rem
 }
 
@@ -4687,7 +4708,7 @@ canvas {
   transform: translateY(.5rem)
 }
 
-.cm-toast__item--neutral {
+.cm-toast__item--default {
   --cm-toast-border: var(--color-border);
   --cm-toast-bg: var(--color-card);
   --cm-toast-fg: var(--color-card-foreground)
@@ -4947,6 +4968,11 @@ canvas {
 .cm-card--tone-secondary {
   --cm-card-tone: var(--color-secondary);
   --cm-card-tone-fg: var(--color-secondary-foreground);
+}
+
+.cm-card--tone-accent {
+  --cm-card-tone: var(--color-accent);
+  --cm-card-tone-fg: var(--color-accent-foreground);
 }
 
 .cm-card--tone-success {
@@ -6066,6 +6092,10 @@ canvas {
   margin: .75rem 0
 }
 
+.cm-separator--horizontal.cm-separator--spacing-lg {
+  margin: 1rem 0
+}
+
 .cm-separator--vertical.cm-separator--spacing-none {
   margin: 0
 }
@@ -6080,6 +6110,10 @@ canvas {
 
 .cm-separator--vertical.cm-separator--spacing-md {
   margin: 0 .5rem
+}
+
+.cm-separator--vertical.cm-separator--spacing-lg {
+  margin: 0 .75rem
 }
 
 /* CmIconBadge provides compact circular emphasis for decorative icons. */
@@ -6121,6 +6155,14 @@ canvas {
 
 .cm-icon-badge--tone-primary {
   --cm-icon-badge-tone: var(--color-primary)
+}
+
+.cm-icon-badge--tone-secondary {
+  --cm-icon-badge-tone: var(--color-secondary)
+}
+
+.cm-icon-badge--tone-accent {
+  --cm-icon-badge-tone: var(--color-accent)
 }
 
 .cm-icon-badge--tone-success {
@@ -7163,6 +7205,10 @@ canvas {
   --cm-metric-card-tone: var(--color-secondary);
 }
 
+.cm-metric-card--tone-accent {
+  --cm-metric-card-tone: var(--color-accent);
+}
+
 .cm-metric-card--tone-success {
   --cm-metric-card-tone: var(--color-success);
 }
@@ -7304,7 +7350,16 @@ canvas {
 }
 
 .cm-code-block__copy {
+  --cm-button-outline: #e2e8f0;
+  background: rgba(226, 232, 240, .08);
   color: #e2e8f0;
+}
+
+.cm-code-block__copy:hover:not(:disabled),
+.cm-code-block__copy:focus-visible {
+  background: rgba(226, 232, 240, .16);
+  color: #f8fafc;
+  filter: none;
 }
 
 .cm-code-block__pre {

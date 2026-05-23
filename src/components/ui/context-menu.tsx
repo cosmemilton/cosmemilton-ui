@@ -3,6 +3,7 @@
 import { MouseEvent as ReactMouseEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
+import { CmButton } from "./button.js";
 
 type ContextMenuItem = {
   id: string;
@@ -89,7 +90,8 @@ export function CmContextMenu({ target, items, className }: ContextMenuProps) {
             )}
           >
             {items.map((item) => (
-              <button
+              <CmButton
+                unstyled
                 key={item.id}
                 type="button"
                 role="menuitem"
@@ -108,7 +110,7 @@ export function CmContextMenu({ target, items, className }: ContextMenuProps) {
                 )}
               >
                 {item.label}
-              </button>
+              </CmButton>
             ))}
           </div>
         </CmPortal>

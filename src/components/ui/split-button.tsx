@@ -3,16 +3,8 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 import { CmButton } from "./button.js";
+import type { CmButtonTone, CmButtonVariant } from "./button.js";
 import { CmPortal } from "./portal.js";
-
-type ButtonVariant = "solid" | "outline" | "ghost" | "soft" | "link";
-type CmButtonTone =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "danger"
-  | "warning"
-  | "success";
 
 export interface CmSplitButtonOption {
   label: string;
@@ -30,7 +22,7 @@ export interface CmSplitButtonProps {
   /** CmLabel quando nenhuma opção está selecionada */
   placeholder?: string;
   /** Variante do botão */
-  variant?: ButtonVariant;
+  variant?: CmButtonVariant;
   /** Tom/cor do botão */
   tone?: CmButtonTone;
   /** Desabilitar botão */
@@ -198,7 +190,8 @@ export function CmSplitButton({
               const isSelected = option.value === selected;
 
               return (
-                <button
+                <CmButton
+                  unstyled
                   key={option.value}
                   type="button"
                   onClick={() => handleSelect(option.value)}
@@ -212,7 +205,7 @@ export function CmSplitButton({
                     <span className="cm-split-button__icon">{option.icon}</span>
                   )}
                   <span>{option.label}</span>
-                </button>
+                </CmButton>
               );
             })}
           </div>
