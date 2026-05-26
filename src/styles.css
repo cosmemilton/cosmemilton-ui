@@ -75,7 +75,7 @@ canvas {
 .cm-col,
 .cm-stack {
   display: flex;
-  gap: var(--cm-layout-gap, 1rem);
+  gap: var(--cm-layout-gap, var(--space-lg, 1rem));
   min-width: 0;
 }
 
@@ -1249,7 +1249,7 @@ canvas {
   padding-top: 0;
   padding-bottom: .25rem;
   border-bottom: 2px solid var(--color-border);
-  transition: border-color .2s ease
+  transition: border-color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-floating-field--textarea .cm-floating-field__control {
@@ -1276,7 +1276,7 @@ canvas {
   line-height: 1.25rem;
   transform-origin: left;
   pointer-events: none;
-  transition: color .2s ease, top .2s ease, font-size .2s ease, font-weight .2s ease, transform .2s ease
+  transition: color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), top var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), font-size var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), font-weight var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), transform var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-floating-field__label--focused {
@@ -1460,7 +1460,7 @@ canvas {
   flex-shrink: 0;
   color: var(--color-muted-foreground);
   pointer-events: none;
-  transition: transform .2s ease
+  transition: transform var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-select__chevron--open,
@@ -1473,7 +1473,7 @@ canvas {
   border: 0;
   background: transparent;
   color: var(--color-muted-foreground);
-  transition: color .2s ease
+  transition: color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-combobox__clear:hover {
@@ -1492,21 +1492,21 @@ canvas {
 
 .cm-combobox__popover {
   max-height: 280px;
-  background: var(--color-popover)
+  background: var(--layer-floating, var(--color-popover))
 }
 
 .cm-select__popover {
-  z-index: 500;
+  z-index: var(--z-dropdown, 500);
   max-height: 15rem;
   padding-block: .25rem;
-  background: var(--select-popover-background, var(--color-card))
+  background: var(--select-popover-background, var(--layer-floating, var(--color-card)))
 }
 
 .cm-multi-select__popover {
-  z-index: 320;
+  z-index: var(--z-dropdown, 320);
   max-height: 16rem;
   padding-block: .25rem;
-  background: var(--multi-select-popover-background, var(--color-card))
+  background: var(--multi-select-popover-background, var(--layer-floating, var(--color-card)))
 }
 
 .cm-combobox__empty {
@@ -1529,7 +1529,7 @@ canvas {
   line-height: 1.25rem;
   text-align: left;
   outline: none;
-  transition: background-color .2s ease, color .2s ease
+  transition: background-color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-combobox__option {
@@ -1881,7 +1881,7 @@ canvas {
   height: 1rem;
   margin-left: .5rem;
   flex-shrink: 0;
-  transition: transform .2s ease
+  transition: transform var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-split-button__chevron--open {
@@ -1890,11 +1890,11 @@ canvas {
 
 .cm-split-button__menu {
   position: fixed;
-  z-index: 50;
+  z-index: var(--z-dropdown, 50);
   padding-block: .25rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: var(--color-card);
+  background: var(--layer-floating, var(--color-card));
   box-shadow: var(--shadow-lg)
 }
 
@@ -1910,7 +1910,7 @@ canvas {
   font-size: .875rem;
   line-height: 1.25rem;
   text-align: left;
-  transition: background-color .2s ease, color .2s ease
+  transition: background-color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease), color var(--motion-duration-base, .2s) var(--motion-ease-standard, ease)
 }
 
 .cm-split-button__option:hover {
@@ -1930,7 +1930,7 @@ canvas {
 .cm-tree-view {
   display: flex;
   flex-direction: column;
-  gap: 1rem
+  gap: var(--space-lg, 1rem)
 }
 
 .cm-tree-view__item {
@@ -3990,12 +3990,12 @@ canvas {
 
 .cm-context-menu__panel {
   position: fixed;
-  z-index: 500;
+  z-index: var(--z-dropdown, 500);
   min-width: 180px;
   overflow: hidden;
   border: 1px solid var(--color-border, #d4dce8);
   border-radius: var(--radius-md, .5rem);
-  background: var(--color-popover, var(--color-card, #fff));
+  background: var(--layer-floating, var(--color-popover, var(--color-card, #fff)));
   padding-block: .25rem;
   box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(15, 23, 42, .1), 0 8px 10px -6px rgba(15, 23, 42, .1))
 }
@@ -4015,7 +4015,7 @@ canvas {
   text-align: left;
   cursor: pointer;
   outline: none;
-  transition: background-color .15s ease, color .15s ease
+  transition: background-color var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease), color var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease)
 }
 
 .cm-context-menu__item--active:hover,
@@ -4036,9 +4036,9 @@ canvas {
 .cm-dialog__overlay {
   position: fixed;
   inset: 0;
-  z-index: 300;
+  z-index: var(--z-overlay, 300);
   backdrop-filter: blur(2px);
-  transition: opacity .15s ease
+  transition: opacity var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease)
 }
 
 .cm-dialog__overlay--open {
@@ -4054,11 +4054,11 @@ canvas {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 301;
+  z-index: var(--z-modal, 301);
   width: 100%;
   padding-inline: 1rem;
   transform: translate(-50%, -50%);
-  transition: opacity .15s ease, transform .15s ease
+  transition: opacity var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease), transform var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease)
 }
 
 .cm-dialog__positioner--sm {
@@ -4190,7 +4190,7 @@ canvas {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: var(--color-overlay)
+  background: var(--layer-overlay, var(--color-overlay))
 }
 
 .cm-drawer__panel {
@@ -4200,7 +4200,7 @@ canvas {
   flex-direction: column;
   gap: 1rem;
   border: 1px solid var(--color-border);
-  background: var(--color-card);
+  background: var(--layer-surface, var(--color-card));
   padding: 1.5rem;
   box-shadow: var(--shadow-xl)
 }
@@ -4327,7 +4327,7 @@ canvas {
   position: fixed;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-card);
+  background: var(--layer-floating, var(--color-card));
   box-shadow: var(--shadow-lg)
 }
 
@@ -4494,7 +4494,7 @@ canvas {
   border-radius: 9999px;
   background: var(--sw-thumb, #fff);
   box-shadow: var(--shadow-sm);
-  transition: transform .15s ease
+  transition: transform var(--motion-duration-fast, .15s) var(--motion-ease-standard, ease)
 }
 
 .cm-switch__thumb[data-state=checked] {
@@ -4514,7 +4514,7 @@ canvas {
 .cm-progress-modal__overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: var(--z-modal, 50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4526,7 +4526,7 @@ canvas {
   width: 100%;
   max-width: 28rem;
   border-radius: var(--radius-lg);
-  background: var(--color-card);
+  background: var(--layer-surface, var(--color-card));
   padding: 1.5rem;
   box-shadow: var(--shadow-xl)
 }
@@ -4673,12 +4673,12 @@ canvas {
   position: fixed;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: var(--z-toast, 9999);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: .5rem;
-  padding: 1.5rem
+  gap: var(--space-sm, .5rem);
+  padding: var(--space-xl, 1.5rem)
 }
 
 .cm-toast__item {
@@ -4690,12 +4690,12 @@ canvas {
   gap: .75rem;
   border: 1px solid var(--cm-toast-border, var(--color-border));
   border-radius: var(--radius-lg);
-  background: var(--cm-toast-bg, var(--color-card));
+  background: var(--cm-toast-bg, var(--layer-surface, var(--color-card)));
   color: var(--cm-toast-fg, var(--color-card-foreground));
   padding: .75rem 1rem;
   font-size: .875rem;
   box-shadow: var(--shadow-lg);
-  transition: opacity .3s ease, transform .3s ease
+  transition: opacity var(--motion-duration-slow, .3s) var(--motion-ease-standard, ease), transform var(--motion-duration-slow, .3s) var(--motion-ease-standard, ease)
 }
 
 .cm-toast__item--visible {
@@ -6276,7 +6276,7 @@ canvas {
   grid-template-columns: var(--cm-app-shell-current-sidebar-width) minmax(0, 1fr);
   background: var(--color-background);
   color: var(--color-foreground);
-  transition: grid-template-columns 180ms ease;
+  transition: grid-template-columns var(--motion-duration-base, 180ms) var(--motion-ease-standard, ease);
 }
 
 .cm-app-shell--no-sidebar {
@@ -6289,7 +6289,7 @@ canvas {
 
 .cm-app-shell__sidebar {
   position: relative;
-  z-index: 30;
+  z-index: var(--z-docked, 30);
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -6331,7 +6331,7 @@ canvas {
 .cm-app-shell__topbar {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-sticky, 20);
 }
 
 .cm-app-shell__content {
@@ -7770,29 +7770,29 @@ canvas {
 
 .cm-portal-panel {
   position: fixed;
-  z-index: var(--cm-portal-panel-z-index, 999);
-  width: var(--cm-portal-panel-width, min(var(--cm-portal-panel-max-width, 22rem), calc(100vw - (var(--cm-portal-panel-offset, 1rem) * 2))));
-  max-width: calc(100vw - (var(--cm-portal-panel-offset, 1rem) * 2))
+  z-index: var(--cm-portal-panel-z-index, var(--z-modal, 999));
+  width: var(--cm-portal-panel-width, min(var(--cm-portal-panel-max-width, 22rem), calc(100vw - (var(--cm-portal-panel-offset, var(--space-lg, 1rem)) * 2))));
+  max-width: calc(100vw - (var(--cm-portal-panel-offset, var(--space-lg, 1rem)) * 2))
 }
 
 .cm-portal-panel--bottom-end {
-  right: var(--cm-portal-panel-offset, 1rem);
-  bottom: var(--cm-portal-panel-offset, 1rem)
+  right: var(--cm-portal-panel-offset, var(--space-lg, 1rem));
+  bottom: var(--cm-portal-panel-offset, var(--space-lg, 1rem))
 }
 
 .cm-portal-panel--bottom-start {
-  bottom: var(--cm-portal-panel-offset, 1rem);
-  left: var(--cm-portal-panel-offset, 1rem)
+  bottom: var(--cm-portal-panel-offset, var(--space-lg, 1rem));
+  left: var(--cm-portal-panel-offset, var(--space-lg, 1rem))
 }
 
 .cm-portal-panel--top-end {
-  top: var(--cm-portal-panel-offset, 1rem);
-  right: var(--cm-portal-panel-offset, 1rem)
+  top: var(--cm-portal-panel-offset, var(--space-lg, 1rem));
+  right: var(--cm-portal-panel-offset, var(--space-lg, 1rem))
 }
 
 .cm-portal-panel--top-start {
-  top: var(--cm-portal-panel-offset, 1rem);
-  left: var(--cm-portal-panel-offset, 1rem)
+  top: var(--cm-portal-panel-offset, var(--space-lg, 1rem));
+  left: var(--cm-portal-panel-offset, var(--space-lg, 1rem))
 }
 
 @media (max-width: 860px) {
@@ -7815,7 +7815,7 @@ canvas {
   .cm-app-shell__mobile-layer {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: var(--z-modal, 60);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     pointer-events: none;
@@ -7828,9 +7828,9 @@ canvas {
   .cm-app-shell__mobile-backdrop {
     position: absolute;
     inset: 0;
-    background: var(--color-overlay, rgba(15, 23, 42, .48));
+    background: var(--layer-overlay, var(--color-overlay, rgba(15, 23, 42, .48)));
     opacity: 0;
-    transition: opacity .18s ease;
+    transition: opacity var(--motion-duration-base, .18s) var(--motion-ease-standard, ease);
   }
 
   .cm-app-shell--mobile-open .cm-app-shell__mobile-backdrop {
@@ -7843,10 +7843,10 @@ canvas {
     max-width: 22rem;
     min-height: 100vh;
     overflow: auto;
-    background: var(--color-card);
+    background: var(--layer-surface, var(--color-card));
     box-shadow: var(--shadow-xl);
     transform: translateX(-100%);
-    transition: transform .18s ease;
+    transition: transform var(--motion-duration-base, .18s) var(--motion-ease-standard, ease);
   }
 
   .cm-app-shell--mobile-open .cm-app-shell__mobile-drawer {

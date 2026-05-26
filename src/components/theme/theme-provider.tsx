@@ -116,7 +116,7 @@ export function CmThemeProvider({
   // Desativar invertHeader automaticamente para temas escuros
   const requestedDensity = density ?? uncontrolledDensity;
   const requestedChrome = chrome ?? uncontrolledChrome;
-  const darkThemes = ["cm-dark", "cm-midnight"];
+  const darkThemes = ["cm-dark", "cm-midnight", "cm-aurora"];
   const effectiveChrome: CmThemeChrome = darkThemes.includes(theme.name)
     ? "surface"
     : requestedChrome;
