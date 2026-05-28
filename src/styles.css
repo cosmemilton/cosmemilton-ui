@@ -5811,8 +5811,19 @@ canvas {
   max-width: 18rem
 }
 
+.cm-user-menu__trigger--compact {
+  height: 2.25rem;
+  min-height: 2.25rem
+}
+
 .cm-user-menu__trigger .cm-avatar {
   flex: 0 0 auto
+}
+
+.cm-user-menu__trigger--compact .cm-avatar {
+  width: 1.375rem;
+  height: 1.375rem;
+  font-size: .6875rem
 }
 
 .cm-user-menu__trigger-text {
@@ -7596,6 +7607,18 @@ canvas {
 .cm-button.cm-density-compact.cm-button--sm {
   min-height: 2rem;
   padding: .3rem .625rem;
+}
+
+[data-density=compact] .cm-user-menu__trigger--compact,
+.cm-user-menu__trigger--compact.cm-density-compact {
+  height: 2rem;
+  min-height: 2rem
+}
+
+[data-density=compact] .cm-user-menu__trigger--compact .cm-avatar,
+.cm-user-menu__trigger--compact.cm-density-compact .cm-avatar {
+  width: 1.25rem;
+  height: 1.25rem
 }
 
 [data-density=compact] .cm-button--md,

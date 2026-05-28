@@ -14,6 +14,7 @@ import type { CmSize } from "./types.js";
 type CmUserMenuSize = CmSize;
 
 export type CmUserMenuHeaderMode = "auto" | "always" | "never";
+export type CmUserMenuPresentation = "default" | "compact";
 
 export type CmUserMenuUser = {
   title: string;
@@ -27,6 +28,7 @@ export type CmUserMenuProps = {
   user: CmUserMenuUser;
   items: CmDropdownMenuItem[];
   align?: "start" | "center" | "end";
+  presentation?: CmUserMenuPresentation;
   size?: CmUserMenuSize;
   avatarSize?: CmUserMenuSize;
   variant?: "ghost" | "surface" | "plain";
@@ -59,28 +61,36 @@ export function CmUserMenu({
   user,
   items,
   align = "end",
-  size = "sm",
+  presentation = "default",
+  size,
   avatarSize = "sm",
-  variant = "ghost",
-  showTitle = true,
-  showSubtitle = true,
-  showChevron = true,
-  menuHeader = "auto",
+  variant,
+  showTitle,
+  showSubtitle,
+  showChevron,
+  menuHeader,
   triggerClassName,
   menuClassName,
 }: CmUserMenuProps) {
+  const isCompact = presentation === "compact";
+  const resolvedSize = size ?? "sm";
+  const resolvedVariant = variant ?? (isCompact ? "surface" : "ghost");
+  const resolvedShowTitle = showTitle ?? !isCompact;
+  const resolvedShowSubtitle = showSubtitle ?? !isCompact;
+  const resolvedShowChevron = showChevron ?? true;
+  const resolvedMenuHeader = menuHeader ?? "auto";
   const subtitleLabel = readableNode(user.subtitle);
   const triggerLabel = subtitleLabel
     ? `${user.title}, ${subtitleLabel}`
     : user.title;
   const fallback = user.initials ?? getInitials(user.title);
   const hasSubtitle = Boolean(user.subtitle);
-  const hasTriggerText = showTitle || (showSubtitle && hasSubtitle);
-  const hasHiddenTriggerText = !showTitle || (hasSubtitle && !showSubtitle);
+  const hasTriggerText = resolvedShowTitle || (resolvedShowSubtitle && hasSubtitle);
+  const hasHiddenTriggerText = !resolvedShowTitle || (hasSubtitle && !resolvedShowSubtitle);
   const hasHeaderContent = Boolean(user.title || user.subtitle || user.email);
-  const shouldRenderHeader = menuHeader !== "never" && hasHeaderContent;
+  const shouldRenderHeader = resolvedMenuHeader !== "never" && hasHeaderContent;
   const autoHeaderClass =
-    menuHeader === "auto" && !hasHiddenTriggerText
+    resolvedMenuHeader === "auto" && !hasHiddenTriggerText
       ? "cm-user-menu__menu-header--auto"
       : "cm-user-menu__menu-header--visible";
 
@@ -120,16 +130,20 @@ export function CmUserMenu({
       trigger={({ open, toggle, ref }) => (
         <CmButton
           ref={ref}
-          size={size}
-          variant={variant}
+          size={resolvedSize}
+          variant={resolvedVariant}
           shape="pill"
           aria-haspopup="menu"
           aria-expanded={open}
           aria-label={triggerLabel}
           title={triggerLabel}
-          className={cn("cm-user-menu__trigger", triggerClassName)}
+          className={cn(
+            "cm-user-menu__trigger",
+            isCompact && "cm-user-menu__trigger--compact",
+            triggerClassName,
+          )}
           trailingIcon={
-            showChevron ? <ChevronDown aria-hidden="true" size={16} /> : undefined
+            resolvedShowChevron ? <ChevronDown aria-hidden="true" size={16} /> : undefined
           }
           onClick={toggle}
         >
@@ -141,10 +155,10 @@ export function CmUserMenu({
           />
           {hasTriggerText ? (
             <span className="cm-user-menu__trigger-text">
-              {showTitle ? (
+              {resolvedShowTitle ? (
                 <span className="cm-user-menu__trigger-title">{user.title}</span>
               ) : null}
-              {showSubtitle && user.subtitle ? (
+              {resolvedShowSubtitle && user.subtitle ? (
                 <span className="cm-user-menu__trigger-subtitle">{user.subtitle}</span>
               ) : null}
             </span>
