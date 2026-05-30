@@ -70,3 +70,4 @@ export * from "./topbar.js";
 export * from "./tree-view.js";
 export * from "./types.js";
 export * from "./user-menu.js";
+export * from "./wizard.js";

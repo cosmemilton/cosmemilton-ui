@@ -1179,6 +1179,282 @@ canvas {
   box-shadow: var(--shadow-sm);
 }
 
+.cm-wizard {
+  display: grid;
+  gap: var(--space-lg, 1rem);
+  color: var(--color-foreground);
+}
+
+.cm-wizard--vertical {
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  align-items: start;
+}
+
+.cm-wizard--minimal {
+  gap: var(--space-sm, 0.75rem);
+}
+
+.cm-wizard__steps {
+  min-width: 0;
+}
+
+.cm-wizard__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-sm, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cm-wizard--vertical .cm-wizard__list {
+  grid-template-columns: 1fr;
+}
+
+.cm-wizard__item {
+  min-width: 0;
+}
+
+.cm-wizard__step {
+  display: flex;
+  width: 100%;
+  min-height: 4.25rem;
+  align-items: flex-start;
+  gap: var(--space-sm, 0.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-card) 96%, var(--color-background)),
+      var(--color-card));
+  color: var(--color-muted-foreground);
+  padding: var(--space-sm, 0.75rem);
+  text-align: left;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cm-wizard__step--selectable:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border));
+  color: var(--color-foreground);
+  transform: translateY(-1px);
+}
+
+.cm-wizard__step--active {
+  border-color: color-mix(in srgb, var(--color-primary) 56%, var(--color-border));
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-primary) 7%, var(--color-card)),
+      var(--color-card));
+  color: var(--color-foreground);
+  box-shadow: var(--shadow-sm);
+}
+
+.cm-wizard__step--disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.cm-wizard__step:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.cm-wizard__step-marker {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-background);
+  color: var(--color-muted-foreground);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.cm-wizard__step--current .cm-wizard__step-marker,
+.cm-wizard__step--active .cm-wizard__step-marker {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.cm-wizard__step--completed .cm-wizard__step-marker {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: var(--color-success-foreground);
+}
+
+.cm-wizard__step--error .cm-wizard__step-marker {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-danger-foreground);
+}
+
+.cm-wizard__step-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.cm-wizard__step-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+.cm-wizard__step-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.cm-wizard__optional {
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--color-info) 30%, var(--color-border));
+  border-radius: var(--radius-full, 9999px);
+  background: color-mix(in srgb, var(--color-info) 10%, transparent);
+  color: var(--color-info);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.1875rem 0.375rem;
+}
+
+.cm-wizard__step-description {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.cm-wizard__panel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-card) 96%, var(--color-background)),
+      var(--color-card));
+  box-shadow: var(--shadow-sm);
+}
+
+.cm-wizard--minimal .cm-wizard__panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cm-wizard__panel-header {
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-muted) 32%, var(--color-card));
+  padding: var(--space-md, 1rem);
+}
+
+.cm-wizard__eyebrow {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cm-wizard__panel-title {
+  margin: 0;
+  color: var(--color-card-foreground, var(--color-foreground));
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+}
+
+.cm-wizard__panel-description {
+  margin: 0.25rem 0 0;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.35rem;
+}
+
+.cm-wizard__body {
+  padding: var(--space-md, 1rem);
+}
+
+.cm-wizard--minimal .cm-wizard__body {
+  padding: 0;
+}
+
+.cm-wizard__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm, 0.75rem);
+  border-top: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-muted) 20%, var(--color-card));
+  padding: var(--space-md, 1rem);
+}
+
+.cm-wizard--minimal .cm-wizard__actions {
+  border-top: 0;
+  background: transparent;
+  padding: var(--space-md, 1rem) 0 0;
+}
+
+.cm-wizard__actions-main {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm, 0.5rem);
+  margin-left: auto;
+}
+
+.cm-wizard--minimal .cm-wizard__actions-main {
+  width: 100%;
+  margin-left: 0;
+}
+
+.cm-wizard--minimal .cm-wizard__actions-main .cm-button:last-child {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 767px) {
+  .cm-wizard,
+  .cm-wizard--vertical {
+    grid-template-columns: 1fr;
+  }
+
+  .cm-wizard__list {
+    grid-template-columns: 1fr;
+  }
+
+  .cm-wizard__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .cm-wizard__actions-main {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .cm-wizard__actions-main .cm-button {
+    flex: 1 1 0;
+  }
+}
+
 .cm-theme-toggle {
   display: flex;
   align-items: center;
