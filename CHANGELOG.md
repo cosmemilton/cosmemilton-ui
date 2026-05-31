@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `cm-ui` are documented in this file.
+All notable changes to `cosmemilton-ui` are documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 From this release forward, versioning and changelog entries are managed with

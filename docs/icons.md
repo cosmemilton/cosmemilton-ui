@@ -1,7 +1,7 @@
-# Icons in cm-ui
+# Icons in cosmemilton-ui
 
-cm-ui does **not** lock you into a single icon library. An icon set is a
-product decision, and no single set covers every product. So cm-ui ships **one
+cosmemilton-ui does **not** lock you into a single icon library. An icon set is a
+product decision, and no single set covers every product. So cosmemilton-ui ships **one
 sensible default** and treats every other icon source as **optional** — bring
 whatever fits your project.
 
@@ -19,7 +19,7 @@ sets (Material Symbols, MDI, Phosphor, Lucide, Heroicons, and more) addressed by
 name, loaded on demand:
 
 ```tsx
-import { CmIcon } from "cm-ui/server";
+import { CmIcon } from "cosmemilton-ui/server";
 
 <CmIcon name="material-symbols:store-outline" />
 <CmIcon name="mdi:truck-delivery-outline" />
@@ -42,7 +42,7 @@ Every component that takes an icon accepts a plain `ReactNode`, so you can pass
 an icon from any library — or your own SVG — directly:
 
 ```tsx
-import { CmButton } from "cm-ui/client";
+import { CmButton } from "cosmemilton-ui/client";
 
 // lucide-react (already available)
 import { Download } from "lucide-react";
@@ -68,7 +68,7 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 </CmButton>;
 ```
 
-None of these (other than `lucide-react`) are dependencies of cm-ui — install
+None of these (other than `lucide-react`) are dependencies of cosmemilton-ui — install
 only what you use.
 
 ## Summary

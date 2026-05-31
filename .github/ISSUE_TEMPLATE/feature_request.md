@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea or improvement for cm-ui
+about: Suggest an idea or improvement for cosmemilton-ui
 title: "[feat] "
 labels: enhancement
 ---

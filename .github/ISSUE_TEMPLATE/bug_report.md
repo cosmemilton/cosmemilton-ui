@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a problem with a cm-ui component
+about: Report a problem with a cosmemilton-ui component
 title: "[bug] "
 labels: bug
 ---
@@ -23,10 +23,10 @@ What you expected to happen.
 
 ## Environment
 
-- cm-ui version:
+- cosmemilton-ui version:
 - react / react-dom version:
 - next version (if applicable):
-- entry point used: `cm-ui/client` | `cm-ui/server` | `cm-ui/theme`
+- entry point used: `cosmemilton-ui/client` | `cosmemilton-ui/server` | `cosmemilton-ui/theme`
 - browser / OS:
 
 ## Additional context

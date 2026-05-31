@@ -1,6 +1,6 @@
-# Contributing to cm-ui
+# Contributing to cosmemilton-ui
 
-Thanks for your interest in improving **cm-ui**! This guide covers the local
+Thanks for your interest in improving **cosmemilton-ui**! This guide covers the local
 workflow and the conventions we follow.
 
 ## Getting started
@@ -50,9 +50,9 @@ CI runs typecheck + lint + test + build on every PR.
 
 ## Breaking changes
 
-Breaking changes require a `major` changeset and a migration note. The move from
-`cosmemilton-ui` (root export) to `cm-ui` with the `client` / `server` / `theme`
-entry points in `3.0.0` is the reference example.
+Breaking changes require a `major` changeset and a migration note. The `3.0.0`
+move from the `cosmemilton-ui` root export to the `cosmemilton-ui/client` /
+`/server` / `/theme` entry points is the reference example.
 
 ## Code of conduct
 

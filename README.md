@@ -1,13 +1,13 @@
-# cm-ui
+# cosmemilton-ui
 
 > Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).
 
-[![npm](https://img.shields.io/npm/v/cm-ui.svg)](https://www.npmjs.com/package/cm-ui)
+[![npm](https://img.shields.io/npm/v/cosmemilton-ui.svg)](https://www.npmjs.com/package/cosmemilton-ui)
 [![CI](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml)
 [![license: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE)
 ![types: included](https://img.shields.io/badge/types-included-blue.svg)
 
-`cm-ui` é uma biblioteca de componentes para painéis, back-offices e dashboards:
+`cosmemilton-ui` é uma biblioteca de componentes para painéis, back-offices e dashboards:
 navegação (sidebar, menus, breadcrumb), exibição de dados (data-table, tree-view,
 gráficos, cards), formulários e overlays (dialog, drawer, popover, toast), com temas
 e densidade configuráveis. ESM-only, três entry points e tipos TypeScript incluídos.
@@ -15,7 +15,7 @@ e densidade configuráveis. ESM-only, três entry points e tipos TypeScript incl
 ## Instalação
 
 ```bash
-npm install cm-ui react react-dom
+npm install cosmemilton-ui react react-dom
 ```
 
 `next` e `@iconify/react` são _peers_ **opcionais**.
@@ -25,8 +25,8 @@ npm install cm-ui react react-dom
 Importe o CSS público uma vez na aplicação e os componentes pelo entry point de cliente:
 
 ```tsx
-import "cm-ui/styles.css";
-import { CmButton } from "cm-ui/client";
+import "cosmemilton-ui/styles.css";
+import { CmButton } from "cosmemilton-ui/client";
 
 export function Example() {
   return <CmButton>Salvar</CmButton>;
@@ -35,23 +35,23 @@ export function Example() {
 
 ### Entry points
 
-| Import             | Conteúdo                                                                                                              |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `cm-ui/client`     | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
-| `cm-ui/server`     | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
-| `cm-ui/theme`      | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
-| `cm-ui/styles.css` | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
+| Import                      | Conteúdo                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `cosmemilton-ui/client`     | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
+| `cosmemilton-ui/server`     | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
+| `cosmemilton-ui/theme`      | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
+| `cosmemilton-ui/styles.css` | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
 
 > **v3** removeu o export raiz `cosmemilton-ui`. Importe sempre por um dos entry
 > points acima. O guia de migração 2.x → 3.0 está nas docs vivas.
 
 ## React puro (Vite/CRA)
 
-`cm-ui` não exige Next em runtime. Envolva a aplicação com o provider de tema:
+`cosmemilton-ui` não exige Next em runtime. Envolva a aplicação com o provider de tema:
 
 ```tsx
-import "cm-ui/styles.css";
-import { CmThemeProvider } from "cm-ui/theme";
+import "cosmemilton-ui/styles.css";
+import { CmThemeProvider } from "cosmemilton-ui/theme";
 import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(
