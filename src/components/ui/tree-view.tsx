@@ -317,6 +317,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
           <div className="cm-tree-view__mode">
             <span className="cm-tree-view__mode-label">Modo Solitário</span>
             <CmSwitch
+              aria-label="Modo Solitário"
               checked={internalSolitaryMode}
               onCheckedChange={(checked: boolean) => {
                 setInternalSolitaryMode(checked);
@@ -332,6 +333,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
         <div className="cm-tree-view__mode cm-tree-view__mode--standalone">
           <span className="cm-tree-view__mode-label">Modo Solitário</span>
           <CmSwitch
+            aria-label="Modo Solitário"
             checked={internalSolitaryMode}
             onCheckedChange={(checked: boolean) => {
               setInternalSolitaryMode(checked);

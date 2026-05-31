@@ -1,0 +1,15 @@
+/* Respeita prefers-reduced-motion globalmente (WCAG 2.3.3 / 2.2): neutraliza
+   animações e transições para quem pede menos movimento. Vem por último na
+   cascata para sobrescrever as durações específicas de cada componente. Mantém
+   ~0.01ms (em vez de 0) para que os eventos transitionend/animationend ainda
+   disparem e nenhuma lógica que dependa deles trave. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
