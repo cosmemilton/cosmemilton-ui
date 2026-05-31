@@ -1,7 +1,7 @@
 {
   "name": "cm-ui",
   "version": "3.0.0",
-  "description": "Biblioteca de componentes React com suporte opcional a Next para projetos Cosme Milton.",
+  "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
   "homepage": "https://miltonjunior.dev.br/cosmemilton-ui",
@@ -15,9 +15,12 @@
   "keywords": [
     "react",
     "nextjs",
+    "rsc",
     "components",
     "ui",
     "design-system",
+    "admin",
+    "dashboard",
     "cosmemilton"
   ],
   "type": "module",
