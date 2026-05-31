@@ -21,7 +21,6 @@ export * from "./components/ui/page.js";
 export * from "./components/ui/page-header.js";
 export * from "./components/ui/section-header.js";
 export * from "./components/ui/separator.js";
-export * from "./components/ui/stat-card.js";
 export * from "./components/ui/text.js";
 export * from "./components/ui/toolbar.js";
 export * from "./components/ui/topbar.js";

@@ -1751,3 +1751,29 @@
     width: 100%;
   }
 }
+
+/* CmMetricCard: indicador de variação (trend) — absorvido do antigo CmStatCard. */
+.cm-metric-card__trend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cm-metric-card__trend-value,
+.cm-metric-card__trend-label {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-muted-foreground);
+}
+
+.cm-metric-card__trend-value {
+  font-weight: 500;
+}
+
+.cm-metric-card__trend-value--positive {
+  color: var(--color-success);
+}
+
+.cm-metric-card__trend-value--negative {
+  color: var(--color-danger);
+}

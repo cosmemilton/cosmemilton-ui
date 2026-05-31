@@ -12,7 +12,6 @@ export * from "./components/ui/bar-chart.js";
 export * from "./components/ui/button.js";
 export * from "./components/ui/calendar.js";
 export * from "./components/ui/carousel.js";
-export * from "./components/ui/chart.js";
 export * from "./components/ui/checkbox.js";
 export * from "./components/ui/code-block.js";
 export * from "./components/ui/collapsible.js";

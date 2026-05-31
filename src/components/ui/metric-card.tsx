@@ -22,6 +22,11 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   density?: CmDensity;
   interactive?: boolean;
   loading?: boolean;
+  /** Indicador de variação (delta). `value` em %, sinal define cor/seta. */
+  trend?: {
+    value: number;
+    label: string;
+  };
 };
 
 export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(function CmMetricCard(
@@ -41,6 +46,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
     tabIndex,
     title,
     tone = "default",
+    trend,
     value,
     ...props
   },
@@ -85,6 +91,21 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
         <span className="cm-metric-card__value">{loading ? "..." : value}</span>
         {description ? <span className="cm-metric-card__description">{description}</span> : null}
       </div>
+      {trend ? (
+        <div className="cm-metric-card__trend">
+          <span
+            className={cn(
+              "cm-metric-card__trend-value",
+              trend.value > 0 && "cm-metric-card__trend-value--positive",
+              trend.value < 0 && "cm-metric-card__trend-value--negative",
+            )}
+          >
+            {trend.value > 0 ? "↑ " : trend.value < 0 ? "↓ " : ""}
+            {Math.abs(trend.value)}%
+          </span>
+          <span className="cm-metric-card__trend-label">{trend.label}</span>
+        </div>
+      ) : null}
       {meta || footer ? (
         <div className="cm-metric-card__footer">
           {meta ? <span className="cm-metric-card__meta">{meta}</span> : null}
