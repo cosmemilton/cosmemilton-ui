@@ -108,6 +108,7 @@ export function CmCommand({
         <div className="cm-command__search">
           <Search className="cm-command__search-icon" aria-hidden="true" />
           <input
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- command palette intentionally focuses its search input when opened
             autoFocus
             className="cm-command__input"
             placeholder={placeholder}
@@ -154,3 +155,4 @@ export function CmCommand({
     </>
   );
 }
+CmCommand.displayName = "CmCommand";

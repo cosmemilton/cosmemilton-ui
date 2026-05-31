@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type StatCardProps = {
@@ -13,19 +13,14 @@ type StatCardProps = {
   className?: string;
 };
 
-export function CmStatCard({
-  title,
-  value,
-  description,
-  icon,
-  trend,
-  className,
-}: StatCardProps) {
+export const CmStatCard = forwardRef<HTMLDivElement, StatCardProps>(
+  function CmStatCard({ title, value, description, icon, trend, className }, ref) {
   const isPositiveTrend = trend && trend.value > 0;
   const isNegativeTrend = trend && trend.value < 0;
 
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-stat-card",
         className
@@ -71,4 +66,5 @@ export function CmStatCard({
       )}
     </div>
   );
-}
+});
+CmStatCard.displayName = "CmStatCard";

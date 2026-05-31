@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from "react";
+import { forwardRef, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmSizeValue, type CmSpacing } from "./types.js";
 
@@ -26,19 +26,18 @@ function resolveGap(gap: ButtonGroupProps["gap"]) {
   return gapMap[gap as keyof typeof gapMap] ?? gap;
 }
 
-export function CmButtonGroup({
-  children,
-  className,
-  fullWidth = false,
-  gap = "none",
-  orientation = "horizontal",
-}: ButtonGroupProps) {
+export const CmButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
+  function CmButtonGroup(
+    { children, className, fullWidth = false, gap = "none", orientation = "horizontal" },
+    ref,
+  ) {
   const isVertical = orientation === "vertical";
   const resolvedGap = resolveGap(gap);
   const isJoined = resolvedGap === "0";
 
   return (
     <div
+      ref={ref}
       role="group"
       className={cn(
         "cm-button-group",
@@ -52,4 +51,5 @@ export function CmButtonGroup({
       {children}
     </div>
   );
-}
+});
+CmButtonGroup.displayName = "CmButtonGroup";

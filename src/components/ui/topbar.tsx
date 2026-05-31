@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmDensityClass, cmSizeValue, type CmDensity } from "./types.js";
 
@@ -26,26 +26,29 @@ export type CmTopbarProps = HTMLAttributes<HTMLElement> & {
   height?: string | number;
 };
 
-export function CmTopbar({
-  bordered = true,
-  center,
-  children,
-  className,
-  centerAlign,
-  density,
-  end,
-  endAlign,
-  height,
-  layout = "balanced",
-  mobileLayout = "stack",
-  start,
-  startAlign,
-  sticky = false,
-  style,
-  title,
-  tone = "surface",
-  ...props
-}: CmTopbarProps) {
+export const CmTopbar = forwardRef<HTMLElement, CmTopbarProps>(function CmTopbar(
+  {
+    bordered = true,
+    center,
+    children,
+    className,
+    centerAlign,
+    density,
+    end,
+    endAlign,
+    height,
+    layout = "balanced",
+    mobileLayout = "stack",
+    start,
+    startAlign,
+    sticky = false,
+    style,
+    title,
+    tone = "surface",
+    ...props
+  },
+  ref,
+) {
   const topbarStyle: CmTopbarStyle = {
     ...(height ? { "--cm-topbar-height": cmSizeValue(height) } : {}),
     ...style,
@@ -53,6 +56,7 @@ export function CmTopbar({
 
   return (
     <header
+      ref={ref}
       className={cn(
         "cm-topbar",
         `cm-topbar--tone-${tone}`,
@@ -98,4 +102,5 @@ export function CmTopbar({
       ) : null}
     </header>
   );
-}
+});
+CmTopbar.displayName = "CmTopbar";

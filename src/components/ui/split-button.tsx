@@ -5,6 +5,9 @@ import { ChevronDown } from "lucide-react";
 import { CmButton } from "./button.js";
 import type { CmButtonTone, CmButtonVariant } from "./button.js";
 import { CmPortal } from "./portal.js";
+import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useFloating } from "../../hooks/use-floating.js";
 
 export interface CmSplitButtonOption {
   label: string;
@@ -63,90 +66,24 @@ export function CmSplitButton({
   const [isOpen, setIsOpen] = React.useState(false);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = React.useState<{
-    top: number;
-    left: number;
-    width: number;
-  }>({ top: 0, left: 0, width: 0 });
 
   // Encontrar opção selecionada
   const selectedOption = options.find((opt) => opt.value === selected);
   const displayLabel = selectedOption?.label || placeholder;
   const displayIcon = selectedOption?.icon;
 
-  // Calcular posição do dropdown
-  const updateDropdownPosition = React.useCallback(() => {
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }
-  }, []);
-
   // Abrir/fechar dropdown
   const toggleDropdown = React.useCallback(() => {
     if (disabled) return;
-    setIsOpen((prev) => {
-      if (!prev) {
-        updateDropdownPosition();
-      }
-      return !prev;
-    });
-  }, [disabled, updateDropdownPosition]);
+    setIsOpen((prev) => !prev);
+  }, [disabled]);
 
-  // Fechar ao clicar fora
-  React.useEffect(() => {
-    if (!isOpen) return;
+  // Fechar ao clicar fora ou pressionar Escape
+  useClickOutside([dropdownRef, buttonRef], () => setIsOpen(false), isOpen);
+  useEscapeKey(isOpen, () => setIsOpen(false));
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen]);
-
-  // Atualizar posição ao redimensionar
-  React.useEffect(() => {
-    if (!isOpen) return;
-
-    const handleResize = () => {
-      updateDropdownPosition();
-    };
-
-    const handleScroll = () => {
-      updateDropdownPosition();
-    };
-
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll, true);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [isOpen, updateDropdownPosition]);
+  // Posicionar o menu (flip/shift/auto-update via Floating UI)
+  useFloating(buttonRef, dropdownRef, { enabled: isOpen, matchWidth: true });
 
   // Selecionar opção
   const handleSelect = (value: string) => {
@@ -177,15 +114,7 @@ export function CmSplitButton({
 
       {isOpen && (
         <CmPortal>
-          <div
-            ref={dropdownRef}
-            className="cm-split-button__menu"
-            style={{
-              top: `${dropdownPosition.top}px`,
-              left: `${dropdownPosition.left}px`,
-              minWidth: `${dropdownPosition.width}px`,
-            }}
-          >
+          <div ref={dropdownRef} className="cm-split-button__menu">
             {options.map((option) => {
               const isSelected = option.value === selected;
 
@@ -214,3 +143,4 @@ export function CmSplitButton({
     </div>
   );
 }
+CmSplitButton.displayName = "CmSplitButton";

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type KbdProps = {
@@ -6,9 +6,13 @@ type KbdProps = {
   className?: string;
 };
 
-export function CmKbd({ children, className }: KbdProps) {
+export const CmKbd = forwardRef<HTMLElement, KbdProps>(function CmKbd(
+  { children, className },
+  ref,
+) {
   return (
     <kbd
+      ref={ref}
       className={cn(
         "cm-kbd",
         className,
@@ -17,4 +21,5 @@ export function CmKbd({ children, className }: KbdProps) {
       {children}
     </kbd>
   );
-}
+});
+CmKbd.displayName = "CmKbd";

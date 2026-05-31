@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import { cn } from "../../lib/utils.js";
 
 type ProgressProps = {
@@ -9,13 +10,14 @@ type ProgressProps = {
   label?: string;
 };
 
-export function CmProgress({ value, max = 100, className, label }: ProgressProps) {
+export const CmProgress = forwardRef<HTMLDivElement, ProgressProps>(
+  function CmProgress({ value, max = 100, className, label }, ref) {
   const safeValue = Math.min(Math.max(value, 0), max);
   const hasVisibleLabel = Boolean(label?.trim());
   const progressLabel = hasVisibleLabel ? label : "Progresso";
 
   return (
-    <div className={cn("cm-progress", className)}>
+    <div ref={ref} className={cn("cm-progress", className)}>
       {hasVisibleLabel ? (
         <span className="cm-progress__label">{label}</span>
       ) : null}
@@ -27,4 +29,5 @@ export function CmProgress({ value, max = 100, className, label }: ProgressProps
       />
     </div>
   );
-}
+});
+CmProgress.displayName = "CmProgress";

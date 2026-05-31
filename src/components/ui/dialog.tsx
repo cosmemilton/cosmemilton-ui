@@ -10,6 +10,9 @@ import {
 } from "react";
 import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useScrollLock } from "../../hooks/use-scroll-lock.js";
+import { useFocusTrap } from "../../hooks/use-focus-trap.js";
 import { useCmTheme } from "../theme/theme-provider.js";
 import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
@@ -164,32 +167,22 @@ export function CmDialog({
   const titleId = useId();
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<DialogPortalStyle>({});
   const [portalAppTheme, setPortalAppTheme] = useState<
     string | undefined
   >(undefined);
 
+  useScrollLock(open);
+  useEscapeKey(open && dismissible, onClose);
+  useFocusTrap(panelRef, { enabled: open });
+
   useEffect(() => {
-    if (!open) return;
-    if (portal && sourceRef.current) {
-      const portalTheme = readDialogPortalTheme(sourceRef.current);
-      setPortalStyle(portalTheme.style);
-      setPortalAppTheme(portalTheme.appTheme);
-    }
-
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && dismissible) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
-  }, [dismissible, open, onClose, portal]);
+    if (!open || !portal || !sourceRef.current) return;
+    const portalTheme = readDialogPortalTheme(sourceRef.current);
+    setPortalStyle(portalTheme.style);
+    setPortalAppTheme(portalTheme.appTheme);
+  }, [open, portal]);
 
   const { invertHeader } = useCmTheme();
 
@@ -225,8 +218,10 @@ export function CmDialog({
       />
 
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
+        tabIndex={-1}
         aria-labelledby={title ? titleId : undefined}
         aria-describedby={description ? descriptionId : undefined}
         className={cn(
@@ -366,3 +361,4 @@ export function CmDialog({
     </>
   );
 }
+CmDialog.displayName = "CmDialog";

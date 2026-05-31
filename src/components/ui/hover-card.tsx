@@ -85,3 +85,4 @@ export function CmHoverCard({ trigger, children, className }: HoverCardProps) {
     </div>
   );
 }
+CmHoverCard.displayName = "CmHoverCard";

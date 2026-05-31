@@ -67,6 +67,7 @@ export function CmToastNotice({ title, description, tone = "info", duration }: T
 
   return null;
 }
+CmToastNotice.displayName = "CmToastNotice";
 
 const toneClasses: Record<CmToastTone, string> = {
   default: "cm-toast__item--default",
@@ -191,3 +192,4 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+CmToastProvider.displayName = "CmToastProvider";

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import { forwardRef, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type ScrollAreaProps = {
@@ -9,15 +9,9 @@ type ScrollAreaProps = {
   height?: number | string;
 };
 
-export function CmScrollArea({ children, className, height = 320 }: ScrollAreaProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
+export const CmScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
+  function CmScrollArea({ children, className, height = 320 }, ref) {
   const maxHeight = typeof height === "number" ? `${height}px` : height;
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.setProperty("max-height", maxHeight);
-    }
-  }, [maxHeight]);
 
   return (
     <div
@@ -26,8 +20,10 @@ export function CmScrollArea({ children, className, height = 320 }: ScrollAreaPr
         "cm-scroll-area",
         className,
       )}
+      style={{ maxHeight } as CSSProperties}
     >
       {children}
     </div>
   );
-}
+});
+CmScrollArea.displayName = "CmScrollArea";

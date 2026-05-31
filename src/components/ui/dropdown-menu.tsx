@@ -99,3 +99,4 @@ export function CmDropdownMenu({ trigger, items, header, align, className }: CmD
     </CmPopover>
   );
 }
+CmDropdownMenu.displayName = "CmDropdownMenu";

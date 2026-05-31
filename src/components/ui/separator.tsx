@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes } from "react";
+import { forwardRef, type CSSProperties, type HTMLAttributes } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmSizeValue, type CmSpacing } from "./types.js";
 
@@ -10,14 +10,11 @@ type SeparatorProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   length?: string | number;
 };
 
-export function CmSeparator({
-  orientation = "horizontal",
-  spacing = "md",
-  length,
-  className,
-  style,
-  ...props
-}: SeparatorProps) {
+export const CmSeparator = forwardRef<HTMLSpanElement, SeparatorProps>(
+  function CmSeparator(
+    { orientation = "horizontal", spacing = "md", length, className, style, ...props },
+    ref,
+  ) {
   const spacingClass = `cm-separator--spacing-${spacing}`;
   const separatorStyle: SeparatorStyle = {
     ...(length ? { "--cm-separator-length": cmSizeValue(length) } : {}),
@@ -27,6 +24,7 @@ export function CmSeparator({
   if (orientation === "vertical") {
     return (
       <span
+        ref={ref}
         role="separator"
         aria-orientation="vertical"
         className={cn("cm-separator cm-separator--vertical", spacingClass, className)}
@@ -38,10 +36,12 @@ export function CmSeparator({
 
   return (
     <span
+      ref={ref}
       role="separator"
       className={cn("cm-separator cm-separator--horizontal", spacingClass, className)}
       style={separatorStyle}
       {...props}
     />
   );
-}
+});
+CmSeparator.displayName = "CmSeparator";

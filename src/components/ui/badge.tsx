@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import type { CmTone } from "./types.js";
 
@@ -29,14 +29,13 @@ const variantStyles: Record<BadgeVariant, string> = {
   outline: "cm-badge--outline",
 };
 
-export function CmBadge({
-  children,
-  className,
-  variant = "soft",
-  tone = "default",
-}: BadgeProps) {
+export const CmBadge = forwardRef<HTMLSpanElement, BadgeProps>(function CmBadge(
+  { children, className, variant = "soft", tone = "default" },
+  ref,
+) {
   return (
     <span
+      ref={ref}
       className={cn(
         "cm-badge",
         toneStyles[tone] ?? toneStyles["default"],
@@ -47,4 +46,5 @@ export function CmBadge({
       {children}
     </span>
   );
-}
+});
+CmBadge.displayName = "CmBadge";

@@ -4,6 +4,7 @@ import type {
   HTMLAttributes,
   ReactNode,
 } from "react";
+import { forwardRef } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmSizeValue,
@@ -121,14 +122,12 @@ export function CmGridContainer({
     </div>
   );
 }
+CmGridContainer.displayName = "CmGridContainer";
 
-export function CmGrid({
-  children,
-  className,
-  span = 1,
-  style,
-  ...props
-}: GridProps) {
+export const CmGrid = forwardRef<HTMLDivElement, GridProps>(function CmGrid(
+  { children, className, span = 1, style, ...props },
+  ref,
+) {
   const resolvedSpan = resolveResponsiveNumber(span, 1);
   const gridStyle: GridStyle = {
     "--grid-span-base": resolvedSpan.base,
@@ -141,6 +140,7 @@ export function CmGrid({
 
   return (
     <div
+      ref={ref}
       className={cn("cm-grid", className)}
       style={gridStyle}
       {...props}
@@ -148,4 +148,5 @@ export function CmGrid({
       {children}
     </div>
   );
-}
+});
+CmGrid.displayName = "CmGrid";

@@ -50,3 +50,4 @@ export function CmAccordion({ items, defaultOpen, className }: AccordionProps) {
     </div>
   );
 }
+CmAccordion.displayName = "CmAccordion";

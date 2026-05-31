@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  forwardRef,
   useEffect,
   useState,
   type ComponentType,
@@ -31,12 +32,11 @@ function getBrowserPathname() {
   return window.location.pathname;
 }
 
-export function CmNavigationMenu({
-  items,
-  className,
-  activeHref,
-  linkComponent: LinkComponent,
-}: NavigationMenuProps) {
+export const CmNavigationMenu = forwardRef<HTMLElement, NavigationMenuProps>(
+  function CmNavigationMenu(
+    { items, className, activeHref, linkComponent: LinkComponent },
+    ref,
+  ) {
   const [pathname, setPathname] = useState(() => activeHref ?? getBrowserPathname());
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export function CmNavigationMenu({
   }, [activeHref]);
 
   return (
-    <nav className={cn("cm-navigation-menu", className)}>
+    <nav ref={ref} className={cn("cm-navigation-menu", className)}>
       {items.map((item) => {
         const isActive = pathname === item.href;
         const linkClassName = cn(
@@ -77,4 +77,5 @@ export function CmNavigationMenu({
       })}
     </nav>
   );
-}
+});
+CmNavigationMenu.displayName = "CmNavigationMenu";

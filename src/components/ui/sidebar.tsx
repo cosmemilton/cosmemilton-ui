@@ -714,3 +714,4 @@ function SidebarItem({ active, collapsed, groupLabel, icon, item, linkComponent,
     </CmButton>
   );
 }
+CmSidebar.displayName = "CmSidebar";

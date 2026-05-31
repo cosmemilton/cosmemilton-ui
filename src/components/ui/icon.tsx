@@ -39,3 +39,4 @@ export function CmIcon({ name, className, size = 20, color, style, title, "aria-
     />
   );
 }
+CmIcon.displayName = "CmIcon";

@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, ReactNode, useState } from "react";
+import { forwardRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import type { CmStatusTone } from "./types.js";
@@ -36,19 +36,22 @@ export type CmAlertProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
-export function CmAlert({
-  title,
-  description,
-  action,
-  tone = "info",
-  className,
-  dismissible = false,
-  closeLabel = "Dispensar alerta",
-  onDismiss,
-  open,
-  defaultOpen = true,
-  onOpenChange,
-}: CmAlertProps) {
+export const CmAlert = forwardRef<HTMLDivElement, CmAlertProps>(function CmAlert(
+  {
+    title,
+    description,
+    action,
+    tone = "info",
+    className,
+    dismissible = false,
+    closeLabel = "Dispensar alerta",
+    onDismiss,
+    open,
+    defaultOpen = true,
+    onOpenChange,
+  },
+  ref,
+) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const palette = toneMap[tone];
   const toneStyle = { "--cm-alert-tone": palette.color } as CSSProperties;
@@ -66,6 +69,7 @@ export function CmAlert({
 
   return (
     <div
+      ref={ref}
       className={cn("cm-alert", className)}
       role={tone === "danger" || tone === "warning" ? "alert" : "status"}
       style={toneStyle}
@@ -95,4 +99,5 @@ export function CmAlert({
       ) : null}
     </div>
   );
-}
+});
+CmAlert.displayName = "CmAlert";

@@ -1,7 +1,16 @@
 "use client";
 
-import { MouseEvent as ReactMouseEvent, ReactNode, useRef, useState, type CSSProperties } from "react";
+import {
+  MouseEvent as ReactMouseEvent,
+  KeyboardEvent as ReactKeyboardEvent,
+  ReactNode,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { cn } from "../../lib/utils.js";
+
+const KEYBOARD_STEP = 16;
 
 type ResizableProps = {
   minWidth?: number;
@@ -37,6 +46,29 @@ export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  const clampWidth = (value: number) => Math.min(Math.max(value, minWidth), maxWidth);
+
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    switch (event.key) {
+      case "ArrowLeft":
+        event.preventDefault();
+        setWidth((current) => clampWidth(current - KEYBOARD_STEP));
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        setWidth((current) => clampWidth(current + KEYBOARD_STEP));
+        break;
+      case "Home":
+        event.preventDefault();
+        setWidth(minWidth);
+        break;
+      case "End":
+        event.preventDefault();
+        setWidth(maxWidth);
+        break;
+    }
+  };
+
   const resizableStyle: ResizableStyle = {
     "--cm-resizable-width": `${width}px`,
   };
@@ -46,13 +78,23 @@ export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320
       <div className="cm-resizable-content">
         {children}
       </div>
+      {/* A focusable separator is an ARIA "window splitter"; jsx-a11y flags it as
+          non-interactive, but it has full pointer + keyboard support below. */}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         role="separator"
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         aria-orientation="vertical"
+        aria-label="Redimensionar painel"
+        aria-valuenow={Math.round(width)}
+        aria-valuemin={minWidth}
+        aria-valuemax={maxWidth}
         onMouseDown={handleMouseDown}
+        onKeyDown={handleKeyDown}
         className="cm-resizable-handle"
       />
     </div>
   );
 }
+CmResizable.displayName = "CmResizable";

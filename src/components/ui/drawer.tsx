@@ -10,6 +10,9 @@ import {
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useScrollLock } from "../../hooks/use-scroll-lock.js";
+import { useFocusTrap } from "../../hooks/use-focus-trap.js";
 
 type DrawerSide = "left" | "right" | "bottom" | "top";
 
@@ -60,26 +63,17 @@ function readDrawerPortalTheme(element: HTMLElement): DrawerPortalStyle {
 
 export function CmDrawer({ open, onClose, side = "right", children, className, title }: DrawerProps) {
   const sourceRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<DrawerPortalStyle>({});
 
-  useEffect(() => {
-    if (!open) return;
-    if (sourceRef.current) {
-      setPortalStyle(readDrawerPortalTheme(sourceRef.current));
-    }
+  useScrollLock(open);
+  useEscapeKey(open, onClose);
+  useFocusTrap(panelRef, { enabled: open });
 
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
+  useEffect(() => {
+    if (!open || !sourceRef.current) return;
+    setPortalStyle(readDrawerPortalTheme(sourceRef.current));
+  }, [open]);
 
   if (!open) return <span ref={sourceRef} hidden />;
 
@@ -94,6 +88,11 @@ export function CmDrawer({ open, onClose, side = "right", children, className, t
             onClick={onClose}
           />
           <div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            aria-label={title}
             className={cn(
               "cm-drawer__panel",
               sideClass[side],
@@ -122,3 +121,4 @@ export function CmDrawer({ open, onClose, side = "right", children, className, t
     </>
   );
 }
+CmDrawer.displayName = "CmDrawer";

@@ -14,6 +14,7 @@ import { ChevronDown, X } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
+import { useClickOutside } from "../../hooks/use-click-outside.js";
 
 export type CmComboboxItem = {
   value: string;
@@ -229,28 +230,14 @@ export function CmCombobox({
     setQuery(getDisplayValue(item));
   }, [active?.value, getDisplayValue, isFocused, items, selectedInitialValue]);
 
+  useClickOutside([containerRef, panelRef], () => setIsOpen(false));
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node) &&
-        panelRef.current &&
-        !panelRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleWindowChange = () => {
-      if (isOpen) updateDropdownPosition();
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
+    if (!isOpen) return;
+    const handleWindowChange = () => updateDropdownPosition();
     window.addEventListener("scroll", handleWindowChange, true);
     window.addEventListener("resize", handleWindowChange);
-
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleWindowChange, true);
       window.removeEventListener("resize", handleWindowChange);
     };
@@ -483,3 +470,4 @@ export function CmCombobox({
     </div>
   );
 }
+CmCombobox.displayName = "CmCombobox";

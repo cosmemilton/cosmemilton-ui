@@ -1041,3 +1041,4 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
     </div>
   );
 };
+CmTreeView.displayName = "CmTreeView";

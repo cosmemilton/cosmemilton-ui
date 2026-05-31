@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmDensityClass, type CmDensity } from "./types.js";
 
@@ -13,20 +13,14 @@ export type CmPageHeaderProps = HTMLAttributes<HTMLElement> & {
   align?: "start" | "center";
 };
 
-export function CmPageHeader({
-  actions,
-  align = "start",
-  className,
-  density,
-  description,
-  eyebrow,
-  icon,
-  meta,
-  title,
-  ...props
-}: CmPageHeaderProps) {
+export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(
+  function CmPageHeader(
+    { actions, align = "start", className, density, description, eyebrow, icon, meta, title, ...props },
+    ref,
+  ) {
   return (
     <header
+      ref={ref}
       className={cn(
         "cm-page-header",
         `cm-page-header--align-${align}`,
@@ -51,4 +45,5 @@ export function CmPageHeader({
       {actions ? <div className="cm-page-header__actions">{actions}</div> : null}
     </header>
   );
-}
+});
+CmPageHeader.displayName = "CmPageHeader";

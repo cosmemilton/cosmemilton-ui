@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLAttributes, ReactNode } from "react";
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
@@ -46,30 +46,34 @@ const toneMap: Record<CardTone, string> = {
   info: "cm-card--tone-info",
 };
 
-export function CmCard({
-  bodyPadding,
-  children,
-  className,
-  density,
-  padding = "md",
-  elevated = false,
-  footer,
-  header,
-  variant = "surface",
-  tone = "default",
-  interactive = false,
-  accent = "none",
-  cover = false,
-  coverHeight,
-  style,
-  ...props
-}: CardProps) {
+export const CmCard = forwardRef<HTMLDivElement, CardProps>(function CmCard(
+  {
+    bodyPadding,
+    children,
+    className,
+    density,
+    padding = "md",
+    elevated = false,
+    footer,
+    header,
+    variant = "surface",
+    tone = "default",
+    interactive = false,
+    accent = "none",
+    cover = false,
+    coverHeight,
+    style,
+    ...props
+  },
+  ref,
+) {
   const hasCover = Boolean(cover);
   const hasStructuredContent = Boolean(header || footer || hasCover);
   const resolvedBodyPadding = bodyPadding ?? padding;
 
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-card",
         `cm-card--${variant}`,
@@ -107,4 +111,5 @@ export function CmCard({
       )}
     </div>
   );
-}
+});
+CmCard.displayName = "CmCard";

@@ -184,3 +184,4 @@ export function CmAppShell({
     </div>
   );
 }
+CmAppShell.displayName = "CmAppShell";

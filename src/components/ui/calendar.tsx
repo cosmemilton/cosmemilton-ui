@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
+import { forwardRef, Fragment, useMemo } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 
@@ -14,7 +14,8 @@ export type CmCalendarProps = {
   className?: string;
 };
 
-export function CmCalendar({ value = new Date(), onSelect, month, year, className }: CmCalendarProps) {
+export const CmCalendar = forwardRef<HTMLDivElement, CmCalendarProps>(
+  function CmCalendar({ value = new Date(), onSelect, month, year, className }, ref) {
   const reference = useMemo(() => {
     const now = new Date(value);
     if (typeof month === "number") now.setMonth(month);
@@ -58,7 +59,7 @@ export function CmCalendar({ value = new Date(), onSelect, month, year, classNam
   };
 
   return (
-    <div className={cn("cm-calendar", className)}>
+    <div ref={ref} className={cn("cm-calendar", className)}>
       <header className="cm-calendar__header">
         <span>
           {reference.toLocaleString("pt-BR", { month: "long", year: "numeric" })}
@@ -107,4 +108,5 @@ export function CmCalendar({ value = new Date(), onSelect, month, year, classNam
       </div>
     </div>
   );
-}
+});
+CmCalendar.displayName = "CmCalendar";

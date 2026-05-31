@@ -84,3 +84,4 @@ export function CmText<TElement extends ElementType = "p">({
     </Component>
   );
 }
+CmText.displayName = "CmText";

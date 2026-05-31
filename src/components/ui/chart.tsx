@@ -64,3 +64,4 @@ function Bar({ heightPercentage, color, label }: { heightPercentage: number; col
     />
   );
 }
+CmChart.displayName = "CmChart";

@@ -35,3 +35,4 @@ export function CmCollapsible({ trigger, children, defaultOpen = false, classNam
     </div>
   );
 }
+CmCollapsible.displayName = "CmCollapsible";

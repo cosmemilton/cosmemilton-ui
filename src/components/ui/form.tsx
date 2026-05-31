@@ -1,4 +1,4 @@
-import { type CSSProperties, FormHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type CSSProperties, type FormHTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
@@ -25,20 +25,23 @@ function spacingValue(value: string | number | undefined, fallback: string) {
   return typeof value === "number" ? `${value}px` : value;
 }
 
-export function CmForm({
-  actions,
-  actionsAlign = "end",
-  children,
-  className,
-  columns = { base: 1, md: 2 },
-  density,
-  description,
-  gap,
-  layout = "stack",
-  style,
-  title,
-  ...props
-}: FormProps) {
+export const CmForm = forwardRef<HTMLFormElement, FormProps>(function CmForm(
+  {
+    actions,
+    actionsAlign = "end",
+    children,
+    className,
+    columns = { base: 1, md: 2 },
+    density,
+    description,
+    gap,
+    layout = "stack",
+    style,
+    title,
+    ...props
+  },
+  ref,
+) {
   const resolvedColumns = resolveResponsiveNumber(columns, 1);
   const formStyle: CmFormStyle = {
     "--cm-form-columns-base": resolvedColumns.base,
@@ -52,6 +55,7 @@ export function CmForm({
 
   return (
     <form
+      ref={ref}
       className={cn(
         "cm-form",
         `cm-form--layout-${layout}`,
@@ -76,4 +80,5 @@ export function CmForm({
       {actions ? <footer className="cm-form__actions">{actions}</footer> : null}
     </form>
   );
-}
+});
+CmForm.displayName = "CmForm";

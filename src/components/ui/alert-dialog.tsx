@@ -70,3 +70,4 @@ export function CmAlertDialog({
     </>
   );
 }
+CmAlertDialog.displayName = "CmAlertDialog";

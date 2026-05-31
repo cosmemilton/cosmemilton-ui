@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { forwardRef, type ChangeEvent } from "react";
 import { cn } from "../../lib/utils.js";
 
 export type CmRadioOption = {
@@ -17,13 +17,14 @@ export type CmRadioGroupProps = {
   className?: string;
 };
 
-export function CmRadioGroup({ name, value, options, onChange, className }: CmRadioGroupProps) {
+export const CmRadioGroup = forwardRef<HTMLDivElement, CmRadioGroupProps>(
+  function CmRadioGroup({ name, value, options, onChange, className }, ref) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
 
   return (
-    <div className={cn("cm-radio-group", className)}>
+    <div ref={ref} className={cn("cm-radio-group", className)}>
       {options.map((option) => (
         <label
           key={option.value}
@@ -51,4 +52,5 @@ export function CmRadioGroup({ name, value, options, onChange, className }: CmRa
       ))}
     </div>
   );
-}
+});
+CmRadioGroup.displayName = "CmRadioGroup";

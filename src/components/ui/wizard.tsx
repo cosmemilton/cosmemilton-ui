@@ -280,3 +280,4 @@ export function CmWizard({
     </div>
   );
 }
+CmWizard.displayName = "CmWizard";

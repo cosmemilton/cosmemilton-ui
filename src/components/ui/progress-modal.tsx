@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useId } from "react";
 import { CmPortal } from "./portal.js";
 import { CmProgress } from "./progress.js";
+import { useScrollLock } from "../../hooks/use-scroll-lock.js";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 
@@ -24,7 +25,6 @@ interface ProgressModalProps {
 export function CmProgressModal({
   open,
   steps,
-  currentStep,
   title = "Processando...",
   description = "Por favor, aguarde enquanto processamos sua solicitação.",
 }: ProgressModalProps) {
@@ -34,14 +34,7 @@ export function CmProgressModal({
   const totalSteps = steps.length;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
-  useEffect(() => {
-    if (!open) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [open]);
+  useScrollLock(open);
 
   if (!open) return null;
 
@@ -144,3 +137,4 @@ export function CmProgressModal({
     </CmPortal>
   );
 }
+CmProgressModal.displayName = "CmProgressModal";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, forwardRef, useContext, useState } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 
@@ -23,14 +23,10 @@ interface TabsProps {
   variant?: TabsVariant;
 }
 
-export function CmTabs({
-  value,
-  defaultValue,
-  onValueChange,
-  children,
-  className,
-  variant = "default",
-}: TabsProps) {
+export const CmTabs = forwardRef<HTMLDivElement, TabsProps>(function CmTabs(
+  { value, defaultValue, onValueChange, children, className, variant = "default" },
+  ref,
+) {
   const [internal, setInternal] = useState(defaultValue ?? "");
   const currentValue = value ?? internal;
   const handleChange = onValueChange ?? setInternal;
@@ -40,6 +36,7 @@ export function CmTabs({
       value={{ value: currentValue, onValueChange: handleChange, variant }}
     >
       <div
+        ref={ref}
         className={cn(
           "cm-tabs",
           variant === "modal" && "cm-tabs--modal",
@@ -51,19 +48,22 @@ export function CmTabs({
       </div>
     </TabsContext.Provider>
   );
-}
+});
+CmTabs.displayName = "CmTabs";
 
 interface TabsListProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export function CmTabsList({ children, className }: TabsListProps) {
+export const CmTabsList = forwardRef<HTMLDivElement, TabsListProps>(
+  function CmTabsList({ children, className }, ref) {
   const context = useContext(TabsContext);
   const variant = context?.variant ?? "default";
 
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-tabs-list",
         variant === "modal" && "cm-tabs-list--modal",
@@ -75,7 +75,8 @@ export function CmTabsList({ children, className }: TabsListProps) {
       {children}
     </div>
   );
-}
+});
+CmTabsList.displayName = "CmTabsList";
 
 interface TabsTriggerProps {
   value: string;
@@ -84,12 +85,8 @@ interface TabsTriggerProps {
   disabled?: boolean;
 }
 
-export function CmTabsTrigger({
-  value,
-  children,
-  className,
-  disabled,
-}: TabsTriggerProps) {
+export const CmTabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
+  function CmTabsTrigger({ value, children, className, disabled }, ref) {
   const context = useContext(TabsContext);
   if (!context) throw new Error("CmTabsTrigger must be used within CmTabs");
 
@@ -97,6 +94,7 @@ export function CmTabsTrigger({
 
   return (
     <CmButton
+      ref={ref}
       unstyled
       type="button"
       role="tab"
@@ -114,7 +112,8 @@ export function CmTabsTrigger({
       {children}
     </CmButton>
   );
-}
+});
+CmTabsTrigger.displayName = "CmTabsTrigger";
 
 interface TabsContentProps {
   value: string;
@@ -124,12 +123,8 @@ interface TabsContentProps {
   unmountOnHide?: boolean;
 }
 
-export function CmTabsContent({
-  value,
-  children,
-  className,
-  unmountOnHide = false,
-}: TabsContentProps) {
+export const CmTabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
+  function CmTabsContent({ value, children, className, unmountOnHide = false }, ref) {
   const context = useContext(TabsContext);
   if (!context) throw new Error("CmTabsContent must be used within CmTabs");
 
@@ -139,6 +134,7 @@ export function CmTabsContent({
 
   return (
     <div
+      ref={ref}
       role="tabpanel"
       hidden={!isActive}
       className={cn(
@@ -151,4 +147,5 @@ export function CmTabsContent({
       {children}
     </div>
   );
-}
+});
+CmTabsContent.displayName = "CmTabsContent";

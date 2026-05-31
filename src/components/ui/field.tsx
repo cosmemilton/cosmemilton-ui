@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmDensityClass, type CmDensity } from "./types.js";
 
@@ -13,9 +13,12 @@ type FieldProps = {
   children: ReactNode;
 };
 
-export function CmField({ label, labelHint, description, error, required, density, className, children }: FieldProps) {
+export const CmField = forwardRef<HTMLDivElement, FieldProps>(function CmField(
+  { label, labelHint, description, error, required, density, className, children },
+  ref,
+) {
   return (
-    <div className={cn("cm-field", cmDensityClass(density), className)}>
+    <div ref={ref} className={cn("cm-field", cmDensityClass(density), className)}>
       {(label || labelHint) ? (
         <div className="cm-field__header">
           <div className="cm-field__label-row">
@@ -33,4 +36,5 @@ export function CmField({ label, labelHint, description, error, required, densit
       ) : null}
     </div>
   );
-}
+});
+CmField.displayName = "CmField";

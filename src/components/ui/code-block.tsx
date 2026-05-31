@@ -2,7 +2,7 @@
 
 import { Check, Copy } from "lucide-react";
 import type { HTMLAttributes, ReactNode } from "react";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 
@@ -16,17 +16,21 @@ export type CmCodeBlockProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   copiedLabel?: string;
 };
 
-export function CmCodeBlock({
-  className,
-  code,
-  children,
-  copiedLabel = "Copiado",
-  copyable = false,
-  copyLabel = "Copiar código",
-  inline = false,
-  language,
-  ...props
-}: CmCodeBlockProps) {
+export const CmCodeBlock = forwardRef<HTMLElement, CmCodeBlockProps>(
+  function CmCodeBlock(
+    {
+      className,
+      code,
+      children,
+      copiedLabel = "Copiado",
+      copyable = false,
+      copyLabel = "Copiar código",
+      inline = false,
+      language,
+      ...props
+    },
+    ref,
+  ) {
   const [copied, setCopied] = useState(false);
   const content = code ?? (typeof children === "string" ? children : "");
 
@@ -39,14 +43,14 @@ export function CmCodeBlock({
 
   if (inline) {
     return (
-      <code className={cn("cm-code-inline", className)} {...props}>
+      <code ref={ref} className={cn("cm-code-inline", className)} {...props}>
         {children ?? code}
       </code>
     );
   }
 
   return (
-    <figure className={cn("cm-code-block", className)} {...props}>
+    <figure ref={ref} className={cn("cm-code-block", className)} {...props}>
       {(language || copyable) ? (
         <figcaption className="cm-code-block__header">
           {language ? (
@@ -77,4 +81,5 @@ export function CmCodeBlock({
       </pre>
     </figure>
   );
-}
+});
+CmCodeBlock.displayName = "CmCodeBlock";

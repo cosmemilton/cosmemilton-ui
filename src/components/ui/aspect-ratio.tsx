@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, ReactNode } from "react";
+import { forwardRef, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import type { CmRadius, CmTone } from "./types.js";
 
@@ -15,16 +15,14 @@ type AspectRatioProps = {
   surface?: AspectRatioSurface;
 };
 
-export function CmAspectRatio({
-  ratio = 16 / 9,
-  className,
-  center = false,
-  children,
-  radius = "lg",
-  surface = "none",
-}: AspectRatioProps) {
+export const CmAspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(
+  function CmAspectRatio(
+    { ratio = 16 / 9, className, center = false, children, radius = "lg", surface = "none" },
+    ref,
+  ) {
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-aspect-ratio",
         center && "cm-aspect-ratio--center",
@@ -37,4 +35,5 @@ export function CmAspectRatio({
       {children}
     </div>
   );
-}
+});
+CmAspectRatio.displayName = "CmAspectRatio";

@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from "react";
+import { forwardRef, type ComponentType, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 export type CmBreadcrumbItem = {
@@ -18,13 +18,10 @@ type BreadcrumbProps = {
   linkComponent?: ComponentType<CmLinkComponentProps>;
 };
 
-export function CmBreadcrumb({
-  items,
-  className,
-  linkComponent: LinkComponent,
-}: BreadcrumbProps) {
+export const CmBreadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
+  function CmBreadcrumb({ items, className, linkComponent: LinkComponent }, ref) {
   return (
-    <nav aria-label="breadcrumb" className={cn("cm-breadcrumb", className)}>
+    <nav ref={ref} aria-label="breadcrumb" className={cn("cm-breadcrumb", className)}>
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         const key =
@@ -52,4 +49,5 @@ export function CmBreadcrumb({
       })}
     </nav>
   );
-}
+});
+CmBreadcrumb.displayName = "CmBreadcrumb";

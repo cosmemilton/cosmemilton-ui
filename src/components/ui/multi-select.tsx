@@ -12,6 +12,9 @@ import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
+import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useFloating } from "../../hooks/use-floating.js";
 
 export type CmMultiSelectOption = {
   value: string;
@@ -108,59 +111,16 @@ export function CmMultiSelect({
     [onChange, value],
   );
 
-  useEffect(() => {
-    if (!open) return;
-    const handleClick = (event: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(event.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
+  useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
 
   useEffect(() => {
     if (!open || !triggerRef.current) return;
     setPortalThemeStyle(readPortalThemeStyle(triggerRef.current));
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const updatePosition = () => {
-      if (!panelRef.current || !triggerRef.current) return;
-      const rect = triggerRef.current.getBoundingClientRect();
-      const panel = panelRef.current;
-      const viewportHeight = window.innerHeight;
-      const panelHeight = panel.offsetHeight;
-      let top = rect.bottom + 4;
-      if (top + panelHeight > viewportHeight) top = rect.top - panelHeight - 4;
-      panel.style.top = `${top}px`;
-      panel.style.left = `${rect.left}px`;
-      panel.style.minWidth = `${rect.width}px`;
-    };
+  useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
 
-    requestAnimationFrame(() => requestAnimationFrame(updatePosition));
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [open]);
+  useEscapeKey(open, () => setOpen(false));
 
   const borderColor = error
     ? "cm-floating-field--error"
@@ -283,3 +243,4 @@ export function CmMultiSelect({
     </div>
   );
 }
+CmMultiSelect.displayName = "CmMultiSelect";

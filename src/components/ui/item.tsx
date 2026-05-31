@@ -33,3 +33,4 @@ export function CmItem({ title, description, meta, className, onClick }: ItemPro
     </Element>
   );
 }
+CmItem.displayName = "CmItem";

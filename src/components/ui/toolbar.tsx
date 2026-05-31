@@ -52,22 +52,26 @@ export function CmToolbar({
     ...style,
   };
 
-  return createElement(as, {
-    className: cn(
-      "cm-toolbar",
-      `cm-toolbar--align-${align}`,
-      `cm-toolbar--justify-${justify}`,
-      wrap && "cm-toolbar--wrap",
-      inset && "cm-toolbar--inset",
-      compact && "cm-toolbar--compact",
-      cmDensityClass(density),
-      className,
-    ),
-    style: toolbarStyle,
-    ...props,
+  return createElement(
+    as,
+    {
+      className: cn(
+        "cm-toolbar",
+        `cm-toolbar--align-${align}`,
+        `cm-toolbar--justify-${justify}`,
+        wrap && "cm-toolbar--wrap",
+        inset && "cm-toolbar--inset",
+        compact && "cm-toolbar--compact",
+        cmDensityClass(density),
+        className,
+      ),
+      style: toolbarStyle,
+      ...props,
+    },
     children,
-  });
+  );
 }
+CmToolbar.displayName = "CmToolbar";
 
 export type CmFilterBarProps = CmToolbarProps & {
   withinCard?: boolean;
@@ -82,3 +86,4 @@ export function CmFilterBar({ className, withinCard = false, ...props }: CmFilte
     />
   );
 }
+CmFilterBar.displayName = "CmFilterBar";

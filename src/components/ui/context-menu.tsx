@@ -4,6 +4,7 @@ import { MouseEvent as ReactMouseEvent, ReactNode, useEffect, useRef, useState }
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
 
 type ContextMenuItem = {
   id: string;
@@ -31,22 +32,16 @@ export function CmContextMenu({ target, items, className }: ContextMenuProps) {
     setOpen(true);
   };
 
+  useEscapeKey(open, () => setOpen(false));
+
   useEffect(() => {
     if (!open) return;
 
     const close = () => setOpen(false);
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        close();
-      }
-    };
-
     document.addEventListener("click", close);
-    document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("scroll", close, true);
     return () => {
       document.removeEventListener("click", close);
-      document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("scroll", close, true);
     };
   }, [open]);
@@ -118,3 +113,4 @@ export function CmContextMenu({ target, items, className }: ContextMenuProps) {
     </div>
   );
 }
+CmContextMenu.displayName = "CmContextMenu";

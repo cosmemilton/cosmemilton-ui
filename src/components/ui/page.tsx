@@ -1,4 +1,4 @@
-import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import { createElement, forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
@@ -60,19 +60,22 @@ function paddingValue(value: CmPagePadding | undefined) {
   return preset[value] ?? value;
 }
 
-export function CmPage({
-  as = "main",
-  children,
-  className,
-  density,
-  fullWidth = false,
-  gap,
-  maxWidth,
-  padding,
-  scrollable = false,
-  style,
-  ...props
-}: CmPageProps) {
+export const CmPage = forwardRef<HTMLElement, CmPageProps>(function CmPage(
+  {
+    as = "main",
+    children,
+    className,
+    density,
+    fullWidth = false,
+    gap,
+    maxWidth,
+    padding,
+    scrollable = false,
+    style,
+    ...props
+  },
+  ref,
+) {
   const pageStyle: CmPageStyle = {
     "--cm-page-gap": spacingValue(gap, "1rem"),
     "--cm-page-max-width": maxWidthValue(maxWidth, fullWidth),
@@ -80,16 +83,21 @@ export function CmPage({
     ...style,
   };
 
-  return createElement(as, {
-    className: cn(
-      "cm-page",
-      fullWidth && "cm-page--full-width",
-      scrollable && "cm-page--scrollable",
-      cmDensityClass(density),
-      className,
-    ),
-    style: pageStyle,
-    ...props,
+  return createElement(
+    as,
+    {
+      ref,
+      className: cn(
+        "cm-page",
+        fullWidth && "cm-page--full-width",
+        scrollable && "cm-page--scrollable",
+        cmDensityClass(density),
+        className,
+      ),
+      style: pageStyle,
+      ...props,
+    },
     children,
-  });
-}
+  );
+});
+CmPage.displayName = "CmPage";

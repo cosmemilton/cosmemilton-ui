@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { forwardRef, useMemo, type ReactNode } from "react";
 import { CmButton } from "./button.js";
 import { cn } from "../../lib/utils.js";
 
@@ -18,17 +18,21 @@ type PaginationProps = {
   className?: string;
 };
 
-export function CmPagination({
-  page,
-  totalPages,
-  onChange,
-  siblingCount = 1,
-  mode = "pages",
-  previousLabel = "Anterior",
-  nextLabel = "Próximo",
-  summary,
-  className,
-}: PaginationProps) {
+export const CmPagination = forwardRef<HTMLDivElement, PaginationProps>(
+  function CmPagination(
+    {
+      page,
+      totalPages,
+      onChange,
+      siblingCount = 1,
+      mode = "pages",
+      previousLabel = "Anterior",
+      nextLabel = "Próximo",
+      summary,
+      className,
+    },
+    ref,
+  ) {
   const safeTotalPages = Math.max(1, totalPages);
   const currentPage = Math.min(Math.max(1, page), safeTotalPages);
   const isCompact = mode === "compact";
@@ -55,7 +59,7 @@ export function CmPagination({
   }, [currentPage, safeTotalPages, siblingCount]);
 
   return (
-    <div className={cn("cm-pagination", isCompact && "cm-pagination--compact", className)}>
+    <div ref={ref} className={cn("cm-pagination", isCompact && "cm-pagination--compact", className)}>
       <CmButton
         variant="outline"
         size={isCompact ? "sm" : "md"}
@@ -103,4 +107,5 @@ export function CmPagination({
       </CmButton>
     </div>
   );
-}
+});
+CmPagination.displayName = "CmPagination";

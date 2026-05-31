@@ -1,4 +1,10 @@
-import type { HTMLAttributes, KeyboardEvent, MouseEvent, ReactNode } from "react";
+import {
+  forwardRef,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
@@ -22,25 +28,29 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   loading?: boolean;
 };
 
-export function CmMetricCard({
-  accent = "none",
-  className,
-  density,
-  description,
-  footer,
-  icon,
-  interactive = false,
-  loading = false,
-  meta,
-  onClick,
-  onKeyDown,
-  role,
-  tabIndex,
-  title,
-  tone = "default",
-  value,
-  ...props
-}: CmMetricCardProps) {
+export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(
+  function CmMetricCard(
+    {
+      accent = "none",
+      className,
+      density,
+      description,
+      footer,
+      icon,
+      interactive = false,
+      loading = false,
+      meta,
+      onClick,
+      onKeyDown,
+      role,
+      tabIndex,
+      title,
+      tone = "default",
+      value,
+      ...props
+    },
+    ref,
+  ) {
   const clickable = Boolean(onClick || interactive);
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -55,6 +65,7 @@ export function CmMetricCard({
 
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-metric-card",
         `cm-metric-card--tone-${tone}`,
@@ -89,4 +100,5 @@ export function CmMetricCard({
       ) : null}
     </div>
   );
-}
+});
+CmMetricCard.displayName = "CmMetricCard";

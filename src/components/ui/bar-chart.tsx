@@ -106,3 +106,4 @@ export function CmBarChart({
     </div>
   );
 }
+CmBarChart.displayName = "CmBarChart";

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type InputGroupProps = {
@@ -8,9 +8,10 @@ type InputGroupProps = {
   className?: string;
 };
 
-export function CmInputGroup({ prefix, suffix, children, className }: InputGroupProps) {
+export const CmInputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
+  function CmInputGroup({ prefix, suffix, children, className }, ref) {
   return (
-    <div className={cn("cm-input-group", className)}>
+    <div ref={ref} className={cn("cm-input-group", className)}>
       {prefix ? (
         <span className="cm-input-group__addon">
           {prefix}
@@ -26,4 +27,5 @@ export function CmInputGroup({ prefix, suffix, children, className }: InputGroup
       ) : null}
     </div>
   );
-}
+});
+CmInputGroup.displayName = "CmInputGroup";

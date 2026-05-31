@@ -186,3 +186,4 @@ export function CmLineChart({
     </div>
   );
 }
+CmLineChart.displayName = "CmLineChart";

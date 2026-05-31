@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import type { CmSize, CmTone } from "./types.js";
 
@@ -12,14 +12,11 @@ export type CmIconBadgeProps = {
   className?: string;
 };
 
-export function CmIconBadge({
-  icon,
-  tone = "default",
-  size = "sm",
-  className,
-}: CmIconBadgeProps) {
+export const CmIconBadge = forwardRef<HTMLSpanElement, CmIconBadgeProps>(
+  function CmIconBadge({ icon, tone = "default", size = "sm", className }, ref) {
   return (
     <span
+      ref={ref}
       className={cn(
         "cm-icon-badge",
         `cm-icon-badge--${size}`,
@@ -30,4 +27,5 @@ export function CmIconBadge({
       {icon}
     </span>
   );
-}
+});
+CmIconBadge.displayName = "CmIconBadge";

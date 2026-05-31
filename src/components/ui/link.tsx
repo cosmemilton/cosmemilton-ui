@@ -47,3 +47,4 @@ export function CmLink({
     </Component>
   );
 }
+CmLink.displayName = "CmLink";

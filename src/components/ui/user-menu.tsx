@@ -168,3 +168,4 @@ export function CmUserMenu({
     />
   );
 }
+CmUserMenu.displayName = "CmUserMenu";

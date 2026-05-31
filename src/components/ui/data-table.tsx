@@ -4,6 +4,7 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
+  forwardRef,
   useCallback,
   useLayoutEffect,
   useMemo,
@@ -41,12 +42,11 @@ export type CmDataTableColumn<T> = {
 
 export type CmDataTableActionsProps = HTMLAttributes<HTMLDivElement>;
 
-export function CmDataTableActions({
-  className,
-  ...props
-}: CmDataTableActionsProps) {
-  return <div className={cn("cm-data-table__actions", className)} {...props} />;
-}
+export const CmDataTableActions = forwardRef<HTMLDivElement, CmDataTableActionsProps>(
+  function CmDataTableActions({ className, ...props }, ref) {
+  return <div ref={ref} className={cn("cm-data-table__actions", className)} {...props} />;
+});
+CmDataTableActions.displayName = "CmDataTableActions";
 
 export type CmSortDirection = "asc" | "desc";
 
@@ -616,5 +616,6 @@ export function CmDataTable<T>({
     </div>
   );
 }
+CmDataTable.displayName = "CmDataTable";
 
 // ─── Column Toggle Menu ─────────────────────────────────────────────

@@ -76,3 +76,4 @@ export function CmConfirmDialog({
     </CmDialog>
   );
 }
+CmConfirmDialog.displayName = "CmConfirmDialog";

@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmDensityClass, type CmDensity } from "./types.js";
 
@@ -11,18 +11,14 @@ export type CmSectionHeaderProps = HTMLAttributes<HTMLElement> & {
   padded?: boolean;
 };
 
-export function CmSectionHeader({
-  actions,
-  bordered = false,
-  className,
-  density,
-  description,
-  padded = false,
-  title,
-  ...props
-}: CmSectionHeaderProps) {
+export const CmSectionHeader = forwardRef<HTMLElement, CmSectionHeaderProps>(
+  function CmSectionHeader(
+    { actions, bordered = false, className, density, description, padded = false, title, ...props },
+    ref,
+  ) {
   return (
     <header
+      ref={ref}
       className={cn(
         "cm-section-header",
         bordered && "cm-section-header--bordered",
@@ -41,4 +37,5 @@ export function CmSectionHeader({
       {actions ? <div className="cm-section-header__actions">{actions}</div> : null}
     </header>
   );
-}
+});
+CmSectionHeader.displayName = "CmSectionHeader";

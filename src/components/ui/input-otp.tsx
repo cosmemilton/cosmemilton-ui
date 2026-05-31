@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { cn } from "../../lib/utils.js";
 
 type InputOtpProps = {
@@ -10,7 +10,8 @@ type InputOtpProps = {
   className?: string;
 };
 
-export function CmInputOTP({ value, onChange, length = 6, className }: InputOtpProps) {
+export const CmInputOTP = forwardRef<HTMLDivElement, InputOtpProps>(
+  function CmInputOTP({ value, onChange, length = 6, className }, ref) {
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function CmInputOTP({ value, onChange, length = 6, className }: InputOtpP
   };
 
   return (
-    <div className={cn("cm-input-otp", className)}>
+    <div ref={ref} className={cn("cm-input-otp", className)}>
       {Array.from({ length }).map((_, index) => (
         <input
           key={index}
@@ -62,4 +63,5 @@ export function CmInputOTP({ value, onChange, length = 6, className }: InputOtpP
       ))}
     </div>
   );
-}
+});
+CmInputOTP.displayName = "CmInputOTP";

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { CmButton } from "./button.js";
 import { cn } from "../../lib/utils.js";
 
@@ -11,9 +11,13 @@ type EmptyProps = {
   className?: string;
 };
 
-export function CmEmpty({ title, description, icon, actionLabel, onAction, className }: EmptyProps) {
+export const CmEmpty = forwardRef<HTMLDivElement, EmptyProps>(function CmEmpty(
+  { title, description, icon, actionLabel, onAction, className },
+  ref,
+) {
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-empty",
         className,
@@ -31,4 +35,5 @@ export function CmEmpty({ title, description, icon, actionLabel, onAction, class
       ) : null}
     </div>
   );
-}
+});
+CmEmpty.displayName = "CmEmpty";

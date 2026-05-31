@@ -14,6 +14,9 @@ import { CmIcon } from "./icon.js";
 import { CmPortal } from "./portal.js";
 import { ChevronDown, Check, X } from "lucide-react";
 import { cmDensityClass, type CmDensity } from "./types.js";
+import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useFloating } from "../../hooks/use-floating.js";
 
 type SelectOption = {
   value: string;
@@ -143,21 +146,7 @@ export function CmSelect({
   }, [disabled, onChange, onClear]);
 
   // Close on outside click
-  useEffect(() => {
-    if (!open) return;
-    const handleClick = (e: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
+  useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
 
   useEffect(() => {
     if (!open || !triggerRef.current) return;
@@ -165,40 +154,10 @@ export function CmSelect({
   }, [open]);
 
   // Position the dropdown
-  useEffect(() => {
-    if (!open) return;
-    const updatePosition = () => {
-      if (!panelRef.current || !triggerRef.current) return;
-      const rect = triggerRef.current.getBoundingClientRect();
-      const panel = panelRef.current;
-      const vh = window.innerHeight;
-      const panelH = panel.offsetHeight;
-
-      let top = rect.bottom + 4;
-      if (top + panelH > vh) top = rect.top - panelH - 4;
-
-      panel.style.top = `${top}px`;
-      panel.style.left = `${rect.left}px`;
-      panel.style.minWidth = `${rect.width}px`;
-    };
-    requestAnimationFrame(() => requestAnimationFrame(updatePosition));
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [open]);
+  useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
 
   // Close on Escape
-  useEffect(() => {
-    if (!open) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [open]);
+  useEscapeKey(open, () => setOpen(false));
 
   const getBorderColor = () => {
     if (error) return "cm-floating-field--error";
@@ -374,3 +333,4 @@ export function CmSelect({
     </div>
   );
 }
+CmSelect.displayName = "CmSelect";

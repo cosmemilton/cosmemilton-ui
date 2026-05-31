@@ -4,6 +4,7 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
+  forwardRef,
   useEffect,
   useState,
 } from "react";
@@ -22,6 +23,7 @@ export function CmPortal({ children }: { children: ReactNode }) {
   if (!mounted) return null;
   return createPortal(children, document.body);
 }
+CmPortal.displayName = "CmPortal";
 
 type CmPortalPanelPlacement =
   | "top-start"
@@ -40,17 +42,21 @@ export type CmPortalPanelProps = HTMLAttributes<HTMLDivElement> & {
   zIndex?: number;
 };
 
-export function CmPortalPanel({
-  children,
-  className,
-  offset = "1.5rem",
-  placement = "bottom-end",
-  width,
-  maxWidth = "22rem",
-  zIndex = 999,
-  style,
-  ...props
-}: CmPortalPanelProps) {
+export const CmPortalPanel = forwardRef<HTMLDivElement, CmPortalPanelProps>(
+  function CmPortalPanel(
+    {
+      children,
+      className,
+      offset = "1.5rem",
+      placement = "bottom-end",
+      width,
+      maxWidth = "22rem",
+      zIndex = 999,
+      style,
+      ...props
+    },
+    ref,
+  ) {
   const panelStyle: CmPortalPanelStyle = {
     "--cm-portal-panel-offset": cmSizeValue(offset),
     "--cm-portal-panel-max-width": cmSizeValue(maxWidth),
@@ -62,6 +68,7 @@ export function CmPortalPanel({
   return (
     <CmPortal>
       <div
+        ref={ref}
         className={cn("cm-portal-panel", `cm-portal-panel--${placement}`, className)}
         style={panelStyle}
         {...props}
@@ -70,4 +77,5 @@ export function CmPortalPanel({
       </div>
     </CmPortal>
   );
-}
+});
+CmPortalPanel.displayName = "CmPortalPanel";

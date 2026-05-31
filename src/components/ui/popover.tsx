@@ -1,8 +1,11 @@
 "use client";
 
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useRef } from "react";
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
+import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useControllableState } from "../../hooks/use-controllable-state.js";
+import { useFloating } from "../../hooks/use-floating.js";
 
 type PopoverTriggerControls = {
   open: boolean;
@@ -21,102 +24,27 @@ type PopoverProps = {
 };
 
 export function CmPopover({ trigger, children, open: controlledOpen, onOpenChange, align = "center", className }: PopoverProps) {
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const [open, setOpen] = useControllableState<boolean>({
+    value: controlledOpen,
+    defaultValue: false,
+    onChange: onOpenChange,
+  });
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
-
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : uncontrolledOpen;
-
-  const setOpen = useCallback(
-    (newOpen: boolean) => {
-      if (!isControlled) {
-        setUncontrolledOpen(newOpen);
-      }
-      onOpenChange?.(newOpen);
-    },
-    [isControlled, onOpenChange],
-  );
 
   const close = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
-  
+
   const toggle = useCallback(() => {
-    setOpen(!open);
-  }, [setOpen, open]);
+    setOpen((prev) => !prev);
+  }, [setOpen]);
 
-  useEffect(() => {
-    if (!open) return undefined;
+  useClickOutside([panelRef, triggerRef], close, open);
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(event.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node)
-      ) {
-        close();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open, close]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const updatePosition = () => {
-      if (!panelRef.current || !triggerRef.current) {
-        return;
-      }
-      
-      const triggerRect = triggerRef.current.getBoundingClientRect();
-      const panel = panelRef.current;
-
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      const panelHeight = panel.offsetHeight;
-      const panelWidth = panel.offsetWidth;
-
-      let top = triggerRect.bottom + 8;
-      if (top + panelHeight > viewportHeight) {
-        top = triggerRect.top - panelHeight - 8;
-      }
-
-      let left: number;
-      if (align === "center") {
-        left = triggerRect.left + triggerRect.width / 2 - panelWidth / 2;
-      } else if (align === "end") {
-        left = triggerRect.right - panelWidth;
-      } else {
-        left = triggerRect.left;
-      }
-
-      if (left < 0) left = 8;
-      if (left + panelWidth > viewportWidth) {
-        left = viewportWidth - panelWidth - 8;
-      }
-
-      panel.style.top = `${top}px`;
-      panel.style.left = `${left}px`;
-    };
-
-    // Aguardar o próximo frame para garantir que o DOM foi atualizado
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        updatePosition();
-      });
-    });
-
-    window.addEventListener("resize", updatePosition);
-
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [open, align]);
+  const placement =
+    align === "center" ? "bottom" : align === "end" ? "bottom-end" : "bottom-start";
+  useFloating(triggerRef, panelRef, { enabled: open, placement, offset: 8 });
 
   return (
     <>
@@ -144,3 +72,4 @@ export function CmPopover({ trigger, children, open: controlledOpen, onOpenChang
     </>
   );
 }
+CmPopover.displayName = "CmPopover";

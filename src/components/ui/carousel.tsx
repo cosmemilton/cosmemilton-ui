@@ -172,3 +172,4 @@ export function CmCarousel({
     </div>
   );
 }
+CmCarousel.displayName = "CmCarousel";

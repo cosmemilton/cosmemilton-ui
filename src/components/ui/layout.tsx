@@ -127,6 +127,7 @@ export function CmRow({
     children,
   });
 }
+CmRow.displayName = "CmRow";
 
 export function CmCol({
   as = "div",
@@ -153,6 +154,7 @@ export function CmCol({
     children,
   });
 }
+CmCol.displayName = "CmCol";
 
 export function CmStack({
   as = "div",
@@ -187,6 +189,7 @@ export function CmStack({
     children,
   });
 }
+CmStack.displayName = "CmStack";
 
 export function CmContainer({
   as = "div",
@@ -211,3 +214,4 @@ export function CmContainer({
     children,
   });
 }
+CmContainer.displayName = "CmContainer";

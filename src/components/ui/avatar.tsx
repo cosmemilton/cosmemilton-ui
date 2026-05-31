@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import type { CmSize } from "./types.js";
 
@@ -20,9 +20,13 @@ const sizeMap: Record<NonNullable<AvatarProps["size"]>, string> = {
   xl: "cm-avatar--xl",
 };
 
-export function CmAvatar({ src, alt, fallback, size = "md", className }: AvatarProps) {
+export const CmAvatar = forwardRef<HTMLDivElement, AvatarProps>(function CmAvatar(
+  { src, alt, fallback, size = "md", className },
+  ref,
+) {
   return (
     <div
+      ref={ref}
       className={cn(
         "cm-avatar",
         sizeMap[size],
@@ -42,4 +46,5 @@ export function CmAvatar({ src, alt, fallback, size = "md", className }: AvatarP
       )}
     </div>
   );
-}
+});
+CmAvatar.displayName = "CmAvatar";
