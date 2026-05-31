@@ -2,8 +2,6 @@
 
 import {
   type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
   forwardRef,
   useCallback,
   useLayoutEffect,
@@ -19,71 +17,31 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useTablePreference } from "../../hooks/use-table-preference.js";
-import { CmDialog } from "./dialog.js";
 import { CmButton } from "./button.js";
-import { CmCheckbox } from "./checkbox.js";
 import { CmEmpty } from "./empty.js";
 import { CmPagination } from "./pagination.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import { cmDensityClass } from "./types.js";
+import type {
+  CmDataTableActionsProps,
+  CmDataTableColumn,
+  CmDataTableProps,
+  CmSortDirection,
+} from "./data-table.types.js";
+import { sortRows } from "./data-table.utils.js";
+import { DataTableColumnMenu } from "./data-table-column-menu.js";
 
-export type CmDataTableColumn<T> = {
-  /** Identificador estável da coluna. Sem render, também é usado para ler row[key]. */
-  key: string;
-  header: string;
-  render?: (row: T) => ReactNode;
-  align?: "left" | "center" | "right";
-  headerClassName?: string;
-  cellClassName?: string;
-  sortable?: boolean;
-  sortValue?: (row: T) => string | number | Date;
-  hideable?: boolean; // default true — false para colunas que nunca devem ser ocultadas (ex: ações)
-  defaultHidden?: boolean; // se true, a coluna começa oculta (padrão antes de preferência do usuário)
-};
-
-export type CmDataTableActionsProps = HTMLAttributes<HTMLDivElement>;
+export type {
+  CmDataTableColumn,
+  CmDataTableActionsProps,
+  CmSortDirection,
+  CmDataTableProps,
+} from "./data-table.types.js";
 
 export const CmDataTableActions = forwardRef<HTMLDivElement, CmDataTableActionsProps>(
   function CmDataTableActions({ className, ...props }, ref) {
   return <div ref={ref} className={cn("cm-data-table__actions", className)} {...props} />;
 });
 CmDataTableActions.displayName = "CmDataTableActions";
-
-export type CmSortDirection = "asc" | "desc";
-
-export type CmDataTableProps<T> = {
-  columns: CmDataTableColumn<T>[];
-  data: T[];
-  rowKey: (row: T, index: number) => string;
-  zebra?: boolean;
-  className?: string;
-  tableClassName?: string;
-  density?: CmDensity;
-  fullWidth?: boolean;
-  pagination?: boolean;
-  defaultRowsPerPage?: number;
-  emptyMessage?: string;
-  emptyTitle?: string;
-  emptyDescription?: string;
-  emptyIcon?: ReactNode;
-  emptyActionLabel?: string;
-  onEmptyAction?: () => void;
-  header?: ReactNode;
-  title?: ReactNode;
-  description?: ReactNode;
-  toolbar?: ReactNode;
-  actions?: ReactNode;
-  selectedRowKey?: string;
-  onRowClick?: (row: T) => void;
-  defaultSortKey?: string;
-  defaultSortDirection?: CmSortDirection;
-  tableKey?: string; // chave para persistir preferências de colunas do usuário
-  detailPanelEnabled?: boolean;
-  renderSelectedRowDetail?: (row: T) => ReactNode;
-  detailPanelWidth?: string | number;
-  detailPanelClassName?: string;
-  detailBridge?: boolean;
-  detailEmptyMessage?: ReactNode;
-};
 
 export function CmDataTable<T>({
   columns,
@@ -175,34 +133,10 @@ export function CmDataTable<T>({
     setCurrentPage(1);
   };
 
-  const sortedData = useMemo(() => {
-    if (!sortKey) return data;
-    const col = columns.find((c) => c.key === sortKey);
-    if (!col?.sortable) return data;
-
-    return [...data].sort((a, b) => {
-      const aVal = col.sortValue
-        ? col.sortValue(a)
-        : (a as Record<string, unknown>)[sortKey];
-      const bVal = col.sortValue
-        ? col.sortValue(b)
-        : (b as Record<string, unknown>)[sortKey];
-
-      let comparison = 0;
-      if (aVal == null && bVal == null) comparison = 0;
-      else if (aVal == null) comparison = -1;
-      else if (bVal == null) comparison = 1;
-      else if (typeof aVal === "string" && typeof bVal === "string") {
-        comparison = aVal.localeCompare(bVal, "pt-BR", { sensitivity: "base" });
-      } else if (aVal instanceof Date && bVal instanceof Date) {
-        comparison = aVal.getTime() - bVal.getTime();
-      } else {
-        comparison = Number(aVal) - Number(bVal);
-      }
-
-      return sortDirection === "desc" ? -comparison : comparison;
-    });
-  }, [data, sortKey, sortDirection, columns]);
+  const sortedData = useMemo(
+    () => sortRows(data, columns, sortKey, sortDirection),
+    [data, sortKey, sortDirection, columns],
+  );
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const indexOfLastItem = currentPage * rowsPerPage;
@@ -499,58 +433,14 @@ export function CmDataTable<T>({
 
       {/* Modal de configuração de colunas */}
       {hasColumnToggle && (
-        <CmDialog
+        <DataTableColumnMenu
           open={columnMenuOpen}
           onClose={() => setColumnMenuOpen(false)}
-          title="Colunas visíveis"
-          size="md"
-          portal
-          presentation="compact"
-          footer={
-            <div className="cm-data-table__dialog-footer">
-              <CmButton
-                type="button"
-                onClick={() => {
-                  resetToDefaults();
-                  setColumnMenuOpen(false);
-                }}
-                variant="surface"
-                tone="primary"
-                size="sm"
-              >
-                Restaurar padrão
-              </CmButton>
-              <CmButton
-                type="button"
-                onClick={() => setColumnMenuOpen(false)}
-                variant="soft"
-                tone="primary"
-                size="sm"
-              >
-                Fechar
-              </CmButton>
-            </div>
-          }
-        >
-          <div className="cm-data-table__columns-grid">
-            {hideableColumns.map((col) => {
-              const key = String(col.key);
-              return (
-                <div
-                  key={key}
-                  className="cm-data-table__column-option"
-                >
-                  <CmCheckbox
-                    presentation="compact"
-                    checked={!(hiddenColumns?.has(key) ?? false)}
-                    onChange={() => toggleColumn(key)}
-                    label={col.header}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </CmDialog>
+          columns={hideableColumns}
+          hiddenColumns={hiddenColumns}
+          onToggle={toggleColumn}
+          onReset={resetToDefaults}
+        />
       )}
     </div>
   );
@@ -617,5 +507,3 @@ export function CmDataTable<T>({
   );
 }
 CmDataTable.displayName = "CmDataTable";
-
-// ─── Column Toggle Menu ─────────────────────────────────────────────
