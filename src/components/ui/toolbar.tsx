@@ -6,10 +6,10 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import { cmDensityClass, cmSpacingValue, type CmDensity } from "./types.js";
 
 type CmToolbarElement = "div" | "form" | "section" | "header" | "footer";
-type CmToolbarStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
+type CmToolbarStyle = CSSProperties & Partial<Record<`--${string}`, string | number>>;
 
 type CmToolbarBaseProps = {
   as?: CmToolbarElement;
@@ -29,8 +29,7 @@ export type CmToolbarProps =
   | (CmToolbarBaseProps & HTMLAttributes<HTMLElement> & { as: "section" | "header" | "footer" });
 
 function spacingValue(value: string | number | undefined, fallback: string) {
-  if (value === undefined) return fallback;
-  return typeof value === "number" ? `${value}px` : value;
+  return cmSpacingValue(value) ?? fallback;
 }
 
 export function CmToolbar({

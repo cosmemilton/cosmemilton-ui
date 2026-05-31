@@ -1,10 +1,10 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
-  "homepage": "https://miltonjunior.dev.br/cosmemilton-ui",
+  "homepage": "https://miltonjunior.dev.br/cosmemilton-ui/v3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cosmemilton/cosmemilton-ui.git"

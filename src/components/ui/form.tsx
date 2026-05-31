@@ -2,6 +2,7 @@ import { forwardRef, type CSSProperties, type FormHTMLAttributes, type ReactNode
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
+  cmSpacingValue,
   resolveResponsiveNumber,
   type CmDensity,
   type CmResponsiveNumber,
@@ -21,8 +22,7 @@ export type CmFormProps = FormHTMLAttributes<HTMLFormElement> & {
 type CmFormStyle = CSSProperties & Partial<Record<`--${string}`, string | number>>;
 
 function spacingValue(value: string | number | undefined, fallback: string) {
-  if (value === undefined) return fallback;
-  return typeof value === "number" ? `${value}px` : value;
+  return cmSpacingValue(value) ?? fallback;
 }
 
 export const CmForm = forwardRef<HTMLFormElement, CmFormProps>(function CmForm(

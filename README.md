@@ -69,7 +69,7 @@ via `linkComponent` e informe a rota ativa (ex.: `activeHref`/`activePathname`).
 Exemplos por componente, variantes, tabela de props e notas de acessibilidade nas
 docs vivas:
 
-**https://miltonjunior.dev.br/cosmemilton-ui**
+**https://miltonjunior.dev.br/cosmemilton-ui/v3**
 
 ## Requisitos
 

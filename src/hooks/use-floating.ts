@@ -47,36 +47,65 @@ export function useFloating(
 ): void {
   useEffect(() => {
     if (!enabled) return;
-    const reference = referenceRef.current;
-    const floating = floatingRef.current;
-    if (!reference || !floating) return;
 
-    const middleware = [offset(offsetPx), flip({ padding }), shift({ padding })];
-    if (matchWidth) {
-      middleware.push(
-        size({
-          padding,
-          apply({ rects, elements }) {
-            elements.floating.style.minWidth = `${rects.reference.width}px`;
-          },
-        }),
-      );
-    }
+    let cancelled = false;
+    let animationFrame: number | null = null;
+    let cleanupAutoUpdate: (() => void) | undefined;
 
-    const update = () => {
-      computePosition(reference, floating, {
-        strategy: "fixed",
-        placement,
-        middleware,
-      }).then(({ x, y }) => {
-        Object.assign(floating.style, {
-          position: "fixed",
-          left: `${x}px`,
-          top: `${y}px`,
-        });
-      });
+    const clearPendingFrame = () => {
+      if (animationFrame === null) return;
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = null;
     };
 
-    return autoUpdate(reference, floating, update);
+    const startFloating = () => {
+      animationFrame = null;
+      if (cancelled || cleanupAutoUpdate) return;
+
+      const reference = referenceRef.current;
+      const floating = floatingRef.current;
+
+      if (!reference || !floating) {
+        animationFrame = window.requestAnimationFrame(startFloating);
+        return;
+      }
+
+      const middleware = [offset(offsetPx), flip({ padding }), shift({ padding })];
+      if (matchWidth) {
+        middleware.push(
+          size({
+            padding,
+            apply({ rects, elements }) {
+              elements.floating.style.minWidth = `${rects.reference.width}px`;
+            },
+          }),
+        );
+      }
+
+      const update = () => {
+        computePosition(reference, floating, {
+          strategy: "fixed",
+          placement,
+          middleware,
+        }).then(({ x, y }) => {
+          if (cancelled || floatingRef.current !== floating) return;
+          Object.assign(floating.style, {
+            position: "fixed",
+            left: `${x}px`,
+            top: `${y}px`,
+          });
+        });
+      };
+
+      cleanupAutoUpdate = autoUpdate(reference, floating, update);
+    };
+
+    startFloating();
+
+    return () => {
+      cancelled = true;
+      clearPendingFrame();
+      cleanupAutoUpdate?.();
+    };
   }, [enabled, placement, offsetPx, matchWidth, padding, referenceRef, floatingRef]);
 }

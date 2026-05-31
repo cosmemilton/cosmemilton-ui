@@ -1,7 +1,7 @@
 import type { CSSProperties, FormHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmSizeValue, resolveResponsiveNumber, type CmResponsiveNumber } from "./types.js";
+import { cmSpacingValue, resolveResponsiveNumber, type CmResponsiveNumber } from "./types.js";
 
 type GridStyle = CSSProperties & Record<`--${string}`, string | number>;
 type GridContainerVariant = "default" | "actions";
@@ -26,7 +26,7 @@ export type CmGridProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 function spacingValue(value: string | number | undefined, fallback: string) {
-  return cmSizeValue(value) ?? fallback;
+  return cmSpacingValue(value) ?? fallback;
 }
 
 function gridContainerClassName(variant: GridContainerVariant, className?: string) {

@@ -1,6 +1,6 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
-import { cmSizeValue, type CmSpacing } from "./types.js";
+import { cmSpacingValue, type CmSpacing } from "./types.js";
 
 export type CmButtonGroupProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode;
@@ -9,20 +9,10 @@ export type CmButtonGroupProps = HTMLAttributes<HTMLDivElement> & {
   orientation?: "horizontal" | "vertical";
 };
 
-const gapMap = {
-  none: "0",
-  xs: "0.25rem",
-  sm: "0.5rem",
-  md: "0.75rem",
-  lg: "1rem",
-} as const;
-
 type ButtonGroupStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
 function resolveGap(gap: CmButtonGroupProps["gap"]) {
-  if (gap === undefined) return gapMap.none;
-  if (typeof gap === "number") return cmSizeValue(gap);
-  return gapMap[gap as keyof typeof gapMap] ?? gap;
+  return cmSpacingValue(gap, "0");
 }
 
 export const CmButtonGroup = forwardRef<HTMLDivElement, CmButtonGroupProps>(function CmButtonGroup(
@@ -39,7 +29,7 @@ export const CmButtonGroup = forwardRef<HTMLDivElement, CmButtonGroupProps>(func
 ) {
   const isVertical = orientation === "vertical";
   const resolvedGap = resolveGap(gap);
-  const isJoined = resolvedGap === "0";
+  const isJoined = gap === undefined || gap === "none" || resolvedGap === "0";
 
   return (
     <div

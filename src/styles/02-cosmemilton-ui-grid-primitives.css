@@ -107,6 +107,7 @@
   --cm-sidebar-subitems-border: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   --cm-sidebar-subitems-scrollbar-thumb: color-mix(in srgb, var(--color-primary) 46%, var(--color-muted-foreground) 28%);
   --cm-sidebar-subitems-scrollbar-track: color-mix(in srgb, var(--color-muted) 52%, transparent);
+  --cm-sidebar-sticky-top: 0px;
   position: relative;
   isolation: isolate;
   display: grid;
@@ -122,6 +123,10 @@
 
 .cm-sidebar-shell--collapsed {
   --cm-sidebar-current-width: var(--cm-sidebar-collapsed-width);
+}
+
+.cm-sidebar-shell:not(.cm-sidebar-shell--standalone) {
+  overflow: visible;
 }
 
 .cm-sidebar {
@@ -147,6 +152,15 @@
     min-width 180ms ease,
     padding 180ms ease,
     width 180ms ease;
+}
+
+.cm-sidebar-shell:not(.cm-sidebar-shell--standalone)>.cm-sidebar {
+  position: sticky;
+  top: var(--cm-sidebar-sticky-top);
+  height: calc(100vh - var(--cm-sidebar-sticky-top));
+  height: calc(100dvh - var(--cm-sidebar-sticky-top));
+  min-height: 0;
+  align-self: start;
 }
 
 .cm-sidebar-shell--preview .cm-sidebar {
@@ -1305,4 +1319,3 @@
 .cm-theme-toggle-compact--label-hidden .cm-theme-toggle-compact__label {
   display: none;
 }
-

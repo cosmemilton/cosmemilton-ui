@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { render, screen, cleanup, within } from "@testing-library/react";
+import { render, screen, cleanup, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
@@ -51,6 +51,20 @@ describe("CmSelect", () => {
     const listbox = screen.getByRole("listbox");
     expect(within(listbox).getAllByRole("option")).toHaveLength(3);
     expect(screen.getByRole("button", { name: "País" })).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("positions the portaled listbox after opening", async () => {
+    const user = userEvent.setup();
+    render(<ControlledSelect />);
+
+    await user.click(screen.getByRole("button", { name: "País" }));
+
+    const listbox = screen.getByRole("listbox");
+    await waitFor(() => {
+      expect(listbox.style.position).toBe("fixed");
+      expect(listbox.style.top).not.toBe("");
+      expect(listbox.style.left).not.toBe("");
+    });
   });
 
   it("selects an option, reports the value and closes", async () => {

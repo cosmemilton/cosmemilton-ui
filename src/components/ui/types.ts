@@ -68,3 +68,21 @@ export function cmSizeValue(value: string | number | undefined) {
   if (value === undefined) return undefined;
   return typeof value === "number" ? `${value}px` : value;
 }
+
+const spacingFallbacks: Record<string, string> = {
+  none: "0",
+  xs: "0.25rem",
+  sm: "0.5rem",
+  md: "1rem",
+  lg: "1.5rem",
+  xl: "2rem",
+  "2xl": "3rem",
+  "3xl": "4rem",
+};
+
+export function cmSpacingValue(value: string | number | undefined, fallback?: string) {
+  if (value === undefined) return fallback;
+  if (typeof value === "number") return `${value}px`;
+  const tokenFallback = spacingFallbacks[value];
+  return tokenFallback ? `var(--space-${value}, ${tokenFallback})` : value;
+}

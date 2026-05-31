@@ -114,6 +114,7 @@
   --cm-sidebar-collapsed-width: var(--cm-app-shell-sidebar-collapsed-width);
   height: 100%;
   min-height: 0;
+  overflow: hidden;
   border: 0;
   border-radius: 0;
 }
@@ -124,8 +125,11 @@
 }
 
 .cm-app-shell__sidebar .cm-sidebar {
+  position: relative;
+  top: auto;
   height: 100%;
   min-height: 0;
+  align-self: stretch;
 }
 
 .cm-app-shell__main {

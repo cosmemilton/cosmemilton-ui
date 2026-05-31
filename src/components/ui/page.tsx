@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,
   cmSizeValue,
+  cmSpacingValue,
   type CmDensity,
   type CmMaxWidth,
   type CmSpacing,
@@ -31,7 +32,7 @@ export type CmPageProps = HTMLAttributes<HTMLElement> & {
 };
 
 function spacingValue(value: string | number | undefined, fallback: string) {
-  return cmSizeValue(value) ?? fallback;
+  return cmSpacingValue(value) ?? fallback;
 }
 
 function maxWidthValue(value: CmPageMaxWidth | undefined, fullWidth: boolean) {

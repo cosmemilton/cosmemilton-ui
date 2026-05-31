@@ -1,7 +1,7 @@
 import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
-  cmSizeValue,
+  cmSpacingValue,
   resolveResponsiveValue,
   type CmMaxWidth,
   type CmResponsiveValue,
@@ -50,7 +50,7 @@ export type CmContainerProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
 };
 
 function spacingValue(value: LayoutGap | undefined, fallback: string) {
-  return cmSizeValue(value) ?? fallback;
+  return cmSpacingValue(value) ?? fallback;
 }
 
 function stackDirectionValue(value: StackDirection | undefined, fallback: StackDirection) {
