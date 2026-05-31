@@ -20,3 +20,6 @@ coverage/
 .DS_Store
 
 tmp/
+
+# Local editor/agent settings
+.claude/settings.local.json
