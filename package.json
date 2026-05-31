@@ -1,7 +1,8 @@
 {
-  "name": "cosmemilton-ui",
-  "version": "2.3.0",
+  "name": "cm-ui",
+  "version": "3.0.0",
   "description": "Biblioteca de componentes React com suporte opcional a Next para projetos Cosme Milton.",
+  "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
   "homepage": "https://miltonjunior.dev.br/cosmemilton-ui",
   "repository": {
@@ -20,9 +21,6 @@
     "cosmemilton"
   ],
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "style": "./dist/styles.css",
   "files": [
     "dist"
@@ -31,71 +29,88 @@
     "./dist/styles.css"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
     },
-    "./styles.css": "./dist/styles.css",
-    "./components/ui": {
-      "types": "./dist/components/ui/index.d.ts",
-      "import": "./dist/components/ui/index.js",
-      "default": "./dist/components/ui/index.js"
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
     },
-    "./components/ui/*": {
-      "types": "./dist/components/ui/*.d.ts",
-      "import": "./dist/components/ui/*.js",
-      "default": "./dist/components/ui/*.js"
+    "./theme": {
+      "types": "./dist/theme.d.ts",
+      "import": "./dist/theme.js",
+      "default": "./dist/theme.js"
     },
-    "./components/theme": {
-      "types": "./dist/components/theme/index.d.ts",
-      "import": "./dist/components/theme/index.js",
-      "default": "./dist/components/theme/index.js"
-    },
-    "./components/theme/*": {
-      "types": "./dist/components/theme/*.d.ts",
-      "import": "./dist/components/theme/*.js",
-      "default": "./dist/components/theme/*.js"
-    },
-    "./lib/theme": {
-      "types": "./dist/lib/theme/index.d.ts",
-      "import": "./dist/lib/theme/index.js",
-      "default": "./dist/lib/theme/index.js"
-    },
-    "./hooks/*": {
-      "types": "./dist/hooks/*.d.ts",
-      "import": "./dist/hooks/*.js",
-      "default": "./dist/hooks/*.js"
-    },
-    "./lib/*": {
-      "types": "./dist/lib/*.d.ts",
-      "import": "./dist/lib/*.js",
-      "default": "./dist/lib/*.js"
-    }
+    "./styles.css": "./dist/styles.css"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/copy-styles.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "publint": "publint",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run test"
   },
   "peerDependencies": {
+    "@iconify/react": ">=5",
     "next": ">=15 || >=16",
     "react": ">=18.2 || >=19",
     "react-dom": ">=18.2 || >=19"
   },
   "peerDependenciesMeta": {
+    "@iconify/react": {
+      "optional": true
+    },
     "next": {
       "optional": true
     }
   },
   "dependencies": {
-    "@iconify/react": "^6.0.2",
+    "@floating-ui/react": "^0.27.19",
     "lucide-react": "^0.553.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.3",
+    "@changesets/cli": "^2.31.0",
+    "@eslint/js": "^9.39.4",
+    "@iconify/react": "^6.0.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5"
+    "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "^4.1.7",
+    "eslint": "^9.39.4",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.3",
+    "publint": "^0.3.21",
+    "typescript": "^5",
+    "typescript-eslint": "^8.60.0",
+    "vitest": "^4.1.7"
   },
   "overrides": {
     "postcss": "8.5.14"
