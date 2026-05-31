@@ -24,12 +24,7 @@ export function CmMenubar({
   "aria-label": ariaLabel = "Ações de navegação",
 }: CmMenubarProps) {
   return (
-    <div
-      className={cn(
-        "cm-menubar",
-        className,
-      )}
-    >
+    <div className={cn("cm-menubar", className)}>
       <nav className="cm-menubar__nav" aria-label={ariaLabel}>
         {items.map((item) => (
           <CmButton
@@ -39,10 +34,7 @@ export function CmMenubar({
             aria-current={item.active ? "page" : undefined}
             disabled={item.disabled}
             onClick={item.onClick}
-            className={cn(
-              "cm-menubar__item",
-              item.active && "cm-menubar__item--active",
-            )}
+            className={cn("cm-menubar__item", item.active && "cm-menubar__item--active")}
           >
             {item.label}
           </CmButton>

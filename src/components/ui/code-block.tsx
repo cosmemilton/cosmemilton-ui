@@ -16,21 +16,20 @@ export type CmCodeBlockProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   copiedLabel?: string;
 };
 
-export const CmCodeBlock = forwardRef<HTMLElement, CmCodeBlockProps>(
-  function CmCodeBlock(
-    {
-      className,
-      code,
-      children,
-      copiedLabel = "Copiado",
-      copyable = false,
-      copyLabel = "Copiar código",
-      inline = false,
-      language,
-      ...props
-    },
-    ref,
-  ) {
+export const CmCodeBlock = forwardRef<HTMLElement, CmCodeBlockProps>(function CmCodeBlock(
+  {
+    className,
+    code,
+    children,
+    copiedLabel = "Copiado",
+    copyable = false,
+    copyLabel = "Copiar código",
+    inline = false,
+    language,
+    ...props
+  },
+  ref,
+) {
   const [copied, setCopied] = useState(false);
   const content = code ?? (typeof children === "string" ? children : "");
 
@@ -51,7 +50,7 @@ export const CmCodeBlock = forwardRef<HTMLElement, CmCodeBlockProps>(
 
   return (
     <figure ref={ref} className={cn("cm-code-block", className)} {...props}>
-      {(language || copyable) ? (
+      {language || copyable ? (
         <figcaption className="cm-code-block__header">
           {language ? (
             <span className="cm-code-block__language">{language}</span>
@@ -75,9 +74,7 @@ export const CmCodeBlock = forwardRef<HTMLElement, CmCodeBlockProps>(
         </figcaption>
       ) : null}
       <pre className="cm-code-block__pre">
-        <code className={language ? `language-${language}` : undefined}>
-          {children ?? code}
-        </code>
+        <code className={language ? `language-${language}` : undefined}>{children ?? code}</code>
       </pre>
     </figure>
   );

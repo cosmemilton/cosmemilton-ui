@@ -76,14 +76,7 @@ export function CmContextMenu({ target, items, className }: CmContextMenuProps) 
       {target}
       {open ? (
         <CmPortal>
-          <div
-            ref={panelRef}
-            role="menu"
-            className={cn(
-              "cm-context-menu__panel",
-              className,
-            )}
-          >
+          <div ref={panelRef} role="menu" className={cn("cm-context-menu__panel", className)}>
             {items.map((item) => (
               <CmButton
                 unstyled

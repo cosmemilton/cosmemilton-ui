@@ -32,9 +32,7 @@ export const CmTabs = forwardRef<HTMLDivElement, CmTabsProps>(function CmTabs(
   const handleChange = onValueChange ?? setInternal;
 
   return (
-    <TabsContext.Provider
-      value={{ value: currentValue, onValueChange: handleChange, variant }}
-    >
+    <TabsContext.Provider value={{ value: currentValue, onValueChange: handleChange, variant }}>
       <div
         ref={ref}
         className={cn(
@@ -56,8 +54,10 @@ export interface CmTabsListProps {
   className?: string;
 }
 
-export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(
-  function CmTabsList({ children, className }, ref) {
+export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function CmTabsList(
+  { children, className },
+  ref,
+) {
   const context = useContext(TabsContext);
   const variant = context?.variant ?? "default";
 
@@ -87,32 +87,33 @@ export interface CmTabsTriggerProps {
 
 export const CmTabsTrigger = forwardRef<HTMLButtonElement, CmTabsTriggerProps>(
   function CmTabsTrigger({ value, children, className, disabled }, ref) {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error("CmTabsTrigger must be used within CmTabs");
+    const context = useContext(TabsContext);
+    if (!context) throw new Error("CmTabsTrigger must be used within CmTabs");
 
-  const isActive = context.value === value;
+    const isActive = context.value === value;
 
-  return (
-    <CmButton
-      ref={ref}
-      unstyled
-      type="button"
-      role="tab"
-      aria-selected={isActive}
-      disabled={disabled}
-      className={cn(
-        "cm-tabs-trigger",
-        isActive && "cm-tabs-trigger-active",
-        context.variant === "modal" && "cm-tabs-trigger--modal",
-        context.variant === "folder" && "cm-tabs-trigger--folder",
-        className,
-      )}
-      onClick={() => context.onValueChange(value)}
-    >
-      {children}
-    </CmButton>
-  );
-});
+    return (
+      <CmButton
+        ref={ref}
+        unstyled
+        type="button"
+        role="tab"
+        aria-selected={isActive}
+        disabled={disabled}
+        className={cn(
+          "cm-tabs-trigger",
+          isActive && "cm-tabs-trigger-active",
+          context.variant === "modal" && "cm-tabs-trigger--modal",
+          context.variant === "folder" && "cm-tabs-trigger--folder",
+          className,
+        )}
+        onClick={() => context.onValueChange(value)}
+      >
+        {children}
+      </CmButton>
+    );
+  },
+);
 CmTabsTrigger.displayName = "CmTabsTrigger";
 
 export interface CmTabsContentProps {
@@ -123,8 +124,10 @@ export interface CmTabsContentProps {
   unmountOnHide?: boolean;
 }
 
-export const CmTabsContent = forwardRef<HTMLDivElement, CmTabsContentProps>(
-  function CmTabsContent({ value, children, className, unmountOnHide = false }, ref) {
+export const CmTabsContent = forwardRef<HTMLDivElement, CmTabsContentProps>(function CmTabsContent(
+  { value, children, className, unmountOnHide = false },
+  ref,
+) {
   const context = useContext(TabsContext);
   if (!context) throw new Error("CmTabsContent must be used within CmTabs");
 

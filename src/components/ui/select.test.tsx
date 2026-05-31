@@ -15,9 +15,7 @@ function ControlledSelect({
   initialValue = "",
   onChangeSpy,
   ...props
-}: { initialValue?: string; onChangeSpy?: (value: string) => void } & Partial<
-  CmSelectProps
->) {
+}: { initialValue?: string; onChangeSpy?: (value: string) => void } & Partial<CmSelectProps>) {
   const [value, setValue] = useState(initialValue);
   return (
     <CmSelect
@@ -52,10 +50,7 @@ describe("CmSelect", () => {
 
     const listbox = screen.getByRole("listbox");
     expect(within(listbox).getAllByRole("option")).toHaveLength(3);
-    expect(screen.getByRole("button", { name: "País" })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    expect(screen.getByRole("button", { name: "País" })).toHaveAttribute("aria-expanded", "true");
   });
 
   it("selects an option, reports the value and closes", async () => {

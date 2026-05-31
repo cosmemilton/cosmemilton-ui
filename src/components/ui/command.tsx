@@ -98,13 +98,7 @@ export function CmCommand({
   return (
     <>
       {trigger(() => setOpen(true))}
-      <CmDialog
-        open={open}
-        onClose={close}
-        title={title}
-        description={description}
-        size="sm"
-      >
+      <CmDialog open={open} onClose={close} title={title} description={description} size="sm">
         <div className="cm-command__search">
           <Search className="cm-command__search-icon" aria-hidden="true" />
           <input
@@ -117,7 +111,9 @@ export function CmCommand({
             onKeyDown={handleKeyDown}
             aria-label={placeholder}
             aria-controls={listId}
-            aria-activedescendant={filtered[activeIndex] ? getItemId(filtered[activeIndex]) : undefined}
+            aria-activedescendant={
+              filtered[activeIndex] ? getItemId(filtered[activeIndex]) : undefined
+            }
           />
         </div>
         <div className="cm-command" id={listId} role="listbox">
@@ -142,11 +138,7 @@ export function CmCommand({
                   {item.icon}
                   <span className="cm-command__item-label">{item.label}</span>
                 </span>
-                {item.shortcut ? (
-                  <kbd className="cm-command__shortcut">
-                    {item.shortcut}
-                  </kbd>
-                ) : null}
+                {item.shortcut ? <kbd className="cm-command__shortcut">{item.shortcut}</kbd> : null}
               </CmButton>
             ))
           )}

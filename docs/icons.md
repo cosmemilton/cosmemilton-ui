@@ -57,7 +57,15 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 <CmButton icon={<ArrowDownTrayIcon width={16} />}>Export</CmButton>;
 
 // your own SVG
-<CmButton icon={<svg aria-hidden viewBox="0 0 24 24">…</svg>}>Export</CmButton>;
+<CmButton
+  icon={
+    <svg aria-hidden viewBox="0 0 24 24">
+      …
+    </svg>
+  }
+>
+  Export
+</CmButton>;
 ```
 
 None of these (other than `lucide-react`) are dependencies of cm-ui — install
@@ -65,8 +73,8 @@ only what you use.
 
 ## Summary
 
-| Source                  | Status                     | Install                        |
-| ----------------------- | -------------------------- | ------------------------------ |
-| `lucide-react`          | Bundled default            | nothing — included             |
-| `@iconify/react` (`CmIcon`) | Optional peer dependency | `npm i @iconify/react`         |
-| `react-icons`, Heroicons, Phosphor, custom SVG, … | Bring your own | install the one you want |
+| Source                                            | Status                   | Install                  |
+| ------------------------------------------------- | ------------------------ | ------------------------ |
+| `lucide-react`                                    | Bundled default          | nothing — included       |
+| `@iconify/react` (`CmIcon`)                       | Optional peer dependency | `npm i @iconify/react`   |
+| `react-icons`, Heroicons, Phosphor, custom SVG, … | Bring your own           | install the one you want |

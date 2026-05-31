@@ -83,12 +83,7 @@ export function insertNodeIntoTree(
     if (node.children?.length) {
       return {
         ...node,
-        children: insertNodeIntoTree(
-          node.children,
-          parentId,
-          nodeToInsert,
-          targetIndex,
-        ),
+        children: insertNodeIntoTree(node.children, parentId, nodeToInsert, targetIndex),
       };
     }
 
@@ -123,11 +118,7 @@ export function moveNodeBeforeTarget(
 }
 
 /** Nível (profundidade, 0-based) de um nó, ou -1 se não encontrado. */
-export function findNodeLevel(
-  nodes: CmTreeNode[],
-  targetId: string,
-  level = 0,
-): number {
+export function findNodeLevel(nodes: CmTreeNode[], targetId: string, level = 0): number {
   for (const node of nodes) {
     if (node.id === targetId) return level;
     if (node.children) {
@@ -150,9 +141,7 @@ export function findNodesAtLevel(
       result.push(node.id);
     }
     if (node.children && currentLevel < targetLevel) {
-      result.push(
-        ...findNodesAtLevel(node.children, targetLevel, currentLevel + 1),
-      );
+      result.push(...findNodesAtLevel(node.children, targetLevel, currentLevel + 1));
     }
   }
   return result;
@@ -189,16 +178,10 @@ export function collectAllNodeIds(nodes: CmTreeNode[]): string[] {
 }
 
 /** Caminho (raiz → alvo) até `targetId`, incluindo o próprio nó alvo. */
-export function findBreadcrumbPath(
-  nodes: CmTreeNode[],
-  targetId: string,
-): CmTreeNode[] {
+export function findBreadcrumbPath(nodes: CmTreeNode[], targetId: string): CmTreeNode[] {
   if (!Array.isArray(nodes)) return [];
   const path: CmTreeNode[] = [];
-  const walk = (
-    list: CmTreeNode[],
-    currentPath: CmTreeNode[] = [],
-  ): boolean => {
+  const walk = (list: CmTreeNode[], currentPath: CmTreeNode[] = []): boolean => {
     if (!Array.isArray(list)) return false;
     for (const node of list) {
       const newPath = [...currentPath, node];
@@ -228,10 +211,7 @@ export type TreeFilterResult = {
  * destacado. Função pura — a aplicação do `expandedIds` ao estado fica no
  * componente.
  */
-export function filterTree(
-  nodes: CmTreeNode[],
-  rawQuery: string,
-): TreeFilterResult {
+export function filterTree(nodes: CmTreeNode[], rawQuery: string): TreeFilterResult {
   if (!Array.isArray(nodes) || !rawQuery.trim()) {
     return {
       filteredData: Array.isArray(nodes) ? nodes : [],
@@ -244,10 +224,7 @@ export function filterTree(
   let foundNode: string | null = null;
   const expandedIds = new Set<string>();
 
-  const searchAndExpand = (
-    list: CmTreeNode[],
-    parentIds: string[] = [],
-  ): CmTreeNode[] => {
+  const searchAndExpand = (list: CmTreeNode[], parentIds: string[] = []): CmTreeNode[] => {
     if (!Array.isArray(list)) return [];
     return list
       .map((node) => {
@@ -258,10 +235,7 @@ export function filterTree(
 
         let filteredChildren: CmTreeNode[] = [];
         if (node.children) {
-          filteredChildren = searchAndExpand(node.children, [
-            ...parentIds,
-            node.id,
-          ]);
+          filteredChildren = searchAndExpand(node.children, [...parentIds, node.id]);
         }
 
         if (matches || filteredChildren.length > 0) {

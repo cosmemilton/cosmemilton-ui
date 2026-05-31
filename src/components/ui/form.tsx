@@ -68,12 +68,8 @@ export const CmForm = forwardRef<HTMLFormElement, CmFormProps>(function CmForm(
     >
       {(title || description) && (
         <header className="cm-form__header">
-          {title ? (
-            <h2 className="cm-form__title">{title}</h2>
-          ) : null}
-          {description ? (
-            <p className="cm-form__description">{description}</p>
-          ) : null}
+          {title ? <h2 className="cm-form__title">{title}</h2> : null}
+          {description ? <p className="cm-form__description">{description}</p> : null}
         </header>
       )}
       <div className="cm-form__body">{children}</div>

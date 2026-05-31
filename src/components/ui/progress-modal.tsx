@@ -50,7 +50,9 @@ export function CmProgressModal({
         >
           {/* Header */}
           <div className="cm-progress-modal__header">
-            <h2 id={titleId} className="cm-progress-modal__title">{title}</h2>
+            <h2 id={titleId} className="cm-progress-modal__title">
+              {title}
+            </h2>
             <p id={descriptionId} className="cm-progress-modal__description">
               {description}
             </p>
@@ -59,9 +61,7 @@ export function CmProgressModal({
           {/* CmProgress Bar */}
           <div className="cm-progress-modal__progress">
             <div className="cm-progress-modal__progress-header">
-              <span className="cm-progress-modal__muted">
-                Progresso
-              </span>
+              <span className="cm-progress-modal__muted">Progresso</span>
               <span className="cm-progress-modal__count">
                 {completedSteps} de {totalSteps}
               </span>
@@ -108,9 +108,7 @@ export function CmProgressModal({
                   >
                     {step.label}
                     {step.status === "loading" && step.detail && (
-                      <span className="cm-progress-modal__detail">
-                        — {step.detail}
-                      </span>
+                      <span className="cm-progress-modal__detail">— {step.detail}</span>
                     )}
                   </p>
                 </div>
@@ -128,8 +126,8 @@ export function CmProgressModal({
           {/* Footer Note */}
           <div className="cm-progress-modal__note">
             <p className="cm-progress-modal__note-text">
-              <strong>Importante:</strong> Não feche esta janela. Este processo
-              pode levar alguns segundos.
+              <strong>Importante:</strong> Não feche esta janela. Este processo pode levar alguns
+              segundos.
             </p>
           </div>
         </div>

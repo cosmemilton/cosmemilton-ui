@@ -31,17 +31,14 @@ export type CmIconBadgeProps = HTMLAttributes<HTMLSpanElement> &
     icon: ReactNode;
   };
 
-export const CmIconBadge = forwardRef<HTMLSpanElement, CmIconBadgeProps>(
-  function CmIconBadge({ icon, tone, size, className, ...rest }, ref) {
-    return (
-      <span
-        ref={ref}
-        className={iconBadgeVariants({ size, tone, className })}
-        {...rest}
-      >
-        {icon}
-      </span>
-    );
-  },
-);
+export const CmIconBadge = forwardRef<HTMLSpanElement, CmIconBadgeProps>(function CmIconBadge(
+  { icon, tone, size, className, ...rest },
+  ref,
+) {
+  return (
+    <span ref={ref} className={iconBadgeVariants({ size, tone, className })} {...rest}>
+      {icon}
+    </span>
+  );
+});
 CmIconBadge.displayName = "CmIconBadge";

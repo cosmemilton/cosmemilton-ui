@@ -23,9 +23,7 @@ export type CmDropdownMenuSeparatorItem = {
   id: string;
 };
 
-export type CmDropdownMenuItem =
-  | CmDropdownMenuActionItem
-  | CmDropdownMenuSeparatorItem;
+export type CmDropdownMenuItem = CmDropdownMenuActionItem | CmDropdownMenuSeparatorItem;
 
 export type CmDropdownMenuProps = {
   trigger: (controls: {
@@ -56,11 +54,7 @@ export function CmDropdownMenu({ trigger, items, header, align, className }: CmD
           {items.map((item) => {
             if (item.type === "separator") {
               return (
-                <CmSeparator
-                  key={item.id}
-                  spacing="xs"
-                  className="cm-dropdown-menu__separator"
-                />
+                <CmSeparator key={item.id} spacing="xs" className="cm-dropdown-menu__separator" />
               );
             }
 

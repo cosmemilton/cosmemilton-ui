@@ -4,9 +4,7 @@ import { useControllableState } from "./use-controllable-state.js";
 
 describe("useControllableState", () => {
   it("manages internal state when uncontrolled", () => {
-    const { result } = renderHook(() =>
-      useControllableState<number>({ defaultValue: 1 }),
-    );
+    const { result } = renderHook(() => useControllableState<number>({ defaultValue: 1 }));
     expect(result.current[0]).toBe(1);
 
     act(() => result.current[1](2));
@@ -14,18 +12,14 @@ describe("useControllableState", () => {
   });
 
   it("supports updater functions like useState", () => {
-    const { result } = renderHook(() =>
-      useControllableState<number>({ defaultValue: 0 }),
-    );
+    const { result } = renderHook(() => useControllableState<number>({ defaultValue: 0 }));
     act(() => result.current[1]((prev) => prev + 5));
     expect(result.current[0]).toBe(5);
   });
 
   it("does not mutate internal state when controlled, but still calls onChange", () => {
     const onChange = vi.fn();
-    const { result } = renderHook(() =>
-      useControllableState<string>({ value: "fixed", onChange }),
-    );
+    const { result } = renderHook(() => useControllableState<string>({ value: "fixed", onChange }));
 
     act(() => result.current[1]("ignored"));
     expect(result.current[0]).toBe("fixed");

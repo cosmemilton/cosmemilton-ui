@@ -22,7 +22,13 @@ export type CmResizableProps = {
 
 type ResizableStyle = CSSProperties & Record<`--${string}`, string | number>;
 
-export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320, className, children }: CmResizableProps) {
+export function CmResizable({
+  minWidth = 240,
+  maxWidth = 640,
+  initialWidth = 320,
+  className,
+  children,
+}: CmResizableProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(initialWidth);
   const isDragging = useRef(false);
@@ -36,7 +42,10 @@ export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320
 
   const handleMouseMove = (event: MouseEvent) => {
     if (!isDragging.current || !containerRef.current) return;
-    const newWidth = Math.min(Math.max(event.clientX - containerRef.current.getBoundingClientRect().left, minWidth), maxWidth);
+    const newWidth = Math.min(
+      Math.max(event.clientX - containerRef.current.getBoundingClientRect().left, minWidth),
+      maxWidth,
+    );
     setWidth(newWidth);
   };
 
@@ -75,9 +84,7 @@ export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320
 
   return (
     <div ref={containerRef} className={cn("cm-resizable", className)} style={resizableStyle}>
-      <div className="cm-resizable-content">
-        {children}
-      </div>
+      <div className="cm-resizable-content">{children}</div>
       {/* A focusable separator is an ARIA "window splitter"; jsx-a11y flags it as
           non-interactive, but it has full pointer + keyboard support below. */}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}

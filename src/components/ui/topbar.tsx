@@ -89,7 +89,7 @@ export const CmTopbar = forwardRef<HTMLElement, CmTopbarProps>(function CmTopbar
           {center}
         </div>
       ) : null}
-      {(end || children) ? (
+      {end || children ? (
         <div
           className={cn(
             "cm-topbar__section cm-topbar__section--end",

@@ -30,12 +30,7 @@ describe("CmAlert", () => {
     const onDismiss = vi.fn();
     const onOpenChange = vi.fn();
     render(
-      <CmAlert
-        title="Closable"
-        dismissible
-        onDismiss={onDismiss}
-        onOpenChange={onOpenChange}
-      />,
+      <CmAlert title="Closable" dismissible onDismiss={onDismiss} onOpenChange={onOpenChange} />,
     );
 
     await user.click(screen.getByRole("button", { name: "Dispensar alerta" }));
@@ -48,9 +43,7 @@ describe("CmAlert", () => {
   it("stays visible when controlled and only notifies", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
-    render(
-      <CmAlert title="Controlled" dismissible open onOpenChange={onOpenChange} />,
-    );
+    render(<CmAlert title="Controlled" dismissible open onOpenChange={onOpenChange} />);
 
     await user.click(screen.getByRole("button", { name: "Dispensar alerta" }));
 

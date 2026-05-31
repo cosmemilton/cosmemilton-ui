@@ -62,10 +62,7 @@ describe("CmTreeView", () => {
     const user = userEvent.setup();
     render(<CmTreeView data={tree} />);
 
-    await user.type(
-      screen.getByPlaceholderText("Buscar categorias..."),
-      "Carrot",
-    );
+    await user.type(screen.getByPlaceholderText("Buscar categorias..."), "Carrot");
 
     expect(screen.getByRole("button", { name: "Carrot" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Apple" })).not.toBeInTheDocument();
@@ -78,8 +75,6 @@ describe("CmTreeView", () => {
 
     await user.click(screen.getByRole("button", { name: "Fruits" }));
 
-    expect(
-      screen.getByRole("button", { name: "Navigate to Fruits" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Navigate to Fruits" })).toBeInTheDocument();
   });
 });

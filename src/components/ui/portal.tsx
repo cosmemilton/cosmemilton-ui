@@ -25,11 +25,7 @@ export function CmPortal({ children }: { children: ReactNode }) {
 }
 CmPortal.displayName = "CmPortal";
 
-type CmPortalPanelPlacement =
-  | "top-start"
-  | "top-end"
-  | "bottom-start"
-  | "bottom-end";
+type CmPortalPanelPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
 
 type CmPortalPanelStyle = CSSProperties & Partial<Record<`--${string}`, string | number>>;
 
@@ -42,21 +38,20 @@ export type CmPortalPanelProps = HTMLAttributes<HTMLDivElement> & {
   zIndex?: number;
 };
 
-export const CmPortalPanel = forwardRef<HTMLDivElement, CmPortalPanelProps>(
-  function CmPortalPanel(
-    {
-      children,
-      className,
-      offset = "1.5rem",
-      placement = "bottom-end",
-      width,
-      maxWidth = "22rem",
-      zIndex = 999,
-      style,
-      ...props
-    },
-    ref,
-  ) {
+export const CmPortalPanel = forwardRef<HTMLDivElement, CmPortalPanelProps>(function CmPortalPanel(
+  {
+    children,
+    className,
+    offset = "1.5rem",
+    placement = "bottom-end",
+    width,
+    maxWidth = "22rem",
+    zIndex = 999,
+    style,
+    ...props
+  },
+  ref,
+) {
   const panelStyle: CmPortalPanelStyle = {
     "--cm-portal-panel-offset": cmSizeValue(offset),
     "--cm-portal-panel-max-width": cmSizeValue(maxWidth),

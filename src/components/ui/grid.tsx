@@ -1,16 +1,7 @@
-import type {
-  CSSProperties,
-  FormHTMLAttributes,
-  HTMLAttributes,
-  ReactNode,
-} from "react";
+import type { CSSProperties, FormHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../../lib/utils.js";
-import {
-  cmSizeValue,
-  resolveResponsiveNumber,
-  type CmResponsiveNumber,
-} from "./types.js";
+import { cmSizeValue, resolveResponsiveNumber, type CmResponsiveNumber } from "./types.js";
 
 type GridStyle = CSSProperties & Record<`--${string}`, string | number>;
 type GridContainerVariant = "default" | "actions";
@@ -26,7 +17,8 @@ type GridContainerBaseProps = {
 
 export type CmGridContainerProps =
   | (GridContainerBaseProps & HTMLAttributes<HTMLDivElement> & { as?: "div" })
-  | (GridContainerBaseProps & HTMLAttributes<HTMLElement> & { as: "section" | "article" | "footer" })
+  | (GridContainerBaseProps &
+      HTMLAttributes<HTMLElement> & { as: "section" | "article" | "footer" })
   | (GridContainerBaseProps & FormHTMLAttributes<HTMLFormElement> & { as: "form" });
 
 export type CmGridProps = HTMLAttributes<HTMLDivElement> & {
@@ -139,12 +131,7 @@ export const CmGrid = forwardRef<HTMLDivElement, CmGridProps>(function CmGrid(
   };
 
   return (
-    <div
-      ref={ref}
-      className={cn("cm-grid", className)}
-      style={gridStyle}
-      {...props}
-    >
+    <div ref={ref} className={cn("cm-grid", className)} style={gridStyle} {...props}>
       {children}
     </div>
   );

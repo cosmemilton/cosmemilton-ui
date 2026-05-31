@@ -13,14 +13,14 @@ npm install
 
 ## Scripts
 
-| Script                  | What it does                                          |
-| ----------------------- | ----------------------------------------------------- |
-| `npm run build`         | Compile `src/` to `dist/` and copy the published CSS  |
-| `npm run typecheck`     | Type-check the whole project with `tsc --noEmit`      |
-| `npm run lint`          | Run ESLint (`lint:fix` to auto-fix)                   |
-| `npm run format`        | Format with Prettier (`format:check` to verify only)  |
-| `npm run test`          | Run the Vitest suite (`test:watch`, `test:coverage`)  |
-| `npm run changeset`     | Record a release note for your change                 |
+| Script              | What it does                                         |
+| ------------------- | ---------------------------------------------------- |
+| `npm run build`     | Compile `src/` to `dist/` and copy the published CSS |
+| `npm run typecheck` | Type-check the whole project with `tsc --noEmit`     |
+| `npm run lint`      | Run ESLint (`lint:fix` to auto-fix)                  |
+| `npm run format`    | Format with Prettier (`format:check` to verify only) |
+| `npm run test`      | Run the Vitest suite (`test:watch`, `test:coverage`) |
+| `npm run changeset` | Record a release note for your change                |
 
 ## Before opening a PR
 

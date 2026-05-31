@@ -6,11 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../lib/utils.js";
-import {
-  cmDensityClass,
-  type CmDensity,
-  type CmTone,
-} from "./types.js";
+import { cmDensityClass, type CmDensity, type CmTone } from "./types.js";
 
 export type CmMetricCardAccent = "none" | "left" | "top";
 
@@ -28,29 +24,28 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   loading?: boolean;
 };
 
-export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(
-  function CmMetricCard(
-    {
-      accent = "none",
-      className,
-      density,
-      description,
-      footer,
-      icon,
-      interactive = false,
-      loading = false,
-      meta,
-      onClick,
-      onKeyDown,
-      role,
-      tabIndex,
-      title,
-      tone = "default",
-      value,
-      ...props
-    },
-    ref,
-  ) {
+export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(function CmMetricCard(
+  {
+    accent = "none",
+    className,
+    density,
+    description,
+    footer,
+    icon,
+    interactive = false,
+    loading = false,
+    meta,
+    onClick,
+    onKeyDown,
+    role,
+    tabIndex,
+    title,
+    tone = "default",
+    value,
+    ...props
+  },
+  ref,
+) {
   const clickable = Boolean(onClick || interactive);
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -76,7 +71,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(
         className,
       )}
       role={onClick ? "button" : role}
-      tabIndex={onClick ? tabIndex ?? 0 : tabIndex}
+      tabIndex={onClick ? (tabIndex ?? 0) : tabIndex}
       aria-busy={loading || undefined}
       onClick={onClick}
       onKeyDown={handleKeyDown}
@@ -88,11 +83,9 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(
       </div>
       <div className="cm-metric-card__body">
         <span className="cm-metric-card__value">{loading ? "..." : value}</span>
-        {description ? (
-          <span className="cm-metric-card__description">{description}</span>
-        ) : null}
+        {description ? <span className="cm-metric-card__description">{description}</span> : null}
       </div>
-      {(meta || footer) ? (
+      {meta || footer ? (
         <div className="cm-metric-card__footer">
           {meta ? <span className="cm-metric-card__meta">{meta}</span> : null}
           {footer}

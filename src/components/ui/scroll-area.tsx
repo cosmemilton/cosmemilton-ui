@@ -9,17 +9,16 @@ export type CmScrollAreaProps = {
   height?: number | string;
 };
 
-export const CmScrollArea = forwardRef<HTMLDivElement, CmScrollAreaProps>(
-  function CmScrollArea({ children, className, height = 320 }, ref) {
+export const CmScrollArea = forwardRef<HTMLDivElement, CmScrollAreaProps>(function CmScrollArea(
+  { children, className, height = 320 },
+  ref,
+) {
   const maxHeight = typeof height === "number" ? `${height}px` : height;
 
   return (
     <div
       ref={ref}
-      className={cn(
-        "cm-scroll-area",
-        className,
-      )}
+      className={cn("cm-scroll-area", className)}
       style={{ maxHeight } as CSSProperties}
     >
       {children}

@@ -76,14 +76,8 @@ export const CmAlert = forwardRef<HTMLDivElement, CmAlertProps>(function CmAlert
     >
       <span className="cm-alert__indicator" aria-hidden="true" />
       <div className="cm-alert__body">
-        <h4 className="cm-alert__title">
-          {title}
-        </h4>
-        {description ? (
-          <p className="cm-alert__description">
-            {description}
-          </p>
-        ) : null}
+        <h4 className="cm-alert__title">{title}</h4>
+        {description ? <p className="cm-alert__description">{description}</p> : null}
       </div>
       {action ? <div className="cm-alert__action">{action}</div> : null}
       {dismissible ? (

@@ -36,11 +36,7 @@ export interface CmTreeViewProps {
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
-  onMove?: (
-    nodeId: string,
-    newParentId: string | null,
-    newOrder: number
-  ) => void;
+  onMove?: (nodeId: string, newParentId: string | null, newOrder: number) => void;
   onReorder?: (nodes: CmTreeNode[]) => void;
   searchable?: boolean;
   draggable?: boolean;
@@ -60,10 +56,7 @@ export interface CmTreeViewProps {
   // Controles externos (quando usado com PageHeader)
   externalSearch?: string;
   onExternalSearchChange?: (value: string) => void;
-  onTreeControlsReady?: (controls: {
-    expandAll: () => void;
-    collapseAll: () => void;
-  }) => void;
+  onTreeControlsReady?: (controls: { expandAll: () => void; collapseAll: () => void }) => void;
   // Limite de níveis na hierarquia
   maxDepth?: number; // Se definido, limita quantos níveis podem ser criados
   // Modo de seleção com checkbox (novo)
@@ -102,12 +95,10 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   onSolitaryModeChange,
 }) => {
   const [internalSearch, setInternalSearch] = useState("");
-  const [internalSolitaryMode, setInternalSolitaryMode] =
-    useState(solitaryMode);
+  const [internalSolitaryMode, setInternalSolitaryMode] = useState(solitaryMode);
 
   // Usa busca externa se fornecida, senão usa interna
-  const searchQuery =
-    externalSearch !== undefined ? externalSearch : internalSearch;
+  const searchQuery = externalSearch !== undefined ? externalSearch : internalSearch;
   const setSearchQuery = onExternalSearchChange || setInternalSearch;
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
     if (expandedByDefault && Array.isArray(data)) {
@@ -143,10 +134,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
 
   // Busca recursiva com destaque
   const { filteredData, highlightedNode } = useMemo(() => {
-    const { filteredData, expandedIds, highlightedNode } = filterTree(
-      data,
-      searchQuery,
-    );
+    const { filteredData, expandedIds, highlightedNode } = filterTree(data, searchQuery);
 
     // Auto-expandir os ancestrais dos nós que casam durante a busca.
     if (searchQuery.trim()) {
@@ -182,10 +170,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
     });
   };
 
-  const handleDragStart = (
-    event: DragEvent<HTMLElement>,
-    node: CmTreeNode,
-  ) => {
+  const handleDragStart = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
     if (!draggable || selectionMode) return;
     setActiveId(node.id);
     setDropTargetId(null);
@@ -193,10 +178,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
     event.dataTransfer.setData("text/plain", node.id);
   };
 
-  const handleDragOver = (
-    event: DragEvent<HTMLElement>,
-    node: CmTreeNode,
-  ) => {
+  const handleDragOver = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
     if (!activeId || activeId === node.id) return;
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -287,10 +269,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               {texts.collapseAll}
             </CmButton>
             {onAdd && (
-              <CmButton
-                onClick={() => onAdd(null)}
-                className="cm-tree-view__control-button"
-              >
+              <CmButton onClick={() => onAdd(null)} className="cm-tree-view__control-button">
                 <Plus className="cm-tree-view__button-icon" />
                 {texts.addRoot}
               </CmButton>
@@ -308,9 +287,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               <>
                 {breadcrumbPath.map((node, index) => (
                   <React.Fragment key={node.id}>
-                    {index > 0 && (
-                      <ChevronRight className="cm-tree-view__tiny-icon" />
-                    )}
+                    {index > 0 && <ChevronRight className="cm-tree-view__tiny-icon" />}
                     <CmButton
                       unstyled
                       type="button"
@@ -338,9 +315,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
             )}
           </div>
           <div className="cm-tree-view__mode">
-            <span className="cm-tree-view__mode-label">
-              Modo Solitário
-            </span>
+            <span className="cm-tree-view__mode-label">Modo Solitário</span>
             <CmSwitch
               checked={internalSolitaryMode}
               onCheckedChange={(checked: boolean) => {
@@ -355,9 +330,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
       {/* Modo Solitário (quando não há breadcrumb) */}
       {!showBreadcrumb && (
         <div className="cm-tree-view__mode cm-tree-view__mode--standalone">
-          <span className="cm-tree-view__mode-label">
-            Modo Solitário
-          </span>
+          <span className="cm-tree-view__mode-label">Modo Solitário</span>
           <CmSwitch
             checked={internalSolitaryMode}
             onCheckedChange={(checked: boolean) => {
@@ -369,12 +342,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
       )}
 
       {/* Tree */}
-      <div
-        className={cn(
-          "cm-tree-view__panel",
-          showBorder && "cm-tree-view__panel--bordered"
-        )}
-      >
+      <div className={cn("cm-tree-view__panel", showBorder && "cm-tree-view__panel--bordered")}>
         <div className="cm-tree-view__scroll">
           {filteredData.length > 0 ? (
             <TreeBranch
@@ -403,15 +371,10 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
             <div className="cm-tree-view__empty">
               <FolderOpen className="cm-tree-view__empty-icon" />
               <p className="cm-tree-view__empty-text">
-                {searchQuery
-                  ? "Nenhuma categoria encontrada"
-                  : "Nenhuma categoria cadastrada"}
+                {searchQuery ? "Nenhuma categoria encontrada" : "Nenhuma categoria cadastrada"}
               </p>
               {!searchQuery && onAdd && (
-                <CmButton
-                  onClick={() => onAdd(null)}
-                  className="cm-tree-view__empty-button"
-                >
+                <CmButton onClick={() => onAdd(null)} className="cm-tree-view__empty-button">
                   <Plus className="cm-tree-view__button-icon" />
                   Adicionar Primeira Categoria
                 </CmButton>
@@ -436,19 +399,16 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
             <div className="cm-tree-view__footer-content">
               <div className="cm-tree-view__footer-stats">
                 <span>
-                  Total: {allNodeIds.length}{" "}
-                  {allNodeIds.length === 1 ? "categoria" : "categorias"}
+                  Total: {allNodeIds.length} {allNodeIds.length === 1 ? "categoria" : "categorias"}
                 </span>
                 <span>•</span>
                 <span>
-                  Expandidos: {expandedNodes.size}{" "}
-                  {expandedNodes.size === 1 ? "nó" : "nós"}
+                  Expandidos: {expandedNodes.size} {expandedNodes.size === 1 ? "nó" : "nós"}
                 </span>
               </div>
               {searchQuery && (
                 <span className="cm-tree-view__footer-result">
-                  {filteredData.length}{" "}
-                  {filteredData.length === 1 ? "resultado" : "resultados"}{" "}
+                  {filteredData.length} {filteredData.length === 1 ? "resultado" : "resultados"}{" "}
                   encontrados
                 </span>
               )}

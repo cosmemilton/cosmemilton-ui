@@ -17,8 +17,10 @@ export type CmRadioGroupProps = {
   className?: string;
 };
 
-export const CmRadioGroup = forwardRef<HTMLDivElement, CmRadioGroupProps>(
-  function CmRadioGroup({ name, value, options, onChange, className }, ref) {
+export const CmRadioGroup = forwardRef<HTMLDivElement, CmRadioGroupProps>(function CmRadioGroup(
+  { name, value, options, onChange, className },
+  ref,
+) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
@@ -26,10 +28,7 @@ export const CmRadioGroup = forwardRef<HTMLDivElement, CmRadioGroupProps>(
   return (
     <div ref={ref} className={cn("cm-radio-group", className)}>
       {options.map((option) => (
-        <label
-          key={option.value}
-          className="cm-radio-group__option"
-        >
+        <label key={option.value} className="cm-radio-group__option">
           <input
             type="radio"
             name={name}
@@ -39,13 +38,9 @@ export const CmRadioGroup = forwardRef<HTMLDivElement, CmRadioGroupProps>(
             className="cm-radio-group__input"
           />
           <span className="cm-radio-group__content">
-            <span className="cm-radio-group__label">
-              {option.label}
-            </span>
+            <span className="cm-radio-group__label">{option.label}</span>
             {option.description ? (
-              <span className="cm-radio-group__description">
-                {option.description}
-              </span>
+              <span className="cm-radio-group__description">{option.description}</span>
             ) : null}
           </span>
         </label>

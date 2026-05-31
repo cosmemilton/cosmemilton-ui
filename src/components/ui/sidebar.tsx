@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  PanelLeft,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelLeft } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -18,16 +14,8 @@ import {
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { cmDensityClass, cmSizeValue } from "./types.js";
-import type {
-  CmSidebarGroup,
-  CmSidebarItem,
-  CmSidebarProps,
-} from "./sidebar.types.js";
-import {
-  getBrowserPathname,
-  getInitial,
-  normalizePathname,
-} from "./sidebar.utils.js";
+import type { CmSidebarGroup, CmSidebarItem, CmSidebarProps } from "./sidebar.types.js";
+import { getBrowserPathname, getInitial, normalizePathname } from "./sidebar.utils.js";
 import { SidebarItem, renderIcon } from "./sidebar-item.js";
 
 export type {
@@ -103,10 +91,7 @@ export function CmSidebar({
   tone = "surface",
   width,
 }: CmSidebarProps) {
-  const visibleGroups = useMemo(
-    () => groups.filter((group) => group.items.length > 0),
-    [groups],
-  );
+  const visibleGroups = useMemo(() => groups.filter((group) => group.items.length > 0), [groups]);
   const [browserPathname, setBrowserPathname] = useState(
     () => activePathname ?? getBrowserPathname(),
   );
@@ -148,7 +133,9 @@ export function CmSidebar({
   );
   const activeGroupId = useMemo(
     () =>
-      visibleGroups.find((group) => group.active || group.items.some((item) => getItemActive(item, group)))?.id ??
+      visibleGroups.find(
+        (group) => group.active || group.items.some((item) => getItemActive(item, group)),
+      )?.id ??
       visibleGroups.find((group) => group.defaultOpen)?.id ??
       visibleGroups[0]?.id,
     [getItemActive, visibleGroups],
@@ -158,7 +145,9 @@ export function CmSidebar({
     defaultOpenGroupId,
   );
   const [sidebarPreviewOpen, setSidebarPreviewOpen] = useState(false);
-  const [lastGroupItemsAvailableHeight, setLastGroupItemsAvailableHeight] = useState<number | null>(null);
+  const [lastGroupItemsAvailableHeight, setLastGroupItemsAvailableHeight] = useState<number | null>(
+    null,
+  );
   const sidebarRef = useRef<HTMLElement | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
   const footerRef = useRef<HTMLDivElement | null>(null);
@@ -219,11 +208,11 @@ export function CmSidebar({
     const lowerBoundary = Math.min(navRect.bottom, footerRect?.top ?? sidebarBottom, sidebarBottom);
     const nextAvailableHeight = Math.max(0, Math.floor(lowerBoundary - groupItemsRect.top));
 
-    setLastGroupItemsAvailableHeight((current) => (
+    setLastGroupItemsAvailableHeight((current) =>
       current !== null && Math.abs(current - nextAvailableHeight) < 1
         ? current
-        : nextAvailableHeight
-    ));
+        : nextAvailableHeight,
+    );
   }, [lastVisibleGroupId, visibleOpenGroupId]);
 
   const clearPreviewTimer = useCallback(() => {
@@ -239,14 +228,17 @@ export function CmSidebar({
     setSidebarPreviewOpen(true);
   }, [clearPreviewTimer, isCollapsed]);
 
-  const closeSidebarPreview = useCallback((delay = previewCloseDelay) => {
-    if (!isCollapsed) return;
-    clearPreviewTimer();
-    previewTimerRef.current = window.setTimeout(() => {
-      setSidebarPreviewOpen(false);
-      previewTimerRef.current = null;
-    }, delay);
-  }, [clearPreviewTimer, isCollapsed]);
+  const closeSidebarPreview = useCallback(
+    (delay = previewCloseDelay) => {
+      if (!isCollapsed) return;
+      clearPreviewTimer();
+      previewTimerRef.current = window.setTimeout(() => {
+        setSidebarPreviewOpen(false);
+        previewTimerRef.current = null;
+      }, delay);
+    },
+    [clearPreviewTimer, isCollapsed],
+  );
 
   const closeSidebarPreviewAfterSelection = useCallback(() => {
     if (isCollapsed) {
@@ -287,9 +279,8 @@ export function CmSidebar({
     const groupItemsElement = visibleOpenGroupId
       ? groupItemsRefs.current.get(visibleOpenGroupId)
       : undefined;
-    const resizeObserver = typeof ResizeObserver === "undefined"
-      ? undefined
-      : new ResizeObserver(scheduleUpdate);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(scheduleUpdate);
 
     window.addEventListener("resize", scheduleUpdate);
     navElement?.addEventListener("scroll", scheduleUpdate, { passive: true });
@@ -317,21 +308,27 @@ export function CmSidebar({
     visibleOpenGroupId,
   ]);
 
-  const setCollapsed = useCallback((nextCollapsed: boolean) => {
-    if (collapsed === undefined) {
-      setUncontrolledCollapsed(nextCollapsed);
-    }
-    setSidebarPreviewOpen(false);
-    setUncontrolledOpenGroupId(undefined);
-    onCollapsedChange?.(nextCollapsed);
-  }, [collapsed, onCollapsedChange]);
+  const setCollapsed = useCallback(
+    (nextCollapsed: boolean) => {
+      if (collapsed === undefined) {
+        setUncontrolledCollapsed(nextCollapsed);
+      }
+      setSidebarPreviewOpen(false);
+      setUncontrolledOpenGroupId(undefined);
+      onCollapsedChange?.(nextCollapsed);
+    },
+    [collapsed, onCollapsedChange],
+  );
 
-  const setOpenGroup = useCallback((nextGroupId: string | null) => {
-    if (!controlledOpenGroup) {
-      setUncontrolledOpenGroupId(nextGroupId);
-    }
-    onOpenGroupChange?.(nextGroupId);
-  }, [controlledOpenGroup, onOpenGroupChange]);
+  const setOpenGroup = useCallback(
+    (nextGroupId: string | null) => {
+      if (!controlledOpenGroup) {
+        setUncontrolledOpenGroupId(nextGroupId);
+      }
+      onOpenGroupChange?.(nextGroupId);
+    },
+    [controlledOpenGroup, onOpenGroupChange],
+  );
 
   function toggleSidebarState() {
     if (autoCollapsed) {
@@ -387,7 +384,9 @@ export function CmSidebar({
         </span>
       )}
       <div className="cm-sidebar__brand-text">
-        <strong title={typeof brandTitle === "string" ? brandTitle : undefined}>{brandTitle}</strong>
+        <strong title={typeof brandTitle === "string" ? brandTitle : undefined}>
+          {brandTitle}
+        </strong>
         {brandSubtitle ? <span>{brandSubtitle}</span> : null}
       </div>
       {!autoCollapsed && (!isCollapsed || sidebarPreviewOpen) ? (
@@ -431,7 +430,9 @@ export function CmSidebar({
         {brandContent}
         <nav ref={navRef} className="cm-sidebar__nav" aria-label={navLabel}>
           {visibleGroups.map((group) => {
-            const groupActive = Boolean(group.active || group.items.some((item) => getItemActive(item, group)));
+            const groupActive = Boolean(
+              group.active || group.items.some((item) => getItemActive(item, group)),
+            );
             const groupOpen = visibleOpenGroupId === group.id;
             const firstItem = group.items[0];
             const direct = group.direct ?? group.items.length === 1;
@@ -467,7 +468,10 @@ export function CmSidebar({
                 <CmButton
                   unstyled
                   type="button"
-                  className={cn("cm-sidebar__group-trigger", groupActive && "cm-sidebar__group-trigger--active")}
+                  className={cn(
+                    "cm-sidebar__group-trigger",
+                    groupActive && "cm-sidebar__group-trigger--active",
+                  )}
                   aria-expanded={groupOpen}
                   title={isCollapsed && !sidebarPreviewOpen ? group.label : undefined}
                   onClick={() => toggleSidebarGroup(group.id)}
@@ -502,7 +506,11 @@ export function CmSidebar({
             );
           })}
         </nav>
-        {hasFooter ? <div ref={footerRef} className="cm-sidebar__footer">{footer}</div> : null}
+        {hasFooter ? (
+          <div ref={footerRef} className="cm-sidebar__footer">
+            {footer}
+          </div>
+        ) : null}
       </aside>
       {!standalone ? (
         <section className={cn("cm-sidebar__content", contentClassName)}>

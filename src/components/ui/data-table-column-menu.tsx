@@ -46,13 +46,7 @@ export function DataTableColumnMenu<T>({
           >
             Restaurar padrão
           </CmButton>
-          <CmButton
-            type="button"
-            onClick={onClose}
-            variant="soft"
-            tone="primary"
-            size="sm"
-          >
+          <CmButton type="button" onClick={onClose} variant="soft" tone="primary" size="sm">
             Fechar
           </CmButton>
         </div>

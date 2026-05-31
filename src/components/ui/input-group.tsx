@@ -7,23 +7,15 @@ export type CmInputGroupProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
 };
 
-export const CmInputGroup = forwardRef<HTMLDivElement, CmInputGroupProps>(
-  function CmInputGroup({ prefix, suffix, children, className, ...rest }, ref) {
+export const CmInputGroup = forwardRef<HTMLDivElement, CmInputGroupProps>(function CmInputGroup(
+  { prefix, suffix, children, className, ...rest },
+  ref,
+) {
   return (
     <div ref={ref} className={cn("cm-input-group", className)} {...rest}>
-      {prefix ? (
-        <span className="cm-input-group__addon">
-          {prefix}
-        </span>
-      ) : null}
-      <div className="cm-input-group__control">
-        {children}
-      </div>
-      {suffix ? (
-        <span className="cm-input-group__addon">
-          {suffix}
-        </span>
-      ) : null}
+      {prefix ? <span className="cm-input-group__addon">{prefix}</span> : null}
+      <div className="cm-input-group__control">{children}</div>
+      {suffix ? <span className="cm-input-group__addon">{suffix}</span> : null}
     </div>
   );
 });

@@ -8,24 +8,27 @@ export function useTablePreference(browserKey: string | null, defaultHidden: str
   const storageKey = browserKey ? `cm-table:${browserKey}` : null;
   const defaultHiddenSnapshot = JSON.stringify(defaultHidden);
 
-  const subscribe = useCallback((callback: () => void) => {
-    if (!storageKey || typeof window === "undefined") return () => undefined;
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      if (!storageKey || typeof window === "undefined") return () => undefined;
 
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === storageKey) callback();
-    };
-    const handleLocalChange = (event: Event) => {
-      if (!(event instanceof CustomEvent) || event.detail?.storageKey === storageKey) callback();
-    };
+      const handleStorage = (event: StorageEvent) => {
+        if (event.key === storageKey) callback();
+      };
+      const handleLocalChange = (event: Event) => {
+        if (!(event instanceof CustomEvent) || event.detail?.storageKey === storageKey) callback();
+      };
 
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener(TABLE_PREFERENCE_EVENT, handleLocalChange);
+      window.addEventListener("storage", handleStorage);
+      window.addEventListener(TABLE_PREFERENCE_EVENT, handleLocalChange);
 
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener(TABLE_PREFERENCE_EVENT, handleLocalChange);
-    };
-  }, [storageKey]);
+      return () => {
+        window.removeEventListener("storage", handleStorage);
+        window.removeEventListener(TABLE_PREFERENCE_EVENT, handleLocalChange);
+      };
+    },
+    [storageKey],
+  );
 
   const getSnapshot = useCallback(() => {
     if (!storageKey || typeof window === "undefined") return defaultHiddenSnapshot;
@@ -38,7 +41,10 @@ export function useTablePreference(browserKey: string | null, defaultHidden: str
 
   const getServerSnapshot = useCallback(() => defaultHiddenSnapshot, [defaultHiddenSnapshot]);
   const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const hiddenColumns = useMemo(() => parseHiddenColumns(snapshot, defaultHiddenSnapshot), [defaultHiddenSnapshot, snapshot]);
+  const hiddenColumns = useMemo(
+    () => parseHiddenColumns(snapshot, defaultHiddenSnapshot),
+    [defaultHiddenSnapshot, snapshot],
+  );
 
   const setHiddenColumns = useCallback(
     (updater: Set<string> | ((prev: Set<string>) => Set<string>)) => {

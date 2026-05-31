@@ -25,11 +25,18 @@ function resolveGap(gap: CmButtonGroupProps["gap"]) {
   return gapMap[gap as keyof typeof gapMap] ?? gap;
 }
 
-export const CmButtonGroup = forwardRef<HTMLDivElement, CmButtonGroupProps>(
-  function CmButtonGroup(
-    { children, className, fullWidth = false, gap = "none", orientation = "horizontal", style, ...rest },
-    ref,
-  ) {
+export const CmButtonGroup = forwardRef<HTMLDivElement, CmButtonGroupProps>(function CmButtonGroup(
+  {
+    children,
+    className,
+    fullWidth = false,
+    gap = "none",
+    orientation = "horizontal",
+    style,
+    ...rest
+  },
+  ref,
+) {
   const isVertical = orientation === "vertical";
   const resolvedGap = resolveGap(gap);
   const isJoined = resolvedGap === "0";

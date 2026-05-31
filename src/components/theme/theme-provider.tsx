@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   extendThemes,
   defaultTheme,
@@ -79,10 +72,7 @@ export function CmThemeProvider({
   defaultThemeName = defaultTheme.name,
   density,
 }: CmThemeProviderProps) {
-  const themeRegistry = useMemo(
-    () => extendThemes(customThemes),
-    [customThemes],
-  );
+  const themeRegistry = useMemo(() => extendThemes(customThemes), [customThemes]);
   const fallbackTheme = themeRegistry[defaultThemeName] ?? defaultTheme;
   const [themeName, setThemeName] = useState<string>(fallbackTheme.name);
   const [uncontrolledDensity, setUncontrolledDensity] = useState<CmDensity>(defaultDensity);
@@ -94,13 +84,16 @@ export function CmThemeProvider({
       setThemeName(stored);
     }
     const storedDensity = window.localStorage.getItem(LOCAL_STORAGE_DENSITY) as CmDensity | null;
-    if (!density && (storedDensity === "default" || storedDensity === "comfortable" || storedDensity === "compact")) {
+    if (
+      !density &&
+      (storedDensity === "default" ||
+        storedDensity === "comfortable" ||
+        storedDensity === "compact")
+    ) {
       setUncontrolledDensity(storedDensity);
     }
     const storedChrome = window.localStorage.getItem(LOCAL_STORAGE_CHROME) as CmThemeChrome | null;
-    const storedInvert = window.localStorage.getItem(
-      LOCAL_STORAGE_INVERT_HEADER,
-    );
+    const storedInvert = window.localStorage.getItem(LOCAL_STORAGE_INVERT_HEADER);
     if (!chrome && (storedChrome === "surface" || storedChrome === "inverted")) {
       setUncontrolledChrome(storedChrome);
     } else if (!chrome && storedInvert === "true") {
@@ -134,10 +127,7 @@ export function CmThemeProvider({
       setUncontrolledChrome(nextChrome);
     }
     window.localStorage.setItem(LOCAL_STORAGE_CHROME, nextChrome);
-    window.localStorage.setItem(
-      LOCAL_STORAGE_INVERT_HEADER,
-      String(nextChrome === "inverted"),
-    );
+    window.localStorage.setItem(LOCAL_STORAGE_INVERT_HEADER, String(nextChrome === "inverted"));
   };
 
   const setInvertHeader = (value: boolean) => {
@@ -172,9 +162,7 @@ export function CmThemeProvider({
     [effectiveChrome, effectiveInvert, requestedDensity, theme, themeRegistry],
   );
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useCmTheme() {
@@ -189,4 +177,3 @@ export function useCmTheme() {
 export function useOptionalCmTheme() {
   return useContext(ThemeContext);
 }
-

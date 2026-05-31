@@ -29,7 +29,7 @@ export function CmBarChart({
   const { maxValue, bars } = useMemo(() => {
     const values = data.map((d) => d.value);
     const max = Math.max(...values, 1);
-    
+
     return {
       maxValue: max,
       bars: data.map((d) => ({
@@ -47,9 +47,7 @@ export function CmBarChart({
             <div className="cm-bar-chart__row-header">
               <span className="cm-bar-chart__label">{bar.label}</span>
               {showValues && (
-                <span className="cm-bar-chart__value">
-                  {bar.value.toLocaleString("pt-BR")}
-                </span>
+                <span className="cm-bar-chart__value">{bar.value.toLocaleString("pt-BR")}</span>
               )}
             </div>
             <div className="cm-bar-chart__track">
@@ -68,14 +66,14 @@ export function CmBarChart({
   }
 
   return (
-    <div className={cn("cm-bar-chart cm-bar-chart--vertical", className)} style={{ height: `${height}px` }}>
+    <div
+      className={cn("cm-bar-chart cm-bar-chart--vertical", className)}
+      style={{ height: `${height}px` }}
+    >
       {showGrid && (
         <div className="cm-bar-chart__grid" aria-hidden="true">
           {[0, 0.25, 0.5, 0.75, 1].map((_, i) => (
-            <div
-              key={i}
-              className="cm-bar-chart__grid-line"
-            />
+            <div key={i} className="cm-bar-chart__grid-line" />
           ))}
         </div>
       )}
@@ -97,9 +95,7 @@ export function CmBarChart({
                 }}
               />
             </div>
-            <span className="cm-bar-chart__label cm-bar-chart__label--axis">
-              {bar.label}
-            </span>
+            <span className="cm-bar-chart__label cm-bar-chart__label--axis">{bar.label}</span>
           </div>
         ))}
       </div>

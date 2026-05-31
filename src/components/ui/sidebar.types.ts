@@ -1,9 +1,4 @@
-import type {
-  CSSProperties,
-  ComponentPropsWithoutRef,
-  ElementType,
-  ReactNode,
-} from "react";
+import type { CSSProperties, ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import type { CmDensity } from "./types.js";
 
 export type CmSidebarItem = {

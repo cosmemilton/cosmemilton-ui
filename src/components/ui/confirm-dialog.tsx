@@ -19,19 +19,13 @@ export type CmConfirmDialogProps = {
   submittingLabel?: string;
 };
 
-const toneToDialogTone: Record<
-  NonNullable<CmConfirmDialogProps["tone"]>,
-  CmDialogTone
-> = {
+const toneToDialogTone: Record<NonNullable<CmConfirmDialogProps["tone"]>, CmDialogTone> = {
   danger: "danger",
   warning: "warning",
   info: "default",
 };
 
-const toneToButtonTone: Record<
-  NonNullable<CmConfirmDialogProps["tone"]>,
-  CmButtonTone
-> = {
+const toneToButtonTone: Record<NonNullable<CmConfirmDialogProps["tone"]>, CmButtonTone> = {
   danger: "danger",
   warning: "warning",
   info: "primary",
@@ -62,11 +56,7 @@ export function CmConfirmDialog({
           <CmButton variant="outline" onClick={onClose} disabled={submitting}>
             {cancelLabel}
           </CmButton>
-          <CmButton
-            tone={toneToButtonTone[tone]}
-            onClick={onConfirm}
-            disabled={submitting}
-          >
+          <CmButton tone={toneToButtonTone[tone]} onClick={onConfirm} disabled={submitting}>
             {submitting ? (submittingLabel ?? "Aguarde...") : confirmLabel}
           </CmButton>
         </div>

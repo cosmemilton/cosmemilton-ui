@@ -10,10 +10,7 @@ import { useEffect, useRef } from "react";
  * dismiss on Escape (dialog, drawer, select, combobox, multi-select,
  * context-menu, split-button, command).
  */
-export function useEscapeKey(
-  enabled: boolean,
-  handler: (event: KeyboardEvent) => void,
-): void {
+export function useEscapeKey(enabled: boolean, handler: (event: KeyboardEvent) => void): void {
   const handlerRef = useRef(handler);
   handlerRef.current = handler;
 

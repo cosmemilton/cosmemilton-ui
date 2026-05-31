@@ -54,11 +54,7 @@ Para registrar temas próprios em React puro, passe `customThemes` direto no pro
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "cosmemilton-ui/styles.css";
-import {
-  CmThemeProvider,
-  themes,
-  type ThemeConfig,
-} from "cosmemilton-ui";
+import { CmThemeProvider, themes, type ThemeConfig } from "cosmemilton-ui";
 import { App } from "./App";
 
 const baseTheme = themes["cm-neutral"];
@@ -284,34 +280,18 @@ Use `CmAlert` para mensagens curtas de estado, orientação ou erro. O component
 ### Exemplo simples
 
 ```tsx
-<CmAlert
-  title="Tudo certo"
-  description="A operação foi concluída."
-  tone="success"
-/>
+<CmAlert title="Tudo certo" description="A operação foi concluída." tone="success" />
 ```
 
 ### Tons disponíveis
 
 ```tsx
 <>
-  <CmAlert
-    title="Informação"
-    description="Use para mensagens neutras."
-    tone="info"
-  />
+  <CmAlert title="Informação" description="Use para mensagens neutras." tone="info" />
 
-  <CmAlert
-    title="Tudo certo"
-    description="A operação foi concluída."
-    tone="success"
-  />
+  <CmAlert title="Tudo certo" description="A operação foi concluída." tone="success" />
 
-  <CmAlert
-    title="Atenção"
-    description="Revise antes de continuar."
-    tone="warning"
-  />
+  <CmAlert title="Atenção" description="Revise antes de continuar." tone="warning" />
 
   <CmAlert
     title="Não foi possível salvar"
@@ -383,7 +363,7 @@ import { CmAlert, CmButton } from "cosmemilton-ui";
   description="Salve suas alterações antes de continuar."
   tone="warning"
   action={<CmButton size="sm">Salvar agora</CmButton>}
-/>
+/>;
 ```
 
 ### Props
@@ -463,12 +443,7 @@ export function DrawerDemo() {
   return (
     <>
       <CmButton onClick={() => setOpen(true)}>Abrir painel</CmButton>
-      <CmDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        side="right"
-        title="Filtros"
-      >
+      <CmDrawer open={open} onClose={() => setOpen(false)} side="right" title="Filtros">
         Conteúdo do painel lateral.
       </CmDrawer>
     </>
@@ -514,12 +489,7 @@ export function PopoverDemo() {
 "use client";
 
 import { useState } from "react";
-import {
-  CmTabs,
-  CmTabsContent,
-  CmTabsList,
-  CmTabsTrigger,
-} from "cosmemilton-ui";
+import { CmTabs, CmTabsContent, CmTabsList, CmTabsTrigger } from "cosmemilton-ui";
 
 export function TabsDemo() {
   const [tab, setTab] = useState("dados");
@@ -622,11 +592,7 @@ export function TreeSelectionDemo() {
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  CmButton,
-  CmDataTable,
-  type CmDataTableColumn,
-} from "cosmemilton-ui";
+import { CmButton, CmDataTable, type CmDataTableColumn } from "cosmemilton-ui";
 
 type CustomerRow = {
   id: string;
@@ -777,12 +743,7 @@ export function CalendarDemo() {
   const [date, setDate] = useState(new Date(2026, 4, 13));
 
   return (
-    <CmCalendar
-      value={date}
-      month={4}
-      year={2026}
-      onSelect={(nextDate) => setDate(nextDate)}
-    />
+    <CmCalendar value={date} month={4} year={2026} onSelect={(nextDate) => setDate(nextDate)} />
   );
 }
 ```

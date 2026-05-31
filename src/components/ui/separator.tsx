@@ -10,11 +10,10 @@ export type CmSeparatorProps = Omit<HTMLAttributes<HTMLSpanElement>, "children">
   length?: string | number;
 };
 
-export const CmSeparator = forwardRef<HTMLSpanElement, CmSeparatorProps>(
-  function CmSeparator(
-    { orientation = "horizontal", spacing = "md", length, className, style, ...props },
-    ref,
-  ) {
+export const CmSeparator = forwardRef<HTMLSpanElement, CmSeparatorProps>(function CmSeparator(
+  { orientation = "horizontal", spacing = "md", length, className, style, ...props },
+  ref,
+) {
   const spacingClass = `cm-separator--spacing-${spacing}`;
   const separatorStyle: SeparatorStyle = {
     ...(length ? { "--cm-separator-length": cmSizeValue(length) } : {}),

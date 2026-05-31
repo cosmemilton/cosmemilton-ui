@@ -35,9 +35,7 @@ export function CmAccordion({ items, defaultOpen, className }: CmAccordionProps)
               className="cm-accordion__trigger"
             >
               <span className="cm-accordion__title">{item.title}</span>
-              <span className="cm-accordion__indicator">
-                {isOpen ? "−" : "+"}
-              </span>
+              <span className="cm-accordion__indicator">{isOpen ? "−" : "+"}</span>
             </CmButton>
             {isOpen ? (
               <div id={`${item.id}-content`} className="cm-accordion__content">

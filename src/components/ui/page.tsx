@@ -1,4 +1,10 @@
-import { createElement, forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import {
+  createElement,
+  forwardRef,
+  type CSSProperties,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmDensityClass,

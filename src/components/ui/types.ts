@@ -2,9 +2,7 @@ export type CmDensity = "default" | "comfortable" | "compact";
 
 export type CmResponsiveBreakpoint = "base" | "sm" | "md" | "lg" | "xl";
 
-export type CmResponsiveValue<T> =
-  | T
-  | Partial<Record<CmResponsiveBreakpoint, T>>;
+export type CmResponsiveValue<T> = T | Partial<Record<CmResponsiveBreakpoint, T>>;
 
 export type CmResponsiveNumber = CmResponsiveValue<number>;
 
@@ -18,10 +16,7 @@ export type CmTone =
   | "danger"
   | "info";
 
-export type CmStatusTone = Extract<
-  CmTone,
-  "success" | "warning" | "danger" | "info"
->;
+export type CmStatusTone = Extract<CmTone, "success" | "warning" | "danger" | "info">;
 
 export type CmFeedbackTone = "default" | CmStatusTone;
 
@@ -33,15 +28,7 @@ export type CmSpacing = "none" | "xs" | "sm" | "md" | "lg";
 
 export type CmRadius = "none" | "sm" | "md" | "lg" | "full";
 
-export type CmMaxWidth =
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl"
-  | "full"
-  | string
-  | number;
+export type CmMaxWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "full" | string | number;
 
 export function cmDensityClass(density?: CmDensity) {
   return density && density !== "default" ? `cm-density-${density}` : undefined;
@@ -55,10 +42,7 @@ function isResponsiveRecord<T>(
   return value !== undefined && typeof value === "object";
 }
 
-export function resolveResponsiveValue<T>(
-  value: CmResponsiveValue<T> | undefined,
-  fallback: T,
-) {
+export function resolveResponsiveValue<T>(value: CmResponsiveValue<T> | undefined, fallback: T) {
   const resolved = {} as Record<CmResponsiveBreakpoint, T>;
 
   if (value !== undefined && !isResponsiveRecord(value)) {
@@ -76,10 +60,7 @@ export function resolveResponsiveValue<T>(
   return resolved;
 }
 
-export function resolveResponsiveNumber(
-  value: CmResponsiveNumber | undefined,
-  fallback: number,
-) {
+export function resolveResponsiveNumber(value: CmResponsiveNumber | undefined, fallback: number) {
   return resolveResponsiveValue(value, fallback);
 }
 

@@ -106,9 +106,7 @@ export function CmSplitButton({
           <span>{displayLabel}</span>
         </span>
         <ChevronDown
-          className={`cm-split-button__chevron ${
-            isOpen ? "cm-split-button__chevron--open" : ""
-          }`}
+          className={`cm-split-button__chevron ${isOpen ? "cm-split-button__chevron--open" : ""}`}
         />
       </CmButton>
 
@@ -125,14 +123,10 @@ export function CmSplitButton({
                   type="button"
                   onClick={() => handleSelect(option.value)}
                   className={`cm-split-button__option ${
-                    isSelected
-                      ? "cm-split-button__option--selected"
-                      : ""
+                    isSelected ? "cm-split-button__option--selected" : ""
                   }`}
                 >
-                  {option.icon && (
-                    <span className="cm-split-button__icon">{option.icon}</span>
-                  )}
+                  {option.icon && <span className="cm-split-button__icon">{option.icon}</span>}
                   <span>{option.label}</span>
                 </CmButton>
               );

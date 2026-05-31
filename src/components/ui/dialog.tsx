@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
@@ -16,10 +9,7 @@ import { useFocusTrap } from "../../hooks/use-focus-trap.js";
 import { useCmTheme } from "../theme/theme-provider.js";
 import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
-import type {
-  CmDialogSize,
-  CmFeedbackTone,
-} from "./types.js";
+import type { CmDialogSize, CmFeedbackTone } from "./types.js";
 
 export type { CmDialogSize } from "./types.js";
 export type CmDialogTone = CmFeedbackTone;
@@ -112,17 +102,12 @@ type DialogPortalTheme = {
 
 function readDialogPortalTheme(element: HTMLElement): DialogPortalTheme {
   const styles = window.getComputedStyle(element);
-  const appTheme = element.closest<HTMLElement>("[data-app-theme]")
-    ?.dataset.appTheme;
+  const appTheme = element.closest<HTMLElement>("[data-app-theme]")?.dataset.appTheme;
 
-  const style = dialogPortalThemeVars.reduce<DialogPortalStyle>(
-    (themeStyle, variable) => {
-      themeStyle[variable as `--${string}`] =
-        styles.getPropertyValue(variable);
-      return themeStyle;
-    },
-    {},
-  );
+  const style = dialogPortalThemeVars.reduce<DialogPortalStyle>((themeStyle, variable) => {
+    themeStyle[variable as `--${string}`] = styles.getPropertyValue(variable);
+    return themeStyle;
+  }, {});
 
   const setFallbackVar = (variable: `--${string}`, value: string) => {
     if (!style[variable]?.trim()) {
@@ -169,9 +154,7 @@ export function CmDialog({
   const sourceRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<DialogPortalStyle>({});
-  const [portalAppTheme, setPortalAppTheme] = useState<
-    string | undefined
-  >(undefined);
+  const [portalAppTheme, setPortalAppTheme] = useState<string | undefined>(undefined);
 
   useScrollLock(open);
   useEscapeKey(open && dismissible, onClose);
@@ -198,9 +181,7 @@ export function CmDialog({
 
   const titleClassName = cn(
     "cm-dialog__title",
-    presentation === "compact"
-      ? "cm-dialog__title--compact"
-      : "cm-dialog__title--default",
+    presentation === "compact" ? "cm-dialog__title--compact" : "cm-dialog__title--default",
   );
 
   const content = (
@@ -227,113 +208,101 @@ export function CmDialog({
         className={cn(
           "cm-dialog__positioner",
           sizeClasses[size],
-          open
-            ? "cm-dialog__positioner--open"
-            : "cm-dialog__positioner--closed",
+          open ? "cm-dialog__positioner--open" : "cm-dialog__positioner--closed",
           className,
         )}
       >
+        <div
+          className="cm-dialog__panel"
+          style={{
+            ...dialogStyle,
+            background:
+              "linear-gradient(180deg, color-mix(in srgb, var(--color-card) 96%, var(--color-background) 4%), var(--color-card))",
+            borderColor: "var(--color-border)",
+            color: "var(--color-card-foreground, var(--color-foreground))",
+            boxShadow: "var(--shadow-xl, 0 30px 90px rgba(15, 23, 42, 0.22))",
+          }}
+        >
+          <div
+            className="cm-dialog__tone-bar"
+            style={{
+              background:
+                "linear-gradient(90deg, var(--dialog-tone), color-mix(in srgb, var(--dialog-tone) 35%, var(--color-secondary)), var(--color-accent, var(--color-secondary)))",
+            }}
+          />
+
+          {hasHeader ? (
             <div
-              className="cm-dialog__panel"
+              className="cm-dialog__header"
               style={{
-                ...dialogStyle,
-                background:
-                  "linear-gradient(180deg, color-mix(in srgb, var(--color-card) 96%, var(--color-background) 4%), var(--color-card))",
-                borderColor: "var(--color-border)",
-                color: "var(--color-card-foreground, var(--color-foreground))",
-                boxShadow:
-                  "var(--shadow-xl, 0 30px 90px rgba(15, 23, 42, 0.22))",
+                background: headerBackground,
+                borderBottom: "1px solid var(--color-border)",
               }}
             >
-              <div
-                className="cm-dialog__tone-bar"
-                style={{
-                  background:
-                    "linear-gradient(90deg, var(--dialog-tone), color-mix(in srgb, var(--dialog-tone) 35%, var(--color-secondary)), var(--color-accent, var(--color-secondary)))",
-                }}
-              />
-
-              {hasHeader ? (
-                <div
-                  className="cm-dialog__header"
-                  style={{
-                    background: headerBackground,
-                    borderBottom: "1px solid var(--color-border)",
-                  }}
+              {showClose ? (
+                <CmButton
+                  unstyled
+                  type="button"
+                  onClick={onClose}
+                  className="cm-dialog__close cm-dialog__close--header"
+                  aria-label="Fechar"
                 >
-                  {showClose ? (
-                    <CmButton
-                      unstyled
-                      type="button"
-                      onClick={onClose}
-                      className="cm-dialog__close cm-dialog__close--header"
-                      aria-label="Fechar"
-                    >
-                      <X className="cm-dialog__close-icon" />
-                    </CmButton>
-                  ) : null}
-
-                  <div className="cm-dialog__heading">
-                    {title ? (
-                      <h2
-                        id={titleId}
-                        className={titleClassName}
-                      >
-                        {title}
-                      </h2>
-                    ) : null}
-                    {description ? (
-                      <p
-                        id={descriptionId}
-                        className="cm-dialog__description"
-                      >
-                        {description}
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-              ) : (
-                showClose ? (
-                <div className="cm-dialog__headerless-actions">
-                  <CmButton
-                    unstyled
-                    type="button"
-                    onClick={onClose}
-                    className="cm-dialog__close"
-                    aria-label="Fechar"
-                  >
-                    <X className="cm-dialog__close-icon" />
-                  </CmButton>
-                </div>
-                ) : null
-              )}
-
-              {children ? (
-                <div
-                  className="cm-dialog__body"
-                  style={{
-                    background:
-                      "color-mix(in srgb, var(--color-card) 92%, var(--color-background) 8%)",
-                  }}
-                >
-                  {children}
-                </div>
+                  <X className="cm-dialog__close-icon" />
+                </CmButton>
               ) : null}
 
-              {footer ? (
-                <div
-                  className="cm-dialog__footer"
-                  style={{
-                    background:
-                      "color-mix(in srgb, var(--color-card) 84%, var(--color-background) 16%)",
-                    borderTop: "1px solid var(--color-border)",
-                  }}
-                >
-                  {footer}
-                </div>
-              ) : null}
+              <div className="cm-dialog__heading">
+                {title ? (
+                  <h2 id={titleId} className={titleClassName}>
+                    {title}
+                  </h2>
+                ) : null}
+                {description ? (
+                  <p id={descriptionId} className="cm-dialog__description">
+                    {description}
+                  </p>
+                ) : null}
+              </div>
             </div>
-          </div>
+          ) : showClose ? (
+            <div className="cm-dialog__headerless-actions">
+              <CmButton
+                unstyled
+                type="button"
+                onClick={onClose}
+                className="cm-dialog__close"
+                aria-label="Fechar"
+              >
+                <X className="cm-dialog__close-icon" />
+              </CmButton>
+            </div>
+          ) : null}
+
+          {children ? (
+            <div
+              className="cm-dialog__body"
+              style={{
+                background: "color-mix(in srgb, var(--color-card) 92%, var(--color-background) 8%)",
+              }}
+            >
+              {children}
+            </div>
+          ) : null}
+
+          {footer ? (
+            <div
+              className="cm-dialog__footer"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--color-card) 84%, var(--color-background) 16%)",
+                borderTop: "1px solid var(--color-border)",
+              }}
+            >
+              {footer}
+            </div>
+          ) : null}
+        </div>
+      </div>
     </>
   );
 
@@ -350,11 +319,7 @@ export function CmDialog({
     <>
       <span ref={sourceRef} hidden />
       <CmPortal>
-        <div
-          className="cm-dialog-portal-scope"
-          data-app-theme={portalAppTheme}
-          style={portalStyle}
-        >
+        <div className="cm-dialog-portal-scope" data-app-theme={portalAppTheme} style={portalStyle}>
           {content}
         </div>
       </CmPortal>

@@ -14,8 +14,10 @@ export type CmCalendarProps = {
   className?: string;
 };
 
-export const CmCalendar = forwardRef<HTMLDivElement, CmCalendarProps>(
-  function CmCalendar({ value = new Date(), onSelect, month, year, className }, ref) {
+export const CmCalendar = forwardRef<HTMLDivElement, CmCalendarProps>(function CmCalendar(
+  { value = new Date(), onSelect, month, year, className },
+  ref,
+) {
   const reference = useMemo(() => {
     const now = new Date(value);
     if (typeof month === "number") now.setMonth(month);
@@ -61,9 +63,7 @@ export const CmCalendar = forwardRef<HTMLDivElement, CmCalendarProps>(
   return (
     <div ref={ref} className={cn("cm-calendar", className)}>
       <header className="cm-calendar__header">
-        <span>
-          {reference.toLocaleString("pt-BR", { month: "long", year: "numeric" })}
-        </span>
+        <span>{reference.toLocaleString("pt-BR", { month: "long", year: "numeric" })}</span>
       </header>
       <div className="cm-calendar__weekdays">
         {dayLabels.map((label) => (
@@ -94,9 +94,7 @@ export const CmCalendar = forwardRef<HTMLDivElement, CmCalendarProps>(
                   className={cn(
                     "cm-calendar__day",
                     isToday && "cm-calendar__day--today",
-                    isSelected
-                      ? "cm-calendar__day--selected"
-                      : "cm-calendar__day--default",
+                    isSelected ? "cm-calendar__day--selected" : "cm-calendar__day--default",
                   )}
                 >
                   {date.getDate()}

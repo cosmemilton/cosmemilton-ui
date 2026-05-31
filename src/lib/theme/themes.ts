@@ -91,8 +91,8 @@ export const schoolTheme: ThemeConfig = {
     overlay: "rgba(49, 38, 23, 0.45)",
   },
   typography: {
-    fontFamily: "\"Trebuchet MS\", \"Gill Sans\", sans-serif",
-    monospaceFamily: "\"Cascadia Mono\", \"Courier New\", monospace",
+    fontFamily: '"Trebuchet MS", "Gill Sans", sans-serif',
+    monospaceFamily: '"Cascadia Mono", "Courier New", monospace',
     baseSize: "16px",
     scaleRatio: 1.2,
   },
@@ -207,7 +207,7 @@ export const orangeTheme: ThemeConfig = {
     overlay: "rgba(28, 25, 23, 0.55)",
   },
   typography: {
-    fontFamily: "\"Avenir Next\", \"Segoe UI\", sans-serif",
+    fontFamily: '"Avenir Next", "Segoe UI", sans-serif',
     monospaceFamily: monoStack,
     baseSize: "16px",
     scaleRatio: 1.22,
@@ -268,8 +268,8 @@ export const redTheme: ThemeConfig = {
     overlay: "rgba(26, 26, 46, 0.55)",
   },
   typography: {
-    fontFamily: "\"Arial Narrow\", \"Roboto Condensed\", Arial, sans-serif",
-    monospaceFamily: "\"IBM Plex Mono\", \"JetBrains Mono\", monospace",
+    fontFamily: '"Arial Narrow", "Roboto Condensed", Arial, sans-serif',
+    monospaceFamily: '"IBM Plex Mono", "JetBrains Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.16,
   },
@@ -329,8 +329,8 @@ export const blueTheme: ThemeConfig = {
     overlay: "rgba(13, 27, 42, 0.55)",
   },
   typography: {
-    fontFamily: "\"Inter\", \"Segoe UI\", sans-serif",
-    monospaceFamily: "\"SFMono-Regular\", \"Cascadia Mono\", monospace",
+    fontFamily: '"Inter", "Segoe UI", sans-serif',
+    monospaceFamily: '"SFMono-Regular", "Cascadia Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.2,
   },
@@ -390,8 +390,8 @@ export const greenTheme: ThemeConfig = {
     overlay: "rgba(27, 46, 27, 0.55)",
   },
   typography: {
-    fontFamily: "\"Optima\", \"Trebuchet MS\", sans-serif",
-    monospaceFamily: "\"Cascadia Mono\", \"Courier New\", monospace",
+    fontFamily: '"Optima", "Trebuchet MS", sans-serif',
+    monospaceFamily: '"Cascadia Mono", "Courier New", monospace',
     baseSize: "16px",
     scaleRatio: 1.19,
   },
@@ -451,8 +451,8 @@ export const violetTheme: ThemeConfig = {
     overlay: "rgba(26, 22, 37, 0.55)",
   },
   typography: {
-    fontFamily: "\"Gill Sans\", \"Avenir Next\", sans-serif",
-    monospaceFamily: "\"JetBrains Mono\", monospace",
+    fontFamily: '"Gill Sans", "Avenir Next", sans-serif',
+    monospaceFamily: '"JetBrains Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.24,
   },
@@ -506,8 +506,8 @@ export const midnightTheme: ThemeConfig = {
     overlay: "rgba(7, 13, 26, 0.70)",
   },
   typography: {
-    fontFamily: "\"Segoe UI\", \"Inter\", sans-serif",
-    monospaceFamily: "\"JetBrains Mono\", \"Cascadia Mono\", monospace",
+    fontFamily: '"Segoe UI", "Inter", sans-serif',
+    monospaceFamily: '"JetBrains Mono", "Cascadia Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.21,
   },
@@ -567,8 +567,8 @@ export const roseTheme: ThemeConfig = {
     overlay: "rgba(45, 26, 36, 0.55)",
   },
   typography: {
-    fontFamily: "\"Hoefler Text\", Georgia, serif",
-    monospaceFamily: "\"Courier New\", monospace",
+    fontFamily: '"Hoefler Text", Georgia, serif',
+    monospaceFamily: '"Courier New", monospace',
     baseSize: "16px",
     scaleRatio: 1.2,
   },
@@ -622,8 +622,8 @@ export const auroraTheme: ThemeConfig = {
     overlay: "rgba(12, 12, 10, 0.72)",
   },
   typography: {
-    fontFamily: "\"Space Grotesk\", \"Inter\", \"Segoe UI\", sans-serif",
-    monospaceFamily: "\"IBM Plex Mono\", \"JetBrains Mono\", monospace",
+    fontFamily: '"Space Grotesk", "Inter", "Segoe UI", sans-serif',
+    monospaceFamily: '"IBM Plex Mono", "JetBrains Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.22,
   },
@@ -705,9 +705,12 @@ export const auroraTheme: ThemeConfig = {
   },
   layers: {
     base: "radial-gradient(circle at 12% 0%, rgba(255, 183, 3, 0.14), transparent 32%), radial-gradient(circle at 88% 14%, rgba(132, 230, 191, 0.13), transparent 34%), var(--color-background)",
-    surface: "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 90%, var(--color-primary) 10%), var(--color-card))",
-    elevated: "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 82%, var(--color-secondary) 18%), color-mix(in srgb, var(--color-card) 94%, var(--color-background) 6%))",
-    floating: "linear-gradient(145deg, color-mix(in srgb, var(--color-popover) 88%, var(--color-primary) 12%), color-mix(in srgb, var(--color-popover) 90%, var(--color-secondary) 10%))",
+    surface:
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 90%, var(--color-primary) 10%), var(--color-card))",
+    elevated:
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 82%, var(--color-secondary) 18%), color-mix(in srgb, var(--color-card) 94%, var(--color-background) 6%))",
+    floating:
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-popover) 88%, var(--color-primary) 12%), color-mix(in srgb, var(--color-popover) 90%, var(--color-secondary) 10%))",
     overlay: "rgba(12, 12, 10, 0.72)",
   },
 };
@@ -728,9 +731,7 @@ export const themes: ThemeRegistry = {
 
 export type CustomThemeInput = ThemeConfig[] | ThemeRegistry;
 
-export const extendThemes = (
-  customThemes?: CustomThemeInput,
-): ThemeRegistry => {
+export const extendThemes = (customThemes?: CustomThemeInput): ThemeRegistry => {
   if (!customThemes) {
     return themes;
   }
@@ -741,8 +742,6 @@ export const extendThemes = (
 
   return {
     ...themes,
-    ...Object.fromEntries(
-      customEntries.filter(([name, theme]) => name && theme?.name),
-    ),
+    ...Object.fromEntries(customEntries.filter(([name, theme]) => name && theme?.name)),
   };
 };

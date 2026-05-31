@@ -32,7 +32,7 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
       onBlur,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [internalValue, setInternalValue] = useState(defaultValue || "");
@@ -58,13 +58,14 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
     const hasStartElement = Boolean(startIcon || startButton);
 
     return (
-      <div className={cn("cm-textarea cm-floating-field cm-floating-field--textarea", !label && "cm-floating-field--unlabeled", className)}>
-        <div
-          className={cn(
-            "cm-floating-field__control",
-            getBorderColor()
-          )}
-        >
+      <div
+        className={cn(
+          "cm-textarea cm-floating-field cm-floating-field--textarea",
+          !label && "cm-floating-field--unlabeled",
+          className,
+        )}
+      >
+        <div className={cn("cm-floating-field__control", getBorderColor())}>
           {label && (
             <label
               className={cn(
@@ -73,8 +74,8 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
                 isFloating
                   ? "cm-floating-field__label--floating"
                   : hasStartElement
-                  ? "cm-floating-field__label--textarea-with-start"
-                  : "cm-floating-field__label--textarea-resting"
+                    ? "cm-floating-field__label--textarea-with-start"
+                    : "cm-floating-field__label--textarea-resting",
               )}
             >
               {label}
@@ -124,7 +125,7 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
           <p
             className={cn(
               "cm-floating-field__message cm-floating-field__message--static",
-              error ? "cm-floating-field__message--error" : ""
+              error ? "cm-floating-field__message--error" : "",
             )}
           >
             {error || helperText}
@@ -132,7 +133,7 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 CmTextarea.displayName = "CmTextarea";

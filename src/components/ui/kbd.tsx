@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type ElementType,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ElementType, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { Slot } from "../../lib/slot.js";
 

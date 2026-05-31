@@ -1,12 +1,7 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
-import {
-  cmDensityClass,
-  type CmDensity,
-  type CmSpacing,
-  type CmTone,
-} from "./types.js";
+import { cmDensityClass, type CmDensity, type CmSpacing, type CmTone } from "./types.js";
 
 type CardVariant = "surface" | "soft" | "outline" | "ghost";
 type CardPadding = Exclude<CmSpacing, "xs">;
@@ -96,24 +91,20 @@ export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
         cmDensityClass(density),
         className,
       )}
-      style={{
-        ...style,
-        ...(coverHeight ? { "--cm-card-cover-height": coverHeight } : {}),
-      } as CSSProperties}
+      style={
+        {
+          ...style,
+          ...(coverHeight ? { "--cm-card-cover-height": coverHeight } : {}),
+        } as CSSProperties
+      }
       {...props}
     >
       {hasStructuredContent ? (
         <>
-          {hasCover ? (
-            <div className="cm-card__cover">
-              {cover === true ? null : cover}
-            </div>
-          ) : null}
+          {hasCover ? <div className="cm-card__cover">{cover === true ? null : cover}</div> : null}
           {header ? <div className="cm-card__header">{header}</div> : null}
           {children ? (
-            <div className={cn("cm-card__body", paddingMap[resolvedBodyPadding])}>
-              {children}
-            </div>
+            <div className={cn("cm-card__body", paddingMap[resolvedBodyPadding])}>{children}</div>
           ) : null}
           {footer ? <div className="cm-card__footer">{footer}</div> : null}
         </>

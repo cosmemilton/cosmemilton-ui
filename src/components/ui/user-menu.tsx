@@ -5,10 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmAvatar } from "./avatar.js";
 import { CmButton } from "./button.js";
-import {
-  CmDropdownMenu,
-  type CmDropdownMenuItem,
-} from "./dropdown-menu.js";
+import { CmDropdownMenu, type CmDropdownMenuItem } from "./dropdown-menu.js";
 import type { CmSize } from "./types.js";
 
 type CmUserMenuSize = CmSize;
@@ -80,9 +77,7 @@ export function CmUserMenu({
   const resolvedShowChevron = showChevron ?? true;
   const resolvedMenuHeader = menuHeader ?? "auto";
   const subtitleLabel = readableNode(user.subtitle);
-  const triggerLabel = subtitleLabel
-    ? `${user.title}, ${subtitleLabel}`
-    : user.title;
+  const triggerLabel = subtitleLabel ? `${user.title}, ${subtitleLabel}` : user.title;
   const fallback = user.initials ?? getInitials(user.title);
   const hasSubtitle = Boolean(user.subtitle);
   const hasTriggerText = resolvedShowTitle || (resolvedShowSubtitle && hasSubtitle);
@@ -97,26 +92,15 @@ export function CmUserMenu({
   const header = shouldRenderHeader ? (
     <div
       role="presentation"
-      className={cn(
-        "cm-dropdown-menu__header",
-        "cm-user-menu__menu-header",
-        autoHeaderClass,
-      )}
+      className={cn("cm-dropdown-menu__header", "cm-user-menu__menu-header", autoHeaderClass)}
     >
-      <CmAvatar
-        src={user.imageUrl}
-        alt={user.title}
-        size={avatarSize}
-        fallback={fallback}
-      />
+      <CmAvatar src={user.imageUrl} alt={user.title} size={avatarSize} fallback={fallback} />
       <div className="cm-user-menu__menu-header-content">
         <span className="cm-user-menu__menu-header-title">{user.title}</span>
         {user.subtitle ? (
           <span className="cm-user-menu__menu-header-subtitle">{user.subtitle}</span>
         ) : null}
-        {user.email ? (
-          <span className="cm-user-menu__menu-header-email">{user.email}</span>
-        ) : null}
+        {user.email ? <span className="cm-user-menu__menu-header-email">{user.email}</span> : null}
       </div>
     </div>
   ) : undefined;
@@ -147,12 +131,7 @@ export function CmUserMenu({
           }
           onClick={toggle}
         >
-          <CmAvatar
-            src={user.imageUrl}
-            alt={user.title}
-            size={avatarSize}
-            fallback={fallback}
-          />
+          <CmAvatar src={user.imageUrl} alt={user.title} size={avatarSize} fallback={fallback} />
           {hasTriggerText ? (
             <span className="cm-user-menu__trigger-text">
               {resolvedShowTitle ? (

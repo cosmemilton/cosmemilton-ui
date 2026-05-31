@@ -18,21 +18,20 @@ export type CmPaginationProps = {
   className?: string;
 };
 
-export const CmPagination = forwardRef<HTMLDivElement, CmPaginationProps>(
-  function CmPagination(
-    {
-      page,
-      totalPages,
-      onChange,
-      siblingCount = 1,
-      mode = "pages",
-      previousLabel = "Anterior",
-      nextLabel = "Próximo",
-      summary,
-      className,
-    },
-    ref,
-  ) {
+export const CmPagination = forwardRef<HTMLDivElement, CmPaginationProps>(function CmPagination(
+  {
+    page,
+    totalPages,
+    onChange,
+    siblingCount = 1,
+    mode = "pages",
+    previousLabel = "Anterior",
+    nextLabel = "Próximo",
+    summary,
+    className,
+  },
+  ref,
+) {
   const safeTotalPages = Math.max(1, totalPages);
   const currentPage = Math.min(Math.max(1, page), safeTotalPages);
   const isCompact = mode === "compact";
@@ -59,7 +58,10 @@ export const CmPagination = forwardRef<HTMLDivElement, CmPaginationProps>(
   }, [currentPage, safeTotalPages, siblingCount]);
 
   return (
-    <div ref={ref} className={cn("cm-pagination", isCompact && "cm-pagination--compact", className)}>
+    <div
+      ref={ref}
+      className={cn("cm-pagination", isCompact && "cm-pagination--compact", className)}
+    >
       <CmButton
         variant="outline"
         size={isCompact ? "sm" : "md"}
@@ -70,7 +72,11 @@ export const CmPagination = forwardRef<HTMLDivElement, CmPaginationProps>(
       </CmButton>
       {isCompact ? (
         <span className="cm-pagination__summary">
-          {summary ?? <>Página {currentPage} de {safeTotalPages}</>}
+          {summary ?? (
+            <>
+              Página {currentPage} de {safeTotalPages}
+            </>
+          )}
         </span>
       ) : (
         <div className="cm-pagination__pages">

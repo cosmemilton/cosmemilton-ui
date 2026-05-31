@@ -1,24 +1,13 @@
 "use client";
 
-import {
-  forwardRef,
-  type ButtonHTMLAttributes,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
 import { useOptionalCmTheme } from "../theme/theme-provider.js";
 import { cmDensityClass, type CmDensity, type CmSize, type CmTone } from "./types.js";
 
-export type CmButtonVariant =
-  | "solid"
-  | "outline"
-  | "ghost"
-  | "soft"
-  | "surface"
-  | "link"
-  | "plain";
+export type CmButtonVariant = "solid" | "outline" | "ghost" | "soft" | "surface" | "link" | "plain";
 export type CmButtonTone = CmTone;
 
 type ButtonShape = "default" | "pill" | "square";
@@ -133,9 +122,7 @@ export const CmButton = forwardRef<HTMLButtonElement, CmButtonProps>(
 
     // Quando invertHeader ativo, botoes solid danger/warning usam primary para harmonia com o tema.
     const effectiveTone =
-      invertHeader &&
-      variant === "solid" &&
-      (tone === "danger" || tone === "warning")
+      invertHeader && variant === "solid" && (tone === "danger" || tone === "warning")
         ? "primary"
         : tone;
 
@@ -162,18 +149,14 @@ export const CmButton = forwardRef<HTMLButtonElement, CmButtonProps>(
         disabled={disabled || loading}
         aria-busy={loading || undefined}
         aria-pressed={active || undefined}
-        className={
-          unstyled ? className : cn(base, presentationMap[presentation], className)
-        }
+        className={unstyled ? className : cn(base, presentationMap[presentation], className)}
         style={style}
         {...props}
       >
         {leadingIcon ? <span className="cm-button__icon">{leadingIcon}</span> : null}
         {iconOnly ? <span className="cm-sr-only">{iconOnlyLabel ?? content}</span> : content}
         {!iconOnly && trailingIcon ? (
-          <span className="cm-button__icon cm-button__icon--trailing">
-            {trailingIcon}
-          </span>
+          <span className="cm-button__icon cm-button__icon--trailing">{trailingIcon}</span>
         ) : null}
       </button>
     );

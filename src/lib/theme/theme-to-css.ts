@@ -13,22 +13,15 @@ type ThemeKV = [string, string];
 type StringScale = Record<string, string>;
 
 /** Converts camelCase → kebab-case (e.g. mutedForeground → muted-foreground) */
-const camelToKebab = (s: string) =>
-  s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
+const camelToKebab = (s: string) => s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
 
-const tokenEntries = (
-  prefix: string,
-  entries: Record<string, string>,
-): ThemeKV[] =>
-  Object.entries(entries).map(([token, value]) => [
-    `--${prefix}-${camelToKebab(token)}`,
-    value,
-  ]);
+const tokenEntries = (prefix: string, entries: Record<string, string>): ThemeKV[] =>
+  Object.entries(entries).map(([token, value]) => [`--${prefix}-${camelToKebab(token)}`, value]);
 
-const mergeScale = <T extends StringScale>(
-  defaults: T,
-  overrides?: Partial<T>,
-): T => ({ ...defaults, ...overrides });
+const mergeScale = <T extends StringScale>(defaults: T, overrides?: Partial<T>): T => ({
+  ...defaults,
+  ...overrides,
+});
 
 const defaultSpace: ThemeSpaceScale = {
   none: "0",
@@ -71,10 +64,7 @@ const defaultBreakpoints: ThemeBreakpointScale = {
   "2xl": "1536px",
 };
 
-const defaultDensityMode: Record<
-  "compact" | "default" | "comfortable",
-  ThemeDensityModeScale
-> = {
+const defaultDensityMode: Record<"compact" | "default" | "comfortable", ThemeDensityModeScale> = {
   compact: {
     controlHeight: "2rem",
     controlPaddingX: "0.625rem",
@@ -110,10 +100,7 @@ export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
   const density = {
     compact: mergeScale(defaultDensityMode.compact, theme.density?.compact),
     default: mergeScale(defaultDensityMode.default, theme.density?.default),
-    comfortable: mergeScale(
-      defaultDensityMode.comfortable,
-      theme.density?.comfortable,
-    ),
+    comfortable: mergeScale(defaultDensityMode.comfortable, theme.density?.comfortable),
   };
 
   const entries: ThemeKV[] = [
@@ -122,28 +109,13 @@ export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
     ["--font-mono", theme.typography.monospaceFamily],
     ["--font-base", theme.typography.baseSize],
     ["--font-scale", theme.typography.scaleRatio.toString()],
-    ...Object.entries(theme.radii).map<ThemeKV>(([token, value]) => [
-      `--radius-${token}`,
-      value,
-    ]),
-    ...Object.entries(theme.shadows).map<ThemeKV>(([token, value]) => [
-      `--shadow-${token}`,
-      value,
-    ]),
+    ...Object.entries(theme.radii).map<ThemeKV>(([token, value]) => [`--radius-${token}`, value]),
+    ...Object.entries(theme.shadows).map<ThemeKV>(([token, value]) => [`--shadow-${token}`, value]),
     ...tokenEntries("space", mergeScale(defaultSpace, theme.space)),
     ...tokenEntries("z", mergeScale(defaultZIndex, theme.zIndex)),
-    ...tokenEntries(
-      "motion-duration",
-      mergeScale(defaultMotionDuration, theme.motion?.duration),
-    ),
-    ...tokenEntries(
-      "motion-ease",
-      mergeScale(defaultMotionEase, theme.motion?.ease),
-    ),
-    ...tokenEntries(
-      "breakpoint",
-      mergeScale(defaultBreakpoints, theme.breakpoints),
-    ),
+    ...tokenEntries("motion-duration", mergeScale(defaultMotionDuration, theme.motion?.duration)),
+    ...tokenEntries("motion-ease", mergeScale(defaultMotionEase, theme.motion?.ease)),
+    ...tokenEntries("breakpoint", mergeScale(defaultBreakpoints, theme.breakpoints)),
     ...tokenEntries("density-compact", density.compact),
     ...tokenEntries("density-default", density.default),
     ...tokenEntries("density-comfortable", density.comfortable),

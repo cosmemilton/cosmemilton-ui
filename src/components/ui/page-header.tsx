@@ -13,11 +13,21 @@ export type CmPageHeaderProps = HTMLAttributes<HTMLElement> & {
   align?: "start" | "center";
 };
 
-export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(
-  function CmPageHeader(
-    { actions, align = "start", className, density, description, eyebrow, icon, meta, title, ...props },
-    ref,
-  ) {
+export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(function CmPageHeader(
+  {
+    actions,
+    align = "start",
+    className,
+    density,
+    description,
+    eyebrow,
+    icon,
+    meta,
+    title,
+    ...props
+  },
+  ref,
+) {
   return (
     <header
       ref={ref}
@@ -31,16 +41,14 @@ export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(
     >
       {icon ? <div className="cm-page-header__icon">{icon}</div> : null}
       <div className="cm-page-header__content">
-        {(eyebrow || meta) ? (
+        {eyebrow || meta ? (
           <div className="cm-page-header__overline">
             {eyebrow ? <span className="cm-page-header__eyebrow">{eyebrow}</span> : null}
             {meta ? <div className="cm-page-header__meta">{meta}</div> : null}
           </div>
         ) : null}
         <h1 className="cm-page-header__title">{title}</h1>
-        {description ? (
-          <p className="cm-page-header__description">{description}</p>
-        ) : null}
+        {description ? <p className="cm-page-header__description">{description}</p> : null}
       </div>
       {actions ? <div className="cm-page-header__actions">{actions}</div> : null}
     </header>

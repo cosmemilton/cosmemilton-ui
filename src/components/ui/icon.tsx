@@ -22,7 +22,15 @@ export interface CmIconProps {
  * <CmIcon name="ph:address-book-fill" />
  * <CmIcon name="lucide:mail" />
  */
-export function CmIcon({ name, className, size = 20, color, style, title, "aria-hidden": ariaHidden }: CmIconProps) {
+export function CmIcon({
+  name,
+  className,
+  size = 20,
+  color,
+  style,
+  title,
+  "aria-hidden": ariaHidden,
+}: CmIconProps) {
   const accessibilityProps = title
     ? { role: "img", "aria-label": title, "aria-hidden": ariaHidden }
     : { "aria-hidden": ariaHidden };

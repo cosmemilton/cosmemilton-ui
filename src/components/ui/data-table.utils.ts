@@ -18,12 +18,8 @@ export function sortRows<T>(
   if (!col?.sortable) return data;
 
   return [...data].sort((a, b) => {
-    const aVal = col.sortValue
-      ? col.sortValue(a)
-      : (a as Record<string, unknown>)[sortKey];
-    const bVal = col.sortValue
-      ? col.sortValue(b)
-      : (b as Record<string, unknown>)[sortKey];
+    const aVal = col.sortValue ? col.sortValue(a) : (a as Record<string, unknown>)[sortKey];
+    const bVal = col.sortValue ? col.sortValue(b) : (b as Record<string, unknown>)[sortKey];
 
     let comparison = 0;
     if (aVal == null && bVal == null) comparison = 0;

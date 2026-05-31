@@ -35,9 +35,7 @@ export function CmChart({ data, maxValue, height, className }: CmChartProps) {
           return (
             <div key={item.label} className="cm-chart__item">
               <Bar heightPercentage={height} color={color} label={`${item.label}: ${item.value}`} />
-              <span className="cm-chart__label">
-                {item.label}
-              </span>
+              <span className="cm-chart__label">{item.label}</span>
             </div>
           );
         })}
@@ -46,7 +44,15 @@ export function CmChart({ data, maxValue, height, className }: CmChartProps) {
   );
 }
 
-function Bar({ heightPercentage, color, label }: { heightPercentage: number; color: string; label: string }) {
+function Bar({
+  heightPercentage,
+  color,
+  label,
+}: {
+  heightPercentage: number;
+  color: string;
+  label: string;
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -56,12 +62,6 @@ function Bar({ heightPercentage, color, label }: { heightPercentage: number; col
     }
   }, [heightPercentage, color]);
 
-  return (
-    <div
-      ref={ref}
-      aria-label={label}
-      className="cm-chart__bar"
-    />
-  );
+  return <div ref={ref} aria-label={label} className="cm-chart__bar" />;
 }
 CmChart.displayName = "CmChart";

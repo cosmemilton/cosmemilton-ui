@@ -16,10 +16,7 @@ describe("CmBadge", () => {
         Stop
       </CmBadge>,
     );
-    expect(screen.getByText("Stop")).toHaveClass(
-      "cm-badge--outline",
-      "cm-badge--danger",
-    );
+    expect(screen.getByText("Stop")).toHaveClass("cm-badge--outline", "cm-badge--danger");
   });
 
   it("forwards native props to the root element", () => {

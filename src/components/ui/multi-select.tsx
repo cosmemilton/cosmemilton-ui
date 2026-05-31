@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  type CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
@@ -134,7 +127,13 @@ export function CmMultiSelect({
       : "";
 
   return (
-    <div className={cn("cm-multi-select cm-floating-field", !label && "cm-floating-field--unlabeled", className)}>
+    <div
+      className={cn(
+        "cm-multi-select cm-floating-field",
+        !label && "cm-floating-field--unlabeled",
+        className,
+      )}
+    >
       {name ? (
         <input
           type="hidden"
@@ -151,7 +150,9 @@ export function CmMultiSelect({
             className={cn(
               "cm-floating-field__label",
               labelColor,
-              isFloating ? "cm-floating-field__label--floating" : "cm-floating-field__label--resting",
+              isFloating
+                ? "cm-floating-field__label--floating"
+                : "cm-floating-field__label--resting",
             )}
           >
             {label}
@@ -182,14 +183,11 @@ export function CmMultiSelect({
         </CmButton>
 
         <ChevronDown
-          className={cn(
-            "cm-multi-select__chevron",
-            open && "cm-multi-select__chevron--open",
-          )}
+          className={cn("cm-multi-select__chevron", open && "cm-multi-select__chevron--open")}
         />
       </div>
 
-      {(error || helperText) ? (
+      {error || helperText ? (
         <p
           className={cn(
             "cm-floating-field__message",

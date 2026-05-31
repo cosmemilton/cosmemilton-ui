@@ -30,9 +30,7 @@ export function useClickOutside(
       const target = event.target as Node | null;
       if (!target) return;
 
-      const list = Array.isArray(refsRef.current)
-        ? refsRef.current
-        : [refsRef.current];
+      const list = Array.isArray(refsRef.current) ? refsRef.current : [refsRef.current];
       const isInside = list.some((ref) => ref.current?.contains(target));
       if (!isInside) handlerRef.current(event);
     };

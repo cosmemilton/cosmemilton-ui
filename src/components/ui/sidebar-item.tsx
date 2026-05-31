@@ -62,7 +62,7 @@ export function SidebarItem({
     active && "cm-sidebar__item--active",
     item.disabled && "cm-sidebar__item--disabled",
   );
-  const title = collapsed ? groupLabel ?? item.label : undefined;
+  const title = collapsed ? (groupLabel ?? item.label) : undefined;
   const linkTarget = item.href ?? item.to;
   const iconFallback = groupLabel ? "initial" : "marker";
   const content = (
@@ -88,11 +88,7 @@ export function SidebarItem({
         const LinkComponent = linkComponent as ElementType<CmSidebarHrefLinkComponentProps>;
 
         return (
-          <LinkComponent
-            {...linkProps}
-            href={item.href}
-            {...(item.to ? { to: item.to } : {})}
-          >
+          <LinkComponent {...linkProps} href={item.href} {...(item.to ? { to: item.to } : {})}>
             {content}
           </LinkComponent>
         );
@@ -101,20 +97,14 @@ export function SidebarItem({
       const LinkComponent = linkComponent as ElementType<CmSidebarToLinkComponentProps>;
 
       return (
-        <LinkComponent
-          {...linkProps}
-          to={item.to ?? linkTarget}
-        >
+        <LinkComponent {...linkProps} to={item.to ?? linkTarget}>
           {content}
         </LinkComponent>
       );
     }
 
     return (
-      <a
-        {...linkProps}
-        href={item.disabled ? undefined : linkTarget}
-      >
+      <a {...linkProps} href={item.disabled ? undefined : linkTarget}>
         {content}
       </a>
     );

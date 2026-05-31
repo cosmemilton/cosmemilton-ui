@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-  type ElementType,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
 type LinkVariant = "default" | "card" | "quiet" | "button";

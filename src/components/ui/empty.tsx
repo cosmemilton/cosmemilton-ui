@@ -15,19 +15,10 @@ export const CmEmpty = forwardRef<HTMLDivElement, CmEmptyProps>(function CmEmpty
   ref,
 ) {
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "cm-empty",
-        className,
-      )}
-      {...rest}
-    >
+    <div ref={ref} className={cn("cm-empty", className)} {...rest}>
       {icon ? <div className="cm-empty__icon">{icon}</div> : null}
       <h3 className="cm-empty__title">{title}</h3>
-      {description ? (
-        <p className="cm-empty__description">{description}</p>
-      ) : null}
+      {description ? <p className="cm-empty__description">{description}</p> : null}
       {actionLabel ? (
         <CmButton onClick={onAction} variant="solid" tone="primary">
           {actionLabel}

@@ -10,8 +10,10 @@ export type CmInputOTPProps = {
   className?: string;
 };
 
-export const CmInputOTP = forwardRef<HTMLDivElement, CmInputOTPProps>(
-  function CmInputOTP({ value, onChange, length = 6, className }, ref) {
+export const CmInputOTP = forwardRef<HTMLDivElement, CmInputOTPProps>(function CmInputOTP(
+  { value, onChange, length = 6, className },
+  ref,
+) {
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {

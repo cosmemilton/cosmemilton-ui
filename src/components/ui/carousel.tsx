@@ -65,10 +65,7 @@ export function CmCarousel({
 
   useEffect(() => {
     if (trackRef.current) {
-      trackRef.current.style.setProperty(
-        "transform",
-        `translateX(-${index * 100}%)`,
-      );
+      trackRef.current.style.setProperty("transform", `translateX(-${index * 100}%)`);
     }
   }, [index]);
 
@@ -92,11 +89,7 @@ export function CmCarousel({
 
   return (
     <div
-      className={cn(
-        "cm-carousel",
-        `cm-carousel--${variant}`,
-        className,
-      )}
+      className={cn("cm-carousel", `cm-carousel--${variant}`, className)}
       style={height || mediaPadding ? carouselStyle : undefined}
     >
       <div ref={trackRef} className="cm-carousel__track">
@@ -104,22 +97,14 @@ export function CmCarousel({
           <div key={item.id} className="cm-carousel__slide">
             {item.content ?? (
               <div className="cm-carousel__panel">
-                {item.media ? (
-                  <div className="cm-carousel__media">{item.media}</div>
-                ) : null}
+                {item.media ? <div className="cm-carousel__media">{item.media}</div> : null}
                 <div className="cm-carousel__content">
-                  {item.eyebrow ? (
-                    <div className="cm-carousel__eyebrow">{item.eyebrow}</div>
-                  ) : null}
-                  {item.title ? (
-                    <h3 className="cm-carousel__title">{item.title}</h3>
-                  ) : null}
+                  {item.eyebrow ? <div className="cm-carousel__eyebrow">{item.eyebrow}</div> : null}
+                  {item.title ? <h3 className="cm-carousel__title">{item.title}</h3> : null}
                   {item.description ? (
                     <p className="cm-carousel__description">{item.description}</p>
                   ) : null}
-                  {item.action ? (
-                    <div className="cm-carousel__action">{item.action}</div>
-                  ) : null}
+                  {item.action ? <div className="cm-carousel__action">{item.action}</div> : null}
                 </div>
               </div>
             )}
@@ -127,47 +112,45 @@ export function CmCarousel({
         ))}
       </div>
       {showDots && length > 1 ? (
-      <div className="cm-carousel__dots">
-        {items.map((item, idx) => (
-          <CmButton
-            unstyled
-            key={item.id}
-            type="button"
-            className={cn(
-              "cm-carousel__dot",
-              idx === index
-                ? "cm-carousel__dot--active"
-                : "cm-carousel__dot--idle",
-            )}
-            onClick={() => goTo(idx)}
-            aria-label={`Ir para item ${idx + 1}`}
-          />
-        ))}
-      </div>
+        <div className="cm-carousel__dots">
+          {items.map((item, idx) => (
+            <CmButton
+              unstyled
+              key={item.id}
+              type="button"
+              className={cn(
+                "cm-carousel__dot",
+                idx === index ? "cm-carousel__dot--active" : "cm-carousel__dot--idle",
+              )}
+              onClick={() => goTo(idx)}
+              aria-label={`Ir para item ${idx + 1}`}
+            />
+          ))}
+        </div>
       ) : null}
       {showControls && length > 1 ? (
-      <div className="cm-carousel__controls">
-        <CmButton
-          aria-label="Slide anterior"
-          icon={<ChevronLeft size={18} aria-hidden="true" />}
-          iconOnly
-          shape="square"
-          size="sm"
-          variant="surface"
-          className="cm-carousel__control"
-          onClick={() => goTo(index - 1)}
-        />
-        <CmButton
-          aria-label="Próximo slide"
-          icon={<ChevronRight size={18} aria-hidden="true" />}
-          iconOnly
-          shape="square"
-          size="sm"
-          variant="surface"
-          className="cm-carousel__control"
-          onClick={() => goTo(index + 1)}
-        />
-      </div>
+        <div className="cm-carousel__controls">
+          <CmButton
+            aria-label="Slide anterior"
+            icon={<ChevronLeft size={18} aria-hidden="true" />}
+            iconOnly
+            shape="square"
+            size="sm"
+            variant="surface"
+            className="cm-carousel__control"
+            onClick={() => goTo(index - 1)}
+          />
+          <CmButton
+            aria-label="Próximo slide"
+            icon={<ChevronRight size={18} aria-hidden="true" />}
+            iconOnly
+            shape="square"
+            size="sm"
+            variant="surface"
+            className="cm-carousel__control"
+            onClick={() => goTo(index + 1)}
+          />
+        </div>
       ) : null}
     </div>
   );

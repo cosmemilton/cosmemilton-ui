@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type ElementType,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ElementType, type HTMLAttributes, type ReactNode } from "react";
 import { cmVariants, type CmVariantProps } from "../../lib/variants.js";
 import { Slot } from "../../lib/slot.js";
 import type { CmTone } from "./types.js";

@@ -67,7 +67,8 @@ function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
   }, {});
 
   if (!themeStyle["--color-popover"]) {
-    themeStyle["--color-popover"] = styles.getPropertyValue("--color-card") || styles.getPropertyValue("--color-background");
+    themeStyle["--color-popover"] =
+      styles.getPropertyValue("--color-card") || styles.getPropertyValue("--color-background");
   }
   if (!themeStyle["--color-popover-foreground"]) {
     themeStyle["--color-popover-foreground"] = styles.getPropertyValue("--color-foreground");
@@ -100,9 +101,7 @@ export function CmCombobox({
   const [active, setActive] = useState<CmComboboxItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">(
-    "bottom",
-  );
+  const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [dropdownStyle, setDropdownStyle] = useState<{
     top?: number;
     left?: number;
@@ -110,9 +109,7 @@ export function CmCombobox({
     width?: number;
     maxWidth?: number;
   }>({});
-  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>(
-    {},
-  );
+  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -128,9 +125,7 @@ export function CmCombobox({
   const getDisplayValue = useCallback(
     (item: CmComboboxItem): string => {
       if (selectedDisplay === "label") return item.label;
-      return item.description
-        ? `${item.label} - ${item.description}`
-        : item.label;
+      return item.description ? `${item.label} - ${item.description}` : item.label;
     },
     [selectedDisplay],
   );
@@ -320,7 +315,14 @@ export function CmCombobox({
   };
 
   return (
-    <div ref={containerRef} className={cn("cm-combobox cm-floating-field", !label && "cm-floating-field--unlabeled", className)}>
+    <div
+      ref={containerRef}
+      className={cn(
+        "cm-combobox cm-floating-field",
+        !label && "cm-floating-field--unlabeled",
+        className,
+      )}
+    >
       {name ? (
         <input
           type="hidden"
@@ -332,12 +334,7 @@ export function CmCombobox({
         />
       ) : null}
 
-      <div
-        className={cn(
-          "cm-floating-field__control",
-          getBorderColor(),
-        )}
-      >
+      <div className={cn("cm-floating-field__control", getBorderColor())}>
         {label ? (
           <label
             className={cn(
@@ -401,20 +398,14 @@ export function CmCombobox({
             }}
             style={{
               position: "fixed",
-              top:
-                dropdownPosition === "bottom" ? dropdownStyle.top : undefined,
+              top: dropdownPosition === "bottom" ? dropdownStyle.top : undefined,
               bottom:
                 dropdownPosition === "top"
-                  ? window.innerHeight -
-                    (inputRef.current?.getBoundingClientRect().top ?? 0) +
-                    4
+                  ? window.innerHeight - (inputRef.current?.getBoundingClientRect().top ?? 0) + 4
                   : undefined,
               left: dropdownStyle.left,
               right: dropdownStyle.right,
-              width:
-                dropdownSizing === "content"
-                  ? "max-content"
-                  : dropdownStyle.width,
+              width: dropdownSizing === "content" ? "max-content" : dropdownStyle.width,
               minWidth: inputRef.current?.getBoundingClientRect().width ?? 0,
               maxWidth: dropdownStyle.maxWidth ?? "calc(100vw - 16px)",
               zIndex: 9999,
@@ -423,11 +414,7 @@ export function CmCombobox({
             className="cm-combobox__popover"
           >
             {filtered.length === 0
-              ? (emptyState ?? (
-                  <div className="cm-combobox__empty">
-                    {emptyMessage}
-                  </div>
-                ))
+              ? (emptyState ?? <div className="cm-combobox__empty">{emptyMessage}</div>)
               : filtered.map((item) => (
                   <CmButton
                     unstyled
@@ -447,16 +434,12 @@ export function CmCombobox({
                           : "",
                     )}
                   >
-                    <span className="cm-combobox__option-label">
-                      {item.label}
-                    </span>
+                    <span className="cm-combobox__option-label">{item.label}</span>
                     {item.description ? (
                       <span
                         className={cn(
                           "cm-combobox__description",
-                          active?.value === item.value
-                            ? "cm-combobox__description--selected"
-                            : "",
+                          active?.value === item.value ? "cm-combobox__description--selected" : "",
                         )}
                       >
                         {item.description}

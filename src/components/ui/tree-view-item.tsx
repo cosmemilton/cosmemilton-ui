@@ -93,7 +93,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
         "cm-tree-view__item",
         isDragging && "cm-tree-view__item--dragging",
         isDropTarget && "cm-tree-view__item--drop-target",
-        !node.active && "cm-tree-view__item--inactive"
+        !node.active && "cm-tree-view__item--inactive",
       )}
       onDragOver={draggable ? (event) => onDragOver?.(event, node) : undefined}
       onDrop={draggable ? (event) => onDrop?.(event, node) : undefined}
@@ -104,7 +104,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
           isHighlighted && "cm-tree-view__node--highlighted",
           isSelected && "cm-tree-view__node--selected",
           isDragging && "cm-tree-view__node--dragging",
-          isDropTarget && "cm-tree-view__node--drop-target"
+          isDropTarget && "cm-tree-view__node--drop-target",
         )}
         style={{ paddingLeft: `${level * 24 + 12}px` }}
         onMouseEnter={() => setShowActions(true)}
@@ -171,10 +171,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
           type="button"
           onClick={() =>
             selectionMode && isLeaf && node.permissionId !== undefined
-              ? onSelectionChange?.(
-                  node.permissionId,
-                  !selectedIds?.has(node.permissionId)
-                )
+              ? onSelectionChange?.(node.permissionId, !selectedIds?.has(node.permissionId))
               : onSelect?.(node)
           }
           className="cm-tree-view__node-name"
@@ -183,18 +180,14 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
         </CmButton>
 
         {/* Code/Slug CmBadge */}
-        {node.code && (
-          <span className="cm-tree-view__badge">
-            {node.code}
-          </span>
-        )}
+        {node.code && <span className="cm-tree-view__badge">{node.code}</span>}
 
         {/* Actions (ocultar no modo de seleção) */}
         {!selectionMode && (
           <div
             className={cn(
               "cm-tree-view__actions",
-              showActions ? "cm-tree-view__actions--visible" : ""
+              showActions ? "cm-tree-view__actions--visible" : "",
             )}
           >
             {onAdd && (!maxDepth || level < maxDepth - 1) && (

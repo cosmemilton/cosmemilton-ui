@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ReactNode,
-  type CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { CmIcon } from "./icon.js";
@@ -68,8 +61,7 @@ const portalThemeVars = [
 
 function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
   const styles = window.getComputedStyle(element);
-  const appTheme = element.closest<HTMLElement>("[data-app-theme]")
-    ?.dataset.appTheme;
+  const appTheme = element.closest<HTMLElement>("[data-app-theme]")?.dataset.appTheme;
   const themeStyle = portalThemeVars.reduce<PortalThemeStyle>((style, variable) => {
     style[variable as `--${string}`] = styles.getPropertyValue(variable);
     return style;
@@ -115,9 +107,7 @@ export function CmSelect({
 }: CmSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>(
-    {},
-  );
+  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -193,12 +183,7 @@ export function CmSelect({
         />
       ) : null}
 
-      <div
-        className={cn(
-          "cm-floating-field__control",
-          getBorderColor(),
-        )}
-      >
+      <div className={cn("cm-floating-field__control", getBorderColor())}>
         {label && (
           <label
             className={cn(
@@ -215,11 +200,7 @@ export function CmSelect({
           </label>
         )}
 
-        {startIcon && (
-          <span className="cm-floating-field__adornment">
-            {startIcon}
-          </span>
-        )}
+        {startIcon && <span className="cm-floating-field__adornment">{startIcon}</span>}
         {startButton && <span className="cm-floating-field__adornment">{startButton}</span>}
 
         {selectedIcon && (
@@ -255,12 +236,7 @@ export function CmSelect({
           </span>
         </CmButton>
 
-        <ChevronDown
-          className={cn(
-            "cm-select__chevron",
-            open && "cm-select__chevron--open",
-          )}
-        />
+        <ChevronDown className={cn("cm-select__chevron", open && "cm-select__chevron--open")} />
         {canClear ? (
           <CmButton
             unstyled
@@ -274,11 +250,7 @@ export function CmSelect({
           </CmButton>
         ) : null}
 
-        {endIcon && (
-          <span className="cm-floating-field__adornment">
-            {endIcon}
-          </span>
-        )}
+        {endIcon && <span className="cm-floating-field__adornment">{endIcon}</span>}
         {endButton && <span className="cm-floating-field__adornment">{endButton}</span>}
       </div>
 
@@ -312,18 +284,11 @@ export function CmSelect({
                   role="option"
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
-                  className={cn(
-                    "cm-select__option",
-                    isSelected && "cm-select__option--selected",
-                  )}
+                  className={cn("cm-select__option", isSelected && "cm-select__option--selected")}
                 >
-                  {showOptionIcons && option.icon && (
-                    <CmIcon name={option.icon} size={16} />
-                  )}
+                  {showOptionIcons && option.icon && <CmIcon name={option.icon} size={16} />}
                   <span className="cm-select__option-label">{option.label}</span>
-                  {isSelected && (
-                    <Check className="cm-select__check" />
-                  )}
+                  {isSelected && <Check className="cm-select__check" />}
                 </CmButton>
               );
             })}

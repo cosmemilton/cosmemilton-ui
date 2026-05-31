@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { ReactNode, useEffect, useRef, useState, type CSSProperties } from "react";
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
@@ -61,7 +55,14 @@ function readDrawerPortalTheme(element: HTMLElement): DrawerPortalStyle {
   }, {});
 }
 
-export function CmDrawer({ open, onClose, side = "right", children, className, title }: CmDrawerProps) {
+export function CmDrawer({
+  open,
+  onClose,
+  side = "right",
+  children,
+  className,
+  title,
+}: CmDrawerProps) {
   const sourceRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<DrawerPortalStyle>({});
@@ -82,39 +83,22 @@ export function CmDrawer({ open, onClose, side = "right", children, className, t
       <span ref={sourceRef} hidden />
       <CmPortal>
         <div className="cm-drawer__portal-scope" style={portalStyle}>
-          <div
-            className="cm-drawer__overlay"
-            role="presentation"
-            onClick={onClose}
-          />
+          <div className="cm-drawer__overlay" role="presentation" onClick={onClose} />
           <div
             ref={panelRef}
             role="dialog"
             aria-modal="true"
             tabIndex={-1}
             aria-label={title}
-            className={cn(
-              "cm-drawer__panel",
-              sideClass[side],
-              className,
-            )}
+            className={cn("cm-drawer__panel", sideClass[side], className)}
           >
             <div className="cm-drawer__header">
-              {title ? (
-                <h2 className="cm-drawer__title">{title}</h2>
-              ) : null}
-              <CmButton
-                unstyled
-                type="button"
-                onClick={onClose}
-                className="cm-drawer__close"
-              >
+              {title ? <h2 className="cm-drawer__title">{title}</h2> : null}
+              <CmButton unstyled type="button" onClick={onClose} className="cm-drawer__close">
                 Fechar
               </CmButton>
             </div>
-            <div className="cm-drawer__body">
-              {children}
-            </div>
+            <div className="cm-drawer__body">{children}</div>
           </div>
         </div>
       </CmPortal>

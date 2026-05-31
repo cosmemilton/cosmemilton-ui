@@ -35,22 +35,16 @@ export const CmCheckbox = forwardRef<HTMLInputElement, CmCheckboxProps>(
           <input
             ref={ref}
             type="checkbox"
-            className={cn(
-              "cm-checkbox__input",
-              className,
-            )}
+            className={cn("cm-checkbox__input", className)}
             {...props}
           />
           <span
             className={cn(
               "cm-checkbox__box",
-              isInputSuffix
-                ? "cm-checkbox__box--suffix"
-                : "cm-checkbox__box--default",
+              isInputSuffix ? "cm-checkbox__box--suffix" : "cm-checkbox__box--default",
             )}
           >
-            <Check size={isInputSuffix || isCompact ? 12 : 14} strokeWidth={3} />
-            ✓
+            <Check size={isInputSuffix || isCompact ? 12 : 14} strokeWidth={3} />✓
           </span>
         </span>
         {(label || description) && (
@@ -62,17 +56,13 @@ export const CmCheckbox = forwardRef<HTMLInputElement, CmCheckboxProps>(
                     ? "cm-checkbox__label cm-checkbox__label--suffix"
                     : isCompact
                       ? "cm-checkbox__label cm-checkbox__label--compact"
-                    : "cm-checkbox__label",
+                      : "cm-checkbox__label",
                 )}
               >
                 {label}
               </span>
             ) : null}
-            {description ? (
-              <span className="cm-checkbox__description">
-                {description}
-              </span>
-            ) : null}
+            {description ? <span className="cm-checkbox__description">{description}</span> : null}
           </span>
         )}
       </label>

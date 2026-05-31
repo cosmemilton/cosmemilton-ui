@@ -18,14 +18,15 @@ export type CmBreadcrumbProps = {
   linkComponent?: ComponentType<CmLinkComponentProps>;
 };
 
-export const CmBreadcrumb = forwardRef<HTMLElement, CmBreadcrumbProps>(
-  function CmBreadcrumb({ items, className, linkComponent: LinkComponent }, ref) {
+export const CmBreadcrumb = forwardRef<HTMLElement, CmBreadcrumbProps>(function CmBreadcrumb(
+  { items, className, linkComponent: LinkComponent },
+  ref,
+) {
   return (
     <nav ref={ref} aria-label="breadcrumb" className={cn("cm-breadcrumb", className)}>
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
-        const key =
-          typeof item.label === "string" ? item.label : item.href ?? index;
+        const key = typeof item.label === "string" ? item.label : (item.href ?? index);
         const linkClassName = "cm-breadcrumb__link";
 
         return (

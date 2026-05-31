@@ -41,16 +41,8 @@ export type CmWizardProps = {
   className?: string;
 };
 
-function findReachableStepIndex(
-  steps: CmWizardStep[],
-  fromIndex: number,
-  direction: 1 | -1,
-) {
-  for (
-    let index = fromIndex + direction;
-    index >= 0 && index < steps.length;
-    index += direction
-  ) {
+function findReachableStepIndex(steps: CmWizardStep[], fromIndex: number, direction: 1 | -1) {
+  for (let index = fromIndex + direction; index >= 0 && index < steps.length; index += direction) {
     if (!steps[index]?.disabled) return index;
   }
 
@@ -58,9 +50,7 @@ function findReachableStepIndex(
 }
 
 function getInitialStepId(steps: CmWizardStep[], defaultStep?: string) {
-  const defaultIndex = steps.findIndex(
-    (step) => step.id === defaultStep && !step.disabled,
-  );
+  const defaultIndex = steps.findIndex((step) => step.id === defaultStep && !step.disabled);
   if (defaultIndex >= 0) return steps[defaultIndex].id;
 
   return steps.find((step) => !step.disabled)?.id ?? steps[0]?.id ?? "";
@@ -88,15 +78,11 @@ export function CmWizard({
   className,
 }: CmWizardProps) {
   const titleId = useId();
-  const [internalStep, setInternalStep] = useState(() =>
-    getInitialStepId(steps, defaultStep),
-  );
+  const [internalStep, setInternalStep] = useState(() => getInitialStepId(steps, defaultStep));
 
   const activeIndex = useMemo(() => {
     const selectedId = currentStep ?? internalStep;
-    const selectedIndex = steps.findIndex(
-      (step) => step.id === selectedId && !step.disabled,
-    );
+    const selectedIndex = steps.findIndex((step) => step.id === selectedId && !step.disabled);
     if (selectedIndex >= 0) return selectedIndex;
 
     const firstEnabledIndex = steps.findIndex((step) => !step.disabled);
@@ -185,14 +171,10 @@ export function CmWizard({
                   <span className="cm-wizard__step-copy">
                     <span className="cm-wizard__step-title">
                       {step.title}
-                      {step.optional ? (
-                        <span className="cm-wizard__optional">Opcional</span>
-                      ) : null}
+                      {step.optional ? <span className="cm-wizard__optional">Opcional</span> : null}
                     </span>
                     {step.description ? (
-                      <span className="cm-wizard__step-description">
-                        {step.description}
-                      </span>
+                      <span className="cm-wizard__step-description">{step.description}</span>
                     ) : null}
                   </span>
                 </>
@@ -242,9 +224,7 @@ export function CmWizard({
               {activeStep.title}
             </h3>
             {activeStep.description ? (
-              <p className="cm-wizard__panel-description">
-                {activeStep.description}
-              </p>
+              <p className="cm-wizard__panel-description">{activeStep.description}</p>
             ) : null}
           </div>
         ) : null}
@@ -267,11 +247,7 @@ export function CmWizard({
                 {backLabel}
               </CmButton>
             ) : null}
-            <CmButton
-              tone="primary"
-              onClick={handlePrimaryAction}
-              disabled={primaryDisabled}
-            >
+            <CmButton tone="primary" onClick={handlePrimaryAction} disabled={primaryDisabled}>
               {isLastReachableStep ? finishLabel : nextLabel}
             </CmButton>
           </div>

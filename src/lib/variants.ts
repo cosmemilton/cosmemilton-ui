@@ -35,9 +35,7 @@ export function cmVariants<S extends VariantsSchema>(config: CmVariantsConfig<S>
 
     if (variants) {
       for (const group in variants) {
-        const selected = (props?.[group] ?? defaultVariants?.[group]) as
-          | string
-          | undefined;
+        const selected = (props?.[group] ?? defaultVariants?.[group]) as string | undefined;
         if (selected != null) classes.push(variants[group][selected]);
       }
     }

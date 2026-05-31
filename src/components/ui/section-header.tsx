@@ -16,26 +16,25 @@ export const CmSectionHeader = forwardRef<HTMLElement, CmSectionHeaderProps>(
     { actions, bordered = false, className, density, description, padded = false, title, ...props },
     ref,
   ) {
-  return (
-    <header
-      ref={ref}
-      className={cn(
-        "cm-section-header",
-        bordered && "cm-section-header--bordered",
-        padded && "cm-section-header--padded",
-        cmDensityClass(density),
-        className,
-      )}
-      {...props}
-    >
-      <div className="cm-section-header__content">
-        <h2 className="cm-section-header__title">{title}</h2>
-        {description ? (
-          <p className="cm-section-header__description">{description}</p>
-        ) : null}
-      </div>
-      {actions ? <div className="cm-section-header__actions">{actions}</div> : null}
-    </header>
-  );
-});
+    return (
+      <header
+        ref={ref}
+        className={cn(
+          "cm-section-header",
+          bordered && "cm-section-header--bordered",
+          padded && "cm-section-header--padded",
+          cmDensityClass(density),
+          className,
+        )}
+        {...props}
+      >
+        <div className="cm-section-header__content">
+          <h2 className="cm-section-header__title">{title}</h2>
+          {description ? <p className="cm-section-header__description">{description}</p> : null}
+        </div>
+        {actions ? <div className="cm-section-header__actions">{actions}</div> : null}
+      </header>
+    );
+  },
+);
 CmSectionHeader.displayName = "CmSectionHeader";

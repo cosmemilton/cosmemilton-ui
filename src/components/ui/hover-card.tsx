@@ -10,8 +10,7 @@ export type CmHoverCardProps = {
   className?: string;
 };
 
-const useIsomorphicLayoutEffect =
-  typeof window === "undefined" ? useEffect : useLayoutEffect;
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function CmHoverCard({ trigger, children, className }: CmHoverCardProps) {
   const [open, setOpen] = useState(false);
@@ -73,10 +72,7 @@ export function CmHoverCard({ trigger, children, className }: CmHoverCardProps) 
             ref={setPanelElement}
             onMouseEnter={handleOpen}
             onMouseLeave={handleClose}
-            className={cn(
-              "cm-hover-card__panel",
-              className,
-            )}
+            className={cn("cm-hover-card__panel", className)}
           >
             {children}
           </div>

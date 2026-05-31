@@ -16,15 +16,11 @@ describe("cmVariants", () => {
   });
 
   it("overrides defaults with selected options", () => {
-    expect(badge({ tone: "danger", size: "sm" })).toBe(
-      "cm-badge cm-badge--danger cm-badge--sm",
-    );
+    expect(badge({ tone: "danger", size: "sm" })).toBe("cm-badge cm-badge--danger cm-badge--sm");
   });
 
   it("appends an extra className last", () => {
-    expect(badge({ className: "extra" })).toBe(
-      "cm-badge cm-badge--default cm-badge--md extra",
-    );
+    expect(badge({ className: "extra" })).toBe("cm-badge cm-badge--default cm-badge--md extra");
   });
 
   it("skips groups whose option has no class", () => {

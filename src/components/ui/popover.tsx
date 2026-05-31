@@ -23,7 +23,14 @@ export type CmPopoverProps = {
   className?: string;
 };
 
-export function CmPopover({ trigger, children, open: controlledOpen, onOpenChange, align = "center", className }: CmPopoverProps) {
+export function CmPopover({
+  trigger,
+  children,
+  open: controlledOpen,
+  onOpenChange,
+  align = "center",
+  className,
+}: CmPopoverProps) {
   const [open, setOpen] = useControllableState<boolean>({
     value: controlledOpen,
     defaultValue: false,
@@ -42,8 +49,7 @@ export function CmPopover({ trigger, children, open: controlledOpen, onOpenChang
 
   useClickOutside([panelRef, triggerRef], close, open);
 
-  const placement =
-    align === "center" ? "bottom" : align === "end" ? "bottom-end" : "bottom-start";
+  const placement = align === "center" ? "bottom" : align === "end" ? "bottom-end" : "bottom-start";
   useFloating(triggerRef, panelRef, { enabled: open, placement, offset: 8 });
 
   return (
@@ -58,13 +64,7 @@ export function CmPopover({ trigger, children, open: controlledOpen, onOpenChang
       })}
       {open ? (
         <CmPortal>
-          <div
-            ref={panelRef}
-            className={cn(
-              "cm-popover__panel",
-              className,
-            )}
-          >
+          <div ref={panelRef} className={cn("cm-popover__panel", className)}>
             {typeof children === "function" ? children({ close }) : children}
           </div>
         </CmPortal>

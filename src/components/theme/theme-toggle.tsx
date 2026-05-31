@@ -47,7 +47,10 @@ function resolveThemeOptions(
 
       return {
         theme,
-        label: typeof option === "string" ? getThemeLabel(theme) : option.label ?? getThemeLabel(theme),
+        label:
+          typeof option === "string"
+            ? getThemeLabel(theme)
+            : (option.label ?? getThemeLabel(theme)),
       };
     })
     .filter((option): option is { theme: ThemeConfig; label: string } => Boolean(option));
@@ -89,9 +92,7 @@ export function CmThemeToggle({
               className,
             )}
           >
-            <span className="cm-theme-toggle-compact__label">
-              {currentThemeLabel}
-            </span>
+            <span className="cm-theme-toggle-compact__label">{currentThemeLabel}</span>
           </CmButton>
         )}
         items={themeOptions.map((candidate) => ({
@@ -107,9 +108,7 @@ export function CmThemeToggle({
 
   return (
     <div className={cn("cm-theme-toggle", className)}>
-      <span className="cm-theme-toggle-label">
-        Tema atual: {currentThemeLabel}
-      </span>
+      <span className="cm-theme-toggle-label">Tema atual: {currentThemeLabel}</span>
       <div className="cm-theme-toggle-options">
         {themeOptions.map((candidate) => (
           <CmButton

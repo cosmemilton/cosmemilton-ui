@@ -58,8 +58,7 @@ export function CmLineChart({
   const resolvedColor = color ?? toneColorMap[tone];
 
   const { points, gridLines, maxValue } = useMemo(() => {
-    if (data.length === 0)
-      return { points: [], gridLines: [], maxValue: 0 };
+    if (data.length === 0) return { points: [], gridLines: [], maxValue: 0 };
 
     const values = data.map((d) => d.value);
     const max = Math.max(...values);
@@ -140,9 +139,7 @@ export function CmLineChart({
           ))}
 
         {/* Area Fill */}
-        {areaPath && (
-          <path d={areaPath} fill={resolvedColor} opacity="0.1" />
-        )}
+        {areaPath && <path d={areaPath} fill={resolvedColor} opacity="0.1" />}
 
         {/* Line */}
         {pathD && (
@@ -158,13 +155,7 @@ export function CmLineChart({
 
         {/* Points */}
         {points.map((point, i) => (
-          <circle
-            key={i}
-            cx={point.x}
-            cy={point.y}
-            r="4"
-            fill={resolvedColor}
-          />
+          <circle key={i} cx={point.x} cy={point.y} r="4" fill={resolvedColor} />
         ))}
 
         {/* X-axis Labels inside SVG */}

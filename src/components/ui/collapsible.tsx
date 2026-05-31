@@ -11,7 +11,12 @@ export type CmCollapsibleProps = {
   className?: string;
 };
 
-export function CmCollapsible({ trigger, children, defaultOpen = false, className }: CmCollapsibleProps) {
+export function CmCollapsible({
+  trigger,
+  children,
+  defaultOpen = false,
+  className,
+}: CmCollapsibleProps) {
   const [open, setOpen] = useState(defaultOpen);
   const contentId = useId();
 
@@ -27,11 +32,13 @@ export function CmCollapsible({ trigger, children, defaultOpen = false, classNam
         className="cm-collapsible__trigger"
       >
         {trigger}
-        <span className="cm-collapsible__indicator">
-          {open ? "Ocultar" : "Mostrar"}
-        </span>
+        <span className="cm-collapsible__indicator">{open ? "Ocultar" : "Mostrar"}</span>
       </CmButton>
-      {open ? <div id={contentId} className="cm-collapsible__content">{children}</div> : null}
+      {open ? (
+        <div id={contentId} className="cm-collapsible__content">
+          {children}
+        </div>
+      ) : null}
     </div>
   );
 }

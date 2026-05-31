@@ -10,12 +10,7 @@ import {
   useState,
 } from "react";
 import { cn } from "../../lib/utils.js";
-import {
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
-  SlidersHorizontal,
-} from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowUpDown, SlidersHorizontal } from "lucide-react";
 import { useTablePreference } from "../../hooks/use-table-preference.js";
 import { CmButton } from "./button.js";
 import { CmEmpty } from "./empty.js";
@@ -39,8 +34,9 @@ export type {
 
 export const CmDataTableActions = forwardRef<HTMLDivElement, CmDataTableActionsProps>(
   function CmDataTableActions({ className, ...props }, ref) {
-  return <div ref={ref} className={cn("cm-data-table__actions", className)} {...props} />;
-});
+    return <div ref={ref} className={cn("cm-data-table__actions", className)} {...props} />;
+  },
+);
 CmDataTableActions.displayName = "CmDataTableActions";
 
 export function CmDataTable<T>({
@@ -79,11 +75,8 @@ export function CmDataTable<T>({
 }: CmDataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
-  const [sortKey, setSortKey] = useState<string | null>(
-    defaultSortKey ?? null,
-  );
-  const [sortDirection, setSortDirection] =
-    useState<CmSortDirection>(defaultSortDirection);
+  const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
+  const [sortDirection, setSortDirection] = useState<CmSortDirection>(defaultSortDirection);
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const detailTableWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedRowRect, setSelectedRowRect] = useState<{
@@ -93,17 +86,16 @@ export function CmDataTable<T>({
 
   // Deriva os defaults de visibilidade a partir das definições de coluna
   const defaultHiddenKeys = useMemo(
-    () =>
-      columns
-        .filter((c) => c.defaultHidden && c.hideable !== false)
-        .map((c) => String(c.key)),
+    () => columns.filter((c) => c.defaultHidden && c.hideable !== false).map((c) => String(c.key)),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- depende apenas das keys/defaultHidden que são estáveis
     [columns.map((c) => `${String(c.key)}:${c.defaultHidden}`).join()],
   );
 
   // Gerencia preferências internamente quando tableKey é fornecido
-  const { hiddenColumns, setHiddenColumns, resetToDefaults } =
-    useTablePreference(tableKey ?? null, defaultHiddenKeys);
+  const { hiddenColumns, setHiddenColumns, resetToDefaults } = useTablePreference(
+    tableKey ?? null,
+    defaultHiddenKeys,
+  );
 
   const hasColumnToggle = !!tableKey;
 
@@ -141,15 +133,11 @@ export function CmDataTable<T>({
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const indexOfLastItem = currentPage * rowsPerPage;
   const indexOfFirstItem = indexOfLastItem - rowsPerPage;
-  const currentData = pagination
-    ? sortedData.slice(indexOfFirstItem, indexOfLastItem)
-    : sortedData;
+  const currentData = pagination ? sortedData.slice(indexOfFirstItem, indexOfLastItem) : sortedData;
 
   const detailPanelActive = detailPanelEnabled && !!renderSelectedRowDetail;
   const detailPanelSize =
-    typeof detailPanelWidth === "number"
-      ? `${detailPanelWidth}px`
-      : detailPanelWidth;
+    typeof detailPanelWidth === "number" ? `${detailPanelWidth}px` : detailPanelWidth;
   const selectedDetailRow = useMemo(() => {
     if (!detailPanelActive || selectedRowKey == null) return null;
     return currentData.find((row, rowIndex) => rowKey(row, rowIndex) === selectedRowKey) ?? null;
@@ -192,9 +180,7 @@ export function CmDataTable<T>({
 
     const wrapper = detailTableWrapperRef.current;
     const resizeObserver =
-      wrapper && typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(scheduleMeasure)
-        : null;
+      wrapper && typeof ResizeObserver !== "undefined" ? new ResizeObserver(scheduleMeasure) : null;
 
     if (wrapper && resizeObserver) {
       resizeObserver.observe(wrapper);
@@ -235,15 +221,13 @@ export function CmDataTable<T>({
     <div className="cm-data-table__top">
       {header ? (
         <div className="cm-data-table__header-slot">{header}</div>
-      ) : (title || description) ? (
+      ) : title || description ? (
         <div className="cm-data-table__heading">
           {title ? <h3 className="cm-data-table__title">{title}</h3> : null}
-          {description ? (
-            <p className="cm-data-table__description">{description}</p>
-          ) : null}
+          {description ? <p className="cm-data-table__description">{description}</p> : null}
         </div>
       ) : null}
-      {(toolbar || actions) ? (
+      {toolbar || actions ? (
         <div className="cm-data-table__toolbar">
           {toolbar}
           {actions ? <CmDataTableActions>{actions}</CmDataTableActions> : null}
@@ -271,9 +255,7 @@ export function CmDataTable<T>({
   }
 
   const hideableColumns = columns.filter((c) => c.hideable !== false);
-  const hiddenCount = hideableColumns.filter((c) =>
-    hiddenColumns?.has(String(c.key)),
-  ).length;
+  const hiddenCount = hideableColumns.filter((c) => hiddenColumns?.has(String(c.key))).length;
 
   const table = (
     <div className={rootClassName}>
@@ -293,9 +275,7 @@ export function CmDataTable<T>({
                 >
                   <SlidersHorizontal className="cm-data-table__column-icon" />
                   {hiddenCount > 0 && (
-                    <span className="cm-data-table__hidden-count">
-                      {hiddenCount}
-                    </span>
+                    <span className="cm-data-table__hidden-count">{hiddenCount}</span>
                   )}
                 </CmButton>
               </th>
@@ -316,11 +296,7 @@ export function CmDataTable<T>({
                   )}
                   onClick={isSortable ? () => handleSort(column) : undefined}
                   aria-sort={
-                    isActive
-                      ? sortDirection === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : undefined
+                    isActive ? (sortDirection === "asc" ? "ascending" : "descending") : undefined
                   }
                 >
                   <span
@@ -357,10 +333,7 @@ export function CmDataTable<T>({
                 data-selected={isSelected || undefined}
                 className={cn(
                   "cm-data-table__row",
-                  zebra &&
-                    !isSelected &&
-                    rowIndex % 2 === 1 &&
-                    "cm-data-table__row--zebra",
+                  zebra && !isSelected && rowIndex % 2 === 1 && "cm-data-table__row--zebra",
                   !isSelected && "cm-data-table__row--hoverable",
                   onRowClick && "cm-data-table__row--clickable",
                   isSelected && "cm-data-table__row--selected",
@@ -396,9 +369,7 @@ export function CmDataTable<T>({
               >
                 <div className="cm-data-table__pagination">
                   <div className="cm-data-table__pagination-group">
-                    <span className="cm-data-table__pagination-text">
-                      Linhas por página:
-                    </span>
+                    <span className="cm-data-table__pagination-text">Linhas por página:</span>
                     <select
                       value={rowsPerPage}
                       onChange={(e) => handleChangeRowsPerPage(e.target.value)}
@@ -412,8 +383,7 @@ export function CmDataTable<T>({
                       <option value="50">50</option>
                     </select>
                     <span className="cm-data-table__pagination-text">
-                      {indexOfFirstItem + 1}-
-                      {Math.min(indexOfLastItem, sortedData.length)} de{" "}
+                      {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, sortedData.length)} de{" "}
                       {sortedData.length}
                     </span>
                   </div>
@@ -457,14 +427,8 @@ export function CmDataTable<T>({
     : detailEmptyMessage;
 
   return (
-    <div
-      className="cm-data-table-detail-layout"
-      style={detailLayoutStyle}
-    >
-      <div
-        ref={detailTableWrapperRef}
-        className="cm-data-table-detail__table-wrap"
-      >
+    <div className="cm-data-table-detail-layout" style={detailLayoutStyle}>
+      <div ref={detailTableWrapperRef} className="cm-data-table-detail__table-wrap">
         {table}
         {detailBridge && selectedRowRect && (
           <>

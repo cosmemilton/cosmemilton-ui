@@ -111,17 +111,15 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
       className={cn(
         "cm-toast__item",
         toneClasses[item.tone],
-        visible ? "cm-toast__item--visible" : "cm-toast__item--hidden"
+        visible ? "cm-toast__item--visible" : "cm-toast__item--hidden",
       )}
     >
-      {icons[item.tone] && (
-        <span className="cm-toast__icon">{icons[item.tone]}</span>
-      )}
+      {icons[item.tone] && <span className="cm-toast__icon">{icons[item.tone]}</span>}
       <span className="cm-toast__content">
-        {item.title ? (
-          <strong className="cm-toast__title">{item.title}</strong>
-        ) : null}
-        <span className={cn("cm-toast__message", item.title ? "cm-toast__message--with-title" : "")}>
+        {item.title ? <strong className="cm-toast__title">{item.title}</strong> : null}
+        <span
+          className={cn("cm-toast__message", item.title ? "cm-toast__message--with-title" : "")}
+        >
           {item.message}
         </span>
       </span>
@@ -153,29 +151,26 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const toast = useCallback(
-    (message: string, options?: ToastOptions) => {
-      const key = `${options?.tone ?? "default"}|${options?.title ?? ""}|${message}`;
-      const now = Date.now();
-      const recent = recentToastRef.current;
+  const toast = useCallback((message: string, options?: ToastOptions) => {
+    const key = `${options?.tone ?? "default"}|${options?.title ?? ""}|${message}`;
+    const now = Date.now();
+    const recent = recentToastRef.current;
 
-      if (recent?.key === key && now - recent.at < 1000) return;
+    if (recent?.key === key && now - recent.at < 1000) return;
 
-      recentToastRef.current = { key, at: now };
-      const id = ++nextId.current;
-      setToasts((prev) => [
-        ...prev,
-        {
-          id,
-          title: options?.title,
-          message,
-          tone: options?.tone ?? "default",
-          duration: options?.duration ?? 5000,
-        },
-      ]);
-    },
-    []
-  );
+    recentToastRef.current = { key, at: now };
+    const id = ++nextId.current;
+    setToasts((prev) => [
+      ...prev,
+      {
+        id,
+        title: options?.title,
+        message,
+        tone: options?.tone ?? "default",
+        duration: options?.duration ?? 5000,
+      },
+    ]);
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toast }}>
@@ -187,7 +182,7 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
               <ToastSlot key={t.id} item={t} onDismiss={dismiss} />
             ))}
           </div>,
-          document.body
+          document.body,
         )}
     </ToastContext.Provider>
   );

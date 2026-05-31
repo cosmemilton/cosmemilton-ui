@@ -14,11 +14,19 @@ export type CmAspectRatioProps = HTMLAttributes<HTMLDivElement> & {
   surface?: AspectRatioSurface;
 };
 
-export const CmAspectRatio = forwardRef<HTMLDivElement, CmAspectRatioProps>(
-  function CmAspectRatio(
-    { ratio = 16 / 9, className, center = false, children, radius = "lg", surface = "none", style, ...rest },
-    ref,
-  ) {
+export const CmAspectRatio = forwardRef<HTMLDivElement, CmAspectRatioProps>(function CmAspectRatio(
+  {
+    ratio = 16 / 9,
+    className,
+    center = false,
+    children,
+    radius = "lg",
+    surface = "none",
+    style,
+    ...rest
+  },
+  ref,
+) {
   return (
     <div
       ref={ref}

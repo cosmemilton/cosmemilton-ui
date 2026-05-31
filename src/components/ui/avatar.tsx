@@ -39,7 +39,7 @@ export const CmAvatar = forwardRef<HTMLDivElement, CmAvatarProps>(function CmAva
           className="cm-avatar__image"
         />
       ) : (
-        fallback ?? <span className="cm-avatar__fallback">{alt?.[0] ?? "?"}</span>
+        (fallback ?? <span className="cm-avatar__fallback">{alt?.[0] ?? "?"}</span>)
       )}
     </div>
   );

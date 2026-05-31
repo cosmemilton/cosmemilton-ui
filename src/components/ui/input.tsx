@@ -34,20 +34,17 @@ export type CmInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix">
   numeric?: boolean | "integer" | "decimal";
 };
 
-const nativeMaskedInputTypes = new Set([
-  "date",
-  "datetime-local",
-  "month",
-  "time",
-  "week",
-]);
+const nativeMaskedInputTypes = new Set(["date", "datetime-local", "month", "time", "week"]);
 
 function hasRenderableValue(value: unknown) {
   if (Array.isArray(value)) return value.length > 0;
   return value !== undefined && value !== null && String(value).length > 0;
 }
 
-function resolveNumericMode(numeric: CmInputProps["numeric"], inputMode: CmInputProps["inputMode"]) {
+function resolveNumericMode(
+  numeric: CmInputProps["numeric"],
+  inputMode: CmInputProps["inputMode"],
+) {
   if (numeric === true) return "decimal";
   if (numeric) return numeric;
   if (inputMode === "numeric") return "integer";
@@ -139,7 +136,8 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
     const safeValue = value !== undefined ? (value ?? "") : undefined;
     const numericMode = resolveNumericMode(numeric, props.inputMode);
     const resolvedInputMode =
-      props.inputMode ?? (numericMode === "integer" ? "numeric" : numericMode === "decimal" ? "decimal" : undefined);
+      props.inputMode ??
+      (numericMode === "integer" ? "numeric" : numericMode === "decimal" ? "decimal" : undefined);
 
     const syncDomValue = useCallback(() => {
       const nextValue = inputRef.current?.value ?? "";
@@ -168,8 +166,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
     const hasDetectedDomValue = hasRenderableValue(detectedDomValue);
     const hasValue = hasDeclaredValue || hasDetectedDomValue || Boolean(props.placeholder);
     const hasActualValue = hasDeclaredValue || hasDetectedDomValue;
-    const hasNativeMask =
-      typeof props.type === "string" && nativeMaskedInputTypes.has(props.type);
+    const hasNativeMask = typeof props.type === "string" && nativeMaskedInputTypes.has(props.type);
     const hasInstruction = Boolean(helperText);
     const isFloating = isFocused || hasValue || hasNativeMask || hasInstruction;
 
@@ -226,12 +223,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
           className,
         )}
       >
-        <div
-          className={cn(
-            "cm-floating-field__control",
-            getBorderColor(),
-          )}
-        >
+        <div className={cn("cm-floating-field__control", getBorderColor())}>
           {label && (
             <label
               htmlFor={inputId}
@@ -249,11 +241,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
             </label>
           )}
 
-          {startIcon && (
-            <span className="cm-floating-field__adornment">
-              {startIcon}
-            </span>
-          )}
+          {startIcon && <span className="cm-floating-field__adornment">{startIcon}</span>}
           {startButton && <span className="cm-floating-field__adornment">{startButton}</span>}
 
           <div className="cm-floating-field__input-wrap">
@@ -297,11 +285,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
             />
           </div>
 
-          {endIcon && (
-            <span className="cm-floating-field__adornment">
-              {endIcon}
-            </span>
-          )}
+          {endIcon && <span className="cm-floating-field__adornment">{endIcon}</span>}
           {canClear ? (
             <CmButton
               unstyled
@@ -315,7 +299,9 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
             </CmButton>
           ) : null}
           {endButton && (
-            <span className="cm-floating-field__adornment cm-floating-field__adornment--flush">{endButton}</span>
+            <span className="cm-floating-field__adornment cm-floating-field__adornment--flush">
+              {endButton}
+            </span>
           )}
         </div>
 

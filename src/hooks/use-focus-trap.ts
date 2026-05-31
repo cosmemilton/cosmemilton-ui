@@ -38,9 +38,9 @@ export function useFocusTrap(
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
     const getFocusable = () =>
-      Array.from(
-        container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      ).filter((el) => !el.hasAttribute("hidden") && el.getAttribute("aria-hidden") !== "true");
+      Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => !el.hasAttribute("hidden") && el.getAttribute("aria-hidden") !== "true",
+      );
 
     const focusables = getFocusable();
     (focusables[0] ?? container).focus({ preventScroll: true });

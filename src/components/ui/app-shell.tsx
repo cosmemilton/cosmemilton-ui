@@ -10,11 +10,7 @@ import {
 } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
-import {
-  cmDensityClass,
-  cmSizeValue,
-  type CmDensity,
-} from "./types.js";
+import { cmDensityClass, cmSizeValue, type CmDensity } from "./types.js";
 
 export type CmAppShellChrome = "surface" | "inverted";
 
@@ -143,10 +139,7 @@ export function CmAppShell({
       ) : null}
 
       {hasSidebar ? (
-        <div
-          className="cm-app-shell__mobile-layer"
-          aria-hidden={!isMobileOpen}
-        >
+        <div className="cm-app-shell__mobile-layer" aria-hidden={!isMobileOpen}>
           <CmButton
             unstyled
             type="button"
@@ -171,15 +164,11 @@ export function CmAppShell({
 
       <div className={cn("cm-app-shell__main", mainClassName)}>
         {topbar ? (
-          <div className="cm-app-shell__topbar">
-            {renderSlot(topbar, controls)}
-          </div>
+          <div className="cm-app-shell__topbar">{renderSlot(topbar, controls)}</div>
         ) : hasSidebar ? (
           <div className="cm-app-shell__mobile-topbar">{mobileMenuButton}</div>
         ) : null}
-        <main className={cn("cm-app-shell__content", contentClassName)}>
-          {children}
-        </main>
+        <main className={cn("cm-app-shell__content", contentClassName)}>{children}</main>
       </div>
     </div>
   );

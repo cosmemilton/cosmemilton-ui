@@ -75,32 +75,30 @@ export const TreeBranch: FC<TreeBranchProps> = ({
             selectedIds={selectedIds}
             onSelectionChange={onSelectionChange}
           />
-          {expandedNodes.has(node.id) &&
-            node.children &&
-            node.children.length > 0 && (
-              <TreeBranch
-                nodes={node.children}
-                level={level + 1}
-                expandedNodes={expandedNodes}
-                highlightedNode={highlightedNode}
-                activeId={activeId}
-                dropTargetId={dropTargetId}
-                onToggle={onToggle}
-                onAdd={onAdd}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onSelect={onSelect}
-                onDragStart={onDragStart}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-                onDragEnd={onDragEnd}
-                draggable={draggable}
-                maxDepth={maxDepth}
-                selectionMode={selectionMode}
-                selectedIds={selectedIds}
-                onSelectionChange={onSelectionChange}
-              />
-            )}
+          {expandedNodes.has(node.id) && node.children && node.children.length > 0 && (
+            <TreeBranch
+              nodes={node.children}
+              level={level + 1}
+              expandedNodes={expandedNodes}
+              highlightedNode={highlightedNode}
+              activeId={activeId}
+              dropTargetId={dropTargetId}
+              onToggle={onToggle}
+              onAdd={onAdd}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onSelect={onSelect}
+              onDragStart={onDragStart}
+              onDragOver={onDragOver}
+              onDrop={onDrop}
+              onDragEnd={onDragEnd}
+              draggable={draggable}
+              maxDepth={maxDepth}
+              selectionMode={selectionMode}
+              selectedIds={selectedIds}
+              onSelectionChange={onSelectionChange}
+            />
+          )}
         </Fragment>
       ))}
     </>

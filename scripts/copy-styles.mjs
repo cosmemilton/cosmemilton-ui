@@ -10,13 +10,9 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const stylesDir = join(root, "src", "styles");
 const target = join(root, "dist", "styles.css");
 
-const files = (await readdir(stylesDir))
-  .filter((name) => name.endsWith(".css"))
-  .sort();
+const files = (await readdir(stylesDir)).filter((name) => name.endsWith(".css")).sort();
 
-const parts = await Promise.all(
-  files.map((name) => readFile(join(stylesDir, name), "utf8")),
-);
+const parts = await Promise.all(files.map((name) => readFile(join(stylesDir, name), "utf8")));
 
 await mkdir(dirname(target), { recursive: true });
 await writeFile(target, parts.join(""));

@@ -27,10 +27,7 @@ export function CmThemeScript({
       const preferredThemeName = stored || ${fallbackThemeName};
       const themes = ${JSON.stringify(
         Object.fromEntries(
-          Object.entries(themeRegistry).map(([name, theme]) => [
-            name,
-            themeToCSSVars(theme),
-          ]),
+          Object.entries(themeRegistry).map(([name, theme]) => [name, themeToCSSVars(theme)]),
         ),
       )};
       const themeName = themes[preferredThemeName] ? preferredThemeName : ${fallbackThemeName};
