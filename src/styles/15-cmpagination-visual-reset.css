@@ -1,0 +1,40 @@
+/* CmPagination visual reset */
+.cm-pagination {
+  flex-wrap: wrap
+}
+
+.cm-pagination__page {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-foreground);
+  font: inherit;
+  cursor: pointer
+}
+
+.cm-pagination__page:hover:not(.cm-pagination__page--current) {
+  background: var(--color-muted)
+}
+
+.cm-pagination__page:focus {
+  outline: none
+}
+
+.cm-pagination__page:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+
+.cm-pagination__page--current {
+  border-color: var(--color-primary)
+}
+
+.cm-pagination__summary {
+  color: var(--color-muted-foreground);
+  font-size: .875rem;
+  line-height: 1.25rem;
+  white-space: nowrap
+}
+

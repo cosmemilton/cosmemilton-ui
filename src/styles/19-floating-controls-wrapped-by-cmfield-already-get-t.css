@@ -1,0 +1,5 @@
+/* Floating controls wrapped by CmField already get their label space from CmField. */
+.cm-floating-field--unlabeled {
+  padding-top: 0
+}
+

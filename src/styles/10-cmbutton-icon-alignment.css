@@ -1,0 +1,27 @@
+/* CmButton icon alignment */
+.cm-button {
+  vertical-align: middle
+}
+
+.cm-button__icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  line-height: 1
+}
+
+.cm-button__icon>svg {
+  width: 1rem;
+  height: 1rem;
+  display: block
+}
+
+.cm-button__spinner {
+  width: 1rem;
+  height: 1rem;
+  animation: cm-spin 1s linear infinite
+}
+

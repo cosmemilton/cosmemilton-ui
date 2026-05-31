@@ -1,0 +1,35 @@
+/* CmDrawer visual reset */
+.cm-drawer__panel {
+  color: var(--color-card-foreground, var(--color-foreground))
+}
+
+.cm-drawer__close {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-full);
+  padding: .25rem .75rem;
+  color: var(--color-muted-foreground);
+  font: inherit;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease
+}
+
+.cm-drawer__close:hover {
+  background: var(--color-muted);
+  color: var(--color-foreground)
+}
+
+.cm-drawer__close:focus {
+  outline: none
+}
+
+.cm-drawer__close:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+

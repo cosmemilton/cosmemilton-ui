@@ -1,0 +1,27 @@
+/* CmDialog visual reset */
+.cm-dialog__panel {
+  color: var(--color-card-foreground, var(--color-foreground))
+}
+
+.cm-dialog__close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer
+}
+
+.cm-dialog__close:hover {
+  background: var(--color-muted);
+  color: var(--color-foreground)
+}
+
+.cm-dialog__close:focus {
+  outline: none
+}
+
+.cm-dialog__close:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+

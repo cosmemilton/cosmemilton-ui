@@ -1,0 +1,60 @@
+/* CmInputGroup owns the outer border; nested inputs should become flush. */
+.cm-input-group {
+  min-height: 2.5rem;
+  background: var(--color-card);
+  transition: border-color .2s ease, box-shadow .2s ease
+}
+
+.cm-input-group:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary)
+}
+
+.cm-input-group__control {
+  min-width: 0;
+  padding: 0;
+  background: transparent
+}
+
+.cm-input-group__control>.cm-floating-field {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 2.5rem;
+  align-items: center;
+  padding-top: 0
+}
+
+.cm-input-group .cm-floating-field__control {
+  width: 100%;
+  height: 100%;
+  min-height: 2.5rem;
+  align-items: center;
+  border-bottom: 0;
+  padding-bottom: 0
+}
+
+.cm-input-group .cm-floating-field__input-wrap {
+  display: flex;
+  height: 100%;
+  min-height: 2.5rem;
+  align-items: center
+}
+
+.cm-input-group .cm-input__control {
+  box-sizing: border-box;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding-block: 0.625rem;
+  padding-inline: .75rem;
+  line-height: 1.25rem
+}
+
+.cm-input-group__addon:first-child {
+  border-right: 1px solid var(--color-border)
+}
+
+.cm-input-group__addon:last-child {
+  border-left: 1px solid var(--color-border)
+}
+

@@ -1,0 +1,157 @@
+/* CmDataTable visual reset */
+.cm-data-table {
+  background: var(--color-card);
+  color: var(--color-card-foreground, var(--color-foreground))
+}
+
+.cm-data-table__head,
+.cm-data-table__foot {
+  background: color-mix(in srgb, var(--color-muted) 64%, var(--color-card))
+}
+
+.cm-data-table__header {
+  color: var(--color-muted-foreground)
+}
+
+.cm-data-table__header--sortable:hover {
+  color: var(--color-foreground)
+}
+
+.cm-data-table__body {
+  background: var(--color-card);
+  color: var(--color-card-foreground, var(--color-foreground))
+}
+
+.cm-data-table__row--zebra {
+  background: color-mix(in srgb, var(--color-muted) 28%, transparent)
+}
+
+.cm-data-table__row--hoverable:hover {
+  background: color-mix(in srgb, var(--color-muted) 46%, transparent)
+}
+
+.cm-data-table__row--selected {
+  background: color-mix(in srgb, var(--color-primary) 22%, var(--color-card));
+  color: var(--color-foreground);
+  box-shadow: inset 3px 0 0 var(--color-primary)
+}
+
+.cm-data-table__column-button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-muted-foreground)
+}
+
+.cm-data-table__column-button:hover {
+  background: var(--color-muted);
+  color: var(--color-foreground)
+}
+
+.cm-data-table__page-size {
+  appearance: none;
+  background: var(--color-card);
+  color: var(--color-foreground)
+}
+
+.cm-data-table__page-size option {
+  background: var(--color-card);
+  color: var(--color-foreground)
+}
+
+.cm-data-table__page-size:focus,
+.cm-data-table__column-button:focus {
+  outline: none
+}
+
+.cm-data-table__page-size:focus-visible,
+.cm-data-table__column-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+
+.cm-data-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .375rem
+}
+
+.cm-data-table-detail-layout {
+  --cm-data-table-detail-gap: 1rem;
+  --cm-data-table-detail-panel-width: 280px;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--cm-data-table-detail-gap)
+}
+
+.cm-data-table-detail__table-wrap {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 auto
+}
+
+.cm-data-table-detail__panel {
+  position: relative;
+  z-index: 4;
+  width: var(--cm-data-table-detail-panel-width);
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 0 var(--cm-data-table-detail-panel-width);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  color: var(--color-card-foreground, var(--color-foreground));
+  box-shadow: var(--shadow-sm)
+}
+
+.cm-data-table-detail__tab,
+.cm-data-table-detail__ribbon,
+.cm-data-table-detail__bridge {
+  position: absolute;
+  pointer-events: none;
+  transition: top .2s ease, height .2s ease, width .2s ease, left .2s ease
+}
+
+.cm-data-table-detail__tab {
+  z-index: 5;
+  border-radius: 999px 0 0 999px;
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm)
+}
+
+.cm-data-table-detail__ribbon {
+  left: 0;
+  right: 0;
+  z-index: 3;
+  border-block: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent)
+}
+
+.cm-data-table-detail__bridge {
+  right: calc(var(--cm-data-table-detail-gap) * -1);
+  z-index: 3;
+  width: var(--cm-data-table-detail-gap);
+  background: var(--color-primary)
+}
+
+@media (max-width: 768px) {
+  .cm-data-table-detail-layout {
+    flex-direction: column;
+    gap: 1rem
+  }
+
+  .cm-data-table-detail__table-wrap,
+  .cm-data-table-detail__panel {
+    width: 100%;
+    flex-basis: auto
+  }
+
+  .cm-data-table-detail__tab,
+  .cm-data-table-detail__ribbon,
+  .cm-data-table-detail__bridge {
+    display: none
+  }
+}
+

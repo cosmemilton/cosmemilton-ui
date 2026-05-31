@@ -1,0 +1,41 @@
+/* CmSeparator spacing variants keep the default md margins while allowing compact panels. */
+.cm-separator--horizontal.cm-separator--spacing-none {
+  margin: 0
+}
+
+.cm-separator--horizontal.cm-separator--spacing-xs {
+  margin: .125rem 0
+}
+
+.cm-separator--horizontal.cm-separator--spacing-sm {
+  margin: .5rem 0
+}
+
+.cm-separator--horizontal.cm-separator--spacing-md {
+  margin: .75rem 0
+}
+
+.cm-separator--horizontal.cm-separator--spacing-lg {
+  margin: 1rem 0
+}
+
+.cm-separator--vertical.cm-separator--spacing-none {
+  margin: 0
+}
+
+.cm-separator--vertical.cm-separator--spacing-xs {
+  margin: 0 .25rem
+}
+
+.cm-separator--vertical.cm-separator--spacing-sm {
+  margin: 0 .375rem
+}
+
+.cm-separator--vertical.cm-separator--spacing-md {
+  margin: 0 .5rem
+}
+
+.cm-separator--vertical.cm-separator--spacing-lg {
+  margin: 0 .75rem
+}
+

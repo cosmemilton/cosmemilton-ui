@@ -1,0 +1,6 @@
+/* Detail panels own their inset; renderSelectedRowDetail can focus on content. */
+.cm-data-table-detail__panel {
+  box-sizing: border-box;
+  padding: var(--cm-data-table-detail-panel-padding, .7rem .85rem)
+}
+

@@ -1,0 +1,23 @@
+/* CmThemeToggle must keep active text readable after button base styles. */
+.cm-theme-toggle .cm-theme-toggle-option {
+  background: transparent;
+  color: var(--color-muted-foreground);
+  filter: none
+}
+
+.cm-theme-toggle .cm-theme-toggle-option:hover {
+  background: var(--color-card);
+  color: var(--color-foreground);
+  filter: none
+}
+
+.cm-theme-toggle .cm-theme-toggle-option.cm-theme-toggle-option-active,
+.cm-theme-toggle .cm-theme-toggle-option.cm-theme-toggle-option-active:hover,
+.cm-theme-toggle .cm-theme-toggle-option[aria-current="true"],
+.cm-theme-toggle .cm-theme-toggle-option[aria-current="true"]:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  box-shadow: var(--shadow-sm);
+  filter: none
+}
+

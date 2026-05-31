@@ -1,0 +1,65 @@
+/* CmIconBadge provides compact circular emphasis for decorative icons. */
+.cm-icon-badge {
+  --cm-icon-badge-tone: var(--color-muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--cm-icon-badge-tone) 14%, transparent);
+  color: var(--cm-icon-badge-tone)
+}
+
+.cm-icon-badge>svg {
+  width: 60%;
+  height: 60%;
+  flex: 0 0 auto
+}
+
+.cm-icon-badge--xs {
+  width: 1.35rem;
+  height: 1.35rem
+}
+
+.cm-icon-badge--sm {
+  width: 1.75rem;
+  height: 1.75rem
+}
+
+.cm-icon-badge--md {
+  width: 2rem;
+  height: 2rem
+}
+
+.cm-icon-badge--tone-default {
+  --cm-icon-badge-tone: var(--color-muted-foreground)
+}
+
+.cm-icon-badge--tone-primary {
+  --cm-icon-badge-tone: var(--color-primary)
+}
+
+.cm-icon-badge--tone-secondary {
+  --cm-icon-badge-tone: var(--color-secondary)
+}
+
+.cm-icon-badge--tone-accent {
+  --cm-icon-badge-tone: var(--color-accent)
+}
+
+.cm-icon-badge--tone-success {
+  --cm-icon-badge-tone: var(--color-success)
+}
+
+.cm-icon-badge--tone-warning {
+  --cm-icon-badge-tone: var(--color-warning)
+}
+
+.cm-icon-badge--tone-danger {
+  --cm-icon-badge-tone: var(--color-danger)
+}
+
+.cm-icon-badge--tone-info {
+  --cm-icon-badge-tone: var(--color-info)
+}
+

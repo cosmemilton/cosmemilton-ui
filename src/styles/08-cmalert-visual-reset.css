@@ -1,0 +1,84 @@
+/* CmAlert visual reset */
+.cm-alert {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: .75rem;
+  border: 1px solid color-mix(in srgb, var(--cm-alert-tone) 48%, var(--color-border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--cm-alert-tone) 9%, var(--color-card));
+  padding: 1rem;
+  color: var(--color-foreground)
+}
+
+.cm-alert__indicator {
+  display: inline-block;
+  width: .5rem;
+  height: .5rem;
+  flex: 0 0 auto;
+  margin-top: .375rem;
+  border-radius: 9999px;
+  background: var(--cm-alert-tone)
+}
+
+.cm-alert__body {
+  display: flex;
+  flex: 1 1 0%;
+  min-width: 0;
+  flex-direction: column;
+  gap: .375rem
+}
+
+.cm-alert__title {
+  margin: 0;
+  color: var(--color-foreground);
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 700
+}
+
+.cm-alert__description {
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: .875rem;
+  line-height: 1.5
+}
+
+.cm-alert__action {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start
+}
+
+.cm-alert__close {
+  appearance: none;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-muted-foreground);
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease
+}
+
+.cm-alert__close:hover {
+  background: color-mix(in srgb, var(--cm-alert-tone) 12%, transparent);
+  color: var(--color-foreground)
+}
+
+.cm-alert__close:focus {
+  outline: none
+}
+
+.cm-alert__close:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+

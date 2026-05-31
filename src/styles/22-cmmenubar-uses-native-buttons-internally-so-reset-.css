@@ -1,0 +1,43 @@
+/* CmMenubar uses native buttons internally, so reset browser chrome. */
+.cm-menubar {
+  gap: .75rem
+}
+
+.cm-menubar__nav {
+  min-width: 0;
+  flex-wrap: wrap
+}
+
+.cm-menubar__item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: none
+}
+
+.cm-menubar__item:hover,
+.cm-menubar__item--active {
+  background: var(--color-card);
+  color: var(--color-foreground)
+}
+
+.cm-menubar__item:focus {
+  outline: none
+}
+
+.cm-menubar__item:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-ring)
+}
+
+.cm-menubar__item:disabled {
+  cursor: not-allowed;
+  opacity: .5
+}
+
+.cm-menubar__trailing {
+  flex-shrink: 0
+}
+

@@ -1,0 +1,127 @@
+/* CosmeMilton UI layout primitives */
+.cm-row,
+.cm-col,
+.cm-stack {
+  display: flex;
+  gap: var(--cm-layout-gap, var(--space-lg, 1rem));
+  min-width: 0;
+}
+
+.cm-row {
+  flex-direction: row;
+}
+
+.cm-col {
+  flex-direction: column;
+}
+
+.cm-stack {
+  flex-direction: var(--cm-stack-direction-base, column);
+}
+
+.cm-layout-wrap {
+  flex-wrap: wrap;
+}
+
+.cm-layout-full {
+  width: 100%;
+}
+
+.cm-row[data-align="start"],
+.cm-col[data-align="start"],
+.cm-stack[data-align="start"] {
+  align-items: flex-start;
+}
+
+.cm-row[data-align="center"],
+.cm-col[data-align="center"],
+.cm-stack[data-align="center"] {
+  align-items: center;
+}
+
+.cm-row[data-align="end"],
+.cm-col[data-align="end"],
+.cm-stack[data-align="end"] {
+  align-items: flex-end;
+}
+
+.cm-row[data-align="stretch"],
+.cm-col[data-align="stretch"],
+.cm-stack[data-align="stretch"] {
+  align-items: stretch;
+}
+
+.cm-row[data-align="baseline"],
+.cm-col[data-align="baseline"],
+.cm-stack[data-align="baseline"] {
+  align-items: baseline;
+}
+
+.cm-row[data-justify="start"],
+.cm-col[data-justify="start"],
+.cm-stack[data-justify="start"] {
+  justify-content: flex-start;
+}
+
+.cm-row[data-justify="center"],
+.cm-col[data-justify="center"],
+.cm-stack[data-justify="center"] {
+  justify-content: center;
+}
+
+.cm-row[data-justify="end"],
+.cm-col[data-justify="end"],
+.cm-stack[data-justify="end"] {
+  justify-content: flex-end;
+}
+
+.cm-row[data-justify="between"],
+.cm-col[data-justify="between"],
+.cm-stack[data-justify="between"] {
+  justify-content: space-between;
+}
+
+.cm-row[data-justify="around"],
+.cm-col[data-justify="around"],
+.cm-stack[data-justify="around"] {
+  justify-content: space-around;
+}
+
+.cm-row[data-justify="evenly"],
+.cm-col[data-justify="evenly"],
+.cm-stack[data-justify="evenly"] {
+  justify-content: space-evenly;
+}
+
+.cm-container {
+  width: 100%;
+  max-width: var(--cm-container-max, 72rem);
+  margin-inline: auto;
+  padding-inline: var(--cm-container-padding, clamp(1rem, 3vw, 2.5rem));
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .cm-stack {
+    flex-direction: var(--cm-stack-direction-sm, var(--cm-stack-direction-base, column));
+  }
+}
+
+@media (min-width: 768px) {
+  .cm-stack {
+    flex-direction: var(--cm-stack-direction-md, var(--cm-stack-direction-sm, var(--cm-stack-direction-base, column)));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cm-stack {
+    flex-direction: var(--cm-stack-direction-lg, var(--cm-stack-direction-md, var(--cm-stack-direction-sm, var(--cm-stack-direction-base, column))));
+  }
+}
+
+@media (min-width: 1280px) {
+  .cm-stack {
+    flex-direction: var(--cm-stack-direction-xl, var(--cm-stack-direction-lg, var(--cm-stack-direction-md, var(--cm-stack-direction-sm, var(--cm-stack-direction-base, column)))));
+  }
+}
+

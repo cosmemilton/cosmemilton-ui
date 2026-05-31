@@ -1,0 +1,28 @@
+/* Form typography should not inherit browser margins from h2/p. */
+.cm-field__header {
+  display: flex;
+  flex-direction: column;
+  gap: .125rem
+}
+
+.cm-field__label-row {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: .375rem
+}
+
+.cm-field__label-hint {
+  min-width: 0;
+  color: var(--color-muted-foreground);
+  font-size: .75rem;
+  line-height: 1rem
+}
+
+.cm-field__description,
+.cm-field__error,
+.cm-form__title,
+.cm-form__description {
+  margin: 0
+}
+
