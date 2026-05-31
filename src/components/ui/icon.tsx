@@ -2,7 +2,7 @@ import { Icon as IconifyIcon } from "@iconify/react";
 import type { CSSProperties } from "react";
 import { cn } from "../../lib/utils.js";
 
-interface IconProps {
+export interface CmIconProps {
   name: string;
   className?: string;
   size?: number | string;
@@ -22,7 +22,7 @@ interface IconProps {
  * <CmIcon name="ph:address-book-fill" />
  * <CmIcon name="lucide:mail" />
  */
-export function CmIcon({ name, className, size = 20, color, style, title, "aria-hidden": ariaHidden }: IconProps) {
+export function CmIcon({ name, className, size = 20, color, style, title, "aria-hidden": ariaHidden }: CmIconProps) {
   const accessibilityProps = title
     ? { role: "img", "aria-label": title, "aria-hidden": ariaHidden }
     : { "aria-hidden": ariaHidden };

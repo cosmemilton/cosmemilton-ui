@@ -1,30 +1,33 @@
-import { ReactNode } from "react";
+import {
+  forwardRef,
+  type ElementType,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "../../lib/utils.js";
 
-type ItemProps = {
+export type CmItemProps = HTMLAttributes<HTMLElement> & {
   title: ReactNode;
   description?: ReactNode;
   meta?: ReactNode;
-  className?: string;
-  onClick?: () => void;
 };
 
-export function CmItem({ title, description, meta, className, onClick }: ItemProps) {
-  const Element = onClick ? "button" : "div";
+export const CmItem = forwardRef<HTMLElement, CmItemProps>(function CmItem(
+  { title, description, meta, className, onClick, ...rest },
+  ref,
+) {
+  const Element: ElementType = onClick ? "button" : "div";
+  const elementProps: Record<string, unknown> = {
+    ref,
+    type: onClick ? "button" : undefined,
+    onClick,
+    className: cn("cm-item", onClick && "cm-item--interactive", className),
+    ...rest,
+  };
   return (
-    <Element
-      type={onClick ? "button" : undefined}
-      onClick={onClick}
-      className={cn(
-        "cm-item",
-        onClick && "cm-item--interactive",
-        className,
-      )}
-    >
+    <Element {...elementProps}>
       <div className="cm-item__body">
-        <span className="cm-item__title">
-          {title}
-        </span>
+        <span className="cm-item__title">{title}</span>
         {description ? (
           <span className="cm-item__description">{description}</span>
         ) : null}
@@ -32,5 +35,5 @@ export function CmItem({ title, description, meta, className, onClick }: ItemPro
       {meta ? <span className="cm-item__meta">{meta}</span> : null}
     </Element>
   );
-}
+});
 CmItem.displayName = "CmItem";

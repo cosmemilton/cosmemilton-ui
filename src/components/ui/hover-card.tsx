@@ -4,7 +4,7 @@ import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } 
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
 
-type HoverCardProps = {
+export type CmHoverCardProps = {
   trigger: ReactNode;
   children: ReactNode;
   className?: string;
@@ -13,7 +13,7 @@ type HoverCardProps = {
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-export function CmHoverCard({ trigger, children, className }: HoverCardProps) {
+export function CmHoverCard({ trigger, children, className }: CmHoverCardProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const closeTimerRef = useRef<number | null>(null);

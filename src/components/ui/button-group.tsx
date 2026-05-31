@@ -1,10 +1,9 @@
-import { forwardRef, type CSSProperties, type ReactNode } from "react";
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmSizeValue, type CmSpacing } from "./types.js";
 
-type ButtonGroupProps = {
-  children: ReactNode;
-  className?: string;
+export type CmButtonGroupProps = HTMLAttributes<HTMLDivElement> & {
+  children?: ReactNode;
   fullWidth?: boolean;
   gap?: CmSpacing | string | number;
   orientation?: "horizontal" | "vertical";
@@ -20,15 +19,15 @@ const gapMap = {
 
 type ButtonGroupStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
-function resolveGap(gap: ButtonGroupProps["gap"]) {
+function resolveGap(gap: CmButtonGroupProps["gap"]) {
   if (gap === undefined) return gapMap.none;
   if (typeof gap === "number") return cmSizeValue(gap);
   return gapMap[gap as keyof typeof gapMap] ?? gap;
 }
 
-export const CmButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
+export const CmButtonGroup = forwardRef<HTMLDivElement, CmButtonGroupProps>(
   function CmButtonGroup(
-    { children, className, fullWidth = false, gap = "none", orientation = "horizontal" },
+    { children, className, fullWidth = false, gap = "none", orientation = "horizontal", style, ...rest },
     ref,
   ) {
   const isVertical = orientation === "vertical";
@@ -46,7 +45,8 @@ export const CmButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
         fullWidth && "cm-button-group--full-width",
         className,
       )}
-      style={{ "--cm-button-group-gap": resolvedGap } as ButtonGroupStyle}
+      style={{ "--cm-button-group-gap": resolvedGap, ...style } as ButtonGroupStyle}
+      {...rest}
     >
       {children}
     </div>

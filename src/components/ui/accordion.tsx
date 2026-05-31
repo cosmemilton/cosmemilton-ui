@@ -10,13 +10,13 @@ type AccordionItem = {
   content: string | ReactNode;
 };
 
-type AccordionProps = {
+export type CmAccordionProps = {
   items: AccordionItem[];
   defaultOpen?: string;
   className?: string;
 };
 
-export function CmAccordion({ items, defaultOpen, className }: AccordionProps) {
+export function CmAccordion({ items, defaultOpen, className }: CmAccordionProps) {
   const [openId, setOpenId] = useState<string | null>(defaultOpen ?? null);
 
   return (

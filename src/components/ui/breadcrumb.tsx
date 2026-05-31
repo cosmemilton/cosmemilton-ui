@@ -12,13 +12,13 @@ type CmLinkComponentProps = {
   children: ReactNode;
 };
 
-type BreadcrumbProps = {
+export type CmBreadcrumbProps = {
   items: CmBreadcrumbItem[];
   className?: string;
   linkComponent?: ComponentType<CmLinkComponentProps>;
 };
 
-export const CmBreadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
+export const CmBreadcrumb = forwardRef<HTMLElement, CmBreadcrumbProps>(
   function CmBreadcrumb({ items, className, linkComponent: LinkComponent }, ref) {
   return (
     <nav ref={ref} aria-label="breadcrumb" className={cn("cm-breadcrumb", className)}>

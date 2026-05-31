@@ -14,7 +14,7 @@ type PopoverTriggerControls = {
   ref: (element: HTMLButtonElement | null) => void;
 };
 
-type PopoverProps = {
+export type CmPopoverProps = {
   trigger: (controls: PopoverTriggerControls) => ReactNode;
   children: ReactNode | ((controls: { close: () => void }) => ReactNode);
   open?: boolean;
@@ -23,7 +23,7 @@ type PopoverProps = {
   className?: string;
 };
 
-export function CmPopover({ trigger, children, open: controlledOpen, onOpenChange, align = "center", className }: PopoverProps) {
+export function CmPopover({ trigger, children, open: controlledOpen, onOpenChange, align = "center", className }: CmPopoverProps) {
   const [open, setOpen] = useControllableState<boolean>({
     value: controlledOpen,
     defaultValue: false,

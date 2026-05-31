@@ -21,7 +21,7 @@ export type CmMultiSelectOption = {
   label: string;
 };
 
-type MultiSelectProps = {
+export type CmMultiSelectProps = {
   value: string[];
   onChange: (value: string[]) => void;
   options: CmMultiSelectOption[];
@@ -83,7 +83,7 @@ export function CmMultiSelect({
   required,
   disabled,
   className,
-}: MultiSelectProps) {
+}: CmMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});

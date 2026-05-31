@@ -1,5 +1,6 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmVariants } from "../../lib/variants.js";
 import {
   cmDensityClass,
   type CmDensity,
@@ -11,7 +12,7 @@ type CardVariant = "surface" | "soft" | "outline" | "ghost";
 type CardPadding = Exclude<CmSpacing, "xs">;
 type CardTone = CmTone;
 
-type CardProps = HTMLAttributes<HTMLDivElement> & {
+export type CmCardProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode;
   className?: string;
   padding?: CardPadding;
@@ -28,25 +29,37 @@ type CardProps = HTMLAttributes<HTMLDivElement> & {
   density?: CmDensity;
 };
 
-const paddingMap: Record<NonNullable<CardProps["padding"]>, string> = {
+const paddingMap: Record<NonNullable<CmCardProps["padding"]>, string> = {
   none: "cm-card--padding-none",
   sm: "cm-card--padding-sm",
   md: "cm-card--padding-md",
   lg: "cm-card--padding-lg",
 };
 
-const toneMap: Record<CardTone, string> = {
-  default: "cm-card--tone-default",
-  primary: "cm-card--tone-primary",
-  secondary: "cm-card--tone-secondary",
-  accent: "cm-card--tone-accent",
-  success: "cm-card--tone-success",
-  warning: "cm-card--tone-warning",
-  danger: "cm-card--tone-danger",
-  info: "cm-card--tone-info",
-};
+const cardVariants = cmVariants({
+  base: "cm-card",
+  variants: {
+    variant: {
+      surface: "cm-card--surface",
+      soft: "cm-card--soft",
+      outline: "cm-card--outline",
+      ghost: "cm-card--ghost",
+    },
+    tone: {
+      default: "cm-card--tone-default",
+      primary: "cm-card--tone-primary",
+      secondary: "cm-card--tone-secondary",
+      accent: "cm-card--tone-accent",
+      success: "cm-card--tone-success",
+      warning: "cm-card--tone-warning",
+      danger: "cm-card--tone-danger",
+      info: "cm-card--tone-info",
+    },
+  },
+  defaultVariants: { variant: "surface", tone: "default" },
+});
 
-export const CmCard = forwardRef<HTMLDivElement, CardProps>(function CmCard(
+export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
   {
     bodyPadding,
     children,
@@ -75,9 +88,7 @@ export const CmCard = forwardRef<HTMLDivElement, CardProps>(function CmCard(
     <div
       ref={ref}
       className={cn(
-        "cm-card",
-        `cm-card--${variant}`,
-        toneMap[tone],
+        cardVariants({ variant, tone }),
         elevated ? "cm-card--elevated" : "cm-card--flat",
         interactive && "cm-card--interactive",
         accent !== "none" && `cm-card--accent-${accent}`,

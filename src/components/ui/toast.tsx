@@ -42,7 +42,7 @@ export function useCmToast() {
   return ctx;
 }
 
-type ToastNoticeProps = {
+export type CmToastNoticeProps = {
   title?: string;
   description?: string;
   tone?: CmToastTone;
@@ -51,7 +51,7 @@ type ToastNoticeProps = {
   action?: ReactNode;
 };
 
-export function CmToastNotice({ title, description, tone = "info", duration }: ToastNoticeProps) {
+export function CmToastNotice({ title, description, tone = "info", duration }: CmToastNoticeProps) {
   const { toast } = useCmToast();
 
   useEffect(() => {

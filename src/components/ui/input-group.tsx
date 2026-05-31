@@ -1,17 +1,16 @@
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
-type InputGroupProps = {
+export type CmInputGroupProps = HTMLAttributes<HTMLDivElement> & {
   prefix?: ReactNode;
   suffix?: ReactNode;
   children: ReactNode;
-  className?: string;
 };
 
-export const CmInputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
-  function CmInputGroup({ prefix, suffix, children, className }, ref) {
+export const CmInputGroup = forwardRef<HTMLDivElement, CmInputGroupProps>(
+  function CmInputGroup({ prefix, suffix, children, className, ...rest }, ref) {
   return (
-    <div ref={ref} className={cn("cm-input-group", className)}>
+    <div ref={ref} className={cn("cm-input-group", className)} {...rest}>
       {prefix ? (
         <span className="cm-input-group__addon">
           {prefix}

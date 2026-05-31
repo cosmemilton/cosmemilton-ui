@@ -1,50 +1,53 @@
-import { forwardRef, type ReactNode } from "react";
-import { cn } from "../../lib/utils.js";
+import {
+  forwardRef,
+  type ElementType,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
+import { cmVariants, type CmVariantProps } from "../../lib/variants.js";
+import { Slot } from "../../lib/slot.js";
 import type { CmTone } from "./types.js";
 
-type BadgeVariant = "solid" | "soft" | "outline";
 export type CmBadgeTone = CmTone;
 
-type BadgeProps = {
-  children: ReactNode;
-  className?: string;
-  variant?: BadgeVariant;
-  tone?: CmBadgeTone;
-};
+const badgeVariants = cmVariants({
+  base: "cm-badge",
+  variants: {
+    variant: {
+      solid: "cm-badge--solid",
+      soft: "cm-badge--soft",
+      outline: "cm-badge--outline",
+    },
+    tone: {
+      default: "cm-badge--default",
+      primary: "cm-badge--primary",
+      secondary: "cm-badge--secondary",
+      accent: "cm-badge--accent",
+      success: "cm-badge--success",
+      warning: "cm-badge--warning",
+      danger: "cm-badge--danger",
+      info: "cm-badge--info",
+    },
+  },
+  defaultVariants: { variant: "soft", tone: "default" },
+});
 
-const toneStyles: Record<CmBadgeTone, string> = {
-  default: "cm-badge--default",
-  primary: "cm-badge--primary",
-  secondary: "cm-badge--secondary",
-  accent: "cm-badge--accent",
-  success: "cm-badge--success",
-  warning: "cm-badge--warning",
-  danger: "cm-badge--danger",
-  info: "cm-badge--info",
-};
+export type CmBadgeProps = HTMLAttributes<HTMLSpanElement> &
+  CmVariantProps<typeof badgeVariants> & {
+    children?: ReactNode;
+    /** Render onto the provided child element instead of a `<span>`. */
+    asChild?: boolean;
+  };
 
-const variantStyles: Record<BadgeVariant, string> = {
-  solid: "cm-badge--solid",
-  soft: "cm-badge--soft",
-  outline: "cm-badge--outline",
-};
-
-export const CmBadge = forwardRef<HTMLSpanElement, BadgeProps>(function CmBadge(
-  { children, className, variant = "soft", tone = "default" },
+export const CmBadge = forwardRef<HTMLSpanElement, CmBadgeProps>(function CmBadge(
+  { asChild = false, children, className, variant, tone, ...rest },
   ref,
 ) {
+  const Comp: ElementType = asChild ? Slot : "span";
   return (
-    <span
-      ref={ref}
-      className={cn(
-        "cm-badge",
-        toneStyles[tone] ?? toneStyles["default"],
-        variantStyles[variant],
-        className,
-      )}
-    >
+    <Comp ref={ref} className={badgeVariants({ variant, tone, className })} {...rest}>
       {children}
-    </span>
+    </Comp>
   );
 });
 CmBadge.displayName = "CmBadge";

@@ -4,13 +4,13 @@ import { cmSizeValue, type CmSpacing } from "./types.js";
 
 type SeparatorStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
-type SeparatorProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
+export type CmSeparatorProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   orientation?: "horizontal" | "vertical";
   spacing?: CmSpacing;
   length?: string | number;
 };
 
-export const CmSeparator = forwardRef<HTMLSpanElement, SeparatorProps>(
+export const CmSeparator = forwardRef<HTMLSpanElement, CmSeparatorProps>(
   function CmSeparator(
     { orientation = "horizontal", spacing = "md", length, className, style, ...props },
     ref,

@@ -1,11 +1,11 @@
 import { LabelHTMLAttributes, forwardRef } from "react";
 import { cn } from "../../lib/utils.js";
 
-type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
+export type CmLabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
   optional?: boolean;
 };
 
-export const CmLabel = forwardRef<HTMLLabelElement, LabelProps>(({ className, optional, children, ...props }, ref) => (
+export const CmLabel = forwardRef<HTMLLabelElement, CmLabelProps>(({ className, optional, children, ...props }, ref) => (
   <label
     ref={ref}
     className={cn("cm-label", className)}

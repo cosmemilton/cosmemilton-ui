@@ -16,7 +16,7 @@ import { useFocusTrap } from "../../hooks/use-focus-trap.js";
 
 type DrawerSide = "left" | "right" | "bottom" | "top";
 
-type DrawerProps = {
+export type CmDrawerProps = {
   open: boolean;
   onClose: () => void;
   side?: DrawerSide;
@@ -61,7 +61,7 @@ function readDrawerPortalTheme(element: HTMLElement): DrawerPortalStyle {
   }, {});
 }
 
-export function CmDrawer({ open, onClose, side = "right", children, className, title }: DrawerProps) {
+export function CmDrawer({ open, onClose, side = "right", children, className, title }: CmDrawerProps) {
   const sourceRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [portalStyle, setPortalStyle] = useState<DrawerPortalStyle>({});

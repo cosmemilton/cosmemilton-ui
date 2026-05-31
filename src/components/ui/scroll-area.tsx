@@ -3,13 +3,13 @@
 import { forwardRef, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
-type ScrollAreaProps = {
+export type CmScrollAreaProps = {
   children: ReactNode;
   className?: string;
   height?: number | string;
 };
 
-export const CmScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
+export const CmScrollArea = forwardRef<HTMLDivElement, CmScrollAreaProps>(
   function CmScrollArea({ children, className, height = 320 }, ref) {
   const maxHeight = typeof height === "number" ? `${height}px` : height;
 

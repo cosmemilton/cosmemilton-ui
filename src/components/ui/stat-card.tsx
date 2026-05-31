@@ -1,7 +1,7 @@
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 
-type StatCardProps = {
+export type CmStatCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title: string;
   value: string | number;
   description?: string;
@@ -10,11 +10,13 @@ type StatCardProps = {
     value: number;
     label: string;
   };
-  className?: string;
 };
 
-export const CmStatCard = forwardRef<HTMLDivElement, StatCardProps>(
-  function CmStatCard({ title, value, description, icon, trend, className }, ref) {
+export const CmStatCard = forwardRef<HTMLDivElement, CmStatCardProps>(
+  function CmStatCard(
+    { title, value, description, icon, trend, className, ...rest },
+    ref,
+  ) {
   const isPositiveTrend = trend && trend.value > 0;
   const isNegativeTrend = trend && trend.value < 0;
 
@@ -25,6 +27,7 @@ export const CmStatCard = forwardRef<HTMLDivElement, StatCardProps>(
         "cm-stat-card",
         className
       )}
+      {...rest}
     >
       <div className="cm-stat-card-header">
         <span className="cm-stat-card-title">

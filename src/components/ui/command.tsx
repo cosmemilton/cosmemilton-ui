@@ -14,7 +14,7 @@ export type CmCommandItem = {
   onSelect?: () => void;
 };
 
-type CommandProps = {
+export type CmCommandProps = {
   items: CmCommandItem[];
   placeholder?: string;
   title?: string;
@@ -30,7 +30,7 @@ export function CmCommand({
   description = "Pesquise e execute ações rapidamente",
   emptyMessage = "Nenhum comando encontrado.",
   trigger,
-}: CommandProps) {
+}: CmCommandProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);

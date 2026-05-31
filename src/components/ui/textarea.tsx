@@ -3,7 +3,7 @@
 import { forwardRef, ReactNode, TextareaHTMLAttributes, useState } from "react";
 import { cn } from "../../lib/utils.js";
 
-type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+export type CmTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string;
   error?: string;
   success?: boolean;
@@ -14,7 +14,7 @@ type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   endButton?: ReactNode;
 };
 
-export const CmTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
   (
     {
       className,

@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import { CmDialog } from "./dialog.js";
 import { CmButton } from "./button.js";
 
-type AlertDialogProps = {
+export type CmAlertDialogProps = {
   title: string;
   description?: string;
   confirmLabel?: string;
@@ -28,11 +28,11 @@ export function CmAlertDialog({
   onConfirm,
   tone = "info",
   trigger,
-}: AlertDialogProps) {
+}: CmAlertDialogProps) {
   const [open, setOpen] = useState(false);
 
   const dialogToneMap: Record<
-    NonNullable<AlertDialogProps["tone"]>,
+    NonNullable<CmAlertDialogProps["tone"]>,
     "danger" | "warning" | "default"
   > = {
     danger: "danger",

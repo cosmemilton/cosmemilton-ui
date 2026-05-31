@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   type ComponentPropsWithoutRef,
   type ElementType,
   type ReactNode,
@@ -19,20 +20,24 @@ type CmLinkBaseProps = Omit<ComponentPropsWithoutRef<"a">, "children" | "href"> 
 
 export type CmLinkProps = CmLinkBaseProps;
 
-export function CmLink({
-  active = false,
-  children,
-  className,
-  href,
-  linkComponent,
-  tone = "default",
-  variant = "default",
-  ...props
-}: CmLinkProps) {
-  const Component = linkComponent ?? "a";
+export const CmLink = forwardRef<HTMLAnchorElement, CmLinkProps>(function CmLink(
+  {
+    active = false,
+    children,
+    className,
+    href,
+    linkComponent,
+    tone = "default",
+    variant = "default",
+    ...props
+  },
+  ref,
+) {
+  const Component: ElementType = linkComponent ?? "a";
 
   return (
     <Component
+      ref={ref}
       className={cn(
         "cm-link",
         `cm-link--${variant}`,
@@ -46,5 +51,5 @@ export function CmLink({
       {children}
     </Component>
   );
-}
+});
 CmLink.displayName = "CmLink";

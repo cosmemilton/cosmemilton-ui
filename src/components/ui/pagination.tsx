@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils.js";
 
 type PaginationMode = "pages" | "compact";
 
-type PaginationProps = {
+export type CmPaginationProps = {
   page: number;
   totalPages: number;
   onChange: (page: number) => void;
@@ -18,7 +18,7 @@ type PaginationProps = {
   className?: string;
 };
 
-export const CmPagination = forwardRef<HTMLDivElement, PaginationProps>(
+export const CmPagination = forwardRef<HTMLDivElement, CmPaginationProps>(
   function CmPagination(
     {
       page,

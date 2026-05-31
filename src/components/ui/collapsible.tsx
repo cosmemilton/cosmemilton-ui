@@ -4,14 +4,14 @@ import { ReactNode, useId, useState } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 
-type CollapsibleProps = {
+export type CmCollapsibleProps = {
   trigger: ReactNode;
   children: ReactNode;
   defaultOpen?: boolean;
   className?: string;
 };
 
-export function CmCollapsible({ trigger, children, defaultOpen = false, className }: CollapsibleProps) {
+export function CmCollapsible({ trigger, children, defaultOpen = false, className }: CmCollapsibleProps) {
   const [open, setOpen] = useState(defaultOpen);
   const contentId = useId();
 

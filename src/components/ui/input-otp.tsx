@@ -3,14 +3,14 @@
 import { forwardRef, useEffect, useRef } from "react";
 import { cn } from "../../lib/utils.js";
 
-type InputOtpProps = {
+export type CmInputOTPProps = {
   value: string;
   onChange: (value: string) => void;
   length?: number;
   className?: string;
 };
 
-export const CmInputOTP = forwardRef<HTMLDivElement, InputOtpProps>(
+export const CmInputOTP = forwardRef<HTMLDivElement, CmInputOTPProps>(
   function CmInputOTP({ value, onChange, length = 6, className }, ref) {
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 

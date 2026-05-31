@@ -18,7 +18,7 @@ import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { cmDensityClass, type CmDensity } from "./types.js";
 
-type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
+export type CmInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
   label?: string;
   error?: string;
   success?: boolean;
@@ -47,7 +47,7 @@ function hasRenderableValue(value: unknown) {
   return value !== undefined && value !== null && String(value).length > 0;
 }
 
-function resolveNumericMode(numeric: InputProps["numeric"], inputMode: InputProps["inputMode"]) {
+function resolveNumericMode(numeric: CmInputProps["numeric"], inputMode: CmInputProps["inputMode"]) {
   if (numeric === true) return "decimal";
   if (numeric) return numeric;
   if (inputMode === "numeric") return "integer";
@@ -97,7 +97,7 @@ function sanitizeInputElement(input: HTMLInputElement, mode: "integer" | "decima
   return nextValue;
 }
 
-export const CmInput = forwardRef<HTMLInputElement, InputProps>(
+export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
   (
     {
       className,

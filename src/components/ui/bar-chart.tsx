@@ -9,7 +9,7 @@ type BarChartDataPoint = {
   color?: string;
 };
 
-type BarChartProps = {
+export type CmBarChartProps = {
   data: BarChartDataPoint[];
   height?: number;
   orientation?: "vertical" | "horizontal";
@@ -25,7 +25,7 @@ export function CmBarChart({
   showValues = true,
   showGrid = true,
   className,
-}: BarChartProps) {
+}: CmBarChartProps) {
   const { maxValue, bars } = useMemo(() => {
     const values = data.map((d) => d.value);
     const max = Math.max(...values, 1);

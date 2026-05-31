@@ -14,7 +14,7 @@ interface Step {
   detail?: string;
 }
 
-interface ProgressModalProps {
+export interface CmProgressModalProps {
   open: boolean;
   steps: Step[];
   currentStep?: string;
@@ -27,7 +27,7 @@ export function CmProgressModal({
   steps,
   title = "Processando...",
   description = "Por favor, aguarde enquanto processamos sua solicitação.",
-}: ProgressModalProps) {
+}: CmProgressModalProps) {
   const titleId = useId();
   const descriptionId = useId();
   const completedSteps = steps.filter((s) => s.status === "completed").length;

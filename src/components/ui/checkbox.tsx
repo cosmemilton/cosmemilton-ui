@@ -4,13 +4,13 @@ import { forwardRef, InputHTMLAttributes } from "react";
 import { Check } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 
-type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
+export type CmCheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   description?: string;
   presentation?: "default" | "inputSuffix" | "compact";
 };
 
-export const CmCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
+export const CmCheckbox = forwardRef<HTMLInputElement, CmCheckboxProps>(
   ({ className, label, description, presentation = "default", ...props }, ref) => {
     const isInputSuffix = presentation === "inputSuffix";
     const isCompact = presentation === "compact";

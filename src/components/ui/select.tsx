@@ -24,7 +24,7 @@ type SelectOption = {
   icon?: string;
 };
 
-type SelectProps = {
+export type CmSelectProps = {
   value: string;
   onChange: (value: string) => void;
   options: SelectOption[];
@@ -112,7 +112,7 @@ export function CmSelect({
   form,
   onClear,
   renderSelected,
-}: SelectProps) {
+}: CmSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>(

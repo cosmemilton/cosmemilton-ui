@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
+import { cmVariants } from "../../lib/variants.js";
 import { useOptionalCmTheme } from "../theme/theme-provider.js";
 import { cmDensityClass, type CmDensity, type CmSize, type CmTone } from "./types.js";
 
@@ -46,19 +47,35 @@ export type CmButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   unstyled?: boolean;
 };
 
-const toneMap: Record<
-  CmButtonTone,
-  { className: string }
-> = {
-  default: { className: "cm-button--tone-default" },
-  primary: { className: "cm-button--tone-primary" },
-  secondary: { className: "cm-button--tone-secondary" },
-  accent: { className: "cm-button--tone-accent" },
-  danger: { className: "cm-button--tone-danger" },
-  warning: { className: "cm-button--tone-warning" },
-  success: { className: "cm-button--tone-success" },
-  info: { className: "cm-button--tone-info" },
-};
+const buttonVariants = cmVariants({
+  base: "cm-button",
+  variants: {
+    variant: {
+      solid: "cm-button--solid",
+      outline: "cm-button--outline",
+      ghost: "cm-button--ghost",
+      soft: "cm-button--soft",
+      surface: "cm-button--surface",
+      link: "cm-button--link",
+      plain: "cm-button--plain",
+    },
+    tone: {
+      default: "cm-button--tone-default",
+      primary: "cm-button--tone-primary",
+      secondary: "cm-button--tone-secondary",
+      accent: "cm-button--tone-accent",
+      danger: "cm-button--tone-danger",
+      warning: "cm-button--tone-warning",
+      success: "cm-button--tone-success",
+      info: "cm-button--tone-info",
+    },
+    shape: {
+      default: "cm-button--shape-default",
+      pill: "cm-button--shape-pill",
+      square: "cm-button--shape-square",
+    },
+  },
+});
 
 const sizeMap: Record<CmSize, string> = {
   xs: "cm-button--xs",
@@ -74,12 +91,6 @@ const iconOnlySizeMap: Record<CmSize, string> = {
   md: "cm-button--icon-md",
   lg: "cm-button--icon-lg",
   xl: "cm-button--icon-xl",
-};
-
-const shapeMap: Record<ButtonShape, string> = {
-  default: "cm-button--shape-default",
-  pill: "cm-button--shape-pill",
-  square: "cm-button--shape-square",
 };
 
 const presentationMap: Record<ButtonPresentation, string | undefined> = {
@@ -129,11 +140,8 @@ export const CmButton = forwardRef<HTMLButtonElement, CmButtonProps>(
         : tone;
 
     const base = cn(
-      "cm-button",
-      `cm-button--${variant}`,
-      toneMap[effectiveTone].className,
+      buttonVariants({ variant, tone: effectiveTone, shape }),
       iconOnly ? iconOnlySizeMap[size] : sizeMap[size],
-      shapeMap[shape],
       fullWidth && "cm-button--full-width",
       active && "cm-button--active",
       cmDensityClass(density),

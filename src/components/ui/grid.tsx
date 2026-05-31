@@ -24,12 +24,12 @@ type GridContainerBaseProps = {
   variant?: GridContainerVariant;
 };
 
-type GridContainerProps =
+export type CmGridContainerProps =
   | (GridContainerBaseProps & HTMLAttributes<HTMLDivElement> & { as?: "div" })
   | (GridContainerBaseProps & HTMLAttributes<HTMLElement> & { as: "section" | "article" | "footer" })
   | (GridContainerBaseProps & FormHTMLAttributes<HTMLFormElement> & { as: "form" });
 
-type GridProps = HTMLAttributes<HTMLDivElement> & {
+export type CmGridProps = HTMLAttributes<HTMLDivElement> & {
   span?: CmResponsiveNumber;
 };
 
@@ -52,7 +52,7 @@ export function CmGridContainer({
   variant = "default",
   style,
   ...props
-}: GridContainerProps) {
+}: CmGridContainerProps) {
   const resolvedColumns = resolveResponsiveNumber(columns, 1);
   const gridStyle: GridStyle = {
     "--grid-columns-base": resolvedColumns.base,
@@ -124,7 +124,7 @@ export function CmGridContainer({
 }
 CmGridContainer.displayName = "CmGridContainer";
 
-export const CmGrid = forwardRef<HTMLDivElement, GridProps>(function CmGrid(
+export const CmGrid = forwardRef<HTMLDivElement, CmGridProps>(function CmGrid(
   { children, className, span = 1, style, ...props },
   ref,
 ) {

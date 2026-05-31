@@ -5,7 +5,7 @@ import { CmDialog, CmDialogTone } from "./dialog.js";
 import { CmButton } from "./button.js";
 import type { CmButtonTone } from "./button.js";
 
-type ConfirmDialogProps = {
+export type CmConfirmDialogProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -20,7 +20,7 @@ type ConfirmDialogProps = {
 };
 
 const toneToDialogTone: Record<
-  NonNullable<ConfirmDialogProps["tone"]>,
+  NonNullable<CmConfirmDialogProps["tone"]>,
   CmDialogTone
 > = {
   danger: "danger",
@@ -29,7 +29,7 @@ const toneToDialogTone: Record<
 };
 
 const toneToButtonTone: Record<
-  NonNullable<ConfirmDialogProps["tone"]>,
+  NonNullable<CmConfirmDialogProps["tone"]>,
   CmButtonTone
 > = {
   danger: "danger",
@@ -49,7 +49,7 @@ export function CmConfirmDialog({
   tone = "danger",
   submitting = false,
   submittingLabel,
-}: ConfirmDialogProps) {
+}: CmConfirmDialogProps) {
   return (
     <CmDialog
       open={open}

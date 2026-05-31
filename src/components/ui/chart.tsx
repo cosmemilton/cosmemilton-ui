@@ -11,7 +11,7 @@ type ChartDatum = {
   color?: string;
 };
 
-type ChartProps = {
+export type CmChartProps = {
   data: ChartDatum[];
   maxValue?: number;
   height?: string | number;
@@ -20,7 +20,7 @@ type ChartProps = {
 
 type ChartStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
-export function CmChart({ data, maxValue, height, className }: ChartProps) {
+export function CmChart({ data, maxValue, height, className }: CmChartProps) {
   const safeMax = maxValue ?? Math.max(...data.map((item) => item.value), 1);
   const chartStyle: ChartStyle | undefined = height
     ? { "--cm-chart-height": cmSizeValue(height) }

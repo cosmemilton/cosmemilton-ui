@@ -7,7 +7,7 @@ import {
   type CmResponsiveNumber,
 } from "./types.js";
 
-type FormProps = FormHTMLAttributes<HTMLFormElement> & {
+export type CmFormProps = FormHTMLAttributes<HTMLFormElement> & {
   title?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
@@ -25,7 +25,7 @@ function spacingValue(value: string | number | undefined, fallback: string) {
   return typeof value === "number" ? `${value}px` : value;
 }
 
-export const CmForm = forwardRef<HTMLFormElement, FormProps>(function CmForm(
+export const CmForm = forwardRef<HTMLFormElement, CmFormProps>(function CmForm(
   {
     actions,
     actionsAlign = "end",

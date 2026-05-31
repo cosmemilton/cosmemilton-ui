@@ -14,7 +14,7 @@ interface TabsContextValue {
 
 const TabsContext = createContext<TabsContextValue | undefined>(undefined);
 
-interface TabsProps {
+export interface CmTabsProps {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -23,7 +23,7 @@ interface TabsProps {
   variant?: TabsVariant;
 }
 
-export const CmTabs = forwardRef<HTMLDivElement, TabsProps>(function CmTabs(
+export const CmTabs = forwardRef<HTMLDivElement, CmTabsProps>(function CmTabs(
   { value, defaultValue, onValueChange, children, className, variant = "default" },
   ref,
 ) {
@@ -51,12 +51,12 @@ export const CmTabs = forwardRef<HTMLDivElement, TabsProps>(function CmTabs(
 });
 CmTabs.displayName = "CmTabs";
 
-interface TabsListProps {
+export interface CmTabsListProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export const CmTabsList = forwardRef<HTMLDivElement, TabsListProps>(
+export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(
   function CmTabsList({ children, className }, ref) {
   const context = useContext(TabsContext);
   const variant = context?.variant ?? "default";
@@ -78,14 +78,14 @@ export const CmTabsList = forwardRef<HTMLDivElement, TabsListProps>(
 });
 CmTabsList.displayName = "CmTabsList";
 
-interface TabsTriggerProps {
+export interface CmTabsTriggerProps {
   value: string;
   children: React.ReactNode;
   className?: string;
   disabled?: boolean;
 }
 
-export const CmTabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
+export const CmTabsTrigger = forwardRef<HTMLButtonElement, CmTabsTriggerProps>(
   function CmTabsTrigger({ value, children, className, disabled }, ref) {
   const context = useContext(TabsContext);
   if (!context) throw new Error("CmTabsTrigger must be used within CmTabs");
@@ -115,7 +115,7 @@ export const CmTabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 });
 CmTabsTrigger.displayName = "CmTabsTrigger";
 
-interface TabsContentProps {
+export interface CmTabsContentProps {
   value: string;
   children: React.ReactNode;
   className?: string;
@@ -123,7 +123,7 @@ interface TabsContentProps {
   unmountOnHide?: boolean;
 }
 
-export const CmTabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
+export const CmTabsContent = forwardRef<HTMLDivElement, CmTabsContentProps>(
   function CmTabsContent({ value, children, className, unmountOnHide = false }, ref) {
   const context = useContext(TabsContext);
   if (!context) throw new Error("CmTabsContent must be used within CmTabs");

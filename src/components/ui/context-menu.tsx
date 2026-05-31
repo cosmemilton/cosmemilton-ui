@@ -13,7 +13,7 @@ type ContextMenuItem = {
   disabled?: boolean;
 };
 
-type ContextMenuProps = {
+export type CmContextMenuProps = {
   target: ReactNode;
   items: ContextMenuItem[];
   className?: string;
@@ -21,7 +21,7 @@ type ContextMenuProps = {
 
 type Position = { x: number; y: number };
 
-export function CmContextMenu({ target, items, className }: ContextMenuProps) {
+export function CmContextMenu({ target, items, className }: CmContextMenuProps) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
   const panelRef = useRef<HTMLDivElement | null>(null);

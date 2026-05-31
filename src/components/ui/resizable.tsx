@@ -12,7 +12,7 @@ import { cn } from "../../lib/utils.js";
 
 const KEYBOARD_STEP = 16;
 
-type ResizableProps = {
+export type CmResizableProps = {
   minWidth?: number;
   maxWidth?: number;
   initialWidth?: number;
@@ -22,7 +22,7 @@ type ResizableProps = {
 
 type ResizableStyle = CSSProperties & Record<`--${string}`, string | number>;
 
-export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320, className, children }: ResizableProps) {
+export function CmResizable({ minWidth = 240, maxWidth = 640, initialWidth = 320, className, children }: CmResizableProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(initialWidth);
   const isDragging = useRef(false);

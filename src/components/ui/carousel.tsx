@@ -16,7 +16,7 @@ type CarouselItem = {
   action?: ReactNode;
 };
 
-type CarouselProps = {
+export type CmCarouselProps = {
   items: CarouselItem[];
   className?: string;
   autoPlay?: boolean;
@@ -28,7 +28,7 @@ type CarouselProps = {
   variant?: "card" | "bleed";
 };
 
-function carouselPaddingValue(value: CarouselProps["mediaPadding"]) {
+function carouselPaddingValue(value: CmCarouselProps["mediaPadding"]) {
   if (value === undefined || value === "none") return undefined;
   if (typeof value === "number") return cmSizeValue(value);
   const preset: Record<string, string> = {
@@ -50,7 +50,7 @@ export function CmCarousel({
   height,
   mediaPadding,
   variant = "card",
-}: CarouselProps) {
+}: CmCarouselProps) {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const length = items.length;

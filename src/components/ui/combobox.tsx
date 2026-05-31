@@ -24,7 +24,7 @@ export type CmComboboxItem = {
   disabled?: boolean;
 };
 
-type ComboboxProps = {
+export type CmComboboxProps = {
   items: CmComboboxItem[];
   onChange?: (item: CmComboboxItem | null) => void;
   onSearch?: (query: string) => void;
@@ -95,7 +95,7 @@ export function CmCombobox({
   disabled,
   dropdownSizing = "input",
   selectedDisplay = "full",
-}: ComboboxProps) {
+}: CmComboboxProps) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<CmComboboxItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);

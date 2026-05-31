@@ -20,7 +20,7 @@ type CmNavigationLinkProps = {
   children: ReactNode;
 };
 
-type NavigationMenuProps = {
+export type CmNavigationMenuProps = {
   items: NavigationItem[];
   className?: string;
   activeHref?: string;
@@ -32,7 +32,7 @@ function getBrowserPathname() {
   return window.location.pathname;
 }
 
-export const CmNavigationMenu = forwardRef<HTMLElement, NavigationMenuProps>(
+export const CmNavigationMenu = forwardRef<HTMLElement, CmNavigationMenuProps>(
   function CmNavigationMenu(
     { items, className, activeHref, linkComponent: LinkComponent },
     ref,

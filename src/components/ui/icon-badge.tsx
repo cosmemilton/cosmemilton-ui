@@ -1,31 +1,47 @@
-import { forwardRef, type ReactNode } from "react";
-import { cn } from "../../lib/utils.js";
-import type { CmSize, CmTone } from "./types.js";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { cmVariants, type CmVariantProps } from "../../lib/variants.js";
+import type { CmTone } from "./types.js";
 
-type IconBadgeTone = CmTone;
-type IconBadgeSize = Extract<CmSize, "xs" | "sm" | "md">;
+export type CmIconBadgeTone = CmTone;
 
-export type CmIconBadgeProps = {
-  icon: ReactNode;
-  tone?: IconBadgeTone;
-  size?: IconBadgeSize;
-  className?: string;
-};
+const iconBadgeVariants = cmVariants({
+  base: "cm-icon-badge",
+  variants: {
+    size: {
+      xs: "cm-icon-badge--xs",
+      sm: "cm-icon-badge--sm",
+      md: "cm-icon-badge--md",
+    },
+    tone: {
+      default: "cm-icon-badge--tone-default",
+      primary: "cm-icon-badge--tone-primary",
+      secondary: "cm-icon-badge--tone-secondary",
+      accent: "cm-icon-badge--tone-accent",
+      success: "cm-icon-badge--tone-success",
+      warning: "cm-icon-badge--tone-warning",
+      danger: "cm-icon-badge--tone-danger",
+      info: "cm-icon-badge--tone-info",
+    },
+  },
+  defaultVariants: { size: "sm", tone: "default" },
+});
+
+export type CmIconBadgeProps = HTMLAttributes<HTMLSpanElement> &
+  CmVariantProps<typeof iconBadgeVariants> & {
+    icon: ReactNode;
+  };
 
 export const CmIconBadge = forwardRef<HTMLSpanElement, CmIconBadgeProps>(
-  function CmIconBadge({ icon, tone = "default", size = "sm", className }, ref) {
-  return (
-    <span
-      ref={ref}
-      className={cn(
-        "cm-icon-badge",
-        `cm-icon-badge--${size}`,
-        `cm-icon-badge--tone-${tone}`,
-        className,
-      )}
-    >
-      {icon}
-    </span>
-  );
-});
+  function CmIconBadge({ icon, tone, size, className, ...rest }, ref) {
+    return (
+      <span
+        ref={ref}
+        className={iconBadgeVariants({ size, tone, className })}
+        {...rest}
+      >
+        {icon}
+      </span>
+    );
+  },
+);
 CmIconBadge.displayName = "CmIconBadge";

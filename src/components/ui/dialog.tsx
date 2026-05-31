@@ -25,7 +25,7 @@ export type { CmDialogSize } from "./types.js";
 export type CmDialogTone = CmFeedbackTone;
 export type CmDialogPresentation = "default" | "compact";
 
-interface DialogProps {
+export interface CmDialogProps {
   open: boolean;
   onClose: () => void;
   title?: string;
@@ -163,7 +163,7 @@ export function CmDialog({
   presentation = "default",
   dismissible = true,
   showClose = true,
-}: DialogProps) {
+}: CmDialogProps) {
   const titleId = useId();
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);
