@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.0
+
+### Minor Changes
+
+- Add `CmGallery` / `CmLightbox` and a server-side mode for `CmDataTable`.
+  - **`CmGallery` / `CmLightbox`** (`cosmemilton-ui/client`): a responsive thumbnail grid with a built-in full-screen lightbox — portal, scroll-lock, focus-trap, Escape to close, arrow-key navigation, thumbnail strip, counter and captions. `CmLightbox` can also be used standalone as a controlled viewer (`open` / `index` / `onClose`). Fills the previously missing gallery/lightbox primitive.
+  - **`CmDataTable` server-side / controlled mode** (additive, non-breaking): new props `manualSorting`, `manualPagination`, `totalRows`, `loading` (+ `loadingMessage`), controlled `page` / `onPageChange`, `rowsPerPage` / `onRowsPerPageChange`, `sortKey` / `sortDirection` / `onSortChange` (emits the new `CmDataTableSort`), and configurable `rowsPerPageOptions`. The default client-side sorting/pagination behavior is unchanged.
+
 All notable changes to `cosmemilton-ui` are documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

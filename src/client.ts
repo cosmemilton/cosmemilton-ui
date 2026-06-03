@@ -24,6 +24,7 @@ export * from "./components/ui/dialog.js";
 export * from "./components/ui/drawer.js";
 export * from "./components/ui/dropdown-menu.js";
 export * from "./components/ui/empty.js";
+export * from "./components/ui/gallery.js";
 export * from "./components/ui/hover-card.js";
 export * from "./components/ui/input.js";
 export * from "./components/ui/input-otp.js";

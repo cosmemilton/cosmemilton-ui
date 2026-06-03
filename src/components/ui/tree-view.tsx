@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, type DragEvent } from "react";
+import React, { useState, useMemo, useEffect, useCallback, type DragEvent } from "react";
 import {
   GripVertical,
   ChevronRight,
@@ -111,7 +111,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
 
   // Funções de controle
-  const expandAll = () => {
+  const expandAll = useCallback(() => {
     if (!Array.isArray(data)) return;
     // Desligar modo solitário ao expandir tudo
     if (internalSolitaryMode) {
@@ -119,18 +119,18 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
       onSolitaryModeChange?.(false);
     }
     setExpandedNodes(collectExpandableIds(data));
-  };
+  }, [data, internalSolitaryMode, onSolitaryModeChange]);
 
-  const collapseAll = () => {
+  const collapseAll = useCallback(() => {
     setExpandedNodes(new Set());
-  };
+  }, []);
 
   // Expor controles para o componente pai
   useEffect(() => {
     if (onTreeControlsReady) {
       onTreeControlsReady({ expandAll, collapseAll });
     }
-  }, [onTreeControlsReady]);
+  }, [onTreeControlsReady, expandAll, collapseAll]);
 
   // Busca recursiva com destaque
   const { filteredData, highlightedNode } = useMemo(() => {

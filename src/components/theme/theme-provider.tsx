@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   extendThemes,
   defaultTheme,
@@ -115,24 +123,33 @@ export function CmThemeProvider({
     : requestedChrome;
   const effectiveInvert = effectiveChrome === "inverted";
 
-  const setDensity = (nextDensity: CmDensity) => {
-    if (density === undefined) {
-      setUncontrolledDensity(nextDensity);
-    }
-    window.localStorage.setItem(LOCAL_STORAGE_DENSITY, nextDensity);
-  };
+  const setDensity = useCallback(
+    (nextDensity: CmDensity) => {
+      if (density === undefined) {
+        setUncontrolledDensity(nextDensity);
+      }
+      window.localStorage.setItem(LOCAL_STORAGE_DENSITY, nextDensity);
+    },
+    [density],
+  );
 
-  const setChrome = (nextChrome: CmThemeChrome) => {
-    if (chrome === undefined) {
-      setUncontrolledChrome(nextChrome);
-    }
-    window.localStorage.setItem(LOCAL_STORAGE_CHROME, nextChrome);
-    window.localStorage.setItem(LOCAL_STORAGE_INVERT_HEADER, String(nextChrome === "inverted"));
-  };
+  const setChrome = useCallback(
+    (nextChrome: CmThemeChrome) => {
+      if (chrome === undefined) {
+        setUncontrolledChrome(nextChrome);
+      }
+      window.localStorage.setItem(LOCAL_STORAGE_CHROME, nextChrome);
+      window.localStorage.setItem(LOCAL_STORAGE_INVERT_HEADER, String(nextChrome === "inverted"));
+    },
+    [chrome],
+  );
 
-  const setInvertHeader = (value: boolean) => {
-    setChrome(value ? "inverted" : "surface");
-  };
+  const setInvertHeader = useCallback(
+    (value: boolean) => {
+      setChrome(value ? "inverted" : "surface");
+    },
+    [setChrome],
+  );
 
   useEffect(() => {
     applyTheme(theme);
@@ -159,7 +176,16 @@ export function CmThemeProvider({
       invertHeader: effectiveInvert,
       setInvertHeader,
     }),
-    [effectiveChrome, effectiveInvert, requestedDensity, theme, themeRegistry],
+    [
+      effectiveChrome,
+      effectiveInvert,
+      requestedDensity,
+      theme,
+      themeRegistry,
+      setChrome,
+      setDensity,
+      setInvertHeader,
+    ],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

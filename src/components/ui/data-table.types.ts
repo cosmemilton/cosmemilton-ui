@@ -19,6 +19,9 @@ export type CmDataTableActionsProps = HTMLAttributes<HTMLDivElement>;
 
 export type CmSortDirection = "asc" | "desc";
 
+/** Estado de ordenação emitido por `onSortChange` no modo server-side. */
+export type CmDataTableSort = { key: string | null; direction: CmSortDirection };
+
 export type CmDataTableProps<T> = {
   columns: CmDataTableColumn<T>[];
   data: T[];
@@ -30,6 +33,34 @@ export type CmDataTableProps<T> = {
   fullWidth?: boolean;
   pagination?: boolean;
   defaultRowsPerPage?: number;
+  /** Opções do seletor "linhas por página". Padrão `[5, 10, 20, 25, 50]`. */
+  rowsPerPageOptions?: number[];
+  /**
+   * Server-side: a ordenação é tratada pelo backend. A tabela não reordena
+   * `data`; apenas alterna asc/desc e emite `onSortChange`.
+   */
+  manualSorting?: boolean;
+  /**
+   * Server-side: a paginação é tratada pelo backend. `data` já contém apenas as
+   * linhas da página atual; informe `totalRows` para o total real.
+   */
+  manualPagination?: boolean;
+  /** Total de registros (necessário com `manualPagination`). */
+  totalRows?: number;
+  /** Página atual controlada (base 1). Use com `onPageChange`. */
+  page?: number;
+  onPageChange?: (page: number) => void;
+  /** Linhas por página controlada. Use com `onRowsPerPageChange`. */
+  rowsPerPage?: number;
+  onRowsPerPageChange?: (rowsPerPage: number) => void;
+  /** Coluna ordenada controlada. Use com `onSortChange`. */
+  sortKey?: string | null;
+  /** Direção ordenada controlada. Use com `onSortChange`. */
+  sortDirection?: CmSortDirection;
+  onSortChange?: (sort: CmDataTableSort) => void;
+  /** Exibe estado de carregamento (atenua as linhas e marca `aria-busy`). */
+  loading?: boolean;
+  loadingMessage?: string;
   emptyMessage?: string;
   emptyTitle?: string;
   emptyDescription?: string;

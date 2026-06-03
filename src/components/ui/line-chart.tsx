@@ -57,8 +57,8 @@ export function CmLineChart({
   const chartH = svgHeight - padTop - padBottom;
   const resolvedColor = color ?? toneColorMap[tone];
 
-  const { points, gridLines, maxValue } = useMemo(() => {
-    if (data.length === 0) return { points: [], gridLines: [], maxValue: 0 };
+  const { points, gridLines } = useMemo(() => {
+    if (data.length === 0) return { points: [], gridLines: [] };
 
     const values = data.map((d) => d.value);
     const max = Math.max(...values);
@@ -78,7 +78,7 @@ export function CmLineChart({
       value: max - range * percent,
     }));
 
-    return { points: pts, gridLines: grid, maxValue: max };
+    return { points: pts, gridLines: grid };
   }, [data, chartW, chartH, padLeft, padTop]);
 
   const pathD = useMemo(() => {

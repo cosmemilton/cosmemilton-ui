@@ -12,6 +12,7 @@ import {
 import { cn } from "../../lib/utils.js";
 import { ArrowUp, ArrowDown, ArrowUpDown, SlidersHorizontal } from "lucide-react";
 import { useTablePreference } from "../../hooks/use-table-preference.js";
+import { useControllableState } from "../../hooks/use-controllable-state.js";
 import { CmButton } from "./button.js";
 import { CmEmpty } from "./empty.js";
 import { CmPagination } from "./pagination.js";
@@ -28,9 +29,12 @@ import { DataTableColumnMenu } from "./data-table-column-menu.js";
 export type {
   CmDataTableColumn,
   CmDataTableActionsProps,
+  CmDataTableSort,
   CmSortDirection,
   CmDataTableProps,
 } from "./data-table.types.js";
+
+const DEFAULT_ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 25, 50];
 
 export const CmDataTableActions = forwardRef<HTMLDivElement, CmDataTableActionsProps>(
   function CmDataTableActions({ className, ...props }, ref) {
@@ -50,6 +54,19 @@ export function CmDataTable<T>({
   fullWidth = true,
   pagination = true,
   defaultRowsPerPage = 10,
+  rowsPerPageOptions = DEFAULT_ROWS_PER_PAGE_OPTIONS,
+  manualSorting = false,
+  manualPagination = false,
+  totalRows,
+  page,
+  onPageChange,
+  rowsPerPage: rowsPerPageProp,
+  onRowsPerPageChange,
+  sortKey: sortKeyProp,
+  sortDirection: sortDirectionProp,
+  onSortChange,
+  loading = false,
+  loadingMessage = "Carregando…",
   emptyMessage = "Nenhum registro encontrado",
   emptyTitle,
   emptyDescription,
@@ -73,10 +90,24 @@ export function CmDataTable<T>({
   detailBridge = true,
   detailEmptyMessage,
 }: CmDataTableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
-  const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
-  const [sortDirection, setSortDirection] = useState<CmSortDirection>(defaultSortDirection);
+  const [currentPage, setCurrentPage] = useControllableState<number>({
+    value: page,
+    defaultValue: 1,
+    onChange: onPageChange,
+  });
+  const [rowsPerPage, setRowsPerPage] = useControllableState<number>({
+    value: rowsPerPageProp,
+    defaultValue: defaultRowsPerPage,
+    onChange: onRowsPerPageChange,
+  });
+  const [sortKey, setSortKey] = useControllableState<string | null>({
+    value: sortKeyProp,
+    defaultValue: defaultSortKey ?? null,
+  });
+  const [sortDirection, setSortDirection] = useControllableState<CmSortDirection>({
+    value: sortDirectionProp,
+    defaultValue: defaultSortDirection,
+  });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const detailTableWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedRowRect, setSelectedRowRect] = useState<{
@@ -116,24 +147,36 @@ export function CmDataTable<T>({
 
   const handleSort = (column: CmDataTableColumn<T>) => {
     if (!column.sortable) return;
-    if (sortKey === column.key) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortKey(column.key);
-      setSortDirection("asc");
-    }
+    const isActive = sortKey === column.key;
+    const nextDirection: CmSortDirection = isActive
+      ? sortDirection === "asc"
+        ? "desc"
+        : "asc"
+      : "asc";
+    setSortKey(column.key);
+    setSortDirection(nextDirection);
     setCurrentPage(1);
+    onSortChange?.({ key: column.key, direction: nextDirection });
   };
 
   const sortedData = useMemo(
-    () => sortRows(data, columns, sortKey, sortDirection),
-    [data, sortKey, sortDirection, columns],
+    () => (manualSorting ? data : sortRows(data, columns, sortKey, sortDirection)),
+    [data, sortKey, sortDirection, columns, manualSorting],
   );
 
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const totalCount = manualPagination ? (totalRows ?? sortedData.length) : sortedData.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / rowsPerPage));
   const indexOfLastItem = currentPage * rowsPerPage;
   const indexOfFirstItem = indexOfLastItem - rowsPerPage;
-  const currentData = pagination ? sortedData.slice(indexOfFirstItem, indexOfLastItem) : sortedData;
+  // Em paginação server-side, `data` já é a página corrente; não recortamos.
+  const currentData =
+    !pagination || manualPagination
+      ? sortedData
+      : sortedData.slice(indexOfFirstItem, indexOfLastItem);
+  const pageSizeOptions = useMemo(
+    () => Array.from(new Set([...rowsPerPageOptions, rowsPerPage])).sort((a, b) => a - b),
+    [rowsPerPageOptions, rowsPerPage],
+  );
 
   const detailPanelActive = detailPanelEnabled && !!renderSelectedRowDetail;
   const detailPanelSize =
@@ -214,6 +257,7 @@ export function CmDataTable<T>({
     "cm-data-table data-table-root",
     detailPanelActive && "cm-data-table--detail-active",
     fullWidth && "cm-data-table--full-width",
+    loading && "cm-data-table--loading",
     cmDensityClass(density),
     className,
   );
@@ -236,19 +280,25 @@ export function CmDataTable<T>({
     </div>
   ) : null;
 
-  if (sortedData.length === 0) {
+  if (currentData.length === 0) {
     return (
-      <div className={cn(rootClassName, "cm-data-table--empty")}>
+      <div className={cn(rootClassName, "cm-data-table--empty")} aria-busy={loading || undefined}>
         {integratedHeader}
         <div className="cm-data-table-empty">
-          <CmEmpty
-            className="cm-data-table-empty__content"
-            title={emptyTitle ?? emptyMessage}
-            description={emptyDescription}
-            icon={emptyIcon}
-            actionLabel={emptyActionLabel}
-            onAction={onEmptyAction}
-          />
+          {loading ? (
+            <p className="cm-data-table__loading" role="status">
+              {loadingMessage}
+            </p>
+          ) : (
+            <CmEmpty
+              className="cm-data-table-empty__content"
+              title={emptyTitle ?? emptyMessage}
+              description={emptyDescription}
+              icon={emptyIcon}
+              actionLabel={emptyActionLabel}
+              onAction={onEmptyAction}
+            />
+          )}
         </div>
       </div>
     );
@@ -258,7 +308,7 @@ export function CmDataTable<T>({
   const hiddenCount = hideableColumns.filter((c) => hiddenColumns?.has(String(c.key))).length;
 
   const table = (
-    <div className={rootClassName}>
+    <div className={rootClassName} aria-busy={loading || undefined}>
       {integratedHeader}
       <table className={cn("cm-data-table__table", tableClassName)}>
         <thead className="cm-data-table__head">
@@ -360,7 +410,7 @@ export function CmDataTable<T>({
             );
           })}
         </tbody>
-        {pagination && sortedData.length > 0 && (
+        {pagination && totalCount > 0 && (
           <tfoot className="cm-data-table__foot">
             <tr>
               <td
@@ -376,15 +426,18 @@ export function CmDataTable<T>({
                       className="cm-data-table__page-size"
                       aria-label="Linhas por página"
                     >
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
+                      {pageSizeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
                     </select>
                     <span className="cm-data-table__pagination-text">
-                      {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, sortedData.length)} de{" "}
-                      {sortedData.length}
+                      {indexOfFirstItem + 1}-
+                      {manualPagination
+                        ? indexOfFirstItem + currentData.length
+                        : Math.min(indexOfLastItem, totalCount)}{" "}
+                      de {totalCount}
                     </span>
                   </div>
                   <CmPagination

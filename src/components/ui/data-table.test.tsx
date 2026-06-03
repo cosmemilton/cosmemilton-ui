@@ -80,4 +80,56 @@ describe("CmDataTable", () => {
     expect(nameHeader).toHaveAttribute("aria-sort", "descending");
     expect(bodyRowNames()).toEqual(["Charlie", "Bob", "Alice"]);
   });
+
+  describe("server-side mode", () => {
+    it("does not reorder rows with manualSorting, only emits onSortChange", async () => {
+      const user = userEvent.setup();
+      const onSortChange = vi.fn();
+      renderTable({ manualSorting: true, onSortChange });
+
+      const nameHeader = screen.getByRole("columnheader", { name: /Name/ });
+      await user.click(nameHeader);
+
+      // order is preserved (backend would re-fetch); only the event fires
+      expect(bodyRowNames()).toEqual(["Charlie", "Alice", "Bob"]);
+      expect(onSortChange).toHaveBeenCalledWith({ key: "name", direction: "asc" });
+      expect(nameHeader).toHaveAttribute("aria-sort", "ascending");
+    });
+
+    it("uses totalRows for the page count and renders data as the current page", () => {
+      renderTable({
+        manualPagination: true,
+        pagination: true,
+        totalRows: 42,
+        rowsPerPage: 10,
+        page: 1,
+      });
+      // all 3 provided rows are shown (no client slicing)
+      expect(bodyRowNames()).toEqual(["Charlie", "Alice", "Bob"]);
+      // range label reflects the server total
+      expect(screen.getByText(/de 42/)).toBeInTheDocument();
+    });
+
+    it("emits onPageChange when navigating in controlled mode", async () => {
+      const user = userEvent.setup();
+      const onPageChange = vi.fn();
+      renderTable({
+        manualPagination: true,
+        pagination: true,
+        totalRows: 42,
+        rowsPerPage: 10,
+        page: 1,
+        onPageChange,
+      });
+
+      await user.click(screen.getByRole("button", { name: /Próxima/ }));
+      expect(onPageChange).toHaveBeenCalledWith(2);
+    });
+
+    it("shows the loading message instead of the empty state", () => {
+      renderTable({ data: [], loading: true, loadingMessage: "Buscando…" });
+      expect(screen.getByText("Buscando…")).toBeInTheDocument();
+      expect(screen.queryByText("Nenhum registro encontrado")).not.toBeInTheDocument();
+    });
+  });
 });

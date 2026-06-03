@@ -26,12 +26,11 @@ export function CmBarChart({
   showGrid = true,
   className,
 }: CmBarChartProps) {
-  const { maxValue, bars } = useMemo(() => {
+  const { bars } = useMemo(() => {
     const values = data.map((d) => d.value);
     const max = Math.max(...values, 1);
 
     return {
-      maxValue: max,
       bars: data.map((d) => ({
         ...d,
         percentage: (d.value / max) * 100,
