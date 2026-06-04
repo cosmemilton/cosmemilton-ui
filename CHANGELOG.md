@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.3.0
+
+### Minor Changes
+
+- Address v3 adoption feedback: two new components, a toast-positioning option, and a friendlier root-import error.
+  - **`CmRichTextEditor`** (`cosmemilton-ui/client`): zero-dependency rich text editor built on `contentEditable` with a standard toolbar (bold/italic/underline/strike, H1–H3, paragraph, bullet/ordered lists, blockquote, link/unlink, clear formatting, undo/redo). Controlled or uncontrolled HTML via `value`/`defaultValue`/`onChange`, configurable `toolbar`, `readOnly`/`disabled`, `placeholder`, plain-text paste by default, and a customizable `onLinkRequest`. No TipTap/ProseMirror peer dependency required.
+  - **`CmFileUpload`** (`cosmemilton-ui/client`): zero-dependency drag-and-drop upload with image thumbnails/file previews, `accept`/`maxSize`/`maxFiles` validation (`onReject` with reasons), controlled `value`/`onChange`, and an `onUpload` callback for accepted files. Exposes the `formatFileSize` helper.
+  - **`CmToastProvider` `position` prop**: `top-left` | `top-center` | `top-right` | `bottom-left` | `bottom-center` | `bottom-right` (default `bottom-right`), so toasts can avoid overlapping a fixed sidebar. Adds the exported `CmToastPosition` and `CmToastProviderProps` types.
+  - **Root import guard**: importing from the bare `"cosmemilton-ui"` entry (removed in v3) now throws a clear message pointing to the `/client`, `/server` and `/theme` subpaths instead of an opaque "module not found".
+
 ## 3.2.0
 
 ### Minor Changes

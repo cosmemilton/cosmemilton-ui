@@ -1,0 +1,39 @@
+/* CmToastProvider position variants. The base .cm-toast__viewport (partial 05)
+   anchors bottom-right; these modifiers re-anchor the fixed viewport per the
+   `position` prop. Only anchor/alignment is set here so the slide animation on
+   .cm-toast__item is untouched. */
+.cm-toast__viewport--top-left,
+.cm-toast__viewport--top-center,
+.cm-toast__viewport--top-right {
+  top: 0;
+  bottom: auto;
+}
+
+.cm-toast__viewport--bottom-left,
+.cm-toast__viewport--bottom-center,
+.cm-toast__viewport--bottom-right {
+  bottom: 0;
+  top: auto;
+}
+
+.cm-toast__viewport--top-left,
+.cm-toast__viewport--bottom-left {
+  left: 0;
+  right: auto;
+  align-items: flex-start;
+}
+
+.cm-toast__viewport--top-right,
+.cm-toast__viewport--bottom-right {
+  right: 0;
+  left: auto;
+  align-items: flex-end;
+}
+
+.cm-toast__viewport--top-center,
+.cm-toast__viewport--bottom-center {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  align-items: center;
+}

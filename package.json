@@ -1,6 +1,6 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -32,6 +32,11 @@
     "./dist/styles.css"
   ],
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
     "./client": {
       "types": "./dist/client.d.ts",
       "import": "./dist/client.js",

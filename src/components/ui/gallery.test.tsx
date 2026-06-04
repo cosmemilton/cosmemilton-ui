@@ -49,9 +49,7 @@ describe("CmGallery", () => {
 
 describe("CmLightbox", () => {
   function renderLightbox(props: Partial<Parameters<typeof CmLightbox>[0]> = {}) {
-    return render(
-      <CmLightbox items={items} open onClose={props.onClose ?? vi.fn()} {...props} />,
-    );
+    return render(<CmLightbox items={items} open onClose={props.onClose ?? vi.fn()} {...props} />);
   }
 
   it("renders nothing while closed", () => {

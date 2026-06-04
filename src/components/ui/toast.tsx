@@ -16,6 +16,14 @@ import type { CmFeedbackTone } from "./types.js";
 
 export type CmToastTone = CmFeedbackTone;
 
+export type CmToastPosition =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
+
 type ToastOptions = {
   tone?: CmToastTone;
   duration?: number;
@@ -136,7 +144,13 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
   );
 }
 
-export function CmToastProvider({ children }: { children: ReactNode }) {
+export type CmToastProviderProps = {
+  children: ReactNode;
+  /** Cantos/eixos onde a pilha de toasts é ancorada. Padrão: `"bottom-right"`. */
+  position?: CmToastPosition;
+};
+
+export function CmToastProvider({ children, position = "bottom-right" }: CmToastProviderProps) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [mounted, setMounted] = useState(false);
   const nextId = useRef(0);
@@ -177,7 +191,10 @@ export function CmToastProvider({ children }: { children: ReactNode }) {
       {children}
       {mounted &&
         createPortal(
-          <div className="cm-toast__viewport">
+          <div
+            className={cn("cm-toast__viewport", `cm-toast__viewport--${position}`)}
+            data-position={position}
+          >
             {toasts.map((t) => (
               <ToastSlot key={t.id} item={t} onDismiss={dismiss} />
             ))}
