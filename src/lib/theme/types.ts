@@ -123,6 +123,12 @@ export type ThemeLayerScale = {
 
 export type ThemeConfig = {
   name: string;
+  /**
+   * Informs the browser which built-in color scheme (native form controls,
+   * scrollbars) matches the theme. Emitted as `color-scheme` in the theme's
+   * CSS block. Defaults to the page-level `light` when omitted.
+   */
+  colorScheme?: "light" | "dark";
   colors: ThemeColorScale;
   typography: ThemeTypography;
   radii: ThemeRadius;

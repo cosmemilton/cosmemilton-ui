@@ -37,7 +37,7 @@ afterEach(cleanup);
 describe("CmSelect", () => {
   it("renders a collapsed combobox-style trigger", () => {
     render(<ControlledSelect />);
-    const trigger = screen.getByRole("button", { name: "País" });
+    const trigger = screen.getByRole("combobox", { name: "País" });
     expect(trigger).toHaveAttribute("aria-haspopup", "listbox");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
@@ -46,18 +46,18 @@ describe("CmSelect", () => {
     const user = userEvent.setup();
     render(<ControlledSelect />);
 
-    await user.click(screen.getByRole("button", { name: "País" }));
+    await user.click(screen.getByRole("combobox", { name: "País" }));
 
     const listbox = screen.getByRole("listbox");
     expect(within(listbox).getAllByRole("option")).toHaveLength(3);
-    expect(screen.getByRole("button", { name: "País" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("combobox", { name: "País" })).toHaveAttribute("aria-expanded", "true");
   });
 
   it("positions the portaled listbox after opening", async () => {
     const user = userEvent.setup();
     render(<ControlledSelect />);
 
-    await user.click(screen.getByRole("button", { name: "País" }));
+    await user.click(screen.getByRole("combobox", { name: "País" }));
 
     const listbox = screen.getByRole("listbox");
     await waitFor(() => {
@@ -72,7 +72,7 @@ describe("CmSelect", () => {
     const onChangeSpy = vi.fn();
     render(<ControlledSelect onChangeSpy={onChangeSpy} />);
 
-    await user.click(screen.getByRole("button", { name: "País" }));
+    await user.click(screen.getByRole("combobox", { name: "País" }));
     await user.click(screen.getByRole("option", { name: "Portugal" }));
 
     expect(onChangeSpy).toHaveBeenCalledWith("pt");
@@ -83,7 +83,7 @@ describe("CmSelect", () => {
     const user = userEvent.setup();
     render(<ControlledSelect initialValue="us" />);
 
-    await user.click(screen.getByRole("button", { name: "País" }));
+    await user.click(screen.getByRole("combobox", { name: "País" }));
 
     expect(screen.getByRole("option", { name: "Estados Unidos" })).toHaveAttribute(
       "aria-selected",
@@ -95,7 +95,7 @@ describe("CmSelect", () => {
     const user = userEvent.setup();
     render(<ControlledSelect />);
 
-    await user.click(screen.getByRole("button", { name: "País" }));
+    await user.click(screen.getByRole("combobox", { name: "País" }));
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
@@ -110,5 +110,47 @@ describe("CmSelect", () => {
     await user.click(screen.getByRole("button", { name: "Limpar seleção" }));
 
     expect(onChangeSpy).toHaveBeenCalledWith("");
+  });
+
+  it("is fully operable by keyboard (open, navigate, select)", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(<ControlledSelect onChangeSpy={onChangeSpy} />);
+
+    const trigger = screen.getByRole("combobox", { name: "País" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Brasil" }).id,
+    );
+
+    await user.keyboard("{ArrowDown}{Enter}");
+    expect(onChangeSpy).toHaveBeenCalledWith("pt");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(trigger).toHaveTextContent("Portugal");
+  });
+
+  it("opens highlighting the selected option and supports typeahead", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(<ControlledSelect initialValue="pt" onChangeSpy={onChangeSpy} />);
+
+    const trigger = screen.getByRole("combobox", { name: "País" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Portugal" }).id,
+    );
+
+    await user.keyboard("e");
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Estados Unidos" }).id,
+    );
+    await user.keyboard("{Enter}");
+    expect(onChangeSpy).toHaveBeenCalledWith("us");
   });
 });

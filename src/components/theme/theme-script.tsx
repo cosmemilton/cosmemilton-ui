@@ -1,7 +1,7 @@
 import {
+  customThemeCSS,
   defaultTheme,
   extendThemes,
-  themeToCSSVars,
   type CustomThemeInput,
 } from "../../lib/theme/index.js";
 
@@ -10,42 +10,52 @@ const LOCAL_STORAGE_KEY = "cm-theme";
 export type CmThemeScriptProps = {
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
+  /**
+   * CSP nonce forwarded to the inline <script>/<style> tags, for apps whose
+   * Content-Security-Policy omits 'unsafe-inline'.
+   */
+  nonce?: string;
 };
 
+/**
+ * No-FOUC theme bootstrap for SSR. Built-in theme tokens ship statically in
+ * styles.css, so all this script does is pick the persisted theme name and set
+ * `data-theme` before first paint — a few hundred bytes per page instead of
+ * serializing every theme's tokens. Consumer custom themes (absent from the
+ * static CSS) are emitted once as a <style> block alongside the script.
+ */
 export function CmThemeScript({
   customThemes,
   defaultThemeName = defaultTheme.name,
+  nonce,
 }: CmThemeScriptProps = {}) {
   const themeRegistry = extendThemes(customThemes);
-  const fallbackTheme = themeRegistry[defaultThemeName] ?? defaultTheme;
-  const fallbackThemeName = JSON.stringify(fallbackTheme.name);
+  const fallbackThemeName = themeRegistry[defaultThemeName] ? defaultThemeName : defaultTheme.name;
+  const customCSS = customThemeCSS(themeRegistry);
 
   const script = `(() => {
+    const fallback = ${JSON.stringify(fallbackThemeName)};
     try {
-      const registry = ${JSON.stringify(themeToCSSVars(fallbackTheme))};
+      const names = ${JSON.stringify(Object.keys(themeRegistry))};
       const stored = window.localStorage.getItem('${LOCAL_STORAGE_KEY}');
-      const preferredThemeName = stored || ${fallbackThemeName};
-      const themes = ${JSON.stringify(
-        Object.fromEntries(
-          Object.entries(themeRegistry).map(([name, theme]) => [name, themeToCSSVars(theme)]),
-        ),
-      )};
-      const themeName = themes[preferredThemeName] ? preferredThemeName : ${fallbackThemeName};
+      const themeName = stored && names.includes(stored) ? stored : fallback;
       document.documentElement.setAttribute('data-theme', themeName);
-      const vars = themes[themeName] || registry;
-      for (const key in vars) {
-        document.documentElement.style.setProperty(key, vars[key]);
-      }
     } catch (err) {
-      console.error('Failed to hydrate theme', err);
+      document.documentElement.setAttribute('data-theme', fallback);
     }
   })();`;
 
   return (
-    <script
-      id="cm-theme-script"
-      suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: script }}
-    />
+    <>
+      {customCSS ? (
+        <style id="cm-theme-custom" nonce={nonce} dangerouslySetInnerHTML={{ __html: customCSS }} />
+      ) : null}
+      <script
+        id="cm-theme-script"
+        nonce={nonce}
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: script }}
+      />
+    </>
   );
 }

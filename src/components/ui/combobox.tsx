@@ -15,6 +15,8 @@ import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { CmPortal } from "./portal.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
+import { useListboxKeyboard } from "../../hooks/use-listbox-keyboard.js";
 
 export type CmComboboxItem = {
   value: string;
@@ -225,7 +227,34 @@ export function CmCombobox({
     setQuery(getDisplayValue(item));
   }, [active?.value, getDisplayValue, isFocused, items, selectedInitialValue]);
 
+  const {
+    activeIndex,
+    setActiveIndex,
+    listboxId,
+    getOptionProps,
+    triggerProps: keyboardProps,
+  } = useListboxKeyboard({
+    open: isOpen,
+    setOpen: setIsOpen,
+    itemCount: filtered.length,
+    onActivate: (index) => {
+      const item = filtered[index];
+      if (item && !item.disabled) handleSelect(item);
+    },
+    initialIndex: filtered.findIndex((item) => item.value === (value ?? active?.value)),
+    textInput: true,
+    disabled,
+  });
+
+  // Typing changes the filter; highlight follows the first match.
+  useEffect(() => {
+    if (isOpen) setActiveIndex(filtered.length > 0 ? 0 : -1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
   useClickOutside([containerRef, panelRef], () => setIsOpen(false));
+
+  useEscapeKey(isOpen, () => setIsOpen(false));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -358,8 +387,14 @@ export function CmCombobox({
             onBlur={handleBlur}
             placeholder={placeholder}
             disabled={disabled}
+            role="combobox"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-autocomplete="list"
             data-ui-input="true"
             className="cm-combobox__input"
+            {...keyboardProps}
+            aria-controls={listboxId}
           />
         </div>
 
@@ -411,15 +446,20 @@ export function CmCombobox({
               zIndex: 9999,
               ...portalThemeStyle,
             }}
+            id={listboxId}
+            role="listbox"
             className="cm-combobox__popover"
           >
             {filtered.length === 0
               ? (emptyState ?? <div className="cm-combobox__empty">{emptyMessage}</div>)
-              : filtered.map((item) => (
+              : filtered.map((item, index) => (
                   <CmButton
                     unstyled
                     key={item.value}
                     type="button"
+                    role="option"
+                    tabIndex={-1}
+                    aria-selected={active?.value === item.value}
                     disabled={item.disabled}
                     onMouseDown={(event) => {
                       event.preventDefault();
@@ -427,12 +467,14 @@ export function CmCombobox({
                     }}
                     className={cn(
                       "cm-combobox__option",
+                      index === activeIndex && "cm-combobox__option--active",
                       item.disabled
                         ? "cm-combobox__option--disabled"
                         : active?.value === item.value
                           ? "cm-combobox__option--selected"
                           : "",
                     )}
+                    {...getOptionProps(index)}
                   >
                     <span className="cm-combobox__option-label">{item.label}</span>
                     {item.description ? (

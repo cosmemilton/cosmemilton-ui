@@ -10,6 +10,7 @@ import { cmDensityClass, type CmDensity } from "./types.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useFloating } from "../../hooks/use-floating.js";
+import { useListboxKeyboard } from "../../hooks/use-listbox-keyboard.js";
 
 type SelectOption = {
   value: string;
@@ -127,6 +128,16 @@ export function CmSelect({
     [onChange],
   );
 
+  const { activeIndex, listboxId, getOptionProps, triggerProps } = useListboxKeyboard({
+    open,
+    setOpen,
+    itemCount: options.length,
+    onActivate: (index) => onChange(options[index].value),
+    initialIndex: options.findIndex((opt) => opt.value === value),
+    getLabel: (index) => options[index].label,
+    disabled,
+  });
+
   const handleClear = useCallback(() => {
     if (disabled) return;
     onChange("");
@@ -217,10 +228,12 @@ export function CmSelect({
           onClick={() => !disabled && setOpen((o) => !o)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label={label || placeholder || "CmSelect option"}
           className="cm-select__trigger"
+          {...triggerProps}
         >
           <span
             className={cn(
@@ -270,11 +283,12 @@ export function CmSelect({
         <CmPortal>
           <div
             ref={panelRef}
+            id={listboxId}
             role="listbox"
             style={portalThemeStyle}
             className="cm-select__popover"
           >
-            {options.map((option) => {
+            {options.map((option, index) => {
               const isSelected = option.value === value;
               return (
                 <CmButton
@@ -282,9 +296,15 @@ export function CmSelect({
                   key={option.value}
                   type="button"
                   role="option"
+                  tabIndex={-1}
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
-                  className={cn("cm-select__option", isSelected && "cm-select__option--selected")}
+                  className={cn(
+                    "cm-select__option",
+                    isSelected && "cm-select__option--selected",
+                    index === activeIndex && "cm-select__option--active",
+                  )}
+                  {...getOptionProps(index)}
                 >
                   {showOptionIcons && option.icon && <CmIcon name={option.icon} size={16} />}
                   <span className="cm-select__option-label">{option.label}</span>

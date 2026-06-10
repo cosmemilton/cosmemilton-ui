@@ -45,9 +45,9 @@ describe("CmCombobox", () => {
 
     await user.click(screen.getByPlaceholderText("Pick"));
 
-    expect(screen.getByRole("button", { name: "Apple" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Banana" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Cherry" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Apple" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Banana" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Cherry" })).toBeInTheDocument();
   });
 
   it("filters options as the user types", async () => {
@@ -58,8 +58,8 @@ describe("CmCombobox", () => {
     await user.click(input);
     await user.type(input, "ban");
 
-    expect(screen.getByRole("button", { name: "Banana" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Apple" })).not.toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Banana" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Apple" })).not.toBeInTheDocument();
   });
 
   it("shows the empty message when nothing matches", async () => {
@@ -80,11 +80,31 @@ describe("CmCombobox", () => {
 
     const input = screen.getByPlaceholderText("Pick");
     await user.click(input);
-    await user.click(screen.getByRole("button", { name: "Cherry" }));
+    await user.click(screen.getByRole("option", { name: "Cherry" }));
 
     expect(onChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({ value: "cherry", label: "Cherry" }),
     );
     expect(input).toHaveValue("Cherry");
+  });
+
+  it("selects the highlighted option with the keyboard while filtering", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(<ControlledCombobox onChangeSpy={onChangeSpy} />);
+
+    const input = screen.getByPlaceholderText("Pick");
+    await user.click(input);
+    await user.type(input, "ba");
+    expect(input).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: /Banana/ }).id,
+    );
+
+    await user.keyboard("{Enter}");
+    expect(onChangeSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ value: "banana", label: "Banana" }),
+    );
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 });

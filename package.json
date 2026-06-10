@@ -1,6 +1,6 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -29,7 +29,11 @@
     "dist"
   ],
   "sideEffects": [
-    "./dist/styles.css"
+    "./dist/styles.css",
+    "./dist/styles.min.css",
+    "./dist/components.css",
+    "./dist/components.min.css",
+    "./dist/index.js"
   ],
   "exports": {
     ".": {
@@ -52,7 +56,11 @@
       "import": "./dist/theme.js",
       "default": "./dist/theme.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./styles.min.css": "./dist/styles.min.css",
+    "./components.css": "./dist/components.css",
+    "./components.min.css": "./dist/components.min.css",
+    "./package.json": "./package.json"
   },
   "engines": {
     "node": ">=18"
@@ -61,7 +69,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/copy-styles.mjs",
+    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -79,7 +87,7 @@
   },
   "peerDependencies": {
     "@iconify/react": ">=5",
-    "next": ">=15 || >=16",
+    "next": ">=15",
     "react": ">=18.2 || >=19",
     "react-dom": ">=18.2 || >=19"
   },
@@ -108,13 +116,16 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.7",
+    "autoprefixer": "^10.5.0",
     "axe-core": "^4.11.4",
+    "cssnano": "^8.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "postcss": "^8.5.14",
     "prettier": "^3.8.3",
     "publint": "^0.3.21",
     "typescript": "^5",
@@ -123,6 +134,6 @@
     "vitest-axe": "^0.1.0"
   },
   "overrides": {
-    "postcss": "8.5.14"
+    "postcss": "^8.5.14"
   }
 }

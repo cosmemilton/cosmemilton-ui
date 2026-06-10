@@ -8,6 +8,7 @@ import { CmPortal } from "./portal.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useFloating } from "../../hooks/use-floating.js";
+import { useListboxKeyboard } from "../../hooks/use-listbox-keyboard.js";
 
 export type CmMultiSelectOption = {
   value: string;
@@ -104,6 +105,17 @@ export function CmMultiSelect({
     [onChange, value],
   );
 
+  const { activeIndex, listboxId, getOptionProps, triggerProps } = useListboxKeyboard({
+    open,
+    setOpen,
+    itemCount: options.length,
+    onActivate: (index) => toggleValue(options[index].value),
+    initialIndex: options.findIndex((option) => selected.has(option.value)),
+    getLabel: (index) => options[index].label,
+    closeOnActivate: false,
+    disabled,
+  });
+
   useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
 
   useEffect(() => {
@@ -167,10 +179,12 @@ export function CmMultiSelect({
           onClick={() => !disabled && setOpen((current) => !current)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label={label ?? placeholder}
           className="cm-multi-select__trigger"
+          {...triggerProps}
         >
           <span
             className={cn(
@@ -203,12 +217,13 @@ export function CmMultiSelect({
         <CmPortal>
           <div
             ref={panelRef}
+            id={listboxId}
             role="listbox"
             aria-multiselectable="true"
             style={portalThemeStyle}
             className="cm-multi-select__popover"
           >
-            {options.map((option) => {
+            {options.map((option, index) => {
               const checked = selected.has(option.value);
               return (
                 <CmButton
@@ -216,12 +231,15 @@ export function CmMultiSelect({
                   key={option.value}
                   type="button"
                   role="option"
+                  tabIndex={-1}
                   aria-selected={checked}
                   onClick={() => toggleValue(option.value)}
                   className={cn(
                     "cm-multi-select__option",
                     checked && "cm-multi-select__option--selected",
+                    index === activeIndex && "cm-multi-select__option--active",
                   )}
+                  {...getOptionProps(index)}
                 >
                   <span
                     className={cn(

@@ -115,6 +115,7 @@ export const schoolTheme: ThemeConfig = {
 
 export const darkTheme: ThemeConfig = {
   name: "cm-dark",
+  colorScheme: "dark",
   colors: {
     background: "#020617",
     foreground: "#f8fafc",
@@ -475,6 +476,7 @@ export const violetTheme: ThemeConfig = {
 
 export const midnightTheme: ThemeConfig = {
   name: "cm-midnight",
+  colorScheme: "dark",
   colors: {
     background: "#070d1a",
     foreground: "#e2e8f0",
@@ -591,6 +593,7 @@ export const roseTheme: ThemeConfig = {
 
 export const auroraTheme: ThemeConfig = {
   name: "cm-aurora",
+  colorScheme: "dark",
   colors: {
     background: "#11110f",
     foreground: "#fff8e6",

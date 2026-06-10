@@ -22,7 +22,9 @@ npm install cosmemilton-ui react react-dom
 
 ## Uso
 
-Importe o CSS público uma vez na aplicação e os componentes pelo entry point de cliente:
+Importe o CSS público uma vez na aplicação e os componentes pelo entry point de cliente.
+O CSS já inclui os tokens de todos os temas embutidos — nenhum setup de tema é
+necessário para renderizar componentes estilizados (tema padrão `cm-neutral`):
 
 ```tsx
 import "cosmemilton-ui/styles.css";
@@ -33,21 +35,57 @@ export function Example() {
 }
 ```
 
+Para **trocar de tema** (e lembrar a escolha do usuário sem flash no SSR), adicione o
+`CmThemeScript` no `<head>` do layout — Next App Router:
+
+```tsx
+// app/layout.tsx
+import "cosmemilton-ui/styles.css";
+import { CmThemeScript } from "cosmemilton-ui/theme";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <CmThemeScript />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+Qualquer tema embutido também pode ser fixado sem JavaScript:
+`<html data-theme="cm-dark">`. Para sobrescrever tokens, use CSS comum:
+
+```css
+:root[data-theme="cm-neutral"] {
+  --color-primary: #7c3aed;
+}
+```
+
 ### Entry points
 
-| Import                      | Conteúdo                                                                                                              |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `cosmemilton-ui/client`     | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
-| `cosmemilton-ui/server`     | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
-| `cosmemilton-ui/theme`      | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
-| `cosmemilton-ui/styles.css` | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
+| Import                          | Conteúdo                                                                                                              |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `cosmemilton-ui/client`         | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
+| `cosmemilton-ui/server`         | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
+| `cosmemilton-ui/theme`          | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
+| `cosmemilton-ui/styles.css`     | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
+| `cosmemilton-ui/components.css` | CSS **sem o reset global** — para adoção incremental em apps existentes (o estilo da página continua do app).         |
+
+Ambos também existem minificados (`styles.min.css`, `components.min.css`). Todo o CSS
+é publicado dentro de `@layer cm.reset, cm.tokens, cm.components` — qualquer CSS seu
+fora de layer sempre vence o da biblioteca, sem guerra de especificidade.
 
 > **v3** removeu o export raiz `cosmemilton-ui`. Importe sempre por um dos entry
 > points acima. O guia de migração 2.x → 3.0 está nas docs vivas.
 
 ## React puro (Vite/CRA)
 
-`cosmemilton-ui` não exige Next em runtime. Envolva a aplicação com o provider de tema:
+`cosmemilton-ui` não exige Next em runtime. Importar o CSS basta para renderizar; o
+provider de tema é necessário apenas para troca de tema em runtime (`CmThemeToggle`,
+`useCmTheme`, persistência em `localStorage`, temas custom):
 
 ```tsx
 import "cosmemilton-ui/styles.css";

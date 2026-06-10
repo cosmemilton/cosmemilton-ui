@@ -1,0 +1,38 @@
+/* Scoped reboot — zero-specificity (:where) substitute for the global reboot.
+   This is what makes components.css safe inside an existing app: component
+   subtrees get the box model and form-control normalization they rely on,
+   while page-level styling (body background, fonts, links, ::selection) stays
+   owned by the host app. Also present in styles.css, where the global reboot
+   already covers everything here. */
+
+:where([class*="cm-"]),
+:where([class*="cm-"])::before,
+:where([class*="cm-"])::after,
+:where([class*="cm-"] *),
+:where([class*="cm-"] *)::before,
+:where([class*="cm-"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(button[class*="cm-"], input[class*="cm-"], select[class*="cm-"], textarea[class*="cm-"]),
+:where([class*="cm-"]) :where(button, input, select, textarea) {
+  color-scheme: inherit;
+  font: inherit;
+}
+
+:where(button[class*="cm-"], [class*="cm-"] button) {
+  cursor: pointer;
+}
+
+:where(button[class*="cm-"], [class*="cm-"] button):disabled {
+  cursor: default;
+}
+
+:where([class*="cm-"]) :where(img, svg, video, canvas) {
+  display: block;
+  max-width: 100%;
+}
+
+:where([class*="cm-"][hidden], [class*="cm-"] [hidden]) {
+  display: none !important;
+}

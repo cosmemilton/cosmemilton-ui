@@ -2,10 +2,8 @@
   color-scheme: light;
 }
 
-[data-theme="cm-dark"],
-[data-theme="cm-midnight"] {
-  color-scheme: dark;
-}
+/* Dark themes declare `colorScheme: "dark"` in src/lib/theme/themes.ts; the
+   generated theme-tokens partial emits their color-scheme per theme block. */
 
 *,
 *::before,

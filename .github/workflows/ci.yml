@@ -37,3 +37,18 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Validate package (publint)
+        run: npx publint
+
+      - name: Validate types resolution (attw)
+        run: npx attw --pack . --profile esm-only
+
+      - name: Check tarball contents
+        run: |
+          npm pack --dry-run --json | node -e "
+            const files = JSON.parse(require('fs').readFileSync(0, 'utf8'))[0].files.map(f => f.path);
+            const stray = files.filter(f => !f.startsWith('dist/') && !['package.json','README.md','LICENSE','CHANGELOG.md'].includes(f));
+            if (stray.length) { console.error('Unexpected files in tarball:', stray); process.exit(1); }
+            console.log(files.length + ' files, all expected.');
+          "
