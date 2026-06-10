@@ -10,9 +10,9 @@ import {
   type ReactNode,
 } from "react";
 import {
+  customThemeCSS,
   extendThemes,
   defaultTheme,
-  themeToCSSVars,
   type CustomThemeInput,
   type ThemeConfig,
   type ThemeRegistry,
@@ -50,17 +50,34 @@ export type CmThemeProviderProps = {
   defaultChrome?: CmThemeChrome;
 };
 
+// Built-in theme tokens ship statically inside styles.css, so switching themes
+// is just an attribute flip — no inline custom properties on <html>, which
+// would outrank any consumer stylesheet and block token overrides via CSS.
 const applyTheme = (theme: ThemeConfig) => {
   if (typeof document === "undefined") return;
 
-  const root = document.documentElement;
-  root.setAttribute("data-theme", theme.name);
-  const variables = themeToCSSVars(theme);
-  Object.entries(variables).forEach(([token, value]) => {
-    if (value !== undefined && value !== null) {
-      root.style.setProperty(token, String(value));
-    }
-  });
+  document.documentElement.setAttribute("data-theme", theme.name);
+};
+
+// Consumer custom themes are not part of the static CSS; inject their token
+// blocks once into a shared <style> tag. Reuses the tag CmThemeScript may have
+// already server-rendered (same id) to avoid duplicate rules.
+const CUSTOM_THEME_STYLE_ID = "cm-theme-custom";
+
+const ensureCustomThemeStyles = (registry: ThemeRegistry) => {
+  if (typeof document === "undefined") return;
+
+  const css = customThemeCSS(registry);
+  if (!css) return;
+  let styleElement = document.getElementById(CUSTOM_THEME_STYLE_ID) as HTMLStyleElement | null;
+  if (!styleElement) {
+    styleElement = document.createElement("style");
+    styleElement.id = CUSTOM_THEME_STYLE_ID;
+    document.head.appendChild(styleElement);
+  }
+  if (styleElement.textContent !== css) {
+    styleElement.textContent = css;
+  }
 };
 
 const applyThemePreferences = (density: CmDensity, chrome: CmThemeChrome) => {
@@ -150,6 +167,10 @@ export function CmThemeProvider({
     },
     [setChrome],
   );
+
+  useEffect(() => {
+    ensureCustomThemeStyles(themeRegistry);
+  }, [themeRegistry]);
 
   useEffect(() => {
     applyTheme(theme);

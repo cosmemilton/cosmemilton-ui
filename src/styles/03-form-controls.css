@@ -309,7 +309,8 @@
   color: var(--color-popover-foreground)
 }
 
-.cm-combobox__option:not(.cm-combobox__option--disabled):not(.cm-combobox__option--selected):hover {
+.cm-combobox__option:not(.cm-combobox__option--disabled):not(.cm-combobox__option--selected):hover,
+.cm-combobox__option--active:not(.cm-combobox__option--disabled):not(.cm-combobox__option--selected) {
   background: var(--color-muted)
 }
 
@@ -350,11 +351,13 @@
   padding: .375rem .75rem
 }
 
-.cm-select__option:hover {
+.cm-select__option:hover,
+.cm-select__option--active {
   background: var(--select-option-hover-background, var(--color-muted))
 }
 
-.cm-multi-select__option:hover {
+.cm-multi-select__option:hover,
+.cm-multi-select__option--active {
   background: var(--multi-select-option-hover-background, var(--color-muted))
 }
 

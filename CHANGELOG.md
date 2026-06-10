@@ -1,5 +1,31 @@
 # Changelog
 
+## 3.4.0
+
+### Minor Changes
+
+- CSS publicado em cascade layers e novos bundles:
+  - Todo o CSS agora vem dentro de `@layer cm.reset, cm.tokens, cm.components` — CSS do consumidor fora de layer sempre vence o da biblioteca, sem guerra de especificidade.
+  - Novo `cosmemilton-ui/components.css`: bundle **sem o reset global** (sem estilos em `body`/`html`/`a`/etc.), com um reboot escopado de especificidade zero (`:where`) restrito às subárvores `.cm-*` — adoção incremental em apps existentes sem alterar a página.
+  - Versões minificadas publicadas: `cosmemilton-ui/styles.min.css` e `cosmemilton-ui/components.min.css`.
+  - Pipeline de CSS com PostCSS: autoprefixer + cssnano sobre o alvo de browsers em `.browserslistrc` (piso `color-mix()`, baseline 2023); o build agora falha se algum partial tiver erro de sintaxe.
+  - Higiene de pacote: export `./package.json`; `dist/index.js` (guard de migração do entry raiz) declarado em `sideEffects` para não ser removido por tree-shaking; peer `next` simplificado para `>=15`.
+
+- Navegação completa por teclado em `CmSelect`, `CmMultiSelect` e `CmCombobox` (padrões WAI-ARIA listbox/combobox):
+  - Novo hook `useListboxKeyboard`: setas (↑/↓), `Home`/`End`, `Enter`/`Espaço`, `Tab`, typeahead com acúmulo de prefixo, destaque via `aria-activedescendant` (foco DOM permanece no gatilho) e `scrollIntoView` do item ativo.
+  - Gatilhos agora expõem `role="combobox"` + `aria-controls`; opções recebem `id` estável, `tabIndex={-1}` e estado visual `--active` que acompanha teclado e mouse.
+  - `CmMultiSelect`: `Enter`/`Espaço` alternam a opção sem fechar o popup.
+  - `CmCombobox`: input com `role="combobox"`/`aria-autocomplete="list"`, setas navegam a lista filtrada (destaque segue o primeiro resultado ao digitar), `Enter` seleciona, `Escape` fecha (antes não havia handler de Escape).
+  - **Observação para testes dos consumidores:** o gatilho do select/multi-select agora tem role `combobox` (antes `button`) — queries como `getByRole("button", { name: … })` devem virar `getByRole("combobox", { name: … })`.
+
+- Temas como CSS estático: todos os temas embutidos agora são publicados dentro de `styles.css` (`:root` + um bloco `:root[data-theme="…"]` por tema), gerados no build a partir do registry. Importar o CSS passa a ser suficiente para renderizar componentes estilizados — sem JavaScript de tema.
+  - `CmThemeScript` ficou ~99% menor: define apenas `data-theme` antes do paint (e emite um `<style>` apenas para temas custom), em vez de serializar todos os temas em todo HTML SSR.
+  - `CmThemeProvider` não injeta mais tokens como style inline no `<html>` — trocar de tema é um flip de atributo. Consequência importante: agora dá para sobrescrever tokens via CSS do app (`:root[data-theme="cm-neutral"] { --color-primary: … }`).
+  - Novo campo `colorScheme?: "light" | "dark"` no `ThemeConfig`, emitido como `color-scheme` no bloco do tema. `cm-dark`, `cm-midnight` e `cm-aurora` já o declaram (corrige scrollbars/controles nativos claros no tema `cm-aurora`, que estava fora do seletor hardcoded antigo).
+  - Novos exports em `cosmemilton-ui/theme`: `themeToCSSBlock`, `customThemeCSS`, `themeSelector`.
+
+- `CmThemeScript` aceita a prop `nonce`, repassada às tags inline `<script>`/`<style>` — necessário em apps com Content-Security-Policy sem `'unsafe-inline'`.
+
 ## 3.3.0
 
 ### Minor Changes

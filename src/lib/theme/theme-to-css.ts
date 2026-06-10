@@ -5,9 +5,11 @@ import type {
   ThemeLayerScale,
   ThemeMotionDurationScale,
   ThemeMotionEaseScale,
+  ThemeRegistry,
   ThemeSpaceScale,
   ThemeZIndexScale,
 } from "./types.js";
+import { themes } from "./themes.js";
 
 type ThemeKV = [string, string];
 type StringScale = Record<string, string>;
@@ -124,3 +126,37 @@ export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
 
   return Object.fromEntries(entries);
 };
+
+/** Escapes a theme name for use inside a double-quoted CSS attribute selector. */
+const escapeAttributeValue = (name: string) => name.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
+export const themeSelector = (theme: ThemeConfig) =>
+  `:root[data-theme="${escapeAttributeValue(theme.name)}"]`;
+
+/**
+ * Renders a theme as a static CSS rule: all design tokens plus `color-scheme`
+ * (when the theme declares one). The build uses this to ship every built-in
+ * theme inside styles.css; the runtime uses it for consumer custom themes.
+ */
+export const themeToCSSBlock = (theme: ThemeConfig, selector = themeSelector(theme)): string => {
+  const lines = Object.entries(themeToCSSVars(theme)).map(([token, value]) => {
+    return `  ${token}: ${value};`;
+  });
+  if (theme.colorScheme) {
+    lines.push(`  color-scheme: ${theme.colorScheme};`);
+  }
+  return `${selector} {\n${lines.join("\n")}\n}`;
+};
+
+/**
+ * CSS for the themes in `registry` that are NOT the stock built-ins — consumer
+ * custom themes and consumer overrides of a built-in name. The selector
+ * repeats the attribute to reach specificity (0,3,0), one level above the
+ * statically shipped blocks (0,2,0), so runtime-injected custom themes win
+ * regardless of where the consumer's bundler places styles.css.
+ */
+export const customThemeCSS = (registry: ThemeRegistry): string =>
+  Object.values(registry)
+    .filter((theme) => themes[theme.name] !== theme)
+    .map((theme) => themeToCSSBlock(theme, `${themeSelector(theme)}[data-theme]`))
+    .join("\n");
