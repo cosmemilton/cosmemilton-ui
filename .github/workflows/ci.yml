@@ -42,7 +42,8 @@ jobs:
         run: npx publint
 
       - name: Validate types resolution (attw)
-        run: npx attw --pack . --profile esm-only
+        # Exports de CSS não resolvem para JS/types por natureza — fora do escopo do attw.
+        run: npx attw --pack . --profile esm-only --exclude-entrypoints styles.css styles.min.css components.css components.min.css
 
       - name: Check tarball contents
         run: |
