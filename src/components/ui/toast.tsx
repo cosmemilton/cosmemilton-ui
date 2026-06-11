@@ -140,6 +140,11 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
       >
         ✕
       </CmButton>
+      <span
+        className="cm-toast__progress"
+        style={{ animationDuration: `${item.duration}ms` }}
+        aria-hidden="true"
+      />
     </div>
   );
 }

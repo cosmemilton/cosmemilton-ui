@@ -4,7 +4,6 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
-import { useOptionalCmTheme } from "../theme/theme-provider.js";
 import { cmDensityClass, type CmDensity, type CmSize, type CmTone } from "./types.js";
 
 export type CmButtonVariant = "solid" | "outline" | "ghost" | "soft" | "surface" | "link" | "plain";
@@ -117,17 +116,8 @@ export const CmButton = forwardRef<HTMLButtonElement, CmButtonProps>(
     },
     ref,
   ) => {
-    const theme = useOptionalCmTheme();
-    const invertHeader = theme?.invertHeader ?? false;
-
-    // Quando invertHeader ativo, botoes solid danger/warning usam primary para harmonia com o tema.
-    const effectiveTone =
-      invertHeader && variant === "solid" && (tone === "danger" || tone === "warning")
-        ? "primary"
-        : tone;
-
     const base = cn(
-      buttonVariants({ variant, tone: effectiveTone, shape }),
+      buttonVariants({ variant, tone, shape }),
       iconOnly ? iconOnlySizeMap[size] : sizeMap[size],
       fullWidth && "cm-button--full-width",
       active && "cm-button--active",

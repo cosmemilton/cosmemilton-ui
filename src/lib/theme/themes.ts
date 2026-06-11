@@ -139,8 +139,8 @@ export const darkTheme: ThemeConfig = {
     dangerForeground: "#ffffff",
     info: "#0ea5e9",
     infoForeground: "#082f49",
-    border: "#1e293b",
-    input: "#334155",
+    border: "#27354d",
+    input: "#3a4a63",
     ring: "#3b82f6",
     selection: "#1d4ed8",
     selectionForeground: "#e0f2fe",
@@ -160,12 +160,14 @@ export const darkTheme: ThemeConfig = {
     xl: "0.75rem",
     full: "9999px",
   },
+  // Sombras escuras nítidas: profundidade vem de preto + anel de 1px,
+  // sem glow colorido que deixa as superfícies com aparência borrada.
   shadows: {
-    xs: "0 1px 2px 0 rgba(0, 0, 0, 0.35)",
-    sm: "0 1px 3px 0 rgba(0, 0, 0, 0.45)",
-    md: "0 10px 30px -20px rgba(147, 197, 253, 0.35)",
-    lg: "0 22px 54px -32px rgba(45, 212, 191, 0.32)",
-    xl: "0 34px 80px -42px rgba(56, 189, 248, 0.28)",
+    xs: "0 1px 2px 0 rgba(0, 0, 0, 0.45)",
+    sm: "0 2px 4px -1px rgba(0, 0, 0, 0.5)",
+    md: "0 0 0 1px rgba(148, 163, 184, 0.08), 0 6px 16px -8px rgba(0, 0, 0, 0.55)",
+    lg: "0 0 0 1px rgba(148, 163, 184, 0.09), 0 12px 28px -12px rgba(0, 0, 0, 0.6)",
+    xl: "0 0 0 1px rgba(148, 163, 184, 0.1), 0 20px 48px -16px rgba(0, 0, 0, 0.65)",
   },
 };
 
@@ -521,12 +523,14 @@ export const midnightTheme: ThemeConfig = {
     xl: "1.25rem",
     full: "9999px",
   },
+  // Sombras escuras nítidas: base preta-azulada com anel indigo discreto,
+  // sem halos rosa/violeta que tiravam a nitidez das superfícies.
   shadows: {
-    xs: "0 1px 2px 0 rgba(139, 92, 246, 0.14)",
-    sm: "0 2px 5px 0 rgba(244, 114, 182, 0.15)",
-    md: "0 14px 34px -20px rgba(139, 92, 246, 0.48)",
-    lg: "0 26px 64px -34px rgba(244, 114, 182, 0.36)",
-    xl: "0 42px 96px -48px rgba(56, 189, 248, 0.30)",
+    xs: "0 1px 2px 0 rgba(2, 6, 23, 0.5)",
+    sm: "0 2px 5px -1px rgba(2, 6, 23, 0.55)",
+    md: "0 0 0 1px rgba(129, 140, 248, 0.08), 0 8px 20px -10px rgba(2, 6, 23, 0.6)",
+    lg: "0 0 0 1px rgba(129, 140, 248, 0.09), 0 14px 32px -14px rgba(2, 6, 23, 0.65)",
+    xl: "0 0 0 1px rgba(129, 140, 248, 0.1), 0 22px 52px -18px rgba(2, 6, 23, 0.7)",
   },
 };
 
@@ -638,12 +642,14 @@ export const auroraTheme: ThemeConfig = {
     xl: "1.25rem",
     full: "9999px",
   },
+  // Sombras escuras nítidas: o anel âmbar de 1px mantém a identidade aurora,
+  // mas o glow difuso (0 0 NNpx) saiu — era ele que borrava os cards.
   shadows: {
-    xs: "0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 183, 3, 0.08)",
-    sm: "0 6px 18px -14px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(132, 230, 191, 0.10)",
-    md: "0 18px 48px -28px rgba(0, 0, 0, 0.78), 0 0 32px -24px rgba(255, 183, 3, 0.85)",
-    lg: "0 28px 72px -38px rgba(0, 0, 0, 0.82), 0 0 46px -30px rgba(132, 230, 191, 0.72)",
-    xl: "0 44px 110px -56px rgba(0, 0, 0, 0.88), 0 0 70px -44px rgba(255, 111, 97, 0.76)",
+    xs: "0 1px 2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 248, 230, 0.05)",
+    sm: "0 2px 6px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 248, 230, 0.06)",
+    md: "0 8px 20px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 183, 3, 0.12)",
+    lg: "0 14px 32px -16px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 183, 3, 0.12)",
+    xl: "0 22px 52px -22px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 183, 3, 0.14)",
   },
   space: {
     none: "0",
@@ -706,14 +712,16 @@ export const auroraTheme: ThemeConfig = {
       iconSize: "1.25rem",
     },
   },
+  // Tinturas bem mais leves que antes (4–6% vs 10–18%): o degradê forte de
+  // primary/secondary sobre os cards lavava o contraste do texto.
   layers: {
-    base: "radial-gradient(circle at 12% 0%, rgba(255, 183, 3, 0.14), transparent 32%), radial-gradient(circle at 88% 14%, rgba(132, 230, 191, 0.13), transparent 34%), var(--color-background)",
+    base: "radial-gradient(circle at 12% 0%, rgba(255, 183, 3, 0.08), transparent 30%), radial-gradient(circle at 88% 14%, rgba(132, 230, 191, 0.07), transparent 32%), var(--color-background)",
     surface:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 90%, var(--color-primary) 10%), var(--color-card))",
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 96%, var(--color-primary) 4%), var(--color-card))",
     elevated:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 82%, var(--color-secondary) 18%), color-mix(in srgb, var(--color-card) 94%, var(--color-background) 6%))",
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 94%, var(--color-secondary) 6%), var(--color-card))",
     floating:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-popover) 88%, var(--color-primary) 12%), color-mix(in srgb, var(--color-popover) 90%, var(--color-secondary) 10%))",
+      "linear-gradient(145deg, color-mix(in srgb, var(--color-popover) 95%, var(--color-primary) 5%), var(--color-popover))",
     overlay: "rgba(12, 12, 10, 0.72)",
   },
 };

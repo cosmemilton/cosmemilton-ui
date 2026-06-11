@@ -16,6 +16,15 @@
   grid-column: span var(--grid-span-base) / span var(--grid-span-base);
 }
 
+/* O container estica os itens de grid (align-items: stretch), mas um card
+   embrulhado em .cm-grid não acompanha o wrapper esticado — sem isto, linhas
+   com cards de conteúdos diferentes ficam com alturas desiguais. */
+.cm-grid > .cm-card,
+.cm-grid > .cm-metric-card,
+.cm-grid > .cm-link--card {
+  height: 100%;
+}
+
 @media (min-width: 640px) {
   .cm-grid-container {
     grid-template-columns: repeat(var(--grid-columns-sm), minmax(0, 1fr));

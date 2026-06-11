@@ -80,7 +80,9 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
       tabIndex={onClick ? (tabIndex ?? 0) : tabIndex}
       aria-busy={loading || undefined}
       onClick={onClick}
-      onKeyDown={handleKeyDown}
+      // Só anexa handlers quando há interação — mantém o componente
+      // renderizável em Server Components (RSC não aceita props de função).
+      onKeyDown={onClick || onKeyDown ? handleKeyDown : undefined}
       {...props}
     >
       <div className="cm-metric-card__header">

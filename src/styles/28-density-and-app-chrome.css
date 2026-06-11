@@ -416,6 +416,21 @@
   color: var(--cm-topbar-brand-fg);
 }
 
+/* CmText solto nos slots da topbar brand: tons neutros adaptam ao chrome
+   (mesmo tratamento que a sidebar brand já dá). Tons semânticos
+   (danger/success/warning) ficam intactos para não perder significado. */
+.cm-topbar--tone-brand .cm-text--default,
+.cm-topbar--tone-brand .cm-text--primary,
+.cm-app-shell--chrome-inverted .cm-topbar .cm-text--default,
+.cm-app-shell--chrome-inverted .cm-topbar .cm-text--primary {
+  color: var(--cm-topbar-brand-fg);
+}
+
+.cm-topbar--tone-brand .cm-text--muted,
+.cm-app-shell--chrome-inverted .cm-topbar .cm-text--muted {
+  color: var(--cm-topbar-brand-muted);
+}
+
 .cm-topbar--tone-brand .cm-link--default:hover,
 .cm-topbar--tone-brand .cm-link--quiet:hover,
 .cm-topbar--tone-brand .cm-link--active,
@@ -1247,6 +1262,19 @@
   border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
   background: var(--color-muted);
   color: var(--color-primary);
+}
+
+.cm-link--button.cm-link--tone-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.cm-link--button.cm-link--tone-primary:hover,
+.cm-link--button.cm-link--tone-primary.cm-link--active {
+  border-color: color-mix(in srgb, var(--color-primary) 86%, var(--color-foreground));
+  background: color-mix(in srgb, var(--color-primary) 86%, var(--color-foreground));
+  color: var(--color-primary-foreground);
 }
 
 .cm-link:focus-visible {

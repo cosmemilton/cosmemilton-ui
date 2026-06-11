@@ -616,7 +616,7 @@
 .cm-dialog__header {
   position: relative;
   flex-shrink: 0;
-  padding: 1.25rem 1.5rem 1rem
+  padding: 1.125rem 1.5rem
 }
 
 .cm-dialog__heading {
@@ -624,6 +624,7 @@
 }
 
 .cm-dialog__title {
+  margin: 0;
   color: var(--color-foreground);
   font-weight: 600
 }
@@ -640,7 +641,7 @@
 }
 
 .cm-dialog__description {
-  margin-top: .25rem;
+  margin: 0;
   color: var(--color-muted-foreground);
   font-size: .875rem
 }
@@ -1190,6 +1191,8 @@
 
 .cm-toast__item {
   pointer-events: auto;
+  position: relative;
+  overflow: hidden;
   display: flex;
   width: 100%;
   max-width: 24rem;
@@ -1218,31 +1221,61 @@
 .cm-toast__item--default {
   --cm-toast-border: var(--color-border);
   --cm-toast-bg: var(--color-card);
-  --cm-toast-fg: var(--color-card-foreground)
+  --cm-toast-fg: var(--color-card-foreground);
+  --cm-toast-accent: var(--color-primary)
 }
 
 .cm-toast__item--success {
   --cm-toast-border: var(--color-success);
   --cm-toast-bg: color-mix(in srgb, var(--color-success) 12%, var(--color-card));
-  --cm-toast-fg: color-mix(in srgb, var(--color-success) 70%, var(--color-foreground))
+  --cm-toast-fg: color-mix(in srgb, var(--color-success) 70%, var(--color-foreground));
+  --cm-toast-accent: var(--color-success)
 }
 
 .cm-toast__item--warning {
   --cm-toast-border: var(--color-warning);
   --cm-toast-bg: color-mix(in srgb, var(--color-warning) 14%, var(--color-card));
-  --cm-toast-fg: color-mix(in srgb, var(--color-warning) 70%, var(--color-foreground))
+  --cm-toast-fg: color-mix(in srgb, var(--color-warning) 70%, var(--color-foreground));
+  --cm-toast-accent: var(--color-warning)
 }
 
 .cm-toast__item--danger {
   --cm-toast-border: var(--color-danger);
   --cm-toast-bg: color-mix(in srgb, var(--color-danger) 12%, var(--color-card));
-  --cm-toast-fg: color-mix(in srgb, var(--color-danger) 70%, var(--color-foreground))
+  --cm-toast-fg: color-mix(in srgb, var(--color-danger) 70%, var(--color-foreground));
+  --cm-toast-accent: var(--color-danger)
 }
 
 .cm-toast__item--info {
   --cm-toast-border: var(--color-info);
   --cm-toast-bg: color-mix(in srgb, var(--color-info) 12%, var(--color-card));
-  --cm-toast-fg: color-mix(in srgb, var(--color-info) 70%, var(--color-foreground))
+  --cm-toast-fg: color-mix(in srgb, var(--color-info) 70%, var(--color-foreground));
+  --cm-toast-accent: var(--color-info)
+}
+
+/* Ampulheta: barra na borda inferior que encolhe (scaleX 1→0) durante a
+   exibição do toast; animation-duration vem inline, igual ao timer de dismiss. */
+.cm-toast__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--cm-toast-accent, var(--color-primary));
+  transform-origin: left;
+  animation-name: cm-toast-countdown;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards
+}
+
+@keyframes cm-toast-countdown {
+  from {
+    transform: scaleX(1)
+  }
+
+  to {
+    transform: scaleX(0)
+  }
 }
 
 .cm-toast__icon {

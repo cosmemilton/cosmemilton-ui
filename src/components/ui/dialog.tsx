@@ -171,13 +171,20 @@ export function CmDialog({
 
   if (!open) return <span ref={sourceRef} hidden />;
 
-  const hasHeader = title || description;
+  // O header tingido fica só com o título; a descrição renderiza no corpo,
+  // com o fundo de body — antes os dois dividiam o mesmo bloco tingido e
+  // liam como uma coisa só.
+  const hasHeader = Boolean(title);
+  const hasBody = Boolean(description || children);
   const dialogStyle: DialogToneStyle = {
     "--dialog-tone": toneColorMap[tone],
   };
+  // Tinta chapada e sutil: o degradê diagonal anterior desvanecia justamente
+  // na divisa com o corpo (e misturava --color-secondary, que em temas com
+  // secondary escuro sujava o header), fazendo header e body se confundirem.
   const headerBackground = invertHeader
-    ? "linear-gradient(135deg, color-mix(in srgb, var(--dialog-tone) 16%, var(--color-card)), color-mix(in srgb, var(--color-secondary) 10%, var(--color-card)))"
-    : "linear-gradient(135deg, color-mix(in srgb, var(--dialog-tone) 6%, var(--color-card)), var(--color-card))";
+    ? "color-mix(in srgb, var(--dialog-tone) 12%, var(--color-card))"
+    : "color-mix(in srgb, var(--dialog-tone) 7%, var(--color-card))";
 
   const titleClassName = cn(
     "cm-dialog__title",
@@ -226,8 +233,7 @@ export function CmDialog({
           <div
             className="cm-dialog__tone-bar"
             style={{
-              background:
-                "linear-gradient(90deg, var(--dialog-tone), color-mix(in srgb, var(--dialog-tone) 35%, var(--color-secondary)), var(--color-accent, var(--color-secondary)))",
+              background: "var(--dialog-tone)",
             }}
           />
 
@@ -253,14 +259,20 @@ export function CmDialog({
 
               <div className="cm-dialog__heading">
                 {title ? (
-                  <h2 id={titleId} className={titleClassName}>
+                  <h2
+                    id={titleId}
+                    className={titleClassName}
+                    style={{
+                      // Título tingido com o tom do diálogo: diferencia da
+                      // descrição (muted) e reforça a semântica (ex.: danger).
+                      // A base em --color-foreground preserva contraste AA em
+                      // temas claros e escuros.
+                      color:
+                        "color-mix(in srgb, var(--dialog-tone) 55%, var(--color-foreground))",
+                    }}
+                  >
                     {title}
                   </h2>
-                ) : null}
-                {description ? (
-                  <p id={descriptionId} className="cm-dialog__description">
-                    {description}
-                  </p>
                 ) : null}
               </div>
             </div>
@@ -278,13 +290,22 @@ export function CmDialog({
             </div>
           ) : null}
 
-          {children ? (
+          {hasBody ? (
             <div
               className="cm-dialog__body"
               style={{
                 background: "color-mix(in srgb, var(--color-card) 92%, var(--color-background) 8%)",
               }}
             >
+              {description ? (
+                <p
+                  id={descriptionId}
+                  className="cm-dialog__description"
+                  style={children ? { marginBottom: "0.75rem" } : undefined}
+                >
+                  {description}
+                </p>
+              ) : null}
               {children}
             </div>
           ) : null}

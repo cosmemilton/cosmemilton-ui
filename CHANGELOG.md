@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.5.0
+
+### Minor Changes
+
+- Temas escuros mais nítidos: `cm-dark`, `cm-midnight` e `cm-aurora` trocaram as sombras com glow colorido difuso por sombras pretas compactas com anel de 1px; o `cm-aurora` também teve as tinturas dos `layers` reduzidas (10–18% → 4–6%) e o `cm-dark` ganhou `border`/`input` levemente mais claros.
+- `CmToast`: barra de contagem regressiva na borda inferior (`.cm-toast__progress`), sincronizada com o `duration` do toast e colorida pelo tom (`--cm-toast-accent`). Respeita `prefers-reduced-motion`.
+- `CmDialog`: header reestruturado — a faixa tingida pelo `tone` contém apenas o título (agora colorido com o tom via `color-mix`), e a `description` renderiza no corpo, com fundo próprio e `aria-describedby` preservado. A barra de tom virou cor sólida e o degradê diagonal do header foi substituído por tinta chapada.
+- `CmLink`: `variant="button"` + `tone="primary"` agora rende um botão sólido na cor primária (CTA).
+- Grid: cards (`CmCard`, `CmMetricCard`, `CmLink variant="card"`) dentro de `CmGrid` acompanham a altura da linha (`height: 100%`) — linhas com conteúdos diferentes ficam com alturas iguais.
+- Topbar com `tone="brand"`/chrome invertido: `CmText` solto nos slots agora adapta os tons neutros (`default`/`primary` → fg da marca, `muted` → fg translúcido); tons semânticos ficam intactos.
+
+### Patch Changes
+
+- `CmMetricCard` renderiza em React Server Components: os handlers de clique/teclado só são anexados quando o card é interativo (antes o componente sempre passava `onKeyDown`, o que quebrava em RSC).
+- `CmButton`: removido o remapeamento silencioso de `danger`/`warning` → `primary` quando `invertHeader` estava ativo — botões destrutivos mantêm a cor semântica em qualquer chrome.
+- `CmDialog`: zerados os margins default de `h2`/`p` do título e da descrição (o margin nativo do browser inflava o header).
+
 ## 3.4.0
 
 ### Minor Changes
