@@ -132,6 +132,10 @@ export function CmAppShell({
       )}
       style={shellStyle}
       data-cm-chrome={chrome}
+      // Density cascades to descendants through the `[data-density] .cm-*`
+      // selectors — the cm-density-* class alone only styles the element it
+      // sits on, so the shell also publishes the attribute.
+      data-density={density === "default" ? undefined : density}
       {...props}
     >
       {hasSidebar ? (

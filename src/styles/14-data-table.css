@@ -36,6 +36,12 @@
   box-shadow: inset 3px 0 0 var(--color-primary)
 }
 
+/* No modo detail os marcadores claros do ribbon assumem o papel da faixa
+   sólida; sem isso ela vazaria por baixo do marcador da borda esquerda. */
+.cm-data-table--detail-active .cm-data-table__row--selected {
+  box-shadow: none
+}
+
 .cm-data-table__column-button {
   appearance: none;
   border: 1px solid transparent;
@@ -76,12 +82,14 @@
   gap: .375rem
 }
 
+/* stretch garante painel >= tabela; o bridge da linha selecionada sempre
+   encontra o painel em vez de apontar para o vazio abaixo dele. */
 .cm-data-table-detail-layout {
   --cm-data-table-detail-gap: 1rem;
   --cm-data-table-detail-panel-width: 280px;
   display: flex;
   width: 100%;
-  align-items: flex-start;
+  align-items: stretch;
   gap: var(--cm-data-table-detail-gap)
 }
 
@@ -114,11 +122,13 @@
   transition: top .2s ease, height .2s ease, width .2s ease, left .2s ease
 }
 
+/* O tab termina rente à borda do card; a sombra interna no encontro reforça a
+   impressão de ele mergulhar por baixo da tabela. */
 .cm-data-table-detail__tab {
   z-index: 5;
   border-radius: 999px 0 0 999px;
   background: var(--color-primary);
-  box-shadow: var(--shadow-sm)
+  box-shadow: var(--shadow-sm), inset -4px 0 4px -2px rgb(0 0 0 / .25)
 }
 
 .cm-data-table-detail__ribbon {
@@ -129,11 +139,36 @@
   background: color-mix(in srgb, var(--color-primary) 8%, transparent)
 }
 
+/* Marcadores internos junto às duas bordas: eco em meio-tom das pontas
+   externas, sugerindo que a faixa continua por baixo da tabela. O 1px de
+   afastamento deixa a borda do card visível por cima das junções. */
+.cm-data-table-detail__ribbon::before,
+.cm-data-table-detail__ribbon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: color-mix(in srgb, var(--color-primary) 50%, var(--color-card))
+}
+
+.cm-data-table-detail__ribbon::before {
+  left: 1px
+}
+
+.cm-data-table-detail__ribbon::after {
+  right: 1px
+}
+
+/* A ponta começa rente à borda do card, sem sobrepô-la: a borda cinza cruzando
+   por cima + a sombra interna no encontro dão a impressão de a faixa emergir
+   por baixo da tabela. */
 .cm-data-table-detail__bridge {
   right: calc(var(--cm-data-table-detail-gap) * -1);
   z-index: 3;
   width: var(--cm-data-table-detail-gap);
-  background: var(--color-primary)
+  background: var(--color-primary);
+  box-shadow: inset 4px 0 4px -2px rgb(0 0 0 / .25)
 }
 
 @media (max-width: 768px) {

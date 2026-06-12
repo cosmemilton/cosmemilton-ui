@@ -16,10 +16,14 @@ import {
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import { cmDensityClass, cmFieldWidthStyle, type CmDensity } from "./types.js";
 
-export type CmInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
+/* "width" também é omitido do atributo HTML legado: aqui ele dimensiona a raiz
+   do campo (cmFieldWidthStyle), não o <input>. */
+export type CmInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "prefix" | "width"> & {
   label?: string;
+  /** Largura fixa do campo (número → px). Aplica width + flex: 0 0 na raiz, dispensando wrappers em linhas flex. */
+  width?: string | number;
   error?: string;
   success?: boolean;
   helperText?: string;
@@ -119,6 +123,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
       onBlur,
       onClear,
       numeric,
+      width,
       ...props
     },
     ref,
@@ -222,6 +227,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
           cmDensityClass(density),
           className,
         )}
+        style={cmFieldWidthStyle(width)}
       >
         <div className={cn("cm-floating-field__control", getBorderColor())}>
           {label && (

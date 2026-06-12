@@ -302,6 +302,26 @@
   box-shadow: none;
 }
 
+/* Subitens em tom brand/invertido: primary se confunde com o próprio fundo do
+   sidebar, então estados e trilho usam o foreground da marca. */
+.cm-sidebar--tone-brand .cm-sidebar__group-items .cm-sidebar__item:hover,
+.cm-app-shell--chrome-inverted .cm-sidebar__group-items .cm-sidebar__item:hover {
+  background: color-mix(in srgb, var(--color-primary-foreground) 9%, transparent);
+  box-shadow: none;
+}
+
+.cm-sidebar--tone-brand .cm-sidebar__group-items .cm-sidebar__item--active,
+.cm-app-shell--chrome-inverted .cm-sidebar__group-items .cm-sidebar__item--active {
+  background: color-mix(in srgb, var(--color-primary-foreground) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary-foreground) 30%, transparent);
+}
+
+.cm-sidebar--tone-brand .cm-sidebar__group-items .cm-sidebar__item--active::before,
+.cm-app-shell--chrome-inverted .cm-sidebar__group-items .cm-sidebar__item--active::before {
+  background: var(--cm-sidebar-brand-fg);
+  box-shadow: 0 0 0.75rem color-mix(in srgb, var(--cm-sidebar-brand-fg) 45%, transparent);
+}
+
 .cm-sidebar--tone-brand .cm-sidebar__nav-icon--fallback,
 .cm-app-shell--chrome-inverted .cm-sidebar__nav-icon--fallback {
   background: color-mix(in srgb, var(--color-primary-foreground) 16%, transparent);

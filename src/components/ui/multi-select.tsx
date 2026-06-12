@@ -9,6 +9,7 @@ import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useFloating } from "../../hooks/use-floating.js";
 import { useListboxKeyboard } from "../../hooks/use-listbox-keyboard.js";
+import { cmFieldWidthStyle } from "./types.js";
 
 export type CmMultiSelectOption = {
   value: string;
@@ -27,6 +28,8 @@ export type CmMultiSelectProps = {
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  /** Largura fixa do campo (número → px). Aplica width + flex: 0 0 na raiz, dispensando wrappers em linhas flex. */
+  width?: string | number;
 };
 
 type PortalThemeStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
@@ -77,6 +80,7 @@ export function CmMultiSelect({
   required,
   disabled,
   className,
+  width,
 }: CmMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -145,6 +149,7 @@ export function CmMultiSelect({
         !label && "cm-floating-field--unlabeled",
         className,
       )}
+      style={cmFieldWidthStyle(width)}
     >
       {name ? (
         <input

@@ -6,7 +6,7 @@ import { CmButton } from "./button.js";
 import { CmIcon } from "./icon.js";
 import { CmPortal } from "./portal.js";
 import { ChevronDown, Check, X } from "lucide-react";
-import { cmDensityClass, type CmDensity } from "./types.js";
+import { cmDensityClass, cmFieldWidthStyle, type CmDensity } from "./types.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useFloating } from "../../hooks/use-floating.js";
@@ -34,6 +34,8 @@ export type CmSelectProps = {
   startButton?: ReactNode;
   endButton?: ReactNode;
   className?: string;
+  /** Largura fixa do campo (número → px). Aplica width + flex: 0 0 na raiz, dispensando wrappers em linhas flex. */
+  width?: string | number;
   showOptionIcons?: boolean;
   disabled?: boolean;
   form?: string;
@@ -97,6 +99,7 @@ export function CmSelect({
   startButton,
   endButton,
   className,
+  width,
   clearable = false,
   clearLabel = "Limpar seleção",
   density,
@@ -182,6 +185,7 @@ export function CmSelect({
         cmDensityClass(density),
         className,
       )}
+      style={cmFieldWidthStyle(width)}
     >
       {name ? (
         <input

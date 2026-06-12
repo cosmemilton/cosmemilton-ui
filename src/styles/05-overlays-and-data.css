@@ -1268,6 +1268,12 @@
   animation-fill-mode: forwards
 }
 
+/* Mouse em cima (ou foco interno) pausa a contagem: o timer JS congela o
+   tempo restante e a barra acompanha via play-state. */
+.cm-toast__item[data-paused] .cm-toast__progress {
+  animation-play-state: paused
+}
+
 @keyframes cm-toast-countdown {
   from {
     transform: scaleX(1)

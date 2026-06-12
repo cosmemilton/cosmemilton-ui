@@ -95,23 +95,41 @@ const icons: Record<CmToastTone, string> = {
 
 function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: number) => void }) {
   const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focusWithin, setFocusWithin] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const remainingRef = useRef(item.duration);
+  const resumedAtRef = useRef(0);
+  const closingRef = useRef(false);
+  const paused = hovered || focusWithin;
+
+  const handleClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    clearTimeout(timerRef.current);
+    setVisible(false);
+    setTimeout(() => onDismiss(item.id), 300);
+  }, [item.id, onDismiss]);
 
   useEffect(() => {
     // animate in
     requestAnimationFrame(() => setVisible(true));
-    timerRef.current = setTimeout(() => {
-      setVisible(false);
-      setTimeout(() => onDismiss(item.id), 300);
-    }, item.duration);
-    return () => clearTimeout(timerRef.current);
-  }, [item.id, item.duration, onDismiss]);
+  }, []);
 
-  const handleClose = () => {
-    clearTimeout(timerRef.current);
-    setVisible(false);
-    setTimeout(() => onDismiss(item.id), 300);
-  };
+  // Timer pausável: cada retomada agenda só o tempo restante e a pausa
+  // (cleanup) desconta o que correu desde a última retomada.
+  useEffect(() => {
+    if (paused || closingRef.current) return;
+    resumedAtRef.current = Date.now();
+    timerRef.current = setTimeout(handleClose, remainingRef.current);
+    return () => {
+      clearTimeout(timerRef.current);
+      remainingRef.current = Math.max(
+        0,
+        remainingRef.current - (Date.now() - resumedAtRef.current),
+      );
+    };
+  }, [handleClose, paused]);
 
   return (
     <div
@@ -121,6 +139,15 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
         toneClasses[item.tone],
         visible ? "cm-toast__item--visible" : "cm-toast__item--hidden",
       )}
+      data-paused={paused || undefined}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocusWithin(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setFocusWithin(false);
+        }
+      }}
     >
       {icons[item.tone] && <span className="cm-toast__icon">{icons[item.tone]}</span>}
       <span className="cm-toast__content">

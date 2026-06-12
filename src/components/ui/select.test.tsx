@@ -153,4 +153,10 @@ describe("CmSelect", () => {
     await user.keyboard("{Enter}");
     expect(onChangeSpy).toHaveBeenCalledWith("us");
   });
+
+  it("applies a fixed width with flex-basis on the field root", () => {
+    const { container } = render(<ControlledSelect width="6.5rem" />);
+    const root = container.querySelector<HTMLElement>(".cm-select");
+    expect(root).toHaveStyle({ width: "6.5rem", minWidth: "6.5rem", flex: "0 0 6.5rem" });
+  });
 });

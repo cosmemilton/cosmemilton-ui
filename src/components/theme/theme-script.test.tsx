@@ -50,4 +50,18 @@ describe("CmThemeScript", () => {
     const script = container.querySelector("#cm-theme-script");
     expect(script!.innerHTML).toContain('const fallback = "cm-neutral"');
   });
+
+  it("bootstraps the persisted density alongside the theme", () => {
+    const { container } = render(<CmThemeScript />);
+    const code = container.querySelector("#cm-theme-script")!.innerHTML;
+    expect(code).toContain("cm-density");
+    expect(code).toContain("data-density");
+    expect(code).toContain('const fallbackDensity = "default"');
+  });
+
+  it("uses defaultDensity as the density fallback", () => {
+    const { container } = render(<CmThemeScript defaultDensity="compact" />);
+    const code = container.querySelector("#cm-theme-script")!.innerHTML;
+    expect(code).toContain('const fallbackDensity = "compact"');
+  });
 });

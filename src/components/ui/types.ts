@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export type CmDensity = "default" | "comfortable" | "compact";
 
 export type CmResponsiveBreakpoint = "base" | "sm" | "md" | "lg" | "xl";
@@ -67,6 +69,15 @@ export function resolveResponsiveNumber(value: CmResponsiveNumber | undefined, f
 export function cmSizeValue(value: string | number | undefined) {
   if (value === undefined) return undefined;
   return typeof value === "number" ? `${value}px` : value;
+}
+
+/* Largura fixa de campos flutuantes: além de width/min-width, fixa o flex-basis
+   para o campo poder viver direto num CmRow/flex sem wrapper (a raiz dos campos
+   é width:100% + min-width:0, que num flex significaria "disputa o espaço"). */
+export function cmFieldWidthStyle(width: string | number | undefined): CSSProperties | undefined {
+  const size = cmSizeValue(width);
+  if (size === undefined) return undefined;
+  return { width: size, minWidth: size, flex: `0 0 ${size}` };
 }
 
 const spacingFallbacks: Record<string, string> = {

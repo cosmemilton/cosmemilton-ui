@@ -17,6 +17,7 @@ import { CmPortal } from "./portal.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useListboxKeyboard } from "../../hooks/use-listbox-keyboard.js";
+import { cmFieldWidthStyle } from "./types.js";
 
 export type CmComboboxItem = {
   value: string;
@@ -41,6 +42,8 @@ export type CmComboboxProps = {
   emptyState?: ReactNode;
   emptyMessage?: ReactNode;
   className?: string;
+  /** Largura fixa do campo (número → px). Aplica width + flex: 0 0 na raiz, dispensando wrappers em linhas flex. */
+  width?: string | number;
   initialValue?: string;
   disabled?: boolean;
   dropdownSizing?: "input" | "content";
@@ -94,6 +97,7 @@ export function CmCombobox({
   emptyState,
   emptyMessage = "Nada encontrado.",
   className,
+  width,
   initialValue,
   disabled,
   dropdownSizing = "input",
@@ -351,6 +355,7 @@ export function CmCombobox({
         !label && "cm-floating-field--unlabeled",
         className,
       )}
+      style={cmFieldWidthStyle(width)}
     >
       {name ? (
         <input

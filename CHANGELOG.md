@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.6.0
+
+### Minor Changes
+
+- Densidade: CmAppShell agora publica `data-density` no elemento raiz, fazendo a prop `density` cascatear de verdade para topbar, formulários e conteúdo (antes a classe `cm-density-*` só estilizava o próprio shell). CmThemeScript ganhou a prop `defaultDensity` e passa a aplicar o `data-density` persistido (localStorage `cm-density`) antes do primeiro paint, eliminando o flash de densidade e a divergência entre origens que só se manifestava após a hidratação.
+- CmInput, CmSelect, CmCombobox e CmMultiSelect ganham o prop `width` (string ou número → px): aplica `width`/`min-width` e `flex: 0 0` na raiz do campo, permitindo fixar a largura direto em linhas flex (CmRow) sem div wrapper. Em CmInput, o atributo HTML legado `width` deixa de ser repassado ao `<input>`.
+- CmToastProvider: descansar o mouse sobre um toast (ou levar o foco do teclado para dentro dele) pausa a contagem regressiva — timer de dismiss e barra de progresso congelam juntos — e ao sair a contagem retoma só o tempo restante.
+
+### Patch Changes
+
+- CmDataTable: o painel de detalhes agora estica junto com o layout e nunca fica mais baixo que a tabela, então o bridge da linha selecionada sempre encontra o painel em vez de apontar para o vazio. As pontas externas (tab e bridge) passam a "emergir por baixo" da tabela — terminam rente à borda do card, com a borda cruzando por cima e sombra interna no encontro — e a linha selecionada ganha marcadores internos de 3px num tom mais claro junto às duas bordas, ecoando a continuação da faixa (no modo detail eles substituem a faixa sólida de 3px da seleção).
+- CmSidebar: subitens de grupo redesenhados em estilo "trilho" — os marcadores viram nós de uma linha vertical contínua, o item ativo ganha pílula com anel de 1px e o segmento do trilho acende com a identidade da barra de destaque dos itens de topo (com variante própria para tom brand/chrome invertido, onde os estados usam o foreground da marca). O painel de subitens aberto também ganha um respiro de 0.375rem abaixo do gatilho do grupo.
+
 ## 3.5.0
 
 ### Minor Changes
