@@ -39,6 +39,22 @@ describe("CmThemeScript", () => {
     expect(script!.innerHTML).toContain('"acme-brand"');
   });
 
+  it("neutralizes </script> breakout sequences in custom theme names", () => {
+    const evil: ThemeConfig = {
+      ...defaultTheme,
+      name: "</script><img src=x onerror=alert(1)>",
+    };
+    const { container } = render(
+      <CmThemeScript customThemes={[evil]} defaultThemeName={evil.name} />,
+    );
+    const code = container.querySelector("#cm-theme-script")!.innerHTML;
+    // The literal "<" must be escaped so the HTML parser can't close the script
+    // tag early; the raw breakout sequence must never reach the output.
+    expect(code).not.toContain("</script>");
+    expect(code).not.toContain("<img");
+    expect(code).toContain("\\u003c");
+  });
+
   it("forwards a CSP nonce to the inline script and style tags", () => {
     const { container } = render(<CmThemeScript customThemes={[customTheme]} nonce="abc123" />);
     expect(container.querySelector("#cm-theme-script")).toHaveAttribute("nonce", "abc123");

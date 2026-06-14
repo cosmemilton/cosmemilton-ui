@@ -11,6 +11,17 @@ const LOCAL_STORAGE_DENSITY = "cm-density";
 
 const densities: CmDensity[] = ["default", "comfortable", "compact"];
 
+// JSON.stringify alone is unsafe inside an inline <script>: it leaves "</script>"
+// and the JS line terminators U+2028/U+2029 intact, which let an attacker-controlled
+// theme name break out of the script element. Neutralize them as unicode escapes.
+const serializeForScript = (value: unknown): string =>
+  JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+
 export type CmThemeScriptProps = {
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
@@ -47,14 +58,14 @@ export function CmThemeScript({
   const customCSS = customThemeCSS(themeRegistry);
 
   const script = `(() => {
-    const fallback = ${JSON.stringify(fallbackThemeName)};
-    const fallbackDensity = ${JSON.stringify(fallbackDensity)};
+    const fallback = ${serializeForScript(fallbackThemeName)};
+    const fallbackDensity = ${serializeForScript(fallbackDensity)};
     try {
-      const names = ${JSON.stringify(Object.keys(themeRegistry))};
+      const names = ${serializeForScript(Object.keys(themeRegistry))};
       const stored = window.localStorage.getItem('${LOCAL_STORAGE_KEY}');
       const themeName = stored && names.includes(stored) ? stored : fallback;
       document.documentElement.setAttribute('data-theme', themeName);
-      const densities = ${JSON.stringify(densities)};
+      const densities = ${serializeForScript(densities)};
       const storedDensity = window.localStorage.getItem('${LOCAL_STORAGE_DENSITY}');
       const density = storedDensity && densities.includes(storedDensity) ? storedDensity : fallbackDensity;
       document.documentElement.setAttribute('data-density', density);
