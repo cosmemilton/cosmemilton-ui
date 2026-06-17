@@ -728,6 +728,7 @@
 }
 
 .cm-tree-view__node {
+  position: relative;
   display: flex;
   align-items: center;
   gap: .5rem;
@@ -736,8 +737,26 @@
   transition: background-color .2s ease
 }
 
+/* Linhas-guia de indentação: uma por ancestral, desenhadas só na calha à
+   esquerda do conteúdo (nunca colidem com ícones/handles). Empilhadas, formam
+   trilhos verticais contínuos que ligam os subnós ao pai. */
+.cm-tree-view__node::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: calc(var(--tv-level, 0) * 24px);
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-border) 85%, transparent) 0 1px,
+    transparent 1px 24px
+  );
+  pointer-events: none
+}
+
 .cm-tree-view__node:hover {
-  background: color-mix(in srgb, var(--color-accent, var(--color-muted)) 50%, transparent)
+  background: color-mix(in srgb, var(--color-muted) 70%, transparent)
 }
 
 .cm-tree-view__node--highlighted {
@@ -747,7 +766,7 @@
 }
 
 .cm-tree-view__node--dragging {
-  background: var(--color-accent, var(--color-muted))
+  background: color-mix(in srgb, var(--color-accent, var(--color-muted)) 14%, var(--color-card))
 }
 
 .cm-tree-view__node--drop-target {
@@ -756,12 +775,26 @@
 }
 
 .cm-tree-view__drag-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--tv-level, 0) * 24px);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  padding: 0;
   border: 0;
   background: transparent;
   color: var(--color-muted-foreground);
   cursor: grab;
   opacity: 0;
   transition: opacity .2s ease
+}
+
+.cm-tree-view__drag-handle .cm-tree-view__small-icon {
+  flex-shrink: 0
 }
 
 .cm-tree-view__item:hover .cm-tree-view__drag-handle {
@@ -781,7 +814,7 @@
 }
 
 .cm-tree-view__toggle:hover {
-  background: var(--color-accent, var(--color-muted))
+  background: color-mix(in srgb, var(--color-foreground) 10%, transparent)
 }
 
 .cm-tree-view__toggle-spacer {
@@ -801,7 +834,16 @@
 }
 
 .cm-tree-view__node-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0
+}
+
+/* Mantém ícones customizados (node.icon / branchIcon / leafIcon) no tamanho padrão. */
+.cm-tree-view__node-icon > svg {
+  width: 1.25rem;
+  height: 1.25rem
 }
 
 .cm-tree-view__node-icon--level-0 {
@@ -846,18 +888,26 @@
 }
 
 .cm-tree-view__badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
   padding: .125rem .5rem;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: var(--color-accent, var(--color-muted));
+  background: var(--color-muted);
   color: var(--color-muted-foreground);
-  font-size: .75rem;
-  line-height: 1rem
+  font-size: .6875rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase
 }
 
 .cm-tree-view__actions {
   display: flex;
   align-items: center;
-  gap: .25rem;
+  gap: .125rem;
+  flex-shrink: 0;
   opacity: 0;
   transition: opacity .2s ease
 }
@@ -870,25 +920,43 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
-  flex-shrink: 0
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color .15s ease
+}
+
+.cm-tree-view__action-button .cm-tree-view__small-icon {
+  color: inherit
+}
+
+.cm-tree-view__action-button--add {
+  color: var(--color-success)
+}
+
+.cm-tree-view__action-button--edit {
+  color: var(--color-info)
+}
+
+.cm-tree-view__action-button--delete {
+  color: var(--color-danger)
 }
 
 .cm-tree-view__action-button--add:hover {
-  background: #eff6ff;
-  color: #2563eb
+  background: color-mix(in srgb, var(--color-success) 15%, transparent)
 }
 
 .cm-tree-view__action-button--edit:hover {
-  background: #fffbeb;
-  color: #d97706
+  background: color-mix(in srgb, var(--color-info) 15%, transparent)
 }
 
 .cm-tree-view__action-button--delete:hover {
-  background: #fef2f2;
-  color: #dc2626
+  background: color-mix(in srgb, var(--color-danger) 15%, transparent)
 }
 
 .cm-tree-view__header {
@@ -996,16 +1064,63 @@
   gap: .5rem
 }
 
-.cm-tree-view__mode--standalone {
-  justify-content: flex-end;
-  padding: .5rem 1rem
-}
-
 .cm-tree-view__mode-label {
-  color: var(--color-muted-foreground);
+  color: var(--color-foreground);
   font-size: .75rem;
   line-height: 1rem;
+  font-weight: 500;
   white-space: nowrap
+}
+
+/* Cluster de controles na barra (expandir/recolher + switch) */
+.cm-tree-view__bar-controls {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  flex-shrink: 0
+}
+
+.cm-tree-view__icon-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: .125rem
+}
+
+.cm-tree-view__control-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease
+}
+
+.cm-tree-view__control-icon:hover {
+  background: color-mix(in srgb, var(--color-card) 45%, transparent)
+}
+
+.cm-tree-view__control-icon .cm-tree-view__small-icon {
+  color: inherit
+}
+
+.cm-tree-view__control-icon .cm-tree-view__small-icon {
+  color: inherit
+}
+
+.cm-tree-view__controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .5rem;
+  padding: .5rem 1rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-accent, var(--color-muted)) 50%, transparent)
 }
 
 .cm-tree-view__panel {
@@ -1127,18 +1242,4 @@
   color: #f472b6
 }
 
-[data-theme=cm-dark] .cm-tree-view__action-button--add:hover {
-  background: rgba(30, 58, 138, .2);
-  color: #60a5fa
-}
-
-[data-theme=cm-dark] .cm-tree-view__action-button--edit:hover {
-  background: rgba(120, 53, 15, .2);
-  color: #fbbf24
-}
-
-[data-theme=cm-dark] .cm-tree-view__action-button--delete:hover {
-  background: rgba(127, 29, 29, .2);
-  color: #f87171
-}
 

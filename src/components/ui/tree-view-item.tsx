@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, type DragEvent, type FC } from "react";
+import { useState, type CSSProperties, type DragEvent, type FC, type ReactNode } from "react";
 import {
   GripVertical,
   ChevronDown,
   ChevronRight,
   Folder,
+  FolderOpen,
   File,
   Plus,
   Pencil,
@@ -38,6 +39,10 @@ export interface SortableTreeItemProps {
   selectionMode?: boolean;
   selectedIds?: Set<number>;
   onSelectionChange?: (permissionId: number, checked: boolean) => void;
+  // Ícones customizáveis (opcionais; default mantém Folder/FolderOpen/File)
+  branchIcon?: ReactNode;
+  branchOpenIcon?: ReactNode;
+  leafIcon?: ReactNode;
 }
 
 export const SortableTreeItem: FC<SortableTreeItemProps> = ({
@@ -61,6 +66,9 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   selectionMode = false,
   selectedIds,
   onSelectionChange,
+  branchIcon,
+  branchOpenIcon,
+  leafIcon,
 }) => {
   const hasChildren = node.children && node.children.length > 0;
   const [showActions, setShowActions] = useState(false);
@@ -86,6 +94,19 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
 
   const colorClass = levelColors[level % levelColors.length];
 
+  // Ícone do nó. Precedência: ícone próprio do nó > override por tipo/estado
+  // (branch/branchOpen/leaf) > default (Folder/FolderOpen/File).
+  let nodeIcon: ReactNode;
+  if (node.icon != null) {
+    nodeIcon = node.icon;
+  } else if (hasChildren) {
+    nodeIcon = isExpanded
+      ? (branchOpenIcon ?? <FolderOpen className="cm-tree-view__node-svg" />)
+      : (branchIcon ?? <Folder className="cm-tree-view__node-svg" />);
+  } else {
+    nodeIcon = leafIcon ?? <File className="cm-tree-view__node-svg" />;
+  }
+
   return (
     <div
       style={style}
@@ -106,7 +127,12 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
           isDragging && "cm-tree-view__node--dragging",
           isDropTarget && "cm-tree-view__node--drop-target",
         )}
-        style={{ paddingLeft: `${level * 24 + 12}px` }}
+        style={
+          {
+            paddingLeft: `${level * 24 + 12}px`,
+            "--tv-level": level,
+          } as CSSProperties
+        }
         onMouseEnter={() => setShowActions(true)}
         onMouseLeave={() => setShowActions(false)}
       >
@@ -157,13 +183,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
         )}
 
         {/* CmIcon */}
-        <div className={cn("cm-tree-view__node-icon", colorClass)}>
-          {hasChildren ? (
-            <Folder className="cm-tree-view__node-svg" />
-          ) : (
-            <File className="cm-tree-view__node-svg" />
-          )}
-        </div>
+        <div className={cn("cm-tree-view__node-icon", colorClass)}>{nodeIcon}</div>
 
         {/* Name */}
         <CmButton
@@ -192,9 +212,11 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
           >
             {onAdd && (!maxDepth || level < maxDepth - 1) && (
               <CmButton
-                variant="ghost"
+                unstyled
+                type="button"
                 onClick={() => onAdd(node.id)}
                 className="cm-tree-view__action-button cm-tree-view__action-button--add"
+                aria-label="Add Subcategory"
                 title="Add Subcategory"
               >
                 <Plus className="cm-tree-view__small-icon" />
@@ -202,9 +224,11 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
             )}
             {onEdit && (
               <CmButton
-                variant="ghost"
+                unstyled
+                type="button"
                 onClick={() => onEdit(node)}
                 className="cm-tree-view__action-button cm-tree-view__action-button--edit"
+                aria-label="Edit"
                 title="Edit"
               >
                 <Pencil className="cm-tree-view__small-icon" />
@@ -212,10 +236,11 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
             )}
             {onDelete && (
               <CmButton
-                variant="ghost"
+                unstyled
+                type="button"
                 onClick={() => onDelete(node)}
                 className="cm-tree-view__action-button cm-tree-view__action-button--delete"
-                tone="danger"
+                aria-label="Delete"
                 title="Delete"
               >
                 <Trash2 className="cm-tree-view__small-icon" />

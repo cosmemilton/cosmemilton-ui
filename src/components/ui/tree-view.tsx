@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useCallback, type DragEvent } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  type DragEvent,
+  type ReactNode,
+} from "react";
 import {
   GripVertical,
   ChevronRight,
@@ -27,6 +34,7 @@ import {
   findNodeLevel,
   findNodesAtLevel,
   moveNodeBeforeTarget,
+  pruneToSolitaryPath,
 } from "./tree-view.utils.js";
 
 export type { CmTreeNode } from "./tree-view.types.js";
@@ -47,11 +55,24 @@ export interface CmTreeViewProps {
   showHeader?: boolean;
   showFooter?: boolean;
   showBorder?: boolean;
+  /** Botões nativos de expandir/recolher tudo, ao lado do switch. Padrão: true. */
+  showExpandCollapse?: boolean;
+  /** Switch "Modo Solitário" na barra de controles. Padrão: true. */
+  showSolitaryToggle?: boolean;
+  /** Controles extras renderizados na barra (entre expandir/recolher e o switch). */
+  controlsSlot?: ReactNode;
+  /** Sobrescreve o ícone padrão de pasta fechada (nós com filhos, recolhidos). */
+  branchIcon?: ReactNode;
+  /** Sobrescreve o ícone padrão de pasta aberta (nós com filhos, expandidos). */
+  branchOpenIcon?: ReactNode;
+  /** Sobrescreve o ícone padrão de folha (nós sem filhos). */
+  leafIcon?: ReactNode;
   headerText?: {
     expandAll?: string;
     collapseAll?: string;
     addRoot?: string;
     search?: string;
+    solitaryMode?: string;
   };
   // Controles externos (quando usado com PageHeader)
   externalSearch?: string;
@@ -83,6 +104,12 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   showHeader = true,
   showFooter = true,
   showBorder = true,
+  showExpandCollapse = true,
+  showSolitaryToggle = true,
+  controlsSlot,
+  branchIcon,
+  branchOpenIcon,
+  leafIcon,
   headerText = {},
   externalSearch,
   onExternalSearchChange,
@@ -102,7 +129,9 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   const setSearchQuery = onExternalSearchChange || setInternalSearch;
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
     if (expandedByDefault && Array.isArray(data)) {
-      return collectExpandableIds(data);
+      const all = collectExpandableIds(data);
+      // Modo solitário inicial: já abre apenas um ramo.
+      return solitaryMode ? pruneToSolitaryPath(data, all) : all;
     }
     return new Set<string>();
   });
@@ -124,6 +153,19 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   const collapseAll = useCallback(() => {
     setExpandedNodes(new Set());
   }, []);
+
+  // Liga/desliga o modo solitário. Ao ligar, recolhe os ramos abertos
+  // mantendo apenas um caminho aberto — assim o efeito é imediato.
+  const handleSolitaryChange = useCallback(
+    (enabled: boolean) => {
+      setInternalSolitaryMode(enabled);
+      onSolitaryModeChange?.(enabled);
+      if (enabled && Array.isArray(data)) {
+        setExpandedNodes((prev) => pruneToSolitaryPath(data, prev));
+      }
+    },
+    [data, onSolitaryModeChange],
+  );
 
   // Expor controles para o componente pai
   useEffect(() => {
@@ -220,12 +262,55 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
     collapseAll: headerText.collapseAll || "Recolher Tudo",
     addRoot: headerText.addRoot || "Adicionar Categoria Raiz",
     search: headerText.search || "Buscar categorias...",
+    solitaryMode: headerText.solitaryMode || "Modo Solitário",
   };
+
+  // Cluster de controles exibido na barra (ao lado do switch).
+  const hasBarControls = showExpandCollapse || controlsSlot != null || showSolitaryToggle;
+  const treeControls = hasBarControls ? (
+    <div className="cm-tree-view__bar-controls">
+      {showSolitaryToggle && (
+        <div className="cm-tree-view__mode">
+          <span className="cm-tree-view__mode-label">{texts.solitaryMode}</span>
+          <CmSwitch
+            aria-label={texts.solitaryMode}
+            checked={internalSolitaryMode}
+            onCheckedChange={handleSolitaryChange}
+          />
+        </div>
+      )}
+      {showExpandCollapse && (
+        <div className="cm-tree-view__icon-controls">
+          <CmButton
+            unstyled
+            type="button"
+            onClick={expandAll}
+            className="cm-tree-view__control-icon"
+            title={texts.expandAll}
+            aria-label={texts.expandAll}
+          >
+            <ChevronsDown className="cm-tree-view__small-icon" />
+          </CmButton>
+          <CmButton
+            unstyled
+            type="button"
+            onClick={collapseAll}
+            className="cm-tree-view__control-icon"
+            title={texts.collapseAll}
+            aria-label={texts.collapseAll}
+          >
+            <ChevronsUp className="cm-tree-view__small-icon" />
+          </CmButton>
+        </div>
+      )}
+      {controlsSlot}
+    </div>
+  ) : null;
 
   return (
     <div className={cn("cm-tree-view", className)}>
       {/* Header - Só mostra se não estiver usando busca externa */}
-      {showHeader && !onExternalSearchChange && (
+      {showHeader && !onExternalSearchChange && (searchable || onAdd) && (
         <div className="cm-tree-view__header">
           {searchable && (
             <div className="cm-tree-view__search">
@@ -251,30 +336,14 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
             </div>
           )}
 
-          <div className="cm-tree-view__controls">
-            <CmButton
-              variant="outline"
-              onClick={expandAll}
-              className="cm-tree-view__control-button"
-            >
-              <ChevronsDown className="cm-tree-view__button-icon" />
-              {texts.expandAll}
-            </CmButton>
-            <CmButton
-              variant="outline"
-              onClick={collapseAll}
-              className="cm-tree-view__control-button"
-            >
-              <ChevronsUp className="cm-tree-view__button-icon" />
-              {texts.collapseAll}
-            </CmButton>
-            {onAdd && (
+          {onAdd && (
+            <div className="cm-tree-view__controls">
               <CmButton onClick={() => onAdd(null)} className="cm-tree-view__control-button">
                 <Plus className="cm-tree-view__button-icon" />
                 {texts.addRoot}
               </CmButton>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -314,33 +383,13 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               </span>
             )}
           </div>
-          <div className="cm-tree-view__mode">
-            <span className="cm-tree-view__mode-label">Modo Solitário</span>
-            <CmSwitch
-              aria-label="Modo Solitário"
-              checked={internalSolitaryMode}
-              onCheckedChange={(checked: boolean) => {
-                setInternalSolitaryMode(checked);
-                onSolitaryModeChange?.(checked);
-              }}
-            />
-          </div>
+          {treeControls}
         </div>
       )}
 
-      {/* Modo Solitário (quando não há breadcrumb) */}
-      {!showBreadcrumb && (
-        <div className="cm-tree-view__mode cm-tree-view__mode--standalone">
-          <span className="cm-tree-view__mode-label">Modo Solitário</span>
-          <CmSwitch
-            aria-label="Modo Solitário"
-            checked={internalSolitaryMode}
-            onCheckedChange={(checked: boolean) => {
-              setInternalSolitaryMode(checked);
-              onSolitaryModeChange?.(checked);
-            }}
-          />
-        </div>
+      {/* Barra de controles (quando não há breadcrumb) */}
+      {!showBreadcrumb && treeControls && (
+        <div className="cm-tree-view__controls-bar">{treeControls}</div>
       )}
 
       {/* Tree */}
@@ -368,6 +417,9 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               selectionMode={selectionMode}
               selectedIds={selectedIds}
               onSelectionChange={onSelectionChange}
+              branchIcon={branchIcon}
+              branchOpenIcon={branchOpenIcon}
+              leafIcon={leafIcon}
             />
           ) : (
             <div className="cm-tree-view__empty">

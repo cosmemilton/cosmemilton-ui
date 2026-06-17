@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.7.0
+
+### Minor Changes
+
+- CmTreeView: controles nativos, modo solitário imediato e limite de níveis
+  - Modo Solitário agora recolhe os ramos irmãos imediatamente ao ser ligado (mantendo um caminho aberto por nível), em vez de só passar a valer no próximo clique.
+  - Botões nativos de expandir/recolher passaram para a barra de controles, logo após o switch "Modo Solitário", com estilo flat (sem caixa). Novos props `showExpandCollapse`, `showSolitaryToggle` e `controlsSlot` permitem ocultar ou substituir esses controles.
+  - Badges de código e estados de arraste/hover dos nós foram ajustados para legibilidade (não dependem mais de `--color-accent` saturado como fundo).
+  - Polimento visual: linhas-guia de indentação (rails) ligando os subnós ao pai (alinhadas em todos os modos, inclusive com arraste — o grip saiu do fluxo para não deslocar o conteúdo), ícone de pasta aberta nos nós expandidos, e botões de CRUD pequenos e flat com ícones coloridos por ação (adicionar/editar/excluir) que não aumentam a altura da linha.
+  - `maxDepth` continua limitando a profundidade — ao atingir o último nível permitido, o botão de adicionar subitem some automaticamente (comportamento agora coberto por testes).
+  - `headerText.solitaryMode` permite traduzir o rótulo do switch.
+  - Ícones customizáveis (opcional, default inalterado): props `branchIcon`, `branchOpenIcon` e `leafIcon` trocam os ícones padrão (pasta fechada/aberta/folha), e `CmTreeNode.icon` (agora `ReactNode`) define um ícone por item, com precedência sobre os padrões.
+
 ## 3.6.0
 
 ### Minor Changes

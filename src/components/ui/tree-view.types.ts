@@ -1,9 +1,15 @@
+import type { ReactNode } from "react";
+
 export interface CmTreeNode {
   id: string;
   name: string;
   slug?: string;
   code?: string;
-  icon?: string;
+  /**
+   * Ícone próprio deste item (sobrescreve os ícones padrão/branchIcon/leafIcon).
+   * Aceita qualquer ReactNode — um <CmIcon/>, um ícone lucide, ou até um emoji.
+   */
+  icon?: ReactNode;
   children?: CmTreeNode[];
   parentId?: string | null;
   order?: number;

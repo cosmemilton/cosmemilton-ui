@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, type DragEvent, type FC } from "react";
+import { Fragment, type DragEvent, type FC, type ReactNode } from "react";
 import { SortableTreeItem } from "./tree-view-item.js";
 import type { CmTreeNode } from "./tree-view.types.js";
 
@@ -25,6 +25,9 @@ export interface TreeBranchProps {
   selectionMode?: boolean;
   selectedIds?: Set<number>;
   onSelectionChange?: (permissionId: number, checked: boolean) => void;
+  branchIcon?: ReactNode;
+  branchOpenIcon?: ReactNode;
+  leafIcon?: ReactNode;
 }
 
 export const TreeBranch: FC<TreeBranchProps> = ({
@@ -48,6 +51,9 @@ export const TreeBranch: FC<TreeBranchProps> = ({
   selectionMode,
   selectedIds,
   onSelectionChange,
+  branchIcon,
+  branchOpenIcon,
+  leafIcon,
 }) => {
   return (
     <>
@@ -74,6 +80,9 @@ export const TreeBranch: FC<TreeBranchProps> = ({
             selectionMode={selectionMode}
             selectedIds={selectedIds}
             onSelectionChange={onSelectionChange}
+            branchIcon={branchIcon}
+            branchOpenIcon={branchOpenIcon}
+            leafIcon={leafIcon}
           />
           {expandedNodes.has(node.id) && node.children && node.children.length > 0 && (
             <TreeBranch
@@ -97,6 +106,9 @@ export const TreeBranch: FC<TreeBranchProps> = ({
               selectionMode={selectionMode}
               selectedIds={selectedIds}
               onSelectionChange={onSelectionChange}
+              branchIcon={branchIcon}
+              branchOpenIcon={branchOpenIcon}
+              leafIcon={leafIcon}
             />
           )}
         </Fragment>

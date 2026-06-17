@@ -147,6 +147,28 @@ export function findNodesAtLevel(
   return result;
 }
 
+/**
+ * Reduz um conjunto de nós expandidos a um único caminho aberto (modo solitário):
+ * em cada nível mantém apenas o primeiro nó que já estava expandido, descendo
+ * por ele. Usado ao ligar o modo solitário para que sobre só um ramo aberto.
+ */
+export function pruneToSolitaryPath(
+  nodes: CmTreeNode[],
+  expanded: Set<string>,
+): Set<string> {
+  const result = new Set<string>();
+  let list: CmTreeNode[] | undefined = nodes;
+  while (Array.isArray(list) && list.length > 0) {
+    const open: CmTreeNode | undefined = list.find(
+      (node) => expanded.has(node.id) && node.children !== undefined && node.children.length > 0,
+    );
+    if (!open) break;
+    result.add(open.id);
+    list = open.children;
+  }
+  return result;
+}
+
 /** Ids de todos os nós que possuem filhos (i.e. são expansíveis), recursivamente. */
 export function collectExpandableIds(nodes: CmTreeNode[]): Set<string> {
   const ids = new Set<string>();
