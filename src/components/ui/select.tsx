@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useRef, useState } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 import { CmIcon } from "./icon.js";
@@ -47,41 +47,6 @@ export type CmSelectProps = {
   renderSelected?: (option: SelectOption) => string;
 };
 
-type PortalThemeStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
-
-const portalThemeVars = [
-  "--color-card",
-  "--color-background",
-  "--color-foreground",
-  "--color-muted",
-  "--color-muted-foreground",
-  "--color-border",
-  "--color-primary",
-  "--color-primary-foreground",
-  "--radius-md",
-  "--shadow-lg",
-];
-
-function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
-  const styles = window.getComputedStyle(element);
-  const appTheme = element.closest<HTMLElement>("[data-app-theme]")?.dataset.appTheme;
-  const themeStyle = portalThemeVars.reduce<PortalThemeStyle>((style, variable) => {
-    style[variable as `--${string}`] = styles.getPropertyValue(variable);
-    return style;
-  }, {});
-
-  if (appTheme === "dark") {
-    themeStyle["--select-popover-background"] = "#151c3a";
-    themeStyle["--select-option-hover-background"] = "#1e274f";
-    themeStyle["--select-option-selected-background"] = "#202a55";
-  } else if (appTheme) {
-    themeStyle["--select-popover-background"] = "#f8fafc";
-    themeStyle["--select-option-hover-background"] = "#eef2ff";
-    themeStyle["--select-option-selected-background"] = "#ede9fe";
-  }
-
-  return themeStyle;
-}
 
 export function CmSelect({
   value,
@@ -111,7 +76,7 @@ export function CmSelect({
 }: CmSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});
+
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -152,10 +117,6 @@ export function CmSelect({
   // Close on outside click
   useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
 
-  useEffect(() => {
-    if (!open || !triggerRef.current) return;
-    setPortalThemeStyle(readPortalThemeStyle(triggerRef.current));
-  }, [open]);
 
   // Position the dropdown
   useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
@@ -289,7 +250,6 @@ export function CmSelect({
             ref={panelRef}
             id={listboxId}
             role="listbox"
-            style={portalThemeStyle}
             className="cm-select__popover"
           >
             {options.map((option, index) => {

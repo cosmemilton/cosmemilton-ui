@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
@@ -32,41 +32,7 @@ export type CmMultiSelectProps = {
   width?: string | number;
 };
 
-type PortalThemeStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
 
-const portalThemeVars = [
-  "--color-card",
-  "--color-background",
-  "--color-foreground",
-  "--color-muted",
-  "--color-muted-foreground",
-  "--color-border",
-  "--color-primary",
-  "--color-primary-foreground",
-  "--shadow-lg",
-  "--radius-md",
-];
-
-function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
-  const styles = window.getComputedStyle(element);
-  const appTheme = element.closest<HTMLElement>("[data-app-theme]")?.dataset.appTheme;
-  const themeStyle = portalThemeVars.reduce<PortalThemeStyle>((style, variable) => {
-    style[variable as `--${string}`] = styles.getPropertyValue(variable);
-    return style;
-  }, {});
-
-  if (appTheme === "dark") {
-    themeStyle["--multi-select-popover-background"] = "#151c3a";
-    themeStyle["--multi-select-option-hover-background"] = "#1e274f";
-    themeStyle["--multi-select-option-selected-background"] = "#202a55";
-  } else if (appTheme) {
-    themeStyle["--multi-select-popover-background"] = "#f8fafc";
-    themeStyle["--multi-select-option-hover-background"] = "#eef2ff";
-    themeStyle["--multi-select-option-selected-background"] = "#ede9fe";
-  }
-
-  return themeStyle;
-}
 
 export function CmMultiSelect({
   value,
@@ -84,7 +50,7 @@ export function CmMultiSelect({
 }: CmMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});
+
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const selected = useMemo(() => new Set(value), [value]);
@@ -122,10 +88,7 @@ export function CmMultiSelect({
 
   useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
 
-  useEffect(() => {
-    if (!open || !triggerRef.current) return;
-    setPortalThemeStyle(readPortalThemeStyle(triggerRef.current));
-  }, [open]);
+
 
   useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
 
@@ -225,7 +188,6 @@ export function CmMultiSelect({
             id={listboxId}
             role="listbox"
             aria-multiselectable="true"
-            style={portalThemeStyle}
             className="cm-multi-select__popover"
           >
             {options.map((option, index) => {

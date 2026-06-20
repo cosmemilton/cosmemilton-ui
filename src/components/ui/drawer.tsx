@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useRef, useState, type CSSProperties } from "react";
+import { ReactNode, useRef } from "react";
 import { CmPortal } from "./portal.js";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
@@ -26,34 +26,6 @@ const sideClass: Record<DrawerSide, string> = {
   top: "cm-drawer__panel--top",
 };
 
-type DrawerPortalStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
-
-const drawerPortalThemeVars = [
-  "--color-card",
-  "--color-card-foreground",
-  "--color-background",
-  "--color-foreground",
-  "--color-muted",
-  "--color-muted-foreground",
-  "--color-border",
-  "--color-ring",
-  "--color-overlay",
-  "--radius-full",
-  "--radius-md",
-  "--shadow-xl",
-];
-
-function readDrawerPortalTheme(element: HTMLElement): DrawerPortalStyle {
-  const styles = window.getComputedStyle(element);
-
-  return drawerPortalThemeVars.reduce<DrawerPortalStyle>((themeStyle, variable) => {
-    const value = styles.getPropertyValue(variable);
-    if (value.trim()) {
-      themeStyle[variable as `--${string}`] = value;
-    }
-    return themeStyle;
-  }, {});
-}
 
 export function CmDrawer({
   open,
@@ -65,16 +37,12 @@ export function CmDrawer({
 }: CmDrawerProps) {
   const sourceRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [portalStyle, setPortalStyle] = useState<DrawerPortalStyle>({});
+
 
   useScrollLock(open);
   useEscapeKey(open, onClose);
   useFocusTrap(panelRef, { enabled: open });
 
-  useEffect(() => {
-    if (!open || !sourceRef.current) return;
-    setPortalStyle(readDrawerPortalTheme(sourceRef.current));
-  }, [open]);
 
   if (!open) return <span ref={sourceRef} hidden />;
 
@@ -82,7 +50,7 @@ export function CmDrawer({
     <>
       <span ref={sourceRef} hidden />
       <CmPortal>
-        <div className="cm-drawer__portal-scope" style={portalStyle}>
+        <div className="cm-drawer__portal-scope">
           <div className="cm-drawer__overlay" role="presentation" onClick={onClose} />
           <div
             ref={panelRef}

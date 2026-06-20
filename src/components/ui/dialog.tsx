@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useId, useRef, type CSSProperties, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
@@ -51,88 +51,6 @@ type DialogToneStyle = CSSProperties & {
   "--dialog-tone": string;
 };
 
-type DialogPortalStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
-
-const dialogPortalThemeVars = [
-  "--color-card",
-  "--color-card-foreground",
-  "--color-background",
-  "--color-foreground",
-  "--color-muted",
-  "--color-muted-foreground",
-  "--color-border",
-  "--color-ring",
-  "--color-primary",
-  "--color-primary-foreground",
-  "--color-secondary",
-  "--color-secondary-foreground",
-  "--color-accent",
-  "--color-accent-foreground",
-  "--color-danger",
-  "--color-danger-foreground",
-  "--color-warning",
-  "--color-warning-foreground",
-  "--color-info",
-  "--color-info-foreground",
-  "--color-success",
-  "--color-success-foreground",
-  "--color-overlay",
-  "--app-bg",
-  "--app-bg-soft",
-  "--app-surface",
-  "--app-surface-strong",
-  "--app-primary",
-  "--app-orange",
-  "--app-green",
-  "--app-blue",
-  "--app-pink",
-  "--app-line",
-  "--app-line-strong",
-  "--app-ink",
-  "--app-muted",
-  "--radius-md",
-  "--radius-lg",
-  "--shadow-xl",
-];
-
-type DialogPortalTheme = {
-  style: DialogPortalStyle;
-  appTheme?: string;
-};
-
-function readDialogPortalTheme(element: HTMLElement): DialogPortalTheme {
-  const styles = window.getComputedStyle(element);
-  const appTheme = element.closest<HTMLElement>("[data-app-theme]")?.dataset.appTheme;
-
-  const style = dialogPortalThemeVars.reduce<DialogPortalStyle>((themeStyle, variable) => {
-    themeStyle[variable as `--${string}`] = styles.getPropertyValue(variable);
-    return themeStyle;
-  }, {});
-
-  const setFallbackVar = (variable: `--${string}`, value: string) => {
-    if (!style[variable]?.trim()) {
-      style[variable] = value;
-    }
-  };
-
-  if (appTheme === "dark") {
-    setFallbackVar("--app-bg", "#050816");
-    setFallbackVar("--app-bg-soft", "#0a1024");
-    setFallbackVar("--app-surface", "#111832");
-    setFallbackVar("--app-surface-strong", "#151c3a");
-    setFallbackVar("--color-background", "#020617");
-    setFallbackVar("--color-card", "#0f172a");
-    setFallbackVar("--color-card-foreground", "#e2e8f0");
-    setFallbackVar("--color-muted", "#111827");
-    setFallbackVar("--color-border", "#1e293b");
-    setFallbackVar("--color-overlay", "rgba(2, 6, 23, 0.65)");
-    setFallbackVar("--app-line", "rgba(191, 219, 254, 0.18)");
-    setFallbackVar("--app-line-strong", "rgba(168, 85, 247, 0.48)");
-    setFallbackVar("--shadow-xl", "0 30px 90px rgba(0, 0, 0, 0.5)");
-  }
-
-  return { style, appTheme };
-}
 
 export function CmDialog({
   open,
@@ -153,19 +71,12 @@ export function CmDialog({
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [portalStyle, setPortalStyle] = useState<DialogPortalStyle>({});
-  const [portalAppTheme, setPortalAppTheme] = useState<string | undefined>(undefined);
+
 
   useScrollLock(open);
   useEscapeKey(open && dismissible, onClose);
   useFocusTrap(panelRef, { enabled: open });
 
-  useEffect(() => {
-    if (!open || !portal || !sourceRef.current) return;
-    const portalTheme = readDialogPortalTheme(sourceRef.current);
-    setPortalStyle(portalTheme.style);
-    setPortalAppTheme(portalTheme.appTheme);
-  }, [open, portal]);
 
   const { invertHeader } = useCmTheme();
 
@@ -340,7 +251,7 @@ export function CmDialog({
     <>
       <span ref={sourceRef} hidden />
       <CmPortal>
-        <div className="cm-dialog-portal-scope" data-app-theme={portalAppTheme} style={portalStyle}>
+        <div className="cm-dialog-portal-scope">
           {content}
         </div>
       </CmPortal>

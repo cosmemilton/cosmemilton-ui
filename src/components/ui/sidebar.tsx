@@ -202,8 +202,7 @@ export function CmSidebar({
     const navRect = navElement.getBoundingClientRect();
     const groupItemsRect = groupItemsElement.getBoundingClientRect();
     const footerRect = footerRef.current?.getBoundingClientRect();
-    const sidebarStyles = window.getComputedStyle(sidebarElement);
-    const sidebarPaddingBottom = Number.parseFloat(sidebarStyles.paddingBottom) || 0;
+    const sidebarPaddingBottom = 0;
     const sidebarBottom = sidebarRect.bottom - sidebarPaddingBottom;
     const lowerBoundary = Math.min(navRect.bottom, footerRect?.top ?? sidebarBottom, sidebarBottom);
     const nextAvailableHeight = Math.max(0, Math.floor(lowerBoundary - groupItemsRect.top));

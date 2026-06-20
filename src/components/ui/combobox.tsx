@@ -2,7 +2,6 @@
 
 import {
   type ChangeEvent,
-  type CSSProperties,
   type ReactNode,
   useCallback,
   useEffect,
@@ -50,37 +49,6 @@ export type CmComboboxProps = {
   selectedDisplay?: "full" | "label";
 };
 
-type PortalThemeStyle = CSSProperties & Partial<Record<`--${string}`, string>>;
-
-const portalThemeVars = [
-  "--color-popover",
-  "--color-popover-foreground",
-  "--color-background",
-  "--color-foreground",
-  "--color-muted",
-  "--color-muted-foreground",
-  "--color-border",
-  "--color-primary",
-  "--color-primary-foreground",
-];
-
-function readPortalThemeStyle(element: HTMLElement): PortalThemeStyle {
-  const styles = window.getComputedStyle(element);
-  const themeStyle = portalThemeVars.reduce<PortalThemeStyle>((style, variable) => {
-    style[variable as `--${string}`] = styles.getPropertyValue(variable);
-    return style;
-  }, {});
-
-  if (!themeStyle["--color-popover"]) {
-    themeStyle["--color-popover"] =
-      styles.getPropertyValue("--color-card") || styles.getPropertyValue("--color-background");
-  }
-  if (!themeStyle["--color-popover-foreground"]) {
-    themeStyle["--color-popover-foreground"] = styles.getPropertyValue("--color-foreground");
-  }
-
-  return themeStyle;
-}
 
 export function CmCombobox({
   items,
@@ -115,7 +83,7 @@ export function CmCombobox({
     width?: number;
     maxWidth?: number;
   }>({});
-  const [portalThemeStyle, setPortalThemeStyle] = useState<PortalThemeStyle>({});
+
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -271,10 +239,6 @@ export function CmCombobox({
     };
   }, [isOpen, updateDropdownPosition]);
 
-  useEffect(() => {
-    if (!isOpen || !containerRef.current) return;
-    setPortalThemeStyle(readPortalThemeStyle(containerRef.current));
-  }, [isOpen]);
 
   useEffect(() => {
     return () => {
@@ -449,7 +413,6 @@ export function CmCombobox({
               minWidth: inputRef.current?.getBoundingClientRect().width ?? 0,
               maxWidth: dropdownStyle.maxWidth ?? "calc(100vw - 16px)",
               zIndex: 9999,
-              ...portalThemeStyle,
             }}
             id={listboxId}
             role="listbox"
