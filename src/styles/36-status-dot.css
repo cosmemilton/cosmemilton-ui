@@ -1,0 +1,82 @@
+/* CmStatusDot — small tonal status indicator (online/warning/offline…). */
+.cm-status-dot {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--cm-status-dot-size, 0.5rem);
+  height: var(--cm-status-dot-size, 0.5rem);
+  border-radius: var(--radius-full);
+  background: var(--cm-status-dot-color, var(--color-muted-foreground));
+}
+
+.cm-status-dot--sm {
+  --cm-status-dot-size: 0.375rem;
+}
+
+.cm-status-dot--md {
+  --cm-status-dot-size: 0.5rem;
+}
+
+.cm-status-dot--lg {
+  --cm-status-dot-size: 0.625rem;
+}
+
+.cm-status-dot--tone-default {
+  --cm-status-dot-color: var(--color-muted-foreground);
+}
+
+.cm-status-dot--tone-primary {
+  --cm-status-dot-color: var(--color-primary);
+}
+
+.cm-status-dot--tone-secondary {
+  --cm-status-dot-color: var(--color-secondary);
+}
+
+.cm-status-dot--tone-accent {
+  --cm-status-dot-color: var(--color-accent);
+}
+
+.cm-status-dot--tone-success {
+  --cm-status-dot-color: var(--color-success);
+}
+
+.cm-status-dot--tone-warning {
+  --cm-status-dot-color: var(--color-warning);
+}
+
+.cm-status-dot--tone-danger {
+  --cm-status-dot-color: var(--color-danger);
+}
+
+.cm-status-dot--tone-info {
+  --cm-status-dot-color: var(--color-info);
+}
+
+/* Halo pulsante: um anel que cresce e some, replicando a cor do tom. */
+.cm-status-dot--pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--cm-status-dot-color, var(--color-muted-foreground));
+  animation: cm-status-dot-pulse 1.6s ease-out infinite;
+}
+
+@keyframes cm-status-dot-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-status-dot--pulse::after {
+    animation: none;
+  }
+}

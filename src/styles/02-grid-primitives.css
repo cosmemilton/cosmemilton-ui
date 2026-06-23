@@ -322,6 +322,32 @@
   scrollbar-width: thin;
 }
 
+/* Slot opcional logo após os grupos de menu, dentro da área rolável. */
+.cm-sidebar__below-groups {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+/* Linha divisória entre o menu e o slot, alinhada ao inset dos itens (0.75rem).
+   Desenhada num ::before pra não deslocar o conteúdo. */
+.cm-sidebar__below-groups--divided {
+  position: relative;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.cm-sidebar__below-groups--divided::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0.75rem;
+  right: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
 .cm-sidebar__group {
   position: relative;
   display: grid;

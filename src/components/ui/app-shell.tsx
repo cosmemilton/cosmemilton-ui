@@ -10,9 +10,19 @@ import {
 } from "react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
-import { cmDensityClass, cmSizeValue, type CmDensity } from "./types.js";
+import {
+  cmDensityClass,
+  cmSizeValue,
+  cmSpacingValue,
+  type CmDensity,
+  type CmSpacing,
+} from "./types.js";
 
 export type CmAppShellChrome = "surface" | "inverted";
+
+// Spacing token (none|xs|sm|md|lg), raw CSS shorthand ("1rem 2rem") or a px
+// number applied as padding on the scrollable content area.
+export type CmAppShellContentPadding = CmSpacing | string | number;
 
 type CmAppShellControls = {
   mobileSidebarOpen: boolean;
@@ -33,6 +43,7 @@ export type CmAppShellProps = HTMLAttributes<HTMLDivElement> & {
   density?: CmDensity;
   sidebarWidth?: string | number;
   collapsedSidebarWidth?: string | number;
+  contentPadding?: CmAppShellContentPadding;
   height?: string | number;
   mobileSidebarOpen?: boolean;
   defaultMobileSidebarOpen?: boolean;
@@ -53,6 +64,7 @@ export function CmAppShell({
   className,
   collapsedSidebarWidth,
   contentClassName,
+  contentPadding,
   defaultMobileSidebarOpen = false,
   density,
   height,
@@ -115,6 +127,9 @@ export function CmAppShell({
       ? { "--cm-app-shell-sidebar-collapsed-width": cmSizeValue(collapsedSidebarWidth) }
       : {}),
     ...(height ? { "--cm-app-shell-height": cmSizeValue(height) } : {}),
+    ...(contentPadding !== undefined
+      ? { "--cm-app-shell-content-padding": cmSpacingValue(contentPadding) ?? "0" }
+      : {}),
     ...style,
   };
 

@@ -28,7 +28,26 @@ type BaseLayoutProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   align?: LayoutAlign;
   justify?: LayoutJustify;
   fullWidth?: boolean;
+  /**
+   * Faz o elemento crescer como filho flex (equivale a `flex: <n> 1 0`), o atalho
+   * para colunas que dividem o espaço. `true` = peso 1; um número define o peso.
+   * (`min-width: 0` já é padrão nos primitives, então não precisa repetir.)
+   */
+  grow?: boolean | number;
 };
+
+/** Resolve a prop `grow` na classe + var de peso compartilhadas pelos primitives. */
+function resolveGrow(grow: boolean | number | undefined): {
+  className: string | undefined;
+  style: Record<`--${string}`, number> | undefined;
+} {
+  const hasGrow = grow === true || (typeof grow === "number" && grow > 0);
+  if (!hasGrow) return { className: undefined, style: undefined };
+  return {
+    className: "cm-layout-grow",
+    style: typeof grow === "number" ? { "--cm-layout-grow": grow } : undefined,
+  };
+}
 
 export type CmRowProps = BaseLayoutProps & {
   wrap?: boolean;
@@ -110,16 +129,25 @@ export function CmRow({
   justify = "start",
   wrap = false,
   fullWidth = false,
+  grow,
   style,
   ...props
 }: CmRowProps) {
+  const growth = resolveGrow(grow);
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
+    ...growth.style,
     ...style,
   };
 
   return renderLayout(as, {
-    className: cn("cm-row", wrap && "cm-layout-wrap", fullWidth && "cm-layout-full", className),
+    className: cn(
+      "cm-row",
+      wrap && "cm-layout-wrap",
+      fullWidth && "cm-layout-full",
+      growth.className,
+      className,
+    ),
     "data-align": align,
     "data-justify": justify,
     style: layoutStyle,
@@ -137,16 +165,19 @@ export function CmCol({
   align = "stretch",
   justify = "start",
   fullWidth = false,
+  grow,
   style,
   ...props
 }: CmColProps) {
+  const growth = resolveGrow(grow);
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
+    ...growth.style,
     ...style,
   };
 
   return renderLayout(as, {
-    className: cn("cm-col", fullWidth && "cm-layout-full", className),
+    className: cn("cm-col", fullWidth && "cm-layout-full", growth.className, className),
     "data-align": align,
     "data-justify": justify,
     style: layoutStyle,
@@ -166,10 +197,12 @@ export function CmStack({
   direction = "vertical",
   wrap = false,
   fullWidth = false,
+  grow,
   style,
   ...props
 }: CmStackProps) {
   const directions = resolveStackDirections(direction);
+  const growth = resolveGrow(grow);
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     "--cm-stack-direction-base": directions.base,
@@ -177,11 +210,18 @@ export function CmStack({
     "--cm-stack-direction-md": directions.md,
     "--cm-stack-direction-lg": directions.lg,
     "--cm-stack-direction-xl": directions.xl,
+    ...growth.style,
     ...style,
   };
 
   return renderLayout(as, {
-    className: cn("cm-stack", wrap && "cm-layout-wrap", fullWidth && "cm-layout-full", className),
+    className: cn(
+      "cm-stack",
+      wrap && "cm-layout-wrap",
+      fullWidth && "cm-layout-full",
+      growth.className,
+      className,
+    ),
     "data-align": align,
     "data-justify": justify,
     style: layoutStyle,

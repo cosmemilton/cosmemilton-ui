@@ -31,4 +31,24 @@ describe("CmAppShell", () => {
     const { container } = render(<CmAppShell density="default">conteúdo</CmAppShell>);
     expect(container.querySelector(".cm-app-shell")).not.toHaveAttribute("data-density");
   });
+
+  it("does not set the content padding variable without contentPadding", () => {
+    const { container } = render(<CmAppShell>conteúdo</CmAppShell>);
+    const shell = container.querySelector<HTMLElement>(".cm-app-shell");
+    expect(shell?.style.getPropertyValue("--cm-app-shell-content-padding")).toBe("");
+  });
+
+  it("resolves a contentPadding token to the matching spacing variable", () => {
+    const { container } = render(<CmAppShell contentPadding="md">conteúdo</CmAppShell>);
+    const shell = container.querySelector<HTMLElement>(".cm-app-shell");
+    expect(shell?.style.getPropertyValue("--cm-app-shell-content-padding")).toBe(
+      "var(--space-md, 1rem)",
+    );
+  });
+
+  it("treats a numeric contentPadding as px", () => {
+    const { container } = render(<CmAppShell contentPadding={24}>conteúdo</CmAppShell>);
+    const shell = container.querySelector<HTMLElement>(".cm-app-shell");
+    expect(shell?.style.getPropertyValue("--cm-app-shell-content-padding")).toBe("24px");
+  });
 });

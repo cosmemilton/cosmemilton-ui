@@ -61,6 +61,10 @@ export type CmSidebarBrand = {
 export type CmSidebarProps = {
   groups: CmSidebarGroup[];
   brand?: CmSidebarBrand;
+  /** Conteúdo logo após as opções de menu, dentro da área rolável (ex.: switcher de projetos). */
+  belowGroups?: ReactNode;
+  /** Desenha uma linha divisória (alinhada aos itens) entre o menu e `belowGroups`. Padrão `false`. */
+  belowGroupsDivider?: boolean;
   footer?: ReactNode;
   children?: ReactNode;
   className?: string;

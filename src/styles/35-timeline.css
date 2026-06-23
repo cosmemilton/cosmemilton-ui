@@ -1,0 +1,160 @@
+/* CmTimeline: feed/atividade vertical. O "trilho" é o marcador (ponto/ícone) de
+   cada item somado a um conector contínuo que liga um ponto ao próximo.
+
+   O conector é absoluto e ocupa toda a altura do item (top:0 → bottom:0); como
+   os itens ficam encostados (sem gap no container), os segmentos se emendam num
+   trilho contínuo. O marcador fica por cima (z-index). No primeiro item o trilho
+   começa no centro do ponto e no último termina nele — assim a linha encosta nos
+   dots em vez de parar antes. */
+.cm-timeline {
+  --cm-timeline-marker-size: 0.625rem;
+  --cm-timeline-line-width: 2px;
+  --cm-timeline-line-color: var(--color-border);
+  --cm-timeline-col-gap: 0.75rem;
+  --cm-timeline-row-gap: 0.85rem;
+  /* Desloca o marcador para o centro da primeira linha de texto do conteúdo. */
+  --cm-timeline-marker-offset: 0.3125rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cm-timeline__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cm-timeline-col-gap);
+}
+
+.cm-timeline__label {
+  flex: 0 0 var(--cm-timeline-label-width, auto);
+  text-align: right;
+  white-space: nowrap;
+  color: var(--color-muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-timeline__rail {
+  position: relative;
+  align-self: stretch;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cm-timeline__connector {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--cm-timeline-line-width);
+  transform: translateX(-50%);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--cm-timeline-line-color);
+}
+
+.cm-timeline__connector--first {
+  top: calc(var(--cm-timeline-marker-offset) + var(--cm-timeline-marker-size) / 2);
+}
+
+.cm-timeline__connector--last {
+  bottom: auto;
+  height: calc(var(--cm-timeline-marker-offset) + var(--cm-timeline-marker-size) / 2);
+}
+
+.cm-timeline__marker {
+  --cm-timeline-marker-tone: var(--color-primary);
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cm-timeline-marker-size);
+  height: var(--cm-timeline-marker-size);
+  margin-top: var(--cm-timeline-marker-offset);
+  border-radius: 9999px;
+  background: var(--cm-timeline-marker-tone);
+  color: var(--cm-timeline-marker-tone);
+}
+
+/* Marcador com ícone: sem fundo, dimensionado pelo próprio conteúdo. */
+.cm-timeline__marker--icon {
+  width: auto;
+  height: auto;
+  margin-top: calc(var(--cm-timeline-marker-offset) - 0.125rem);
+  background: none;
+  line-height: 0;
+}
+
+.cm-timeline__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: var(--cm-timeline-row-gap);
+}
+
+.cm-timeline__item:last-child .cm-timeline__content {
+  padding-bottom: 0;
+}
+
+.cm-timeline__main {
+  min-width: 0;
+}
+
+.cm-timeline__title {
+  color: var(--color-foreground);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.cm-timeline__description {
+  margin-top: 0.125rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.cm-timeline__trailing {
+  flex: 0 0 auto;
+}
+
+.cm-timeline__marker--tone-default {
+  --cm-timeline-marker-tone: var(--color-muted-foreground);
+}
+.cm-timeline__marker--tone-primary {
+  --cm-timeline-marker-tone: var(--color-primary);
+}
+.cm-timeline__marker--tone-secondary {
+  --cm-timeline-marker-tone: var(--color-secondary);
+}
+.cm-timeline__marker--tone-accent {
+  --cm-timeline-marker-tone: var(--color-accent);
+}
+.cm-timeline__marker--tone-success {
+  --cm-timeline-marker-tone: var(--color-success);
+}
+.cm-timeline__marker--tone-warning {
+  --cm-timeline-marker-tone: var(--color-warning);
+}
+.cm-timeline__marker--tone-danger {
+  --cm-timeline-marker-tone: var(--color-danger);
+}
+.cm-timeline__marker--tone-info {
+  --cm-timeline-marker-tone: var(--color-info);
+}
+
+/* Variante "connected": trilho contínuo tingido pelo tom primário + marcadores
+   compactos e ritmo mais apertado — o visual do print do Renatao Panel. */
+.cm-timeline--variant-connected {
+  --cm-timeline-marker-size: 0.5rem;
+  --cm-timeline-row-gap: 0.7rem;
+  --cm-timeline-line-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+}

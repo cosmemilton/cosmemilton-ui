@@ -64,6 +64,8 @@ export function CmSidebar({
   activePathname,
   autoCollapse = true,
   autoCollapseBelow = defaultAutoCollapseBelow,
+  belowGroups,
+  belowGroupsDivider = false,
   brand,
   children,
   className,
@@ -504,6 +506,16 @@ export function CmSidebar({
               </div>
             );
           })}
+          {belowGroups && !(isCollapsed && !sidebarPreviewOpen) ? (
+            <div
+              className={cn(
+                "cm-sidebar__below-groups",
+                belowGroupsDivider && "cm-sidebar__below-groups--divided",
+              )}
+            >
+              {belowGroups}
+            </div>
+          ) : null}
         </nav>
         {hasFooter ? (
           <div ref={footerRef} className="cm-sidebar__footer">

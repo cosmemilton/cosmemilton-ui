@@ -27,6 +27,13 @@
   width: 100%;
 }
 
+/* Atalho para "flex: <peso> 1 0" — colunas que dividem o espaço sem repetir
+   estilo inline. `min-width: 0` já vem dos primitives base. */
+.cm-layout-grow {
+  flex-grow: var(--cm-layout-grow, 1);
+  flex-basis: 0;
+}
+
 .cm-row[data-align="start"],
 .cm-col[data-align="start"],
 .cm-stack[data-align="start"] {

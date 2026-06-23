@@ -1350,11 +1350,27 @@
   gap: 0.5rem;
 }
 
+.cm-progress__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .cm-progress__label {
   color: var(--color-foreground);
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25rem;
+}
+
+.cm-progress__value {
+  margin-left: auto;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .cm-command__search {

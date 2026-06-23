@@ -1,0 +1,87 @@
+/* CmGauge: progresso radial (donut/gauge) em SVG. O preenchimento segue o tom
+   via --cm-gauge-color (mesmo padrão do CmIconBadge); a animação do anel é
+   neutralizada pelo bloco global de prefers-reduced-motion. */
+.cm-gauge {
+  --cm-gauge-color: var(--color-primary);
+  --cm-gauge-track: var(--color-muted);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.cm-gauge__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cm-gauge__track {
+  stroke: var(--cm-gauge-track);
+}
+
+.cm-gauge__progress {
+  stroke: var(--cm-gauge-color);
+  transition: stroke-dasharray var(--motion-duration-slow, 0.3s)
+    var(--motion-ease-emphasized, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.cm-gauge__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0 12%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.cm-gauge__value {
+  font-weight: 600;
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.cm-gauge__label {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.cm-gauge--tone-default {
+  --cm-gauge-color: var(--color-primary);
+}
+
+.cm-gauge--tone-primary {
+  --cm-gauge-color: var(--color-primary);
+}
+
+.cm-gauge--tone-secondary {
+  --cm-gauge-color: var(--color-secondary);
+}
+
+.cm-gauge--tone-accent {
+  --cm-gauge-color: var(--color-accent);
+}
+
+.cm-gauge--tone-success {
+  --cm-gauge-color: var(--color-success);
+}
+
+.cm-gauge--tone-warning {
+  --cm-gauge-color: var(--color-warning);
+}
+
+.cm-gauge--tone-danger {
+  --cm-gauge-color: var(--color-danger);
+}
+
+.cm-gauge--tone-info {
+  --cm-gauge-color: var(--color-info);
+}

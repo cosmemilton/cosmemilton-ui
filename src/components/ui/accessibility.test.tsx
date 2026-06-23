@@ -8,6 +8,10 @@ import { CmAlert } from "./alert.js";
 import { CmDataTable, type CmDataTableColumn } from "./data-table.js";
 import { CmTreeView, type CmTreeNode } from "./tree-view.js";
 import { CmSidebar, type CmSidebarGroup } from "./sidebar.js";
+import { CmGauge } from "./gauge.js";
+import { CmProgress } from "./progress.js";
+import { CmStatusDot } from "./status-dot.js";
+import { CmTimeline } from "./timeline.js";
 
 afterEach(cleanup);
 
@@ -107,6 +111,42 @@ describe("accessibility (axe-core)", () => {
   it("CmSidebar — navegação sem violações", async () => {
     const { container } = render(
       <CmSidebar groups={sidebarGroups} brand={{ title: "App" }} standalone />,
+    );
+    await expectNoAxeViolations(container);
+  });
+
+  it("CmGauge — progressbar rotulado sem violações", async () => {
+    const { container } = render(
+      <CmGauge value={72} tone="success" label="Saúde geral" aria-label="Saúde do sistema" />,
+    );
+    await expectNoAxeViolations(container);
+  });
+
+  it("CmProgress — barra rotulada com valor sem violações", async () => {
+    const { container } = render(<CmProgress value={72} label="CPU" showValue />);
+    await expectNoAxeViolations(container);
+  });
+
+  it("CmProgress — label acessível-only sem violações", async () => {
+    const { container } = render(<CmProgress value={72} label="Memória" srOnlyLabel />);
+    await expectNoAxeViolations(container);
+  });
+
+  it("CmStatusDot — indicador rotulado sem violações", async () => {
+    const { container } = render(<CmStatusDot tone="success" label="Online" />);
+    await expectNoAxeViolations(container);
+  });
+
+  it("CmTimeline — feed de atividade sem violações", async () => {
+    const { container } = render(
+      <CmTimeline
+        aria-label="Atividade recente"
+        items={[
+          { id: "1", label: "19:39", title: "Roteando protocolos", tone: "warning" },
+          { id: "2", label: "19:38", title: "MCP conectado", tone: "info" },
+          { id: "3", label: "19:37", title: "Testes OK", tone: "success" },
+        ]}
+      />,
     );
     await expectNoAxeViolations(container);
   });

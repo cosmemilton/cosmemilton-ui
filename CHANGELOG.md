@@ -1,5 +1,54 @@
 # Changelog
 
+## 3.8.0
+
+### Minor Changes
+
+- Add `contentPadding` to `CmAppShell` — the scrollable content area (`.cm-app-shell__content`) was always edge-to-edge, forcing consumers to wrap children in a glue class just to breathe.
+
+  `contentPadding` accepts a spacing token (`none`/`xs`/`sm`/`md`/`lg`), raw CSS shorthand (`"1rem 2rem"`) or a px number, and is applied via the `--cm-app-shell-content-padding` variable. The default stays `0`, so existing layouts and full-bleed content are unchanged.
+
+- Add `CmGauge` — radial/donut progress component (server-safe / RSC-ready, exported from `cosmemilton-ui/server`).
+
+  Fills the "progress radial / gauge / donut" gap: an SVG ring with `value`/`min`/`max`, `tone` (mapped to theme tokens) or explicit `color`/`trackColor`, configurable `size`/`thickness`, rounded caps, partial-arc gauge mode via `arc`/`startAngle`, centered percentage with optional `label`, custom `valueFormat`, and fully custom center `children`. Exposes `role="progressbar"` with `aria-valuenow/min/max/valuetext`.
+
+- Add `CmStatusDot` — small tonal status indicator (server-safe / RSC-ready, exported from `cosmemilton-ui/server`).
+
+  Fills the "status dot / indicator" gap (sidebar item status, system status, bottom bar). Renders a colored circle with `tone` (mapped to theme tokens; `default` = neutral/gray), `size` (`sm`/`md`/`lg`) and an optional pulsing `pulse` halo that respects `prefers-reduced-motion`. Pass `label` to expose an accessible name as screen-reader-only text — without it the dot is purely decorative, since color alone isn't accessible.
+
+- Add `CmTimeline` — vertical timeline / activity-feed component (server-safe / RSC-ready, exported from `cosmemilton-ui/server`).
+
+  Fills the "timeline / activity feed + vertical rail" gap: a data-driven `items` list where each entry renders a marker on a connected vertical rail plus content. Per-item `label` (opposite column, e.g. timestamp), `marker` (custom icon, defaults to a toned dot), `tone` (mapped to theme tokens, with a timeline-level default), `title`/`description` or arbitrary `content`, and a `trailing` slot (e.g. a badge). `labelWidth` keeps the opposite column aligned.
+
+  The rail is a continuous line that meets the dots exactly (trimmed at the first and last marker centers). `variant` switches the look: `default` (subtle border rail, larger markers) or `connected` (continuous accent-tinted rail with compact dots — classic activity-feed look).
+
+- Add a `grow` prop to `CmRow`, `CmCol` and `CmStack` — the shortcut for flex children that share space.
+
+  `grow` (`true` = weight 1, or a number for a custom weight) applies `flex: <n> 1 0`, removing the repetitive `style={{ flex: 1, minWidth: 0 }}` needed for two-column splits and fill-remaining layouts. (`min-width: 0` is already the default on the layout primitives, so it no longer has to be repeated either.)
+
+- Add `belowGroups` to `CmSidebar` — a slot rendered right after the menu groups, inside the scrollable nav area.
+
+  Previously the only in-sidebar slot was `footer` (pinned to the bottom), so content that should flow directly under the menu (e.g. a project switcher with status dots) had nowhere to go. `belowGroups` fills that gap; it scrolls together with the menu and is hidden automatically when the sidebar is collapsed (icon-only). The footer stays pinned and existing layouts are unchanged.
+
+  Also adds the optional `belowGroupsDivider` (default `false`) — draws a divider line between the menu and `belowGroups`, inset to align with the nav items.
+
+- `CmText`: extend `size` scale beyond `lg` with `xl`, `2xl` and `3xl` (display/heading sizes).
+
+  Previously `size` capped at `lg` (1.125rem), so rendering a prominent value (e.g. a gauge's "96%") required an inline `fontSize`. The new sizes follow the existing type scale up to 1.875rem (matching `CmMetricCard`'s value), removing the need for inline overrides.
+
+- Enhance `CmProgress` with accessible-only labels and value display.
+  - `srOnlyLabel` keeps `label` as the bar's accessible name without rendering visible text (was previously the only way to get a meaningful name, but always forced a visible label).
+  - `showValue` renders the percentage to the right of the label; `valueFormat` customizes that text (e.g. `350/500`).
+  - Adds `min` support so `value`/percent normalize against a custom range, mirroring `CmGauge`.
+
+  The accessible name and value come from the native `<progress>` element, so the visual header is marked `aria-hidden` to avoid double announcement. Existing usage (`label` only) keeps rendering a visible label.
+
+### Patch Changes
+
+- Fix `CmItem` `title` typing so it accepts any `ReactNode` (e.g. an icon + text), not just a string.
+
+  `CmItemProps` extended `HTMLAttributes<HTMLElement>`, whose native `title` (string) intersected with the component's `title: ReactNode` to produce `string & ReactNode` — so passing an element raised a type error even though it rendered fine at runtime. The native `title` is now omitted before redeclaring it.
+
 ## 3.7.0
 
 ### Minor Changes

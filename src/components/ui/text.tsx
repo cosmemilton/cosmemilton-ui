@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
 import type { CmSize } from "./types.js";
 
-type TextSize = Exclude<CmSize, "xl">;
+type TextSize = CmSize | "2xl" | "3xl";
 type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary" | "inverse";
 type TextWeight = "normal" | "medium" | "semibold";
 type TextVariant = "default" | "modalTabDescription";
@@ -30,6 +30,9 @@ const textVariants = cmVariants({
       sm: "cm-text--sm",
       md: "cm-text--md",
       lg: "cm-text--lg",
+      xl: "cm-text--xl",
+      "2xl": "cm-text--2xl",
+      "3xl": "cm-text--3xl",
     },
     tone: {
       default: "cm-text--default",
