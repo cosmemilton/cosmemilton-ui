@@ -1,4 +1,4 @@
-import { createElement, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ElementType, CSSProperties, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   cmSpacingValue,
@@ -8,32 +8,50 @@ import {
   type CmSpacing,
 } from "./types.js";
 
-type LayoutElement = "div" | "section" | "article" | "header" | "footer" | "main" | "nav" | "aside";
 type LayoutGap = string | number;
 type LayoutAlign = "start" | "center" | "end" | "stretch" | "baseline";
 type LayoutJustify = "start" | "center" | "end" | "between" | "around" | "evenly";
+type LayoutSpace = CmSpacing | string | number;
+type LayoutSurface =
+  | "default"
+  | "muted"
+  | "card"
+  | "raised"
+  | "inverse"
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "transparent";
+type LayoutRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
+type LayoutBorder = "none" | "sm" | "md" | "lg";
 type StackDirection = "vertical" | "horizontal";
 type ResponsiveDirection = CmResponsiveValue<StackDirection>;
 
-type LayoutStyle = CSSProperties & Record<`--${string}`, string | number>;
-type LayoutRenderProps = HTMLAttributes<HTMLElement> &
-  Record<`data-${string}`, string | undefined> & {
-    children?: ReactNode;
-  };
+type LayoutStyle = CSSProperties & Partial<Record<`--${string}`, string | number | undefined>>;
 
-type BaseLayoutProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
-  as?: LayoutElement;
+type BaseLayoutProps<TElement extends ElementType> = {
+  as?: TElement;
   children?: ReactNode;
+  className?: string;
+  style?: CSSProperties;
   gap?: LayoutGap;
   align?: LayoutAlign;
   justify?: LayoutJustify;
   fullWidth?: boolean;
-  /**
-   * Faz o elemento crescer como filho flex (equivale a `flex: <n> 1 0`), o atalho
-   * para colunas que dividem o espaço. `true` = peso 1; um número define o peso.
-   * (`min-width: 0` já é padrão nos primitives, então não precisa repetir.)
-   */
   grow?: boolean | number;
+  padding?: LayoutSpace;
+  paddingInline?: LayoutSpace;
+  paddingBlock?: LayoutSpace;
+  margin?: LayoutSpace;
+  marginInline?: LayoutSpace;
+  marginBlock?: LayoutSpace;
+  surface?: LayoutSurface;
+  radius?: LayoutRadius;
+  border?: LayoutBorder;
+  borderColor?: string;
 };
 
 /** Resolve a prop `grow` na classe + var de peso compartilhadas pelos primitives. */
@@ -49,27 +67,118 @@ function resolveGrow(grow: boolean | number | undefined): {
   };
 }
 
-export type CmRowProps = BaseLayoutProps & {
+export type CmRowProps<TElement extends ElementType = "div"> = BaseLayoutProps<TElement> & {
   wrap?: boolean;
-};
+} & Omit<ComponentPropsWithoutRef<TElement>, keyof BaseLayoutProps<TElement> | "wrap">;
 
-export type CmColProps = BaseLayoutProps;
+export type CmColProps<TElement extends ElementType = "div"> = BaseLayoutProps<TElement> &
+  Omit<ComponentPropsWithoutRef<TElement>, keyof BaseLayoutProps<TElement>>;
 
-export type CmStackProps = BaseLayoutProps & {
+export type CmStackProps<TElement extends ElementType = "div"> = BaseLayoutProps<TElement> & {
   direction?: ResponsiveDirection;
   wrap?: boolean;
-};
+} & Omit<ComponentPropsWithoutRef<TElement>, keyof BaseLayoutProps<TElement> | "direction" | "wrap">;
 
-export type CmContainerProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
-  as?: LayoutElement;
+type BaseContainerProps<TElement extends ElementType> = {
+  as?: TElement;
   children?: ReactNode;
+  className?: string;
+  style?: CSSProperties;
   maxWidth?: CmMaxWidth;
   padding?: CmSpacing | string | number;
+  paddingInline?: CmSpacing | string | number;
+  paddingBlock?: CmSpacing | string | number;
   fluid?: boolean;
 };
 
+export type CmContainerProps<TElement extends ElementType = "div"> = BaseContainerProps<TElement> &
+  Omit<ComponentPropsWithoutRef<TElement>, keyof BaseContainerProps<TElement>>;
+
 function spacingValue(value: LayoutGap | undefined, fallback: string) {
   return cmSpacingValue(value) ?? fallback;
+}
+
+function optionalSpacingValue(value: LayoutSpace | undefined) {
+  return cmSpacingValue(value);
+}
+
+function colorValue(value: string | undefined) {
+  return value === undefined ? undefined : `var(--color-${value}, ${value})`;
+}
+
+function hasLayoutBoxProps({
+  padding,
+  paddingInline,
+  paddingBlock,
+  margin,
+  marginInline,
+  marginBlock,
+  surface,
+  radius,
+  border,
+  borderColor,
+}: Pick<
+  BaseLayoutProps<ElementType>,
+  | "padding"
+  | "paddingInline"
+  | "paddingBlock"
+  | "margin"
+  | "marginInline"
+  | "marginBlock"
+  | "surface"
+  | "radius"
+  | "border"
+  | "borderColor"
+>) {
+  return (
+    padding !== undefined ||
+    paddingInline !== undefined ||
+    paddingBlock !== undefined ||
+    margin !== undefined ||
+    marginInline !== undefined ||
+    marginBlock !== undefined ||
+    surface !== undefined ||
+    radius !== undefined ||
+    border !== undefined ||
+    borderColor !== undefined
+  );
+}
+
+function hasLayoutMarginProps({
+  margin,
+  marginInline,
+  marginBlock,
+}: Pick<BaseLayoutProps<ElementType>, "margin" | "marginInline" | "marginBlock">) {
+  return margin !== undefined || marginInline !== undefined || marginBlock !== undefined;
+}
+
+function layoutBoxStyle({
+  padding,
+  paddingInline,
+  paddingBlock,
+  margin,
+  marginInline,
+  marginBlock,
+  borderColor,
+}: Pick<
+  BaseLayoutProps<ElementType>,
+  | "padding"
+  | "paddingInline"
+  | "paddingBlock"
+  | "margin"
+  | "marginInline"
+  | "marginBlock"
+  | "borderColor"
+>): LayoutStyle {
+  return {
+    "--cm-layout-padding": optionalSpacingValue(padding),
+    "--cm-layout-padding-inline": optionalSpacingValue(paddingInline),
+    "--cm-layout-padding-block": optionalSpacingValue(paddingBlock),
+    "--cm-layout-margin": optionalSpacingValue(margin),
+    "--cm-layout-margin-inline": optionalSpacingValue(marginInline),
+    "--cm-layout-margin-block": optionalSpacingValue(marginBlock),
+    "--cm-layout-border-color": colorValue(borderColor),
+  };
 }
 
 function stackDirectionValue(value: StackDirection | undefined, fallback: StackDirection) {
@@ -116,12 +225,8 @@ function containerPadding(value: CmContainerProps["padding"]) {
   return preset[value] ?? value;
 }
 
-function renderLayout(as: LayoutElement, props: LayoutRenderProps) {
-  return createElement(as, props);
-}
-
-export function CmRow({
-  as = "div",
+export function CmRow<TElement extends ElementType = "div">({
+  as,
   children,
   className,
   gap,
@@ -130,35 +235,67 @@ export function CmRow({
   wrap = false,
   fullWidth = false,
   grow,
+  padding,
+  paddingInline,
+  paddingBlock,
+  margin,
+  marginInline,
+  marginBlock,
+  surface,
+  radius,
+  border,
+  borderColor,
   style,
   ...props
-}: CmRowProps) {
+}: CmRowProps<TElement>) {
+  const Component: ElementType = as ?? "div";
   const growth = resolveGrow(grow);
+  const boxProps = {
+    padding,
+    paddingInline,
+    paddingBlock,
+    margin,
+    marginInline,
+    marginBlock,
+    surface,
+    radius,
+    border,
+    borderColor,
+  };
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     ...growth.style,
+    ...layoutBoxStyle(boxProps),
     ...style,
   };
 
-  return renderLayout(as, {
-    className: cn(
-      "cm-row",
-      wrap && "cm-layout-wrap",
-      fullWidth && "cm-layout-full",
-      growth.className,
-      className,
-    ),
-    "data-align": align,
-    "data-justify": justify,
-    style: layoutStyle,
-    ...props,
-    children,
-  });
+  return (
+    <Component
+      className={cn(
+        "cm-row",
+        wrap && "cm-layout-wrap",
+        fullWidth && "cm-layout-full",
+        growth.className,
+        hasLayoutBoxProps(boxProps) && "cm-layout-box",
+        hasLayoutMarginProps(boxProps) && "cm-layout-box--has-margin",
+        surface && `cm-layout-surface-${surface}`,
+        radius && `cm-layout-radius-${radius}`,
+        border && `cm-layout-border-${border}`,
+        className,
+      )}
+      data-align={align}
+      data-justify={justify}
+      style={layoutStyle}
+      {...(props as ComponentPropsWithoutRef<TElement>)}
+    >
+      {children}
+    </Component>
+  );
 }
 CmRow.displayName = "CmRow";
 
-export function CmCol({
-  as = "div",
+export function CmCol<TElement extends ElementType = "div">({
+  as,
   children,
   className,
   gap,
@@ -166,29 +303,66 @@ export function CmCol({
   justify = "start",
   fullWidth = false,
   grow,
+  padding,
+  paddingInline,
+  paddingBlock,
+  margin,
+  marginInline,
+  marginBlock,
+  surface,
+  radius,
+  border,
+  borderColor,
   style,
   ...props
-}: CmColProps) {
+}: CmColProps<TElement>) {
+  const Component: ElementType = as ?? "div";
   const growth = resolveGrow(grow);
+  const boxProps = {
+    padding,
+    paddingInline,
+    paddingBlock,
+    margin,
+    marginInline,
+    marginBlock,
+    surface,
+    radius,
+    border,
+    borderColor,
+  };
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     ...growth.style,
+    ...layoutBoxStyle(boxProps),
     ...style,
   };
 
-  return renderLayout(as, {
-    className: cn("cm-col", fullWidth && "cm-layout-full", growth.className, className),
-    "data-align": align,
-    "data-justify": justify,
-    style: layoutStyle,
-    ...props,
-    children,
-  });
+  return (
+    <Component
+      className={cn(
+        "cm-col",
+        fullWidth && "cm-layout-full",
+        growth.className,
+        hasLayoutBoxProps(boxProps) && "cm-layout-box",
+        hasLayoutMarginProps(boxProps) && "cm-layout-box--has-margin",
+        surface && `cm-layout-surface-${surface}`,
+        radius && `cm-layout-radius-${radius}`,
+        border && `cm-layout-border-${border}`,
+        className,
+      )}
+      data-align={align}
+      data-justify={justify}
+      style={layoutStyle}
+      {...(props as ComponentPropsWithoutRef<TElement>)}
+    >
+      {children}
+    </Component>
+  );
 }
 CmCol.displayName = "CmCol";
 
-export function CmStack({
-  as = "div",
+export function CmStack<TElement extends ElementType = "div">({
+  as,
   children,
   className,
   gap,
@@ -198,11 +372,34 @@ export function CmStack({
   wrap = false,
   fullWidth = false,
   grow,
+  padding,
+  paddingInline,
+  paddingBlock,
+  margin,
+  marginInline,
+  marginBlock,
+  surface,
+  radius,
+  border,
+  borderColor,
   style,
   ...props
-}: CmStackProps) {
+}: CmStackProps<TElement>) {
+  const Component: ElementType = as ?? "div";
   const directions = resolveStackDirections(direction);
   const growth = resolveGrow(grow);
+  const boxProps = {
+    padding,
+    paddingInline,
+    paddingBlock,
+    margin,
+    marginInline,
+    marginBlock,
+    surface,
+    radius,
+    border,
+    borderColor,
+  };
   const layoutStyle: LayoutStyle = {
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     "--cm-stack-direction-base": directions.base,
@@ -211,47 +408,72 @@ export function CmStack({
     "--cm-stack-direction-lg": directions.lg,
     "--cm-stack-direction-xl": directions.xl,
     ...growth.style,
+    ...layoutBoxStyle(boxProps),
     ...style,
   };
 
-  return renderLayout(as, {
-    className: cn(
-      "cm-stack",
-      wrap && "cm-layout-wrap",
-      fullWidth && "cm-layout-full",
-      growth.className,
-      className,
-    ),
-    "data-align": align,
-    "data-justify": justify,
-    style: layoutStyle,
-    ...props,
-    children,
-  });
+  return (
+    <Component
+      className={cn(
+        "cm-stack",
+        wrap && "cm-layout-wrap",
+        fullWidth && "cm-layout-full",
+        growth.className,
+        hasLayoutBoxProps(boxProps) && "cm-layout-box",
+        hasLayoutMarginProps(boxProps) && "cm-layout-box--has-margin",
+        surface && `cm-layout-surface-${surface}`,
+        radius && `cm-layout-radius-${radius}`,
+        border && `cm-layout-border-${border}`,
+        className,
+      )}
+      data-align={align}
+      data-justify={justify}
+      style={layoutStyle}
+      {...(props as ComponentPropsWithoutRef<TElement>)}
+    >
+      {children}
+    </Component>
+  );
 }
 CmStack.displayName = "CmStack";
 
-export function CmContainer({
-  as = "div",
+export function CmContainer<TElement extends ElementType = "div">({
+  as,
   children,
   className,
   maxWidth,
   padding,
+  paddingInline,
+  paddingBlock,
   fluid = false,
   style,
   ...props
-}: CmContainerProps) {
+}: CmContainerProps<TElement>) {
+  const Component: ElementType = as ?? "div";
+  const hasAxisPadding = paddingInline !== undefined || paddingBlock !== undefined;
+  const basePadding = padding !== undefined ? containerPadding(padding) : undefined;
   const layoutStyle: LayoutStyle = {
     "--cm-container-max": fluid ? "100%" : containerWidth(maxWidth),
-    "--cm-container-padding": containerPadding(padding),
+    "--cm-container-padding": !hasAxisPadding ? basePadding : undefined,
+    "--cm-container-padding-inline":
+      paddingInline !== undefined
+        ? containerPadding(paddingInline)
+        : padding === undefined
+          ? containerPadding(undefined)
+          : basePadding,
+    "--cm-container-padding-block":
+      paddingBlock !== undefined ? containerPadding(paddingBlock) : padding === undefined ? "0" : basePadding,
     ...style,
   };
 
-  return renderLayout(as, {
-    className: cn("cm-container", className),
-    style: layoutStyle,
-    ...props,
-    children,
-  });
+  return (
+    <Component
+      className={cn("cm-container", className)}
+      style={layoutStyle}
+      {...(props as ComponentPropsWithoutRef<TElement>)}
+    >
+      {children}
+    </Component>
+  );
 }
 CmContainer.displayName = "CmContainer";

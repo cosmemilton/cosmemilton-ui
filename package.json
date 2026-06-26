@@ -1,6 +1,6 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -26,7 +26,8 @@
   "type": "module",
   "style": "./dist/styles.css",
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
   "sideEffects": [
     "./dist/styles.css",
@@ -60,7 +61,11 @@
     "./styles.min.css": "./dist/styles.min.css",
     "./components.css": "./dist/components.css",
     "./components.min.css": "./dist/components.min.css",
+    "./manifest.json": "./dist/manifest.json",
     "./package.json": "./package.json"
+  },
+  "bin": {
+    "cm-ui-codemod": "bin/codemod.mjs"
   },
   "engines": {
     "node": ">=18"
@@ -69,7 +74,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs",
+    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

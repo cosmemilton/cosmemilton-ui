@@ -1,15 +1,21 @@
 "use client";
 
 import { useMemo } from "react";
+import type { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
-import type { CmTone } from "./types.js";
+import {
+  CmChartFrame,
+  cmChartColor,
+  type CmChartLegendItem,
+  type CmChartTone,
+} from "./chart-frame.js";
 
 export type CmLineChartDataPoint = {
   label: string;
   value: number;
 };
 
-export type CmLineChartTone = Exclude<CmTone, "default">;
+export type CmLineChartTone = Exclude<CmChartTone, "default">;
 
 export type CmLineChartProps = {
   data: CmLineChartDataPoint[];
@@ -19,22 +25,29 @@ export type CmLineChartProps = {
   showGrid?: boolean;
   showLabels?: boolean;
   className?: string;
-};
-
-const toneColorMap: Record<CmLineChartTone, string> = {
-  primary: "var(--color-primary)",
-  secondary: "var(--color-secondary)",
-  accent: "var(--color-accent)",
-  success: "var(--color-success)",
-  warning: "var(--color-warning)",
-  danger: "var(--color-danger)",
-  info: "var(--color-info)",
+  frameClassName?: string;
+  title?: ReactNode;
+  description?: ReactNode;
+  loading?: boolean;
+  loadingMessage?: ReactNode;
+  loadingState?: ReactNode;
+  emptyMessage?: ReactNode;
+  emptyState?: ReactNode;
+  legend?: CmChartLegendItem[] | boolean;
+  valueFormat?: (value: number, point?: CmLineChartDataPoint) => ReactNode;
+  tooltipFormat?: (point: CmLineChartDataPoint) => string;
+  accessibleTableLabel?: ReactNode;
+  showAccessibleTable?: boolean;
 };
 
 function formatValue(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(0)}k`;
   return n.toLocaleString("pt-BR");
+}
+
+function textValue(value: ReactNode, fallback: string) {
+  return typeof value === "string" || typeof value === "number" ? String(value) : fallback;
 }
 
 export function CmLineChart({
@@ -45,6 +58,19 @@ export function CmLineChart({
   showGrid = true,
   showLabels = true,
   className,
+  frameClassName,
+  title,
+  description,
+  loading = false,
+  loadingMessage,
+  loadingState,
+  emptyMessage,
+  emptyState,
+  legend,
+  valueFormat,
+  tooltipFormat,
+  accessibleTableLabel,
+  showAccessibleTable,
 }: CmLineChartProps) {
   // Use a consistent internal coordinate system
   const svgWidth = 400;
@@ -55,7 +81,35 @@ export function CmLineChart({
   const padBottom = showLabels ? 30 : 10;
   const chartW = svgWidth - padLeft - padRight;
   const chartH = svgHeight - padTop - padBottom;
-  const resolvedColor = color ?? toneColorMap[tone];
+  const resolvedColor = color ?? cmChartColor(tone);
+  const empty = data.length === 0;
+  const resolvedLegend =
+    legend === true
+      ? [
+          {
+            id: "line",
+            label: title ?? "Série",
+            color: resolvedColor,
+            tone,
+          },
+        ]
+      : Array.isArray(legend)
+        ? legend
+        : undefined;
+  const table = {
+    caption: accessibleTableLabel ?? title ?? "Dados do gráfico de linhas",
+    columns: [
+      { key: "label", header: "Ponto" },
+      { key: "value", header: "Valor" },
+    ],
+    rows: data.map((point) => {
+      const fallback = formatValue(point.value);
+      return {
+        label: point.label,
+        value: textValue(valueFormat ? valueFormat(point.value, point) : fallback, fallback),
+      };
+    }),
+  };
 
   const { points, gridLines } = useMemo(() => {
     if (data.length === 0) return { points: [], gridLines: [] };
@@ -101,80 +155,96 @@ export function CmLineChart({
     return `${pathD} L ${points[points.length - 1].x} ${baseline} L ${points[0].x} ${baseline} Z`;
   }, [pathD, points, padTop, chartH]);
 
-  if (data.length === 0) return null;
-
   return (
-    <div className={cn("cm-line-chart", className)}>
-      <svg
-        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        className="cm-line-chart__svg"
-        style={{ height: `${height}px` }}
-      >
-        {/* CmGrid Lines */}
-        {showGrid &&
-          gridLines.map((line, i) => (
-            <g key={i}>
-              <line
-                x1={padLeft}
-                y1={line.y}
-                x2={svgWidth - padRight}
-                y2={line.y}
-                stroke="currentColor"
-                strokeWidth="0.5"
-                className="cm-line-chart__grid-line"
-              />
-              {showLabels && (
-                <text
-                  x={padLeft - 6}
-                  y={line.y + 4}
-                  fontSize="10"
-                  textAnchor="end"
-                  fill="currentColor"
-                  className="cm-line-chart__label"
-                >
-                  {formatValue(line.value)}
-                </text>
-              )}
-            </g>
+    <CmChartFrame
+      className={frameClassName}
+      title={title}
+      description={description}
+      height={height}
+      loading={loading}
+      loadingMessage={loadingMessage}
+      loadingState={loadingState}
+      empty={empty}
+      emptyMessage={emptyMessage}
+      emptyState={emptyState}
+      legend={resolvedLegend}
+      table={table}
+      showAccessibleTable={showAccessibleTable}
+    >
+      <div className={cn("cm-line-chart", className)}>
+        <svg
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          className="cm-line-chart__svg"
+          style={{ height: `${height}px` }}
+        >
+          {/* CmGrid Lines */}
+          {showGrid &&
+            gridLines.map((line, i) => (
+              <g key={i}>
+                <line
+                  x1={padLeft}
+                  y1={line.y}
+                  x2={svgWidth - padRight}
+                  y2={line.y}
+                  stroke="currentColor"
+                  strokeWidth="0.5"
+                  className="cm-line-chart__grid-line"
+                />
+                {showLabels && (
+                  <text
+                    x={padLeft - 6}
+                    y={line.y + 4}
+                    fontSize="10"
+                    textAnchor="end"
+                    fill="currentColor"
+                    className="cm-line-chart__label"
+                  >
+                    {textValue(valueFormat ? valueFormat(line.value) : formatValue(line.value), formatValue(line.value))}
+                  </text>
+                )}
+              </g>
+            ))}
+
+          {/* Area Fill */}
+          {areaPath && <path d={areaPath} fill={resolvedColor} opacity="0.1" />}
+
+          {/* Line */}
+          {pathD && (
+            <path
+              d={pathD}
+              fill="none"
+              stroke={resolvedColor}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+
+          {/* Points */}
+          {points.map((point, i) => (
+            <circle key={i} cx={point.x} cy={point.y} r="4" fill={resolvedColor}>
+              {tooltipFormat ? <title>{tooltipFormat(point)}</title> : null}
+            </circle>
           ))}
 
-        {/* Area Fill */}
-        {areaPath && <path d={areaPath} fill={resolvedColor} opacity="0.1" />}
-
-        {/* Line */}
-        {pathD && (
-          <path
-            d={pathD}
-            fill="none"
-            stroke={resolvedColor}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
-
-        {/* Points */}
-        {points.map((point, i) => (
-          <circle key={i} cx={point.x} cy={point.y} r="4" fill={resolvedColor} />
-        ))}
-
-        {/* X-axis Labels inside SVG */}
-        {showLabels &&
-          points.map((point, i) => (
-            <text
-              key={i}
-              x={point.x}
-              y={svgHeight - 6}
-              fontSize="10"
-              textAnchor="middle"
-              fill="currentColor"
-              className="cm-line-chart__label"
-            >
-              {point.label}
-            </text>
-          ))}
-      </svg>
-    </div>
+          {/* X-axis Labels inside SVG */}
+          {showLabels &&
+            points.map((point, i) => (
+              <text
+                key={i}
+                x={point.x}
+                y={svgHeight - 6}
+                fontSize="10"
+                textAnchor="middle"
+                fill="currentColor"
+                className="cm-line-chart__label"
+              >
+                {point.label}
+              </text>
+            ))}
+        </svg>
+      </div>
+    </CmChartFrame>
   );
 }
 CmLineChart.displayName = "CmLineChart";

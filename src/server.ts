@@ -2,9 +2,11 @@
 // Import from this entry in React Server Components and Next.js App Router layouts.
 export * from "./components/theme/theme-script.js";
 export * from "./components/ui/badge.js";
+export * from "./components/ui/box.js";
 export * from "./components/ui/breadcrumb.js";
 export * from "./components/ui/button-group.js";
 export * from "./components/ui/card.js";
+export * from "./components/ui/chart-frame.js";
 export * from "./components/ui/field.js";
 export * from "./components/ui/form.js";
 export * from "./components/ui/gauge.js";

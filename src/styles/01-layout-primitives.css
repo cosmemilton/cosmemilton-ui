@@ -27,6 +27,116 @@
   width: 100%;
 }
 
+.cm-layout-box {
+  padding: var(--cm-layout-padding, var(--cm-layout-padding-block, 0) var(--cm-layout-padding-inline, 0));
+  border-style: solid;
+  border-color: var(--cm-layout-border-color, var(--color-border));
+  border-width: 0;
+}
+
+.cm-layout-box--has-margin {
+  margin: var(--cm-layout-margin, var(--cm-layout-margin-block, 0) var(--cm-layout-margin-inline, 0));
+}
+
+.cm-layout-surface-default {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.cm-layout-surface-muted {
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+}
+
+.cm-layout-surface-card {
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+}
+
+.cm-layout-surface-raised {
+  background: var(--color-popover);
+  color: var(--color-popover-foreground);
+}
+
+.cm-layout-surface-inverse {
+  background: var(--color-foreground);
+  color: var(--color-background);
+}
+
+.cm-layout-surface-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.cm-layout-surface-secondary {
+  background: var(--color-secondary);
+  color: var(--color-secondary-foreground);
+}
+
+.cm-layout-surface-success {
+  background: var(--color-success);
+  color: var(--color-success-foreground);
+}
+
+.cm-layout-surface-warning {
+  background: var(--color-warning);
+  color: var(--color-warning-foreground);
+}
+
+.cm-layout-surface-danger {
+  background: var(--color-danger);
+  color: var(--color-danger-foreground);
+}
+
+.cm-layout-surface-info {
+  background: var(--color-info);
+  color: var(--color-info-foreground);
+}
+
+.cm-layout-surface-transparent {
+  background: transparent;
+}
+
+.cm-layout-radius-none {
+  border-radius: 0;
+}
+
+.cm-layout-radius-sm {
+  border-radius: var(--radius-sm);
+}
+
+.cm-layout-radius-md {
+  border-radius: var(--radius-md);
+}
+
+.cm-layout-radius-lg {
+  border-radius: var(--radius-lg);
+}
+
+.cm-layout-radius-xl {
+  border-radius: var(--radius-xl, var(--radius-lg));
+}
+
+.cm-layout-radius-full {
+  border-radius: var(--radius-full);
+}
+
+.cm-layout-border-none {
+  border-width: 0;
+}
+
+.cm-layout-border-sm {
+  border-width: 1px;
+}
+
+.cm-layout-border-md {
+  border-width: 2px;
+}
+
+.cm-layout-border-lg {
+  border-width: 4px;
+}
+
 /* Atalho para "flex: <peso> 1 0" — colunas que dividem o espaço sem repetir
    estilo inline. `min-width: 0` já vem dos primitives base. */
 .cm-layout-grow {
@@ -104,7 +214,7 @@
   width: 100%;
   max-width: var(--cm-container-max, 72rem);
   margin-inline: auto;
-  padding-inline: var(--cm-container-padding, clamp(1rem, 3vw, 2.5rem));
+  padding: var(--cm-container-padding, var(--cm-container-padding-block, 0) var(--cm-container-padding-inline, clamp(1rem, 3vw, 2.5rem)));
   min-width: 0;
 }
 
@@ -131,4 +241,3 @@
     flex-direction: var(--cm-stack-direction-xl, var(--cm-stack-direction-lg, var(--cm-stack-direction-md, var(--cm-stack-direction-sm, var(--cm-stack-direction-base, column)))));
   }
 }
-

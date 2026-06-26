@@ -1,0 +1,85 @@
+/* CmChartFrame: shared shell for dashboard charts. */
+.cm-chart-frame {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-sm, 0.5rem);
+  color: var(--color-foreground);
+}
+
+.cm-chart-frame__header {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.cm-chart-frame__title {
+  color: var(--color-foreground);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.cm-chart-frame__description {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.cm-chart-frame__body {
+  min-width: 0;
+  min-height: var(--cm-chart-frame-height, 12rem);
+}
+
+.cm-chart-frame[data-cm-chart-frame-height] .cm-chart-frame__body {
+  height: var(--cm-chart-frame-height);
+}
+
+.cm-chart-frame__state {
+  display: grid;
+  min-height: var(--cm-chart-frame-height, 12rem);
+  place-items: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.cm-chart-frame__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cm-chart-frame__legend-item {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.cm-chart-frame__legend-swatch {
+  width: 0.625rem;
+  height: 0.625rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-full);
+  background: var(--cm-chart-legend-color, var(--color-primary));
+}
+
+.cm-chart-frame__legend-label,
+.cm-chart-frame__legend-value {
+  min-width: 0;
+}
+
+.cm-chart-frame__legend-value {
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
