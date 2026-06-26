@@ -49,7 +49,7 @@ jobs:
         run: |
           npm pack --dry-run --json --ignore-scripts | node -e "
             const files = JSON.parse(require('fs').readFileSync(0, 'utf8'))[0].files.map(f => f.path);
-            const stray = files.filter(f => !f.startsWith('dist/') && !['package.json','README.md','LICENSE','CHANGELOG.md'].includes(f));
+            const stray = files.filter(f => !f.startsWith('dist/') && !f.startsWith('bin/') && !['package.json','README.md','LICENSE','CHANGELOG.md'].includes(f));
             if (stray.length) { console.error('Unexpected files in tarball:', stray); process.exit(1); }
             console.log(files.length + ' files, all expected.');
           "
