@@ -33,6 +33,7 @@ type GridContainerBaseProps = {
   minColumnWidth?: ResponsiveGridTrackSize;
   autoFit?: boolean;
   autoFill?: boolean;
+  row?: boolean;
   templateColumns?: ResponsiveGridTemplate;
   preset?: GridPreset;
   variant?: GridContainerVariant;
@@ -56,6 +57,7 @@ export type CmGridProps = HTMLAttributes<HTMLDivElement> & {
   minColumnWidth?: ResponsiveGridTrackSize;
   autoFit?: boolean;
   autoFill?: boolean;
+  row?: boolean;
   templateColumns?: ResponsiveGridTemplate;
   preset?: GridPreset;
   variant?: GridContainerVariant;
@@ -133,12 +135,14 @@ function gridContainerClassName({
   auto,
   className,
   preset,
+  row,
   template,
   variant,
 }: {
   auto: boolean;
   className?: string;
   preset: GridPreset;
+  row: boolean;
   template: boolean;
   variant: GridContainerVariant;
 }) {
@@ -147,6 +151,7 @@ function gridContainerClassName({
     variant === "actions" && "cm-grid-container-actions",
     preset !== "default" && `cm-grid-container--preset-${preset}`,
     auto && "cm-grid-container--auto",
+    row && "cm-grid-container--row",
     template && "cm-grid-container--template",
     className,
   );
@@ -163,6 +168,7 @@ function resolveGridContainer({
   autoFit = false,
   autoFill = false,
   preset = "default",
+  row = false,
   rowGap,
   rowSpacing,
   spacing,
@@ -179,6 +185,7 @@ function resolveGridContainer({
   | "gap"
   | "minColumnWidth"
   | "preset"
+  | "row"
   | "rowGap"
   | "rowSpacing"
   | "spacing"
@@ -235,6 +242,7 @@ function resolveGridContainer({
       auto: usesAuto,
       className,
       preset,
+      row,
       template: usesTemplate,
       variant,
     }),
@@ -256,6 +264,7 @@ export function CmGridContainer({
   minColumnWidth,
   autoFit = false,
   autoFill = false,
+  row = false,
   templateColumns,
   preset = "default",
   variant = "default",
@@ -273,6 +282,7 @@ export function CmGridContainer({
     gap,
     minColumnWidth,
     preset,
+    row,
     rowGap,
     rowSpacing,
     spacing,
@@ -354,6 +364,7 @@ export const CmGrid = forwardRef<HTMLDivElement, CmGridProps>(function CmGrid(
     gap,
     minColumnWidth,
     preset = "default",
+    row = false,
     rowGap,
     rowSpacing,
     size,
@@ -389,6 +400,7 @@ export const CmGrid = forwardRef<HTMLDivElement, CmGridProps>(function CmGrid(
         gap,
         minColumnWidth,
         preset,
+        row,
         rowGap,
         rowSpacing,
         spacing,

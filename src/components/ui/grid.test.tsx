@@ -127,6 +127,21 @@ describe("CmGrid ergonomic API", () => {
     );
   });
 
+  it("enables the flex row layout with the row prop", () => {
+    render(
+      <CmGrid container row spacing="lg" data-testid="grid">
+        <CmGrid size="auto">Auto</CmGrid>
+        <CmGrid size={6}>Six</CmGrid>
+        <CmGrid size="grow">Grow</CmGrid>
+      </CmGrid>,
+    );
+
+    expect(screen.getByTestId("grid")).toHaveClass(
+      "cm-grid-container",
+      "cm-grid-container--row",
+    );
+  });
+
   it("supports responsive row and column spacing aliases", () => {
     render(
       <CmGrid

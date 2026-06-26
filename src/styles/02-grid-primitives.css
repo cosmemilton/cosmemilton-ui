@@ -15,6 +15,16 @@
   grid-template-columns: var(--grid-template-columns-base, minmax(0, 1fr));
 }
 
+/* Modo "row" (flexbox): permite o que o grid de trilhas fixas não consegue para
+   itens auto-posicionados — size="auto" encolhe ao conteúdo, size={n} ocupa n de
+   --grid-columns da linha e size="grow" preenche o espaço restante. Mantém os
+   mesmos gaps/responsividade do modo grid. */
+.cm-grid-container--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
 .cm-grid-container-actions {
   width: 100%;
 }
@@ -40,6 +50,32 @@
   width: auto;
   justify-self: stretch;
   grid-column: auto / -1;
+}
+
+/* Modo row: sobrescreve o dimensionamento de grid pelo de flexbox (maior
+   especificidade vence as regras .cm-grid--size-*-base acima). */
+.cm-grid-container--row > .cm-grid--size-span-base {
+  flex: 0 0 auto;
+  width: calc(
+    100% * var(--grid-span-base) / var(--grid-columns-base) -
+      (var(--grid-columns-base) - var(--grid-span-base)) / var(--grid-columns-base) *
+        var(--grid-column-gap, var(--grid-column-gap-base, 1rem))
+  );
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cm-grid-container--row > .cm-grid--size-auto-base {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+}
+
+.cm-grid-container--row > .cm-grid--size-grow-base {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* O container estica os itens de grid (align-items: stretch), mas um card
@@ -93,6 +129,30 @@
     justify-self: stretch;
     grid-column: auto / -1;
   }
+
+  .cm-grid-container--row > .cm-grid--size-span-sm {
+    flex: 0 0 auto;
+    width: calc(
+      100% * var(--grid-span-sm) / var(--grid-columns-sm) -
+        (var(--grid-columns-sm) - var(--grid-span-sm)) / var(--grid-columns-sm) *
+          var(--grid-column-gap-sm, var(--grid-column-gap, var(--grid-column-gap-base, 1rem)))
+    );
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-auto-sm {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-grow-sm {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 @media (min-width: 768px) {
@@ -131,6 +191,30 @@
     width: auto;
     justify-self: stretch;
     grid-column: auto / -1;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-span-md {
+    flex: 0 0 auto;
+    width: calc(
+      100% * var(--grid-span-md) / var(--grid-columns-md) -
+        (var(--grid-columns-md) - var(--grid-span-md)) / var(--grid-columns-md) *
+          var(--grid-column-gap-md, var(--grid-column-gap-sm, var(--grid-column-gap, var(--grid-column-gap-base, 1rem))))
+    );
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-auto-md {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-grow-md {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
@@ -171,6 +255,30 @@
     justify-self: stretch;
     grid-column: auto / -1;
   }
+
+  .cm-grid-container--row > .cm-grid--size-span-lg {
+    flex: 0 0 auto;
+    width: calc(
+      100% * var(--grid-span-lg) / var(--grid-columns-lg) -
+        (var(--grid-columns-lg) - var(--grid-span-lg)) / var(--grid-columns-lg) *
+          var(--grid-column-gap-lg, var(--grid-column-gap-md, var(--grid-column-gap-sm, var(--grid-column-gap, var(--grid-column-gap-base, 1rem)))))
+    );
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-auto-lg {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-grow-lg {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -209,6 +317,30 @@
     width: auto;
     justify-self: stretch;
     grid-column: auto / -1;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-span-xl {
+    flex: 0 0 auto;
+    width: calc(
+      100% * var(--grid-span-xl) / var(--grid-columns-xl) -
+        (var(--grid-columns-xl) - var(--grid-span-xl)) / var(--grid-columns-xl) *
+          var(--grid-column-gap-xl, var(--grid-column-gap-lg, var(--grid-column-gap-md, var(--grid-column-gap-sm, var(--grid-column-gap, var(--grid-column-gap-base, 1rem))))))
+    );
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-auto-xl {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .cm-grid-container--row > .cm-grid--size-grow-xl {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
