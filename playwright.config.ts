@@ -1,4 +1,17 @@
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+// WSL/headless: o chrome-headless-shell precisa de libs do sistema (libnspr4,
+// libnss3, ...) que aqui não estão instaladas — ficam vendorizadas em
+// ~/.local/chromium-libs. Setamos LD_LIBRARY_PATH no processo que lança o
+// browser, então funciona independente de como os testes são chamados
+// (npm publish via `sh -c`, CI, direto). No-op se o diretório não existir.
+const vendoredChromiumLibs = join(homedir(), ".local", "chromium-libs");
+if (existsSync(vendoredChromiumLibs)) {
+  process.env.LD_LIBRARY_PATH = `${vendoredChromiumLibs}:${process.env.LD_LIBRARY_PATH ?? ""}`;
+}
 
 export default defineConfig({
   testDir: "./tests/visual",

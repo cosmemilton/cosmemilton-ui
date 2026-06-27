@@ -9,7 +9,7 @@ import { build } from "esbuild";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const distDir = join(root, "dist");
-const entry = join(distDir, "client.js");
+const entry = join(distDir, "browser.js");
 const jsxRuntime = join(root, "scripts", "browser-jsx-runtime.js");
 
 function globalModuleSource(globalName, moduleExports) {
