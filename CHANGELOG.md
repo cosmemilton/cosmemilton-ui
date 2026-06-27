@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.11.0
+
+### Minor Changes
+
+- Adiciona um bundle global `CmUI` para uso direto via `<script>` sem alterar os entry points ESM existentes. Também corrige o overflow de abas `folder` dentro de dialogs e amplia o DnD do `CmTreeView` com drop hierárquico opt-in, validação via `canDrop`, arraste por nó, respeito a `maxDepth` e metadados de origem/destino.
+
 ## 3.8.0
 
 ### Minor Changes

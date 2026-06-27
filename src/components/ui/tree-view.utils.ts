@@ -1,4 +1,4 @@
-import type { CmTreeNode } from "./tree-view.types.js";
+import type { CmTreeDropPosition, CmTreeMoveDetails, CmTreeNode } from "./tree-view.types.js";
 
 export type TreeNodeLocation = {
   node: CmTreeNode;
@@ -91,30 +91,85 @@ export function insertNodeIntoTree(
   });
 }
 
-export function moveNodeBeforeTarget(
+export type TreeMoveResult = {
+  nodes: CmTreeNode[];
+  parentId: string | null;
+  order: number;
+  details: CmTreeMoveDetails;
+};
+
+function getSubtreeDepth(node: CmTreeNode): number {
+  if (!node.children?.length) return 0;
+  return 1 + Math.max(...node.children.map(getSubtreeDepth));
+}
+
+/**
+ * Move um nó antes, para dentro ou depois de outro nó. Retorna `null` para
+ * ciclos e movimentos que ultrapassem `maxDepth`.
+ */
+export function moveNodeRelativeToTarget(
   nodes: CmTreeNode[],
   draggedId: string,
   targetId: string,
-): { nodes: CmTreeNode[]; parentId: string | null; order: number } | null {
+  position: CmTreeDropPosition,
+  maxDepth?: number,
+): TreeMoveResult | null {
   if (draggedId === targetId) return null;
 
   const source = findNodeLocation(nodes, draggedId);
   const target = findNodeLocation(nodes, targetId);
   if (!source || !target || nodeContainsId(source.node, targetId)) return null;
 
-  const parentId = target.parentId;
-  const order =
-    source.parentId === parentId && source.index < target.index
-      ? Math.max(0, target.index - 1)
-      : target.index;
+  const targetLevel = findNodeLevel(nodes, targetId);
+  const destinationLevel = position === "inside" ? targetLevel + 1 : targetLevel;
+  if (
+    maxDepth !== undefined &&
+    (maxDepth <= 0 || destinationLevel + getSubtreeDepth(source.node) >= maxDepth)
+  ) {
+    return null;
+  }
+
+  let parentId: string | null;
+  let order: number;
+
+  if (position === "inside") {
+    parentId = target.node.id;
+    order = (target.node.children?.length ?? 0) - (source.parentId === target.node.id ? 1 : 0);
+  } else {
+    parentId = target.parentId;
+    const targetOrder = target.index + (position === "after" ? 1 : 0);
+    order =
+      source.parentId === parentId && source.index < targetOrder ? targetOrder - 1 : targetOrder;
+  }
+
+  order = Math.max(0, order);
   const removal = removeNodeFromTree(nodes, draggedId);
   if (!removal.removed) return null;
+
+  const details: CmTreeMoveDetails = {
+    draggedNode: source.node,
+    targetNode: target.node,
+    position,
+    oldParentId: source.parentId,
+    oldOrder: source.index,
+    newParentId: parentId,
+    newOrder: order,
+  };
 
   return {
     nodes: insertNodeIntoTree(removal.nodes, parentId, removal.removed, order),
     parentId,
     order,
+    details,
   };
+}
+
+export function moveNodeBeforeTarget(
+  nodes: CmTreeNode[],
+  draggedId: string,
+  targetId: string,
+): TreeMoveResult | null {
+  return moveNodeRelativeToTarget(nodes, draggedId, targetId, "before");
 }
 
 /** Nível (profundidade, 0-based) de um nó, ou -1 se não encontrado. */

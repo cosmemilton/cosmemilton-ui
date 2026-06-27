@@ -1,7 +1,7 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.10.0",
-  "description": "Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).",
+  "version": "3.11.0",
+  "description": "Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
   "homepage": "https://miltonjunior.dev.br/cosmemilton-ui/v3",
@@ -21,10 +21,13 @@
     "design-system",
     "admin",
     "dashboard",
-    "cosmemilton"
+    "cosmemilton",
+    "front-end"
   ],
   "type": "module",
   "style": "./dist/styles.css",
+  "unpkg": "./dist/cm-ui.min.js",
+  "jsdelivr": "./dist/cm-ui.min.js",
   "files": [
     "dist",
     "bin"
@@ -34,6 +37,8 @@
     "./dist/styles.min.css",
     "./dist/components.css",
     "./dist/components.min.css",
+    "./dist/cm-ui.js",
+    "./dist/cm-ui.min.js",
     "./dist/index.js"
   ],
   "exports": {
@@ -74,7 +79,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs",
+    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
+    "build:browser": "tsc -p tsconfig.build.json && node scripts/build-browser.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -124,6 +130,7 @@
     "autoprefixer": "^10.5.0",
     "axe-core": "^4.11.4",
     "cssnano": "^8.0.1",
+    "esbuild": "^0.27.0",
     "eslint": "^9.39.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",

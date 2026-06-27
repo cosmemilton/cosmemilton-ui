@@ -24,7 +24,12 @@ import { CmInput } from "./input.js";
 import { CmButton } from "./button.js";
 import { CmSwitch } from "./switch.js";
 import { cn } from "../../lib/utils.js";
-import type { CmTreeNode } from "./tree-view.types.js";
+import type {
+  CmTreeDropMode,
+  CmTreeDropPosition,
+  CmTreeMoveDetails,
+  CmTreeNode,
+} from "./tree-view.types.js";
 import { TreeBranch } from "./tree-view-branch.js";
 import {
   collectAllNodeIds,
@@ -33,21 +38,37 @@ import {
   findBreadcrumbPath,
   findNodeLevel,
   findNodesAtLevel,
-  moveNodeBeforeTarget,
+  moveNodeRelativeToTarget,
   pruneToSolitaryPath,
 } from "./tree-view.utils.js";
 
-export type { CmTreeNode } from "./tree-view.types.js";
+export type {
+  CmTreeDropMode,
+  CmTreeDropPosition,
+  CmTreeMoveDetails,
+  CmTreeNode,
+} from "./tree-view.types.js";
 
 export interface CmTreeViewProps {
   data: CmTreeNode[];
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
-  onMove?: (nodeId: string, newParentId: string | null, newOrder: number) => void;
+  onMove?: (
+    nodeId: string,
+    newParentId: string | null,
+    newOrder: number,
+    details: CmTreeMoveDetails,
+  ) => void;
   onReorder?: (nodes: CmTreeNode[]) => void;
+  /** Valida o destino antes de exibir e efetivar o drop. */
+  canDrop?: (details: CmTreeMoveDetails) => boolean;
   searchable?: boolean;
   draggable?: boolean;
+  /** Permite habilitar o arraste por nó sem desativar o DnD da árvore inteira. */
+  isDraggable?: (node: CmTreeNode) => boolean;
+  /** `auto` habilita zonas para soltar antes, dentro ou depois do alvo. */
+  dropMode?: CmTreeDropMode;
   showBreadcrumb?: boolean;
   expandedByDefault?: boolean;
   className?: string;
@@ -96,8 +117,11 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   onDelete,
   onMove,
   onReorder,
+  canDrop,
   searchable = true,
   draggable = true,
+  isDraggable,
+  dropMode = "before",
   showBreadcrumb = true,
   expandedByDefault = false,
   className,
@@ -137,7 +161,10 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   });
   const [selectedNode, setSelectedNode] = useState<CmTreeNode | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const [dropTarget, setDropTarget] = useState<{
+    id: string;
+    position: CmTreeDropPosition;
+  } | null>(null);
 
   // Funções de controle
   const expandAll = useCallback(() => {
@@ -213,38 +240,69 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   };
 
   const handleDragStart = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
-    if (!draggable || selectionMode) return;
+    if (!draggable || selectionMode || isDraggable?.(node) === false) return;
     setActiveId(node.id);
-    setDropTargetId(null);
+    setDropTarget(null);
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", node.id);
   };
 
+  const getDropPosition = (event: DragEvent<HTMLElement>): CmTreeDropPosition => {
+    if (dropMode === "before") return "before";
+
+    const { top, height } = event.currentTarget.getBoundingClientRect();
+    if (height <= 0) return "inside";
+    const ratio = (event.clientY - top) / height;
+    if (ratio < 0.25) return "before";
+    if (ratio > 0.75) return "after";
+    return "inside";
+  };
+
   const handleDragOver = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
-    if (!activeId || activeId === node.id) return;
+    if (!activeId) return;
+    if (activeId === node.id) {
+      setDropTarget(null);
+      return;
+    }
+    const position = getDropPosition(event);
+    const moved = moveNodeRelativeToTarget(data, activeId, node.id, position, maxDepth);
+    if (!moved || canDrop?.(moved.details) === false) {
+      event.dataTransfer.dropEffect = "none";
+      setDropTarget(null);
+      return;
+    }
+
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
-    setDropTargetId(node.id);
+    setDropTarget((current) =>
+      current?.id === node.id && current.position === position
+        ? current
+        : { id: node.id, position },
+    );
   };
 
   const handleDrop = (event: DragEvent<HTMLElement>, node: CmTreeNode) => {
     event.preventDefault();
     const draggedId = activeId ?? event.dataTransfer.getData("text/plain");
+    const position = dropTarget?.id === node.id ? dropTarget.position : getDropPosition(event);
     setActiveId(null);
-    setDropTargetId(null);
+    setDropTarget(null);
 
     if (!draggedId || draggedId === node.id) return;
 
-    const moved = moveNodeBeforeTarget(data, draggedId, node.id);
-    if (!moved) return;
+    const moved = moveNodeRelativeToTarget(data, draggedId, node.id, position, maxDepth);
+    if (!moved || canDrop?.(moved.details) === false) return;
 
-    onMove?.(draggedId, moved.parentId, moved.order);
+    onMove?.(draggedId, moved.parentId, moved.order, moved.details);
+    if (position === "inside") {
+      setExpandedNodes((current) => new Set(current).add(node.id));
+    }
     onReorder?.(moved.nodes);
   };
 
   const handleDragEnd = () => {
     setActiveId(null);
-    setDropTargetId(null);
+    setDropTarget(null);
   };
 
   // CmBreadcrumb path
@@ -402,7 +460,8 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               expandedNodes={expandedNodes}
               highlightedNode={highlightedNode}
               activeId={activeId}
-              dropTargetId={dropTargetId}
+              dropTargetId={dropTarget?.id ?? null}
+              dropPosition={dropTarget?.position}
               onToggle={toggleNode}
               onAdd={onAdd}
               onEdit={onEdit}
@@ -413,6 +472,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               onDrop={handleDrop}
               onDragEnd={handleDragEnd}
               draggable={draggable}
+              isDraggable={isDraggable}
               maxDepth={maxDepth}
               selectionMode={selectionMode}
               selectedIds={selectedIds}

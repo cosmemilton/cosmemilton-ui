@@ -1,9 +1,13 @@
-import { afterEach, describe, expect, it } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { CmTreeView, type CmTreeNode } from "./tree-view.js";
-import { moveNodeBeforeTarget, pruneToSolitaryPath } from "./tree-view.utils.js";
+import {
+  moveNodeBeforeTarget,
+  moveNodeRelativeToTarget,
+  pruneToSolitaryPath,
+} from "./tree-view.utils.js";
 
 const tree: CmTreeNode[] = [
   {
@@ -150,6 +154,114 @@ describe("CmTreeView", () => {
     const leaf = screen.getByRole("button", { name: "Apple" }).closest(".cm-tree-view__node");
     expect(leaf?.querySelector('[title="Add Subcategory"]')).toBeNull();
   });
+
+  it("can expose drag handles only for nodes accepted by isDraggable", () => {
+    render(
+      <CmTreeView data={tree} expandedByDefault isDraggable={(node) => node.id.includes("-")} />,
+    );
+
+    expect(screen.getAllByRole("button", { name: "Drag to reorder" })).toHaveLength(3);
+    expect(
+      screen
+        .getByRole("button", { name: "Fruits" })
+        .closest(".cm-tree-view__node")
+        ?.querySelector('[aria-label="Drag to reorder"]'),
+    ).toBeNull();
+  });
+
+  it("uses canDrop to reject a target before invoking move callbacks", () => {
+    const canDrop = vi.fn(() => false);
+    const onMove = vi.fn();
+    const onReorder = vi.fn();
+    render(
+      <CmTreeView
+        data={tree}
+        expandedByDefault
+        dropMode="auto"
+        canDrop={canDrop}
+        onMove={onMove}
+        onReorder={onReorder}
+      />,
+    );
+
+    const source = screen
+      .getByRole("button", { name: "Apple" })
+      .closest(".cm-tree-view__node")
+      ?.querySelector<HTMLElement>('[aria-label="Drag to reorder"]');
+    const target = screen
+      .getByRole("button", { name: "Vegetables" })
+      .closest<HTMLElement>(".cm-tree-view__item");
+    const dataTransfer = {
+      effectAllowed: "none",
+      dropEffect: "none",
+      setData: vi.fn(),
+      getData: vi.fn(() => "1-1"),
+    };
+
+    expect(source).not.toBeNull();
+    expect(target).not.toBeNull();
+    fireEvent.dragStart(source!, { dataTransfer });
+    fireEvent.dragOver(target!, { dataTransfer });
+    fireEvent.drop(target!, { dataTransfer });
+
+    expect(canDrop).toHaveBeenCalled();
+    expect(onMove).not.toHaveBeenCalled();
+    expect(onReorder).not.toHaveBeenCalled();
+  });
+
+  it("gives onMove origin/destination details and passes the new tree to onReorder", () => {
+    const onMove = vi.fn();
+    const onReorder = vi.fn();
+    render(
+      <CmTreeView
+        data={tree}
+        expandedByDefault
+        dropMode="auto"
+        onMove={onMove}
+        onReorder={onReorder}
+      />,
+    );
+
+    const source = screen
+      .getByRole("button", { name: "Apple" })
+      .closest(".cm-tree-view__node")
+      ?.querySelector<HTMLElement>('[aria-label="Drag to reorder"]');
+    const target = screen
+      .getByRole("button", { name: "Vegetables" })
+      .closest<HTMLElement>(".cm-tree-view__item");
+    const dataTransfer = {
+      effectAllowed: "none",
+      dropEffect: "none",
+      setData: vi.fn(),
+      getData: vi.fn(() => "1-1"),
+    };
+
+    fireEvent.dragStart(source!, { dataTransfer });
+    fireEvent.dragOver(target!, { dataTransfer });
+    fireEvent.drop(target!, { dataTransfer });
+
+    expect(onMove).toHaveBeenCalledWith(
+      "1-1",
+      "2",
+      1,
+      expect.objectContaining({
+        position: "inside",
+        oldParentId: "1",
+        oldOrder: 0,
+        newParentId: "2",
+        newOrder: 1,
+      }),
+    );
+    expect(onReorder).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ id: "1" }),
+        expect.objectContaining({
+          id: "2",
+          children: expect.arrayContaining([expect.objectContaining({ id: "1-1" })]),
+        }),
+      ]),
+    );
+  });
 });
 
 describe("tree-view utils", () => {
@@ -158,6 +270,32 @@ describe("tree-view utils", () => {
     expect(result).not.toBeNull();
     expect(result?.parentId).toBeNull();
     expect(result?.nodes.map((n) => n.id)).toEqual(["2", "1"]);
+  });
+
+  it("moves a node inside an empty target and reports both locations", () => {
+    const data: CmTreeNode[] = [...tree, { id: "3", name: "Empty group", children: [] }];
+    const result = moveNodeRelativeToTarget(data, "1-1", "3", "inside");
+
+    expect(result?.parentId).toBe("3");
+    expect(result?.order).toBe(0);
+    expect(result?.nodes[2].children?.map((node) => node.id)).toEqual(["1-1"]);
+    expect(result?.details).toMatchObject({
+      position: "inside",
+      oldParentId: "1",
+      oldOrder: 0,
+      newParentId: "3",
+      newOrder: 0,
+    });
+  });
+
+  it("supports dropping after a sibling", () => {
+    const result = moveNodeRelativeToTarget(tree, "1-1", "1-2", "after");
+    expect(result?.nodes[0].children?.map((node) => node.id)).toEqual(["1-2", "1-1"]);
+    expect(result?.order).toBe(1);
+  });
+
+  it("rejects a move when the dragged subtree would exceed maxDepth", () => {
+    expect(moveNodeRelativeToTarget(tree, "1", "2", "inside", 2)).toBeNull();
   });
 
   it("pruneToSolitaryPath keeps a single open branch per level", () => {

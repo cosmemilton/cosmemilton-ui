@@ -15,7 +15,7 @@ import {
 import { CmButton } from "./button.js";
 import { CmCheckbox } from "./checkbox.js";
 import { cn } from "../../lib/utils.js";
-import type { CmTreeNode } from "./tree-view.types.js";
+import type { CmTreeDropPosition, CmTreeNode } from "./tree-view.types.js";
 
 export interface SortableTreeItemProps {
   node: CmTreeNode;
@@ -23,7 +23,7 @@ export interface SortableTreeItemProps {
   isExpanded: boolean;
   isHighlighted: boolean;
   isDragging?: boolean;
-  isDropTarget?: boolean;
+  dropPosition?: CmTreeDropPosition;
   onToggle: () => void;
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
@@ -34,6 +34,7 @@ export interface SortableTreeItemProps {
   onDrop?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
   onDragEnd?: () => void;
   draggable?: boolean;
+  dragSourceEnabled?: boolean;
   maxDepth?: number;
   // Modo de seleção com checkbox (novo)
   selectionMode?: boolean;
@@ -51,7 +52,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   isExpanded,
   isHighlighted,
   isDragging = false,
-  isDropTarget = false,
+  dropPosition,
   onToggle,
   onAdd,
   onEdit,
@@ -62,6 +63,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   onDrop,
   onDragEnd,
   draggable = true,
+  dragSourceEnabled = draggable,
   maxDepth,
   selectionMode = false,
   selectedIds,
@@ -71,6 +73,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   leafIcon,
 }) => {
   const hasChildren = node.children && node.children.length > 0;
+  const isDropTarget = dropPosition !== undefined;
   const [showActions, setShowActions] = useState(false);
   const isLeaf = !hasChildren; // Nó folha (sem filhos)
   const isSelected =
@@ -114,6 +117,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
         "cm-tree-view__item",
         isDragging && "cm-tree-view__item--dragging",
         isDropTarget && "cm-tree-view__item--drop-target",
+        dropPosition && `cm-tree-view__item--drop-${dropPosition}`,
         !node.active && "cm-tree-view__item--inactive",
       )}
       onDragOver={draggable ? (event) => onDragOver?.(event, node) : undefined}
@@ -125,7 +129,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
           isHighlighted && "cm-tree-view__node--highlighted",
           isSelected && "cm-tree-view__node--selected",
           isDragging && "cm-tree-view__node--dragging",
-          isDropTarget && "cm-tree-view__node--drop-target",
+          dropPosition === "inside" && "cm-tree-view__node--drop-target",
         )}
         style={
           {
@@ -149,7 +153,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
         ) : null}
 
         {/* Drag Handle */}
-        {!selectionMode && draggable && (
+        {!selectionMode && dragSourceEnabled && (
           <CmButton
             unstyled
             type="button"

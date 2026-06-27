@@ -716,14 +716,25 @@
   z-index: 50
 }
 
-.cm-tree-view__item--drop-target::before {
+.cm-tree-view__item--drop-before::before,
+.cm-tree-view__item--drop-after::after {
   position: absolute;
-  inset: 0 auto auto .75rem;
+  left: .75rem;
   right: .75rem;
+  z-index: 2;
   height: 2px;
   border-radius: 9999px;
   background: var(--color-primary);
-  content: ""
+  content: "";
+  pointer-events: none
+}
+
+.cm-tree-view__item--drop-before::before {
+  top: 0
+}
+
+.cm-tree-view__item--drop-after::after {
+  bottom: 0
 }
 
 .cm-tree-view__item--inactive {
@@ -1244,5 +1255,4 @@
 [data-theme=cm-dark] .cm-tree-view__node-icon--level-4 {
   color: #f472b6
 }
-
 

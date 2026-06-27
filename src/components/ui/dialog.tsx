@@ -22,6 +22,7 @@ export interface CmDialogProps {
   description?: string;
   children?: ReactNode;
   footer?: ReactNode;
+  /** Largura máxima: sm 24rem, md 32rem, lg 48rem, xl 64rem e 2xl 80rem. */
   size?: CmDialogSize;
   className?: string;
   tone?: CmDialogTone;

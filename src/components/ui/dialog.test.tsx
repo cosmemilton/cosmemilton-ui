@@ -61,4 +61,16 @@ describe("CmDialog", () => {
     const dialog = screen.getByRole("dialog");
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
+
+  it("offers xl and 2xl native widths for wide forms", () => {
+    const { rerender } = renderDialog({ size: "xl" });
+    expect(screen.getByRole("dialog")).toHaveClass("cm-dialog__positioner--xl");
+
+    rerender(
+      <CmThemeProvider>
+        <CmDialog open onClose={() => {}} title="Wide form" size="2xl" />
+      </CmThemeProvider>,
+    );
+    expect(screen.getByRole("dialog")).toHaveClass("cm-dialog__positioner--2xl");
+  });
 });

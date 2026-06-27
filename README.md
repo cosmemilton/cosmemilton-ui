@@ -1,6 +1,6 @@
 # cosmemilton-ui
 
-> Componentes React para sistemas administrativos — ESM puro, prontos para RSC/Next e usáveis em React puro (Vite/CRA).
+> Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.
 
 [![npm](https://img.shields.io/npm/v/cosmemilton-ui.svg)](https://www.npmjs.com/package/cosmemilton-ui)
 [![CI](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml)
@@ -10,7 +10,8 @@
 `cosmemilton-ui` é uma biblioteca de componentes para painéis, back-offices e dashboards:
 navegação (sidebar, menus, breadcrumb), exibição de dados (data-table, tree-view,
 gráficos, cards), formulários e overlays (dialog, drawer, popover, toast), com temas
-e densidade configuráveis. ESM-only, três entry points e tipos TypeScript incluídos.
+e densidade configuráveis. Possui três entry points ESM, tipos TypeScript e um bundle
+global opcional para páginas sem bundler.
 
 ## Instalação
 
@@ -34,6 +35,34 @@ export function Example() {
   return <CmButton>Salvar</CmButton>;
 }
 ```
+
+### Uso direto no navegador
+
+Também é possível carregar a biblioteca como um script global, sem bundler. O JavaScript
+expõe `window.CmUI`; o CSS continua sendo carregado separadamente. Fixe uma versão real no
+lugar de `VERSION` para ter builds reproduzíveis:
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/cosmemilton-ui@VERSION/styles.min.css" />
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script
+  crossorigin
+  src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
+></script>
+<script src="https://unpkg.com/cosmemilton-ui@VERSION"></script>
+
+<div id="root"></div>
+<script>
+  const { CmButton } = window.CmUI;
+  const button = React.createElement(CmButton, null, "Salvar");
+  ReactDOM.createRoot(document.getElementById("root")).render(button);
+</script>
+```
+
+O mesmo arquivo pode ser referenciado explicitamente por
+`cosmemilton-ui@VERSION/dist/cm-ui.min.js`. Esse bundle não inclui React nem ReactDOM,
+evitando cópias duplicadas; os entry points ESM existentes continuam inalterados.
 
 Para **trocar de tema** (e lembrar a escolha do usuário sem flash no SSR), adicione o
 `CmThemeScript` no `<head>` do layout — Next App Router:

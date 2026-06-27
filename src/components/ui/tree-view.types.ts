@@ -18,3 +18,25 @@ export interface CmTreeNode {
   // Novo: para modo de seleção com checkbox
   permissionId?: number;
 }
+
+/** Posição de um item em relação ao alvo de um drop. */
+export type CmTreeDropPosition = "before" | "inside" | "after";
+
+/**
+ * Estratégia das zonas de drop.
+ *
+ * - `before`: preserva o comportamento original e sempre insere antes do alvo.
+ * - `auto`: usa o topo, centro e rodapé do alvo para inserir antes, dentro ou depois.
+ */
+export type CmTreeDropMode = "before" | "auto";
+
+/** Contexto completo entregue a `canDrop` e ao quarto argumento de `onMove`. */
+export interface CmTreeMoveDetails {
+  draggedNode: CmTreeNode;
+  targetNode: CmTreeNode;
+  position: CmTreeDropPosition;
+  oldParentId: string | null;
+  oldOrder: number;
+  newParentId: string | null;
+  newOrder: number;
+}

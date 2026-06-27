@@ -2,7 +2,7 @@
 
 import { Fragment, type DragEvent, type FC, type ReactNode } from "react";
 import { SortableTreeItem } from "./tree-view-item.js";
-import type { CmTreeNode } from "./tree-view.types.js";
+import type { CmTreeDropPosition, CmTreeNode } from "./tree-view.types.js";
 
 export interface TreeBranchProps {
   nodes: CmTreeNode[];
@@ -11,6 +11,7 @@ export interface TreeBranchProps {
   highlightedNode: string | null;
   activeId: string | null;
   dropTargetId: string | null;
+  dropPosition?: CmTreeDropPosition;
   onToggle: (nodeId: string) => void;
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
@@ -21,6 +22,7 @@ export interface TreeBranchProps {
   onDrop?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
   onDragEnd?: () => void;
   draggable?: boolean;
+  isDraggable?: (node: CmTreeNode) => boolean;
   maxDepth?: number;
   selectionMode?: boolean;
   selectedIds?: Set<number>;
@@ -37,6 +39,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
   highlightedNode,
   activeId,
   dropTargetId,
+  dropPosition,
   onToggle,
   onAdd,
   onEdit,
@@ -47,6 +50,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
   onDrop,
   onDragEnd,
   draggable,
+  isDraggable,
   maxDepth,
   selectionMode,
   selectedIds,
@@ -65,7 +69,9 @@ export const TreeBranch: FC<TreeBranchProps> = ({
             isExpanded={expandedNodes.has(node.id)}
             isHighlighted={highlightedNode === node.id}
             isDragging={activeId === node.id}
-            isDropTarget={dropTargetId === node.id && activeId !== node.id}
+            dropPosition={
+              dropTargetId === node.id && activeId !== node.id ? dropPosition : undefined
+            }
             onToggle={() => onToggle(node.id)}
             onAdd={onAdd}
             onEdit={onEdit}
@@ -76,6 +82,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
             onDrop={onDrop}
             onDragEnd={onDragEnd}
             draggable={draggable}
+            dragSourceEnabled={draggable && (isDraggable?.(node) ?? true)}
             maxDepth={maxDepth}
             selectionMode={selectionMode}
             selectedIds={selectedIds}
@@ -92,6 +99,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
               highlightedNode={highlightedNode}
               activeId={activeId}
               dropTargetId={dropTargetId}
+              dropPosition={dropPosition}
               onToggle={onToggle}
               onAdd={onAdd}
               onEdit={onEdit}
@@ -102,6 +110,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
               onDrop={onDrop}
               onDragEnd={onDragEnd}
               draggable={draggable}
+              isDraggable={isDraggable}
               maxDepth={maxDepth}
               selectionMode={selectionMode}
               selectedIds={selectedIds}
