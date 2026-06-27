@@ -167,8 +167,11 @@
   box-shadow: none
 }
 
-.cm-combobox__input::placeholder {
-  color: var(--color-muted-foreground)
+.cm-input__control::placeholder,
+.cm-combobox__input::placeholder,
+.cm-textarea__control::placeholder {
+  color: var(--color-muted-foreground);
+  opacity: 1
 }
 
 .cm-combobox__input:disabled,

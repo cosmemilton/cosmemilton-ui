@@ -1,8 +1,20 @@
 /* CmPopover visual reset */
 .cm-popover__panel {
+  box-sizing: border-box;
+  /* Content-oriented by default, bounded by the viewport, then by the design
+     cap (22rem). Both bounds are overridable via the `width`/`maxWidth` props,
+     which set these custom properties inline. */
+  width: var(--cm-popover-width, fit-content);
   min-width: 14rem;
-  max-width: min(calc(100vw - 1rem), 22rem);
+  max-width: min(calc(100vw - 1rem), var(--cm-popover-max-width, 22rem));
   padding: 1rem;
   color: var(--color-card-foreground, var(--color-foreground))
+}
+
+/* Contain children so a child wider than the panel can never overflow the
+   background/border — and so Floating UI measures the same box the user sees. */
+.cm-popover__panel > * {
+  min-width: 0;
+  max-width: 100%
 }
 

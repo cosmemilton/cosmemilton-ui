@@ -9,6 +9,13 @@ export type ThemeColorScale = {
   popoverForeground: string;
   primary: string;
   primaryForeground: string;
+  /**
+   * Muted text/placeholder color for use ON `primary` (inverted chrome: topbar
+   * and sidebar with `tone="brand"`). Optional: when omitted, the CSS falls back
+   * to a `color-mix` of `primaryForeground`. Built-in themes ship a value
+   * validated to ≥4.5:1 over `primary` (see contrast.test.ts).
+   */
+  primaryMutedForeground?: string;
   secondary: string;
   secondaryForeground: string;
   accent: string;

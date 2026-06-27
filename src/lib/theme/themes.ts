@@ -16,6 +16,7 @@ export const defaultTheme: ThemeConfig = {
     popoverForeground: "#20242a",
     primary: "#334155",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#a9afb8",
     secondary: "#d9e0e8",
     secondaryForeground: "#20242a",
     accent: "#0f766e",
@@ -71,6 +72,7 @@ export const schoolTheme: ThemeConfig = {
     popoverForeground: "#17231f",
     primary: "#1f3d35",
     primaryForeground: "#f7f1e7",
+    primaryMutedForeground: "#9da69d",
     secondary: "#587b57",
     secondaryForeground: "#f7f1e7",
     accent: "#d35d3f",
@@ -127,6 +129,7 @@ export const darkTheme: ThemeConfig = {
     popoverForeground: "#e0f2fe",
     primary: "#3b82f6",
     primaryForeground: "#0f172a",
+    primaryMutedForeground: "#101a30",
     secondary: "#8b5cf6",
     secondaryForeground: "#f5f3ff",
     accent: "#22d3ee",
@@ -184,8 +187,9 @@ export const orangeTheme: ThemeConfig = {
     popover: "#ffffff",
     popoverForeground: "#1c1917",
     // Orange brand — laranja queimado premium
-    primary: "#d84315",
+    primary: "#cd4014",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#fefbfa",
     // Secondary dark — marrom escuro para contraste
     secondary: "#3e2723",
     secondaryForeground: "#f7f5f3",
@@ -204,7 +208,7 @@ export const orangeTheme: ThemeConfig = {
     // Estruturais neutros
     border: "#d6d3d1",
     input: "#d6d3d1",
-    ring: "#d84315",
+    ring: "#cd4014",
     selection: "#ffccbc",
     selectionForeground: "#1c1917",
     overlay: "rgba(28, 25, 23, 0.55)",
@@ -247,6 +251,7 @@ export const redTheme: ThemeConfig = {
     // Red brand — vermelho profundo de alto impacto
     primary: "#c62828",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#f9e7e7",
     // Secondary dark — gera contraste dramático no gradient bar
     secondary: "#1a1a2e",
     secondaryForeground: "#f5f5f6",
@@ -308,6 +313,7 @@ export const blueTheme: ThemeConfig = {
     // Blue brand — azul royal profundo
     primary: "#1565c0",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#deeaf6",
     // Secondary dark — navy para contraste dramático
     secondary: "#0d1b2a",
     secondaryForeground: "#f4f6f8",
@@ -369,6 +375,7 @@ export const greenTheme: ThemeConfig = {
     // Green brand — verde escuro floresta
     primary: "#2e7d32",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#f1f6f1",
     // Secondary dark — verde-musgo profundo para contraste
     secondary: "#1b3a1b",
     secondaryForeground: "#f5f5f4",
@@ -430,6 +437,7 @@ export const violetTheme: ThemeConfig = {
     // Violet brand — roxo profundo e vibrante
     primary: "#6a1b9a",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#caaddb",
     // Secondary dark — índigo escuro para contraste
     secondary: "#1a1040",
     secondaryForeground: "#f5f4f7",
@@ -490,6 +498,7 @@ export const midnightTheme: ThemeConfig = {
     popoverForeground: "#e0f2fe",
     primary: "#818cf8",
     primaryForeground: "#0f172a",
+    primaryMutedForeground: "#212a4b",
     secondary: "#6366f1",
     secondaryForeground: "#f5f3ff",
     accent: "#a78bfa",
@@ -549,6 +558,7 @@ export const roseTheme: ThemeConfig = {
     // Rose brand — rosa intenso elegante
     primary: "#ad1457",
     primaryForeground: "#ffffff",
+    primaryMutedForeground: "#edcbda",
     // Secondary dark — burgundy profundo para contraste
     secondary: "#311b28",
     secondaryForeground: "#f6f4f5",
@@ -609,6 +619,7 @@ export const auroraTheme: ThemeConfig = {
     popoverForeground: "#fff8e6",
     primary: "#ffb703",
     primaryForeground: "#1d1200",
+    primaryMutedForeground: "#694901",
     secondary: "#84e6bf",
     secondaryForeground: "#082219",
     accent: "#ff6f61",

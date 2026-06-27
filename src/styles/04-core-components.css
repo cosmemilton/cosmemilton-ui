@@ -409,9 +409,33 @@
 }
 
 .cm-button--outline:hover,
-.cm-button--ghost:hover,
-.cm-button--active {
+.cm-button--ghost:hover {
   background: var(--color-muted)
+}
+
+/* Active is scoped per variant so it never swaps just one half of a
+   background/foreground pair (a generic .cm-button--active overrode every
+   variant's background while keeping its foreground → broken contrast). */
+.cm-button--solid.cm-button--active {
+  background: var(--cm-button-bg);
+  color: var(--cm-button-fg);
+  filter: brightness(.92)
+}
+
+.cm-button--soft.cm-button--active {
+  background: var(--cm-button-bg);
+  color: var(--cm-button-fg)
+}
+
+.cm-button--outline.cm-button--active,
+.cm-button--ghost.cm-button--active {
+  background: var(--color-muted);
+  color: var(--cm-button-outline)
+}
+
+.cm-button--surface.cm-button--active {
+  background: var(--color-muted);
+  color: var(--color-foreground)
 }
 
 .cm-button--ghost {

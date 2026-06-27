@@ -14,6 +14,7 @@
   --color-popover-foreground: #20242a;
   --color-primary: #334155;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #a9afb8;
   --color-secondary: #d9e0e8;
   --color-secondary-foreground: #20242a;
   --color-accent: #0f766e;
@@ -105,6 +106,7 @@
   --color-popover-foreground: #20242a;
   --color-primary: #334155;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #a9afb8;
   --color-secondary: #d9e0e8;
   --color-secondary-foreground: #20242a;
   --color-accent: #0f766e;
@@ -196,6 +198,7 @@
   --color-popover-foreground: #17231f;
   --color-primary: #1f3d35;
   --color-primary-foreground: #f7f1e7;
+  --color-primary-muted-foreground: #9da69d;
   --color-secondary: #587b57;
   --color-secondary-foreground: #f7f1e7;
   --color-accent: #d35d3f;
@@ -287,6 +290,7 @@
   --color-popover-foreground: #e0f2fe;
   --color-primary: #3b82f6;
   --color-primary-foreground: #0f172a;
+  --color-primary-muted-foreground: #101a30;
   --color-secondary: #8b5cf6;
   --color-secondary-foreground: #f5f3ff;
   --color-accent: #22d3ee;
@@ -377,8 +381,9 @@
   --color-card-foreground: #1c1917;
   --color-popover: #ffffff;
   --color-popover-foreground: #1c1917;
-  --color-primary: #d84315;
+  --color-primary: #cd4014;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #fefbfa;
   --color-secondary: #3e2723;
   --color-secondary-foreground: #f7f5f3;
   --color-accent: #00838f;
@@ -393,7 +398,7 @@
   --color-info-foreground: #ffffff;
   --color-border: #d6d3d1;
   --color-input: #d6d3d1;
-  --color-ring: #d84315;
+  --color-ring: #cd4014;
   --color-selection: #ffccbc;
   --color-selection-foreground: #1c1917;
   --color-overlay: rgba(28, 25, 23, 0.55);
@@ -470,6 +475,7 @@
   --color-popover-foreground: #1a1a2e;
   --color-primary: #c62828;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #f9e7e7;
   --color-secondary: #1a1a2e;
   --color-secondary-foreground: #f5f5f6;
   --color-accent: #e65100;
@@ -561,6 +567,7 @@
   --color-popover-foreground: #0d1b2a;
   --color-primary: #1565c0;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #deeaf6;
   --color-secondary: #0d1b2a;
   --color-secondary-foreground: #f4f6f8;
   --color-accent: #ff8f00;
@@ -652,6 +659,7 @@
   --color-popover-foreground: #1b2e1b;
   --color-primary: #2e7d32;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #f1f6f1;
   --color-secondary: #1b3a1b;
   --color-secondary-foreground: #f5f5f4;
   --color-accent: #bf8c00;
@@ -743,6 +751,7 @@
   --color-popover-foreground: #1a1625;
   --color-primary: #6a1b9a;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #caaddb;
   --color-secondary: #1a1040;
   --color-secondary-foreground: #f5f4f7;
   --color-accent: #00897b;
@@ -834,6 +843,7 @@
   --color-popover-foreground: #e0f2fe;
   --color-primary: #818cf8;
   --color-primary-foreground: #0f172a;
+  --color-primary-muted-foreground: #212a4b;
   --color-secondary: #6366f1;
   --color-secondary-foreground: #f5f3ff;
   --color-accent: #a78bfa;
@@ -926,6 +936,7 @@
   --color-popover-foreground: #2d1a24;
   --color-primary: #ad1457;
   --color-primary-foreground: #ffffff;
+  --color-primary-muted-foreground: #edcbda;
   --color-secondary: #311b28;
   --color-secondary-foreground: #f6f4f5;
   --color-accent: #c6a700;
@@ -1017,6 +1028,7 @@
   --color-popover-foreground: #fff8e6;
   --color-primary: #ffb703;
   --color-primary-foreground: #1d1200;
+  --color-primary-muted-foreground: #694901;
   --color-secondary: #84e6bf;
   --color-secondary-foreground: #082219;
   --color-accent: #ff6f61;

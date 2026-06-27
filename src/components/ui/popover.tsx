@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode, useCallback, useRef } from "react";
+import { CSSProperties, ReactNode, useCallback, useRef } from "react";
 import { CmPortal } from "./portal.js";
+import { cmSizeValue } from "./types.js";
 import { cn } from "../../lib/utils.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
 import { useControllableState } from "../../hooks/use-controllable-state.js";
@@ -21,6 +22,10 @@ export type CmPopoverProps = {
   onOpenChange?: (open: boolean) => void;
   align?: "start" | "center" | "end";
   className?: string;
+  /** Largura do painel (número → px). Por padrão acompanha o conteúdo. */
+  width?: string | number;
+  /** Largura máxima do painel (número → px). Padrão: 22rem, limitada ao viewport. */
+  maxWidth?: string | number;
 };
 
 export function CmPopover({
@@ -30,6 +35,8 @@ export function CmPopover({
   onOpenChange,
   align = "center",
   className,
+  width,
+  maxWidth,
 }: CmPopoverProps) {
   const [open, setOpen] = useControllableState<boolean>({
     value: controlledOpen,
@@ -52,6 +59,11 @@ export function CmPopover({
   const placement = align === "center" ? "bottom" : align === "end" ? "bottom-end" : "bottom-start";
   useFloating(triggerRef, panelRef, { enabled: open, placement, offset: 8 });
 
+  const panelStyle = {
+    ...(width !== undefined ? { "--cm-popover-width": cmSizeValue(width) } : {}),
+    ...(maxWidth !== undefined ? { "--cm-popover-max-width": cmSizeValue(maxWidth) } : {}),
+  } as CSSProperties;
+
   return (
     <>
       {trigger({
@@ -64,7 +76,7 @@ export function CmPopover({
       })}
       {open ? (
         <CmPortal>
-          <div ref={panelRef} className={cn("cm-popover__panel", className)}>
+          <div ref={panelRef} className={cn("cm-popover__panel", className)} style={panelStyle}>
             {typeof children === "function" ? children({ close }) : children}
           </div>
         </CmPortal>

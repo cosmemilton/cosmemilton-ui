@@ -214,7 +214,8 @@
 .cm-app-shell--chrome-inverted .cm-sidebar,
 .cm-sidebar--tone-brand {
   --cm-sidebar-brand-fg: var(--color-primary-foreground);
-  --cm-sidebar-brand-muted: color-mix(in srgb, var(--color-primary-foreground) 86%, transparent);
+  /* Per-theme validated muted-on-primary token (≥4.5:1) with color-mix fallback. */
+  --cm-sidebar-brand-muted: var(--color-primary-muted-foreground, color-mix(in srgb, var(--color-primary-foreground) 86%, transparent));
   --cm-inverted-fg: var(--cm-sidebar-brand-fg);
   --cm-inverted-muted: var(--cm-sidebar-brand-muted);
   --cm-inverted-border: color-mix(in srgb, var(--color-primary-foreground) 28%, transparent);
@@ -393,7 +394,9 @@
 .cm-topbar--tone-brand,
 .cm-app-shell--chrome-inverted .cm-topbar {
   --cm-topbar-brand-fg: var(--color-primary-foreground);
-  --cm-topbar-brand-muted: color-mix(in srgb, var(--color-primary-foreground) 82%, transparent);
+  /* Prefer the theme's per-theme validated muted-on-primary token (≥4.5:1);
+     fall back to a color-mix for custom themes that don't define it. */
+  --cm-topbar-brand-muted: var(--color-primary-muted-foreground, color-mix(in srgb, var(--color-primary-foreground) 82%, transparent));
   --cm-topbar-brand-border: color-mix(in srgb, var(--color-primary-foreground) 34%, transparent);
   --cm-topbar-brand-surface: color-mix(in srgb, var(--color-primary-foreground) 14%, transparent);
   --cm-topbar-brand-surface-hover: color-mix(in srgb, var(--color-primary-foreground) 22%, transparent);
