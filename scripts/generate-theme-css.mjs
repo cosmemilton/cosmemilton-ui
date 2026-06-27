@@ -3,18 +3,34 @@
 // library works with a plain stylesheet import — no runtime JS required to
 // resolve design tokens.
 //
-// Runs AFTER tsc (it imports the compiled registry from dist/) and BEFORE
-// copy-styles.mjs (which concatenates src/styles/*.css lexically, so the
-// "00a-" prefix lands right after the 00 reset partial).
+// Bundles the TypeScript registry directly so the generator also works in a
+// clean checkout where dist/ does not exist yet. Runs before build-styles.mjs,
+// which concatenates src/styles/*.css lexically, so the "00a-" prefix lands
+// right after the 00 reset partial.
 import { writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
+import { build } from "esbuild";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const target = join(root, "src", "styles", "00a-theme-tokens.generated.css");
 
+const themeBundle = await build({
+  entryPoints: [join(root, "src", "lib", "theme", "index.ts")],
+  bundle: true,
+  format: "esm",
+  platform: "node",
+  target: ["node18"],
+  write: false,
+});
+const themeModule = themeBundle.outputFiles[0]?.text;
+
+if (!themeModule) {
+  throw new Error("generate-theme-css: esbuild did not emit the theme registry");
+}
+
 const { defaultTheme, themes, themeToCSSBlock } = await import(
-  pathToFileURL(join(root, "dist", "lib", "theme", "index.js")).href
+  `data:text/javascript;base64,${Buffer.from(themeModule).toString("base64")}`
 );
 
 const banner = [
