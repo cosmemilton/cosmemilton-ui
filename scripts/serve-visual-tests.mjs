@@ -44,12 +44,24 @@ const files = new Map([
   ["/fixture.js.map", join(outputDir, "fixture.js.map")],
   ["/styles.css", join(root, "dist", "styles.css")],
   ["/fixture.css", join(root, "tests", "visual", "fixture.css")],
+  [
+    "/fonts/inter-variable-latin.woff2",
+    join(
+      root,
+      "node_modules",
+      "@fontsource-variable",
+      "inter",
+      "files",
+      "inter-latin-wght-normal.woff2",
+    ),
+  ],
 ]);
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".map": "application/json; charset=utf-8",
+  ".woff2": "font/woff2",
 };
 
 const server = createServer(async (request, response) => {
