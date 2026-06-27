@@ -856,6 +856,11 @@
   display: inline-block
 }
 
+.cm-icon--default-size {
+  width: var(--cm-icon-size, 1.25rem);
+  height: var(--cm-icon-size, 1.25rem)
+}
+
 .cm-input-otp {
   display: flex;
   align-items: center;
@@ -1008,10 +1013,12 @@
 }
 
 .cm-switch__thumb[data-state=checked] {
+  background: var(--sw-thumb-checked, var(--sw-thumb, #fff));
   transform: translateX(1.25rem)
 }
 
 .cm-switch__thumb[data-state=unchecked] {
+  background: var(--sw-thumb-unchecked, var(--sw-thumb, #fff));
   transform: translateX(0)
 }
 

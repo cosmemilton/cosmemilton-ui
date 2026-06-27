@@ -248,7 +248,11 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
           )}
 
           {startIcon && <span className="cm-floating-field__adornment">{startIcon}</span>}
-          {startButton && <span className="cm-floating-field__adornment">{startButton}</span>}
+          {startButton && (
+            <span className="cm-floating-field__adornment cm-floating-field__adornment--flush">
+              {startButton}
+            </span>
+          )}
 
           <div className="cm-floating-field__input-wrap">
             <input
@@ -317,6 +321,7 @@ export const CmInput = forwardRef<HTMLInputElement, CmInputProps>(
               "cm-floating-field__message",
               "cm-floating-field__message--static",
               error ? "cm-floating-field__message--error" : "",
+              !error && success ? "cm-floating-field__message--success" : "",
             )}
           >
             {error || helperText}

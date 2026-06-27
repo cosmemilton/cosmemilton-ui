@@ -35,6 +35,12 @@ function ControlledSelect({
 afterEach(cleanup);
 
 describe("CmSelect", () => {
+  it("marks helper text with the success feedback color", () => {
+    render(<ControlledSelect success helperText="Validated" />);
+
+    expect(screen.getByText("Validated")).toHaveClass("cm-floating-field__message--success");
+  });
+
   it("renders a collapsed combobox-style trigger", () => {
     render(<ControlledSelect />);
     const trigger = screen.getByRole("combobox", { name: "País" });

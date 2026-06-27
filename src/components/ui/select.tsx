@@ -47,7 +47,6 @@ export type CmSelectProps = {
   renderSelected?: (option: SelectOption) => string;
 };
 
-
 export function CmSelect({
   value,
   onChange,
@@ -116,7 +115,6 @@ export function CmSelect({
 
   // Close on outside click
   useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
-
 
   // Position the dropdown
   useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
@@ -238,6 +236,7 @@ export function CmSelect({
             "cm-floating-field__message",
             "cm-floating-field__message--static",
             error ? "cm-floating-field__message--error" : "",
+            !error && success ? "cm-floating-field__message--success" : "",
           )}
         >
           {error || helperText}
@@ -246,12 +245,7 @@ export function CmSelect({
 
       {open && (
         <CmPortal>
-          <div
-            ref={panelRef}
-            id={listboxId}
-            role="listbox"
-            className="cm-select__popover"
-          >
+          <div ref={panelRef} id={listboxId} role="listbox" className="cm-select__popover">
             {options.map((option, index) => {
               const isSelected = option.value === value;
               return (

@@ -1,6 +1,6 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.11.0",
+  "version": "3.12.0",
   "description": "Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -89,12 +89,16 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:install": "playwright install --with-deps chromium",
+    "test:visual:serve": "node scripts/serve-visual-tests.mjs",
     "publint": "publint",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run typecheck && npm run lint && npm run test"
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run test:visual"
   },
   "peerDependencies": {
     "@iconify/react": ">=5",
@@ -119,6 +123,7 @@
     "@changesets/cli": "^2.31.0",
     "@eslint/js": "^9.39.4",
     "@iconify/react": "^6.0.2",
+    "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

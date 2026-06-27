@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   verify:
-    name: Typecheck, lint, test, build
+    name: Typecheck, lint, test, visual, build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,6 +34,12 @@ jobs:
 
       - name: Test
         run: npm run test
+
+      - name: Install Playwright Chromium
+        run: npm run test:visual:install
+
+      - name: Visual regression
+        run: npm run test:visual
 
       - name: Build
         run: npm run build

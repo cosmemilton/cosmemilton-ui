@@ -552,10 +552,13 @@
 }
 
 .cm-topbar--tone-brand .cm-switch,
-.cm-app-shell--chrome-inverted .cm-topbar .cm-switch {
-  --sw-checked: var(--color-primary-foreground);
-  --sw-unchecked: color-mix(in srgb, var(--color-primary-foreground) 28%, transparent);
-  --sw-thumb: var(--color-primary);
+.cm-app-shell--chrome-inverted .cm-topbar .cm-switch,
+.cm-sidebar--tone-brand .cm-switch,
+.cm-app-shell--chrome-inverted .cm-sidebar .cm-switch {
+  --sw-checked: var(--cm-inverted-fg);
+  --sw-unchecked: color-mix(in srgb, var(--cm-inverted-fg) 28%, transparent);
+  --sw-thumb-checked: var(--color-primary);
+  --sw-thumb-unchecked: var(--cm-inverted-fg);
 }
 
 .cm-topbar--tone-brand :is(.cm-button--surface, .cm-button--ghost, .cm-button--outline, .cm-button--soft),
@@ -1516,6 +1519,7 @@
 
 [data-density=compact] .cm-floating-field,
 .cm-floating-field.cm-density-compact {
+  --cm-floating-control-height: 1.5rem;
   padding-top: .75rem;
 }
 

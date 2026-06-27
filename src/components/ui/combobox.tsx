@@ -35,6 +35,7 @@ export type CmComboboxProps = {
   label?: string;
   required?: boolean;
   error?: string;
+  success?: boolean;
   helperText?: string;
   form?: string;
   placeholder?: string;
@@ -49,7 +50,6 @@ export type CmComboboxProps = {
   selectedDisplay?: "full" | "label";
 };
 
-
 export function CmCombobox({
   items,
   onChange,
@@ -59,6 +59,7 @@ export function CmCombobox({
   label,
   required,
   error,
+  success,
   helperText,
   form,
   placeholder = "Selecionar...",
@@ -239,7 +240,6 @@ export function CmCombobox({
     };
   }, [isOpen, updateDropdownPosition]);
 
-
   useEffect(() => {
     return () => {
       if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
@@ -301,12 +301,14 @@ export function CmCombobox({
 
   const getBorderColor = () => {
     if (error) return "cm-floating-field--error";
+    if (success) return "cm-floating-field--success";
     if (isFocused) return "cm-floating-field--focused";
     return "";
   };
 
   const getLabelColor = () => {
     if (error) return "cm-floating-field__label--error";
+    if (success) return "cm-floating-field__label--success";
     if (isFocused || isOpen) return "cm-floating-field__label--focused";
     return "";
   };
@@ -388,6 +390,7 @@ export function CmCombobox({
             "cm-floating-field__message",
             "cm-floating-field__message--static",
             error ? "cm-floating-field__message--error" : "",
+            !error && success ? "cm-floating-field__message--success" : "",
           )}
         >
           {error || helperText}

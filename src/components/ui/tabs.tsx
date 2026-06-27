@@ -1,6 +1,16 @@
 "use client";
 
-import React, { createContext, forwardRef, useContext, useState } from "react";
+import React, {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmButton } from "./button.js";
 
@@ -52,27 +62,156 @@ CmTabs.displayName = "CmTabs";
 export interface CmTabsListProps {
   children: React.ReactNode;
   className?: string;
+  /** Exibe controles laterais automaticamente quando as abas não couberem. Padrão: true. */
+  showScrollButtons?: boolean;
 }
 
 export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function CmTabsList(
-  { children, className },
-  ref,
+  { children, className, showScrollButtons = true },
+  forwardedRef,
 ) {
   const context = useContext(TabsContext);
   const variant = context?.variant ?? "default";
+  const listRef = useRef<HTMLDivElement>(null);
+  const [scrollState, setScrollState] = useState({
+    hasOverflow: false,
+    canScrollBack: false,
+    canScrollForward: false,
+  });
+
+  useImperativeHandle(forwardedRef, () => listRef.current as HTMLDivElement);
+
+  const updateScrollState = useCallback(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const maxScrollLeft = Math.max(0, list.scrollWidth - list.clientWidth);
+    const nextState = {
+      hasOverflow: maxScrollLeft > 1,
+      canScrollBack: list.scrollLeft > 1,
+      canScrollForward: list.scrollLeft < maxScrollLeft - 1,
+    };
+
+    setScrollState((current) =>
+      current.hasOverflow === nextState.hasOverflow &&
+      current.canScrollBack === nextState.canScrollBack &&
+      current.canScrollForward === nextState.canScrollForward
+        ? current
+        : nextState,
+    );
+  }, []);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const frame = window.requestAnimationFrame(updateScrollState);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScrollState);
+    resizeObserver?.observe(list);
+    Array.from(list.children).forEach((child) => resizeObserver?.observe(child));
+
+    const mutationObserver = new MutationObserver(updateScrollState);
+    mutationObserver.observe(list, { childList: true, subtree: true, characterData: true });
+
+    list.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+      mutationObserver.disconnect();
+      list.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
+  }, [children, updateScrollState]);
+
+  const scrollListTo = useCallback(
+    (left: number) => {
+      const list = listRef.current;
+      if (!list) return;
+
+      const maxScrollLeft = Math.max(0, list.scrollWidth - list.clientWidth);
+      const nextLeft = Math.min(Math.max(0, left), maxScrollLeft);
+      if (typeof list.scrollTo === "function") {
+        list.scrollTo({ left: nextLeft, behavior: "smooth" });
+      } else {
+        list.scrollLeft = nextLeft;
+        updateScrollState();
+      }
+    },
+    [updateScrollState],
+  );
+
+  const scrollByPage = (direction: -1 | 1) => {
+    const list = listRef.current;
+    if (!list) return;
+    const distance = Math.max(160, list.clientWidth * 0.7);
+    scrollListTo(list.scrollLeft + distance * direction);
+  };
+
+  useEffect(() => {
+    const list = listRef.current;
+    const activeTab = list?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
+    if (!list || !activeTab || list.clientWidth <= 0) return;
+
+    const tabStart = activeTab.offsetLeft;
+    const tabEnd = tabStart + activeTab.offsetWidth;
+    if (tabStart < list.scrollLeft) {
+      scrollListTo(tabStart);
+    } else if (tabEnd > list.scrollLeft + list.clientWidth) {
+      scrollListTo(tabEnd - list.clientWidth);
+    }
+  }, [context?.value, scrollListTo]);
+
+  const showBackButton = showScrollButtons && scrollState.hasOverflow && scrollState.canScrollBack;
+  const showForwardButton =
+    showScrollButtons && scrollState.hasOverflow && scrollState.canScrollForward;
 
   return (
     <div
-      ref={ref}
       className={cn(
-        "cm-tabs-list",
-        variant === "modal" && "cm-tabs-list--modal",
-        variant === "folder" && "cm-tabs-list--folder",
-        className,
+        "cm-tabs-list-shell",
+        variant === "modal" && "cm-tabs-list-shell--modal",
+        variant === "folder" && "cm-tabs-list-shell--folder",
       )}
-      role="tablist"
     >
-      {children}
+      {showBackButton ? (
+        <CmButton
+          unstyled
+          type="button"
+          className="cm-tabs-scroll-button cm-tabs-scroll-button--back"
+          aria-label="Rolar abas para a esquerda"
+          onClick={() => scrollByPage(-1)}
+        >
+          <ChevronLeft aria-hidden="true" />
+        </CmButton>
+      ) : null}
+
+      <div
+        ref={listRef}
+        className={cn(
+          "cm-tabs-list",
+          variant === "modal" && "cm-tabs-list--modal",
+          variant === "folder" && "cm-tabs-list--folder",
+          className,
+        )}
+        role="tablist"
+      >
+        {children}
+      </div>
+
+      {showForwardButton ? (
+        <CmButton
+          unstyled
+          type="button"
+          className="cm-tabs-scroll-button cm-tabs-scroll-button--forward"
+          aria-label="Rolar abas para a direita"
+          onClick={() => scrollByPage(1)}
+        >
+          <ChevronRight aria-hidden="true" />
+        </CmButton>
+      ) : null}
     </div>
   );
 });

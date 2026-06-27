@@ -13,24 +13,37 @@ npm install
 
 ## Scripts
 
-| Script              | What it does                                         |
-| ------------------- | ---------------------------------------------------- |
-| `npm run build`     | Compile `src/` to `dist/` and copy the published CSS |
-| `npm run typecheck` | Type-check the whole project with `tsc --noEmit`     |
-| `npm run lint`      | Run ESLint (`lint:fix` to auto-fix)                  |
-| `npm run format`    | Format with Prettier (`format:check` to verify only) |
-| `npm run test`      | Run the Vitest suite (`test:watch`, `test:coverage`) |
-| `npm run changeset` | Record a release note for your change                |
+| Script                       | What it does                                                   |
+| ---------------------------- | -------------------------------------------------------------- |
+| `npm run build`              | Compile `src/` to `dist/` and copy the published CSS           |
+| `npm run typecheck`          | Type-check the whole project with `tsc --noEmit`               |
+| `npm run lint`               | Run ESLint (`lint:fix` to auto-fix)                            |
+| `npm run format`             | Format with Prettier (`format:check` to verify only)           |
+| `npm run test`               | Run the Vitest suite (`test:watch`, `test:coverage`)           |
+| `npm run test:visual`        | Run Chromium visual regression and layout assertions           |
+| `npm run test:visual:update` | Update Playwright reference screenshots after an intended edit |
+| `npm run changeset`          | Record a release note for your change                          |
+
+Install the Chromium binary and its Linux system dependencies once before running visual tests
+(the command may request your `sudo` password):
+
+```bash
+npm run test:visual:install
+```
+
+`npm publish` runs the visual suite through `prepublishOnly`; a visual regression
+therefore blocks the publication just like a type, lint, or unit-test failure.
 
 ## Before opening a PR
 
 1. `npm run typecheck`
 2. `npm run lint`
 3. `npm run test`
-4. `npm run changeset` — required whenever the published package changes. Pick
+4. `npm run test:visual`
+5. `npm run changeset` — required whenever the published package changes. Pick
    `patch` / `minor` / `major` per [SemVer](https://semver.org).
 
-CI runs typecheck + lint + test + build on every PR.
+CI runs typecheck + lint + unit tests + visual regression + build on every PR.
 
 ## Conventions
 

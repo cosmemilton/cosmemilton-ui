@@ -1157,19 +1157,89 @@
   color: var(--color-danger);
 }
 
+.cm-tabs {
+  min-width: 0;
+}
+
+.cm-tabs-list-shell {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.cm-tabs-list-shell--modal,
+.cm-tabs-list-shell--folder {
+  width: 100%;
+}
+
 .cm-tabs-list {
   display: inline-flex;
+  max-width: 100%;
   height: 2.5rem;
   align-items: center;
   justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
   border-radius: var(--radius-lg);
   background: var(--color-muted);
   color: var(--color-muted-foreground);
   padding: 0.25rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+
+.cm-tabs-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cm-tabs-scroll-button {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-card) 94%, transparent);
+  color: var(--color-foreground);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+.cm-tabs-scroll-button--back {
+  left: 0.25rem;
+}
+
+.cm-tabs-scroll-button--forward {
+  right: 0.25rem;
+}
+
+.cm-tabs-scroll-button:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: var(--color-card);
+  color: var(--color-primary);
+}
+
+.cm-tabs-scroll-button:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.cm-tabs-scroll-button>svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .cm-tabs-trigger {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -1254,18 +1324,11 @@
   align-items: flex-end;
   justify-content: flex-start;
   gap: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
   border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 26%, var(--color-border));
   border-radius: 0;
   background: transparent;
   color: var(--color-foreground);
   padding: 0 0.75rem;
-  scrollbar-width: none;
-}
-
-.cm-tabs-list--folder::-webkit-scrollbar {
-  display: none;
 }
 
 .cm-tabs-trigger--folder {

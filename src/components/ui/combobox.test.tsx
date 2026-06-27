@@ -34,6 +34,17 @@ function ControlledCombobox({
 afterEach(cleanup);
 
 describe("CmCombobox", () => {
+  it("supports a success state for the control and helper text", () => {
+    const { container } = render(
+      <CmCombobox items={items} success helperText="Validated" placeholder="Pick" />,
+    );
+
+    expect(container.querySelector(".cm-floating-field__control")).toHaveClass(
+      "cm-floating-field--success",
+    );
+    expect(screen.getByText("Validated")).toHaveClass("cm-floating-field__message--success");
+  });
+
   it("renders an input with the given placeholder", () => {
     render(<CmCombobox items={items} placeholder="Pick a fruit" />);
     expect(screen.getByPlaceholderText("Pick a fruit")).toBeInTheDocument();

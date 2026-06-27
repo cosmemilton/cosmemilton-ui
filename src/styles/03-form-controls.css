@@ -3,6 +3,7 @@
   --cm-field-autofill-bg: var(--color-card);
   --cm-field-autofill-fg: var(--color-card-foreground, var(--color-foreground));
   --cm-field-autofill-caret: var(--cm-field-autofill-fg);
+  --cm-floating-control-height: 1.75rem;
   position: relative;
   width: 100%;
   min-width: 0;
@@ -100,13 +101,32 @@
 }
 
 .cm-floating-field__adornment {
+  display: inline-flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   color: var(--color-muted-foreground)
 }
 
 .cm-floating-field__adornment--flush {
+  display: inline-flex;
+  height: var(--cm-floating-control-height);
+  align-items: center;
   margin: 0;
   padding: 0
+}
+
+.cm-floating-field__adornment--flush>.cm-button {
+  min-width: var(--cm-floating-control-height);
+  min-height: var(--cm-floating-control-height);
+  height: var(--cm-floating-control-height);
+  padding: .125rem .375rem;
+  line-height: 1
+}
+
+.cm-floating-field__adornment--flush>.cm-button[class*="cm-button--icon-"] {
+  width: var(--cm-floating-control-height)
 }
 
 .cm-floating-field__adornment--textarea {
@@ -137,6 +157,10 @@
   color: var(--color-danger)
 }
 
+.cm-floating-field__message--success {
+  color: var(--color-success)
+}
+
 .cm-input__control,
 .cm-combobox__input,
 .cm-textarea__control {
@@ -152,7 +176,7 @@
 
 .cm-input__control,
 .cm-combobox__input {
-  height: 1.75rem;
+  height: var(--cm-floating-control-height);
   min-height: 0;
   padding: 0 .5rem
 }
@@ -1255,4 +1279,3 @@
 [data-theme=cm-dark] .cm-tree-view__node-icon--level-4 {
   color: #f472b6
 }
-

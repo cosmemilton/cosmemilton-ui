@@ -25,7 +25,7 @@ export interface CmIconProps {
 export function CmIcon({
   name,
   className,
-  size = 20,
+  size,
   color,
   style,
   title,
@@ -38,7 +38,7 @@ export function CmIcon({
   return (
     <IconifyIcon
       icon={name}
-      className={cn("cm-icon", className)}
+      className={cn("cm-icon", size === undefined && "cm-icon--default-size", className)}
       width={size}
       height={size}
       color={color}
