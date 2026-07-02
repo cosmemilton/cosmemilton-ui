@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.13.0
+
+### Minor Changes
+
+- Melhorias motivadas pelo feedback de uso em um Admin com Next.js App Router:
+  - `CmTopbar`, `CmText`, `CmForm`, `CmField` e os primitives de layout (`CmStack`, `CmRow`, `CmCol`, `CmContainer`) agora também são exportados de `cosmemilton-ui/client` (mesma referência do `/server`, como já ocorria com `CmBox`), permitindo montar headers e formulários inteiros dentro de Client Components sem misturar entries.
+  - `CmDataTable` aceita `rowKey` como nome de campo (`rowKey="id"`), além da forma função. A forma string é serializável e pode ser passada de Server Components para o client sem wrapper.
+  - `CmRichTextEditor` ganha slots `toolbarStart`/`toolbarEnd` para conteúdo customizado na toolbar (ex.: botão de emoji) e a prop `editorApiRef` com a API imperativa `CmRichTextEditorHandle` (`insertText`, `insertHtml`, `exec`, `focus`), que insere na posição do cursor restaurando a última seleção.
+  - Documentação: o entry `/client` referencia `CmIcon` via `CmSelect`; sem bundler com tree-shaking, instale o peer opcional `@iconify/react`. A v4 mudará `SelectOption.icon` para `ReactNode` e removerá essa referência.
+
+- 50ed7ba: Adiciona controles automáticos de navegação quando o cabeçalho de `CmTabs` transborda, em todas as variantes, mantendo a barra de rolagem oculta e movendo apenas as abas. Corrige também a altura de `CmInput` com botões de início/fim, faz `CmIcon` sem `size` herdar um tamanho contextual do botão, aplica a cor de sucesso ao helper de `CmInput`, `CmSelect` e `CmCombobox`, e melhora o contraste do `CmSwitch` ligado em topbars e sidebars invertidas. O fluxo de publicação agora executa regressão visual em Chromium para o alinhamento dos controles, as cores de feedback e os estados do Switch.
+
 ## 3.11.0
 
 ### Minor Changes

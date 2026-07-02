@@ -27,6 +27,12 @@
   background: var(--color-muted);
 }
 
+.cm-rte__toolbar-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .cm-rte__tool {
   display: inline-flex;
   align-items: center;

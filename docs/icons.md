@@ -34,7 +34,12 @@ import { CmIcon } from "cosmemilton-ui/server";
 npm install @iconify/react
 ```
 
-If you never use `CmIcon`, it stays out of your bundle.
+If you never use `CmIcon`, it stays out of your bundle. One caveat: the
+`cosmemilton-ui/client` entry references `CmIcon` internally (through
+`CmSelect`'s `showOptionIcons`), so this promise relies on tree-shaking. In
+environments without a tree-shaking bundler (e.g. importing `/client` directly
+in Node), install `@iconify/react` alongside it. v4 will change
+`SelectOption.icon` to a `ReactNode` and drop that internal reference.
 
 ## Optional: bring your own icons
 

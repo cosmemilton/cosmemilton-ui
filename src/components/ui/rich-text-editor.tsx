@@ -4,11 +4,14 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
   type ClipboardEvent,
   type CSSProperties,
   type HTMLAttributes,
+  type ReactNode,
+  type Ref,
 } from "react";
 import {
   Bold,
@@ -52,6 +55,18 @@ export type CmRichTextCommand =
 
 export type CmRichTextToolbarItem = CmRichTextCommand | "separator";
 
+/** API imperativa do editor, exposta via prop `editorApiRef`. */
+export type CmRichTextEditorHandle = {
+  /** Foca a área editável, restaurando a última seleção conhecida. */
+  focus: () => void;
+  /** Insere texto puro na posição do cursor. */
+  insertText: (text: string) => void;
+  /** Insere HTML na posição do cursor. */
+  insertHtml: (html: string) => void;
+  /** Executa um comando `document.execCommand` arbitrário no editor. */
+  exec: (command: string, arg?: string) => void;
+};
+
 export type CmRichTextEditorProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
   /** HTML controlado do conteúdo. */
   value?: string;
@@ -63,6 +78,15 @@ export type CmRichTextEditorProps = Omit<HTMLAttributes<HTMLDivElement>, "onChan
   readOnly?: boolean;
   /** Botões da toolbar (e `"separator"`). `false` esconde a toolbar. */
   toolbar?: CmRichTextToolbarItem[] | false;
+  /**
+   * Conteúdo extra no início da toolbar (ex.: botão de emoji, menções).
+   * Mantém a toolbar visível mesmo com `toolbar={false}`.
+   */
+  toolbarStart?: ReactNode;
+  /** Conteúdo extra no fim da toolbar. Mesmo comportamento de `toolbarStart`. */
+  toolbarEnd?: ReactNode;
+  /** Ref da API imperativa (`insertText`/`insertHtml`/`exec`/`focus`). */
+  editorApiRef?: Ref<CmRichTextEditorHandle>;
   /** Nome acessível da área editável. */
   ariaLabel?: string;
   minHeight?: number | string;
@@ -140,6 +164,9 @@ export const CmRichTextEditor = forwardRef<HTMLDivElement, CmRichTextEditorProps
       disabled = false,
       readOnly = false,
       toolbar = CM_RICH_TEXT_DEFAULT_TOOLBAR,
+      toolbarStart,
+      toolbarEnd,
+      editorApiRef,
       ariaLabel,
       minHeight = "8rem",
       pastePlainText = true,
@@ -157,6 +184,7 @@ export const CmRichTextEditor = forwardRef<HTMLDivElement, CmRichTextEditorProps
     });
 
     const editorRef = useRef<HTMLDivElement>(null);
+    const savedRangeRef = useRef<Range | null>(null);
     const lastHtmlRef = useRef<string>(html ?? "");
     const activeKeyRef = useRef<string>("");
     const [activeCommands, setActiveCommands] = useState<Set<CmRichTextCommand>>(new Set());
@@ -229,6 +257,54 @@ export const CmRichTextEditor = forwardRef<HTMLDivElement, CmRichTextEditorProps
       [syncFromDom],
     );
 
+    // Devolve foco e cursor ao editor antes de comandos imperativos: restaura
+    // o último Range salvo ou colapsa o caret no fim do conteúdo.
+    const restoreSelection = useCallback(() => {
+      const el = editorRef.current;
+      if (!el || typeof document === "undefined") return;
+      const selection = document.getSelection();
+      const selectionInEditor =
+        document.activeElement === el && !!selection?.anchorNode && el.contains(selection.anchorNode);
+      if (selectionInEditor) return;
+      el.focus();
+      if (!selection) return;
+      try {
+        const saved = savedRangeRef.current;
+        let range: Range;
+        if (saved && el.contains(saved.commonAncestorContainer)) {
+          range = saved;
+        } else {
+          range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false);
+        }
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch {
+        /* Selection/Range parcial (e.g. jsdom) — o foco já basta */
+      }
+    }, []);
+
+    useImperativeHandle(
+      editorApiRef,
+      () => ({
+        focus: () => restoreSelection(),
+        insertText: (text: string) => {
+          restoreSelection();
+          exec("insertText", text);
+        },
+        insertHtml: (markup: string) => {
+          restoreSelection();
+          exec("insertHTML", markup);
+        },
+        exec: (command: string, arg?: string) => {
+          restoreSelection();
+          exec(command, arg);
+        },
+      }),
+      [exec, restoreSelection],
+    );
+
     const applyLink = useCallback(() => {
       const url = onLinkRequest
         ? onLinkRequest()
@@ -284,7 +360,14 @@ export const CmRichTextEditor = forwardRef<HTMLDivElement, CmRichTextEditorProps
       const handler = () => {
         const el = editorRef.current;
         const selection = document.getSelection();
-        if (el && selection?.anchorNode && el.contains(selection.anchorNode)) updateActive();
+        if (el && selection?.anchorNode && el.contains(selection.anchorNode)) {
+          // Guarda a seleção para a API imperativa restaurar o cursor depois
+          // que o foco sair do editor (ex.: clique num botão de emoji).
+          if (selection.rangeCount > 0) {
+            savedRangeRef.current = selection.getRangeAt(0).cloneRange();
+          }
+          updateActive();
+        }
       };
       document.addEventListener("selectionchange", handler);
       return () => document.removeEventListener("selectionchange", handler);
@@ -313,36 +396,42 @@ export const CmRichTextEditor = forwardRef<HTMLDivElement, CmRichTextEditorProps
         style={style}
         {...rest}
       >
-        {editable && toolbar !== false ? (
+        {editable && (toolbar !== false || toolbarStart != null || toolbarEnd != null) ? (
           <div className="cm-rte__toolbar" role="toolbar" aria-label="Formatação de texto">
-            {toolbar.map((item, index) => {
-              if (item === "separator") {
-                return (
-                  <span
-                    key={`sep-${index}`}
-                    className="cm-rte__separator"
-                    role="separator"
-                    aria-orientation="vertical"
-                  />
-                );
-              }
-              const meta = COMMAND_META[item];
-              const isActive = activeCommands.has(item);
-              return (
-                <button
-                  key={item}
-                  type="button"
-                  className={cn("cm-rte__tool", isActive && "cm-rte__tool--active")}
-                  aria-label={meta.label}
-                  aria-pressed={TOGGLEABLE.has(item) ? isActive : undefined}
-                  title={meta.label}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => runCommand(item)}
-                >
-                  <meta.Icon size={16} aria-hidden />
-                </button>
-              );
-            })}
+            {toolbarStart != null ? (
+              <span className="cm-rte__toolbar-slot">{toolbarStart}</span>
+            ) : null}
+            {toolbar !== false
+              ? toolbar.map((item, index) => {
+                  if (item === "separator") {
+                    return (
+                      <span
+                        key={`sep-${index}`}
+                        className="cm-rte__separator"
+                        role="separator"
+                        aria-orientation="vertical"
+                      />
+                    );
+                  }
+                  const meta = COMMAND_META[item];
+                  const isActive = activeCommands.has(item);
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      className={cn("cm-rte__tool", isActive && "cm-rte__tool--active")}
+                      aria-label={meta.label}
+                      aria-pressed={TOGGLEABLE.has(item) ? isActive : undefined}
+                      title={meta.label}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => runCommand(item)}
+                    >
+                      <meta.Icon size={16} aria-hidden />
+                    </button>
+                  );
+                })
+              : null}
+            {toolbarEnd != null ? <span className="cm-rte__toolbar-slot">{toolbarEnd}</span> : null}
           </div>
         ) : null}
 

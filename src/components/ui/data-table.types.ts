@@ -25,7 +25,12 @@ export type CmDataTableSort = { key: string | null; direction: CmSortDirection }
 export type CmDataTableProps<T> = {
   columns: CmDataTableColumn<T>[];
   data: T[];
-  rowKey: (row: T, index: number) => string;
+  /**
+   * Chave estável de cada linha: nome de uma propriedade de `row` (o valor é
+   * convertido com `String(...)`) ou função `(row, index) => string`. A forma
+   * string é serializável e pode ser passada de Server para Client Components.
+   */
+  rowKey: (keyof T & string) | ((row: T, index: number) => string);
   zebra?: boolean;
   className?: string;
   tableClassName?: string;

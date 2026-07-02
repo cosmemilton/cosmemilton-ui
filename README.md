@@ -21,6 +21,13 @@ npm install cosmemilton-ui react react-dom
 
 `next` e `@iconify/react` são _peers_ **opcionais**.
 
+> **Nota:** o entry `cosmemilton-ui/client` referencia `CmIcon` internamente (via
+> `CmSelect`). Com um bundler com tree-shaking (Next, Vite, webpack) isso não traz
+> `@iconify/react` para o seu bundle se você não usar `CmIcon`/`showOptionIcons`;
+> **sem** tree-shaking (ex.: `import()` direto em Node), instale `@iconify/react`
+> junto com o `/client`. A v4 tornará `SelectOption.icon` um `ReactNode`, removendo
+> essa referência.
+
 ## Uso
 
 Importe o CSS público uma vez na aplicação e os componentes pelo entry point de cliente.
@@ -102,6 +109,12 @@ Qualquer tema embutido também pode ser fixado sem JavaScript:
 | `cosmemilton-ui/theme`          | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
 | `cosmemilton-ui/styles.css`     | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
 | `cosmemilton-ui/components.css` | CSS **sem o reset global** — para adoção incremental em apps existentes (o estilo da página continua do app).         |
+
+Componentes de layout/texto server-safe usados com frequência dentro de Client
+Components — `CmBox`, `CmStack`, `CmRow`, `CmCol`, `CmContainer`, `CmText`,
+`CmTopbar`, `CmForm` e `CmField` — são exportados **nos dois entries** (`/client`
+e `/server`), então um arquivo `"use client"` pode importar tudo de
+`cosmemilton-ui/client`.
 
 Ambos também existem minificados (`styles.min.css`, `components.min.css`). Todo o CSS
 é publicado dentro de `@layer cm.reset, cm.tokens, cm.components` — qualquer CSS seu

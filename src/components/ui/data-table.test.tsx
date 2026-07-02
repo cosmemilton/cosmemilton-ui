@@ -81,6 +81,26 @@ describe("CmDataTable", () => {
     expect(bodyRowNames()).toEqual(["Charlie", "Bob", "Alice"]);
   });
 
+  describe("rowKey as field name", () => {
+    it("renders all rows with rowKey as a string field", () => {
+      renderTable({ rowKey: "id" });
+      expect(bodyRowNames()).toEqual(["Charlie", "Alice", "Bob"]);
+    });
+
+    it("matches selectedRowKey against the field value", () => {
+      renderTable({ rowKey: "id", selectedRowKey: "2" });
+      const aliceRow = screen.getByText("Alice").closest("tr");
+      expect(aliceRow).toHaveAttribute("data-selected");
+      expect(screen.getByText("Charlie").closest("tr")).not.toHaveAttribute("data-selected");
+    });
+
+    it("stringifies non-string field values", () => {
+      renderTable({ rowKey: "age", selectedRowKey: "25" });
+      const aliceRow = screen.getByText("Alice").closest("tr");
+      expect(aliceRow).toHaveAttribute("data-selected");
+    });
+  });
+
   describe("server-side mode", () => {
     it("does not reorder rows with manualSorting, only emits onSortChange", async () => {
       const user = userEvent.setup();

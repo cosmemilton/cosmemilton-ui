@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { CmRichTextEditor } from "./rich-text-editor.js";
+import { CmRichTextEditor, type CmRichTextEditorHandle } from "./rich-text-editor.js";
+import { createRef } from "react";
 
 afterEach(cleanup);
 
@@ -65,5 +66,67 @@ describe("CmRichTextEditor", () => {
 
     await user.click(screen.getByRole("button", { name: "Inserir link" }));
     expect(exec).toHaveBeenCalledWith("createLink", false, "https://example.com");
+  });
+
+  describe("toolbar slots", () => {
+    it("renders toolbarStart and toolbarEnd around the command buttons", () => {
+      render(
+        <CmRichTextEditor
+          toolbarStart={<button type="button">Emoji</button>}
+          toolbarEnd={<button type="button">Variáveis</button>}
+        />,
+      );
+      const toolbar = screen.getByRole("toolbar");
+      const buttons = Array.from(toolbar.querySelectorAll("button"));
+      expect(buttons[0]).toHaveTextContent("Emoji");
+      expect(buttons[buttons.length - 1]).toHaveTextContent("Variáveis");
+      expect(screen.getByRole("button", { name: "Negrito" })).toBeInTheDocument();
+    });
+
+    it("keeps the toolbar visible with toolbar={false} when a slot is provided", () => {
+      render(<CmRichTextEditor toolbar={false} toolbarStart={<button type="button">Emoji</button>} />);
+      expect(screen.getByRole("toolbar")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Emoji" })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Negrito" })).not.toBeInTheDocument();
+    });
+
+    it("still hides the toolbar when read-only, even with slots", () => {
+      render(<CmRichTextEditor readOnly toolbarStart={<button type="button">Emoji</button>} />);
+      expect(screen.queryByRole("toolbar")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("editorApiRef", () => {
+    it("inserts text and html at the editor via execCommand and emits onChange", () => {
+      const exec = mockExecCommand();
+      const onChange = vi.fn();
+      const api = createRef<CmRichTextEditorHandle>();
+      render(<CmRichTextEditor editorApiRef={api} onChange={onChange} />);
+
+      api.current?.insertText("olá");
+      expect(exec).toHaveBeenCalledWith("insertText", false, "olá");
+
+      api.current?.insertHtml("<b>oi</b>");
+      expect(exec).toHaveBeenCalledWith("insertHTML", false, "<b>oi</b>");
+
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    it("runs arbitrary commands through exec", () => {
+      const exec = mockExecCommand();
+      const api = createRef<CmRichTextEditorHandle>();
+      render(<CmRichTextEditor editorApiRef={api} />);
+
+      api.current?.exec("bold");
+      expect(exec).toHaveBeenCalledWith("bold", false, undefined);
+    });
+
+    it("focus() moves focus to the editable area", () => {
+      const api = createRef<CmRichTextEditorHandle>();
+      const { container } = render(<CmRichTextEditor editorApiRef={api} />);
+
+      api.current?.focus();
+      expect(document.activeElement).toBe(content(container));
+    });
   });
 });

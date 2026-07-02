@@ -159,6 +159,11 @@ export function CmDataTable<T>({
     onSortChange?.({ key: column.key, direction: nextDirection });
   };
 
+  const getRowKey = useMemo(
+    () => (typeof rowKey === "function" ? rowKey : (row: T) => String(row[rowKey])),
+    [rowKey],
+  );
+
   const sortedData = useMemo(
     () => (manualSorting ? data : sortRows(data, columns, sortKey, sortDirection)),
     [data, sortKey, sortDirection, columns, manualSorting],
@@ -183,8 +188,8 @@ export function CmDataTable<T>({
     typeof detailPanelWidth === "number" ? `${detailPanelWidth}px` : detailPanelWidth;
   const selectedDetailRow = useMemo(() => {
     if (!detailPanelActive || selectedRowKey == null) return null;
-    return currentData.find((row, rowIndex) => rowKey(row, rowIndex) === selectedRowKey) ?? null;
-  }, [currentData, detailPanelActive, rowKey, selectedRowKey]);
+    return currentData.find((row, rowIndex) => getRowKey(row, rowIndex) === selectedRowKey) ?? null;
+  }, [currentData, detailPanelActive, getRowKey, selectedRowKey]);
 
   const measureSelectedRow = useCallback(() => {
     const wrapper = detailTableWrapperRef.current;
@@ -375,7 +380,7 @@ export function CmDataTable<T>({
         </thead>
         <tbody className="cm-data-table__body">
           {currentData.map((row, rowIndex) => {
-            const key = rowKey(row, rowIndex);
+            const key = getRowKey(row, rowIndex);
             const isSelected = selectedRowKey != null && key === selectedRowKey;
             return (
               <tr
