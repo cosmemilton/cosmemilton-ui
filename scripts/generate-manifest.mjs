@@ -43,7 +43,7 @@ const expectedDuplicateExports = new Set([
 ]);
 
 async function generateManifest() {
-  const entries = ['client', 'server', 'theme'];
+  const entries = ['client', 'server', 'theme', 'map'];
   const manifest = {};
   
   // 1. Load each entry and extract exported keys

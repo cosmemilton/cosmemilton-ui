@@ -114,6 +114,8 @@ export const CmResizable: unknown = /*#__PURE__*/ createProxy("CmResizable", "cl
 export const CmRichTextEditor: unknown = /*#__PURE__*/ createProxy("CmRichTextEditor", "client");
 /** @deprecated O componente "CmRow" foi movido para "cosmemilton-ui/server". */
 export const CmRow: unknown = /*#__PURE__*/ createProxy("CmRow", "server");
+/** @deprecated O componente "CmScheduler" foi movido para "cosmemilton-ui/client". */
+export const CmScheduler: unknown = /*#__PURE__*/ createProxy("CmScheduler", "client");
 /** @deprecated O componente "CmScrollArea" foi movido para "cosmemilton-ui/client". */
 export const CmScrollArea: unknown = /*#__PURE__*/ createProxy("CmScrollArea", "client");
 /** @deprecated O componente "CmSelect" foi movido para "cosmemilton-ui/client". */
@@ -274,6 +276,8 @@ export const themeToCSSVars: unknown = /*#__PURE__*/ createProxy("themeToCSSVars
 export const themes: unknown = /*#__PURE__*/ createProxy("themes", "theme");
 /** @deprecated O componente "violetTheme" foi movido para "cosmemilton-ui/theme". */
 export const violetTheme: unknown = /*#__PURE__*/ createProxy("violetTheme", "theme");
+/** @deprecated O componente "CmMap" foi movido para "cosmemilton-ui/map". */
+export const CmMap: unknown = /*#__PURE__*/ createProxy("CmMap", "map");
 
 /** @deprecated O entry root "cosmemilton-ui" foi removido. */
 export default new Proxy(function() {}, { get() { throw new Error("cosmemilton-ui v3 não possui entry root. Importe de /client, /server ou /theme."); } });

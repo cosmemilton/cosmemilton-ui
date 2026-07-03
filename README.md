@@ -19,7 +19,8 @@ global opcional para páginas sem bundler.
 npm install cosmemilton-ui react react-dom
 ```
 
-`next` e `@iconify/react` são _peers_ **opcionais**.
+`next`, `@iconify/react` e `leaflet` são _peers_ **opcionais** (`leaflet` só é
+necessário para o `CmMap`, importado do entry dedicado `cosmemilton-ui/map`).
 
 > **Nota:** o entry `cosmemilton-ui/client` referencia `CmIcon` internamente (via
 > `CmSelect`). Com um bundler com tree-shaking (Next, Vite, webpack) isso não traz
@@ -107,6 +108,7 @@ Qualquer tema embutido também pode ser fixado sem JavaScript:
 | `cosmemilton-ui/client`         | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
 | `cosmemilton-ui/server`         | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
 | `cosmemilton-ui/theme`          | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
+| `cosmemilton-ui/map`            | `CmMap` (wrapper de Leaflet). Entry separado para o peer opcional `leaflet` não entrar no grafo do `/client`.         |
 | `cosmemilton-ui/styles.css`     | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
 | `cosmemilton-ui/components.css` | CSS **sem o reset global** — para adoção incremental em apps existentes (o estilo da página continua do app).         |
 
@@ -122,6 +124,41 @@ fora de layer sempre vence o da biblioteca, sem guerra de especificidade.
 
 > **v3** removeu o export raiz `cosmemilton-ui`. Importe sempre por um dos entry
 > points acima. O guia de migração 2.x → 3.0 está nas docs vivas.
+
+### Mapa (`CmMap`)
+
+O `CmMap` é um wrapper fino de [Leaflet](https://leafletjs.com) com pins tonais,
+popup em React, modo picker (`value`/`onPick`) e tiles que escurecem
+automaticamente no tema dark. Instale o peer opcional e importe o CSS do Leaflet
+no layout raiz:
+
+```bash
+npm install leaflet
+```
+
+```tsx
+// app/layout.tsx
+import "cosmemilton-ui/styles.css";
+import "leaflet/dist/leaflet.css";
+```
+
+```tsx
+"use client";
+import { CmMap } from "cosmemilton-ui/map";
+
+<CmMap
+  markers={[
+    { id: 1, position: { lat: -23.55, lng: -46.63 }, label: "Imóvel A", tone: "success" },
+  ]}
+  onMarkerClick={(marker) => console.log(marker.id)}
+/>;
+
+// Seleção de coordenada (ex.: cadastro de imóvel):
+<CmMap value={coords} onPick={setCoords} zoom={15} center={coords ?? undefined} />;
+```
+
+O componente carrega o Leaflet dinamicamente só no cliente (SSR-safe, sem
+`next/dynamic`) e, sem `center`, enquadra os `markers` automaticamente.
 
 ## React puro (Vite/CRA)
 
@@ -156,6 +193,7 @@ docs vivas:
 - React `>=18.2 || 19` (e React DOM na mesma faixa)
 - Node `>=18`
 - Next `>=15` — opcional (App Router / RSC)
+- Leaflet `>=1.9` — opcional (apenas para `cosmemilton-ui/map`)
 
 ## Contribuindo
 

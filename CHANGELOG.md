@@ -1,5 +1,33 @@
 # Changelog
 
+## 3.14.0
+
+### Minor Changes
+
+- Fecha as duas lacunas de componente apontadas no feedback do Admin (itens 0.8 e 0.9):
+  - `CmScheduler` (novo, em `cosmemilton-ui/client`) — agenda com visões **dia/semana** e
+    grade de horários: eventos com início/fim (aceita `Date` ou string ISO, serializável de
+    RSC), cores por `tone` ou `color` explícita (ex.: por vistoriador), empacotamento de
+    eventos sobrepostos em colunas, slots clicáveis (`onSlotClick`), `onEventClick`,
+    `renderEvent` para conteúdo customizado, linha do horário atual, toolbar com navegação
+    (anterior/hoje/próximo) e troca de visão — tudo controlável (`view`/`date` controlados ou
+    não), com `startHour`/`endHour`/`slotMinutes`/`hourHeight`, `weekStartsOn`,
+    `hideWeekends` e rótulos em pt-BR.
+  - `CmMap` (novo, no entry dedicado **`cosmemilton-ui/map`**) — wrapper fino de Leaflet com
+    `markers` (pins tonais via tokens do tema, `label` acessível, popup em **React** via
+    portal), modo picker (`value` + `onPick`, com pin arrastável), `onMarkerClick`,
+    enquadramento automático dos markers (`fitMarkers`), tiles OSM por padrão
+    (`tileUrl`/`tileAttribution` configuráveis) e **escurecimento automático dos tiles no
+    tema dark** (segue o `color-scheme` resolvido dos tokens, funciona com temas
+    white-label). O componente importa o Leaflet dinamicamente só no cliente (SSR-safe sem
+    `next/dynamic`) e degrada com aviso claro quando o peer não está instalado.
+
+    `leaflet` entra como **peer opcional** (`>=1.9`) e fica num entry separado de propósito:
+    a lição do `@iconify/react` no `/client` (item 0.2) é que dependência no grafo do entry
+    vira dependência obrigatória do consumidor. Quem usa o mapa instala `leaflet` e importa
+    `leaflet/dist/leaflet.css` no layout raiz; quem não usa não é afetado. O bundle global
+    `window.CmUI` não inclui o `CmMap` pelo mesmo motivo.
+
 ## 3.13.0
 
 ### Minor Changes

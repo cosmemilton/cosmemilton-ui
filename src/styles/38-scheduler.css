@@ -1,0 +1,276 @@
+/* CmScheduler — agenda dia/semana com grade de horários. A grade é um CSS grid
+   (gutter + N colunas de dia via --cm-scheduler-days); as alturas derivam de
+   --cm-scheduler-hour-height / --cm-scheduler-slot-height, definidas pelo
+   componente a partir das props hourHeight/slotMinutes. */
+.cm-scheduler {
+  --cm-scheduler-gutter-width: 3.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.cm-scheduler__toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.cm-scheduler__nav,
+.cm-scheduler__views {
+  display: inline-flex;
+  gap: var(--space-xs);
+}
+
+.cm-scheduler__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.cm-scheduler__title::first-letter {
+  text-transform: uppercase;
+}
+
+.cm-scheduler__scroll {
+  overflow: auto;
+  max-height: var(--cm-scheduler-max-height, none);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+}
+
+.cm-scheduler__grid {
+  display: grid;
+  grid-template-columns:
+    var(--cm-scheduler-gutter-width)
+    repeat(var(--cm-scheduler-days, 7), minmax(6rem, 1fr));
+  grid-template-rows: auto 1fr;
+  min-width: min-content;
+}
+
+/* Cabeçalho (canto + dias) fixo durante o scroll vertical. */
+.cm-scheduler__corner,
+.cm-scheduler__day-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cm-scheduler__day-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.375rem 0.25rem;
+  border-left: 1px solid var(--color-border);
+}
+
+.cm-scheduler__day-name {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted-foreground);
+}
+
+.cm-scheduler__day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-scheduler__day-header--today .cm-scheduler__day-name {
+  color: var(--color-primary);
+}
+
+.cm-scheduler__day-header--today .cm-scheduler__day-number {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+/* Gutter de horários: um rótulo por hora, logo abaixo da linha da hora. */
+.cm-scheduler__gutter {
+  border-right: 1px solid var(--color-border);
+}
+
+.cm-scheduler__gutter-label {
+  display: block;
+  height: var(--cm-scheduler-hour-height, 48px);
+  padding: 0.125rem 0.5rem 0 0;
+  text-align: right;
+  font-size: 0.6875rem;
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-scheduler__day-col {
+  position: relative;
+  min-width: 0;
+  border-left: 1px solid var(--color-border);
+}
+
+.cm-scheduler__day-col--today {
+  background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+}
+
+/* Slots: as próprias células desenham as linhas-guia (sólida na hora cheia,
+   esmaecida nos subslots). Viram <button> quando onSlotClick existe. */
+.cm-scheduler__slot {
+  display: block;
+  width: 100%;
+  height: var(--cm-scheduler-slot-height, 24px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  background: transparent;
+  appearance: none;
+}
+
+.cm-scheduler__slot--minor {
+  border-top-color: color-mix(in srgb, var(--color-border) 45%, transparent);
+}
+
+.cm-scheduler__day-col .cm-scheduler__slot:first-child {
+  border-top: 0;
+}
+
+button.cm-scheduler__slot {
+  cursor: pointer;
+}
+
+button.cm-scheduler__slot:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+button.cm-scheduler__slot:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px;
+}
+
+/* Eventos: posicionados em px pelo componente; a cor vem do tom (ou de
+   --cm-scheduler-event-color explícita, ex.: cor por vistoriador). */
+.cm-scheduler__event {
+  --cm-scheduler-event-color: var(--color-primary);
+  position: absolute;
+  z-index: var(--z-base);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.0625rem;
+  margin: 0;
+  padding: 0.125rem 0.375rem;
+  overflow: hidden;
+  min-height: 1rem;
+  border: 1px solid color-mix(in srgb, var(--cm-scheduler-event-color) 45%, transparent);
+  border-left: 3px solid var(--cm-scheduler-event-color);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--cm-scheduler-event-color) 16%, var(--color-card));
+  color: var(--color-foreground);
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  cursor: pointer;
+  appearance: none;
+}
+
+.cm-scheduler__event:hover {
+  background: color-mix(in srgb, var(--cm-scheduler-event-color) 26%, var(--color-card));
+}
+
+.cm-scheduler__event:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 1px;
+  z-index: var(--z-docked);
+}
+
+.cm-scheduler__event--tone-default {
+  --cm-scheduler-event-color: var(--color-muted-foreground);
+}
+
+.cm-scheduler__event--tone-primary {
+  --cm-scheduler-event-color: var(--color-primary);
+}
+
+.cm-scheduler__event--tone-secondary {
+  --cm-scheduler-event-color: var(--color-secondary);
+}
+
+.cm-scheduler__event--tone-accent {
+  --cm-scheduler-event-color: var(--color-accent);
+}
+
+.cm-scheduler__event--tone-success {
+  --cm-scheduler-event-color: var(--color-success);
+}
+
+.cm-scheduler__event--tone-warning {
+  --cm-scheduler-event-color: var(--color-warning);
+}
+
+.cm-scheduler__event--tone-danger {
+  --cm-scheduler-event-color: var(--color-danger);
+}
+
+.cm-scheduler__event--tone-info {
+  --cm-scheduler-event-color: var(--color-info);
+}
+
+.cm-scheduler__event-time {
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-scheduler__event-title {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.cm-scheduler__event-description {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.6875rem;
+  color: var(--color-muted-foreground);
+}
+
+/* Linha do horário atual (hoje): régua com ponto na borda esquerda. */
+.cm-scheduler__now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: var(--z-docked);
+  height: 2px;
+  background: var(--color-danger);
+  pointer-events: none;
+}
+
+.cm-scheduler__now::before {
+  content: "";
+  position: absolute;
+  left: -0.25rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: translateY(-50%);
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+}

@@ -1,0 +1,157 @@
+/* CmMap — wrapper fino de Leaflet (entry dedicado cosmemilton-ui/map).
+   Este parcial NÃO substitui o CSS do Leaflet (importe "leaflet/dist/leaflet.css");
+   ele só integra o mapa ao tema: pins tonais, popup/controles com tokens e
+   escurecimento dos tiles quando o tema resolve para dark. */
+.cm-map {
+  position: relative;
+  height: var(--cm-map-height, 20rem);
+  min-height: 8rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+}
+
+.cm-map__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* O Leaflet gerencia o próprio z-index interno (400+); confina esse empilhamento
+   a um contexto local para o mapa não cobrir overlays da lib (dialog, toast). */
+.cm-map__canvas .leaflet-container {
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  z-index: var(--z-base);
+  background: var(--color-muted);
+  font-family: inherit;
+}
+
+.cm-map__status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+}
+
+/* Pin tonal: gota (quadrado rotacionado com um canto reto) + miolo claro.
+   O html vem de L.divIcon com âncora na ponta (13, 32). */
+.cm-map__pin-anchor {
+  background: transparent;
+  border: 0;
+}
+
+.cm-map__pin {
+  --cm-map-pin-color: var(--color-primary);
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  display: block;
+  width: 24px;
+  height: 24px;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  border-radius: 50% 50% 50% 0;
+  background: var(--cm-map-pin-color);
+  border: 2px solid color-mix(in srgb, var(--color-background) 85%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+.cm-map__pin::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-background) 90%, var(--cm-map-pin-color));
+}
+
+.cm-map__pin--tone-default {
+  --cm-map-pin-color: var(--color-muted-foreground);
+}
+
+.cm-map__pin--tone-primary {
+  --cm-map-pin-color: var(--color-primary);
+}
+
+.cm-map__pin--tone-secondary {
+  --cm-map-pin-color: var(--color-secondary);
+}
+
+.cm-map__pin--tone-accent {
+  --cm-map-pin-color: var(--color-accent);
+}
+
+.cm-map__pin--tone-success {
+  --cm-map-pin-color: var(--color-success);
+}
+
+.cm-map__pin--tone-warning {
+  --cm-map-pin-color: var(--color-warning);
+}
+
+.cm-map__pin--tone-danger {
+  --cm-map-pin-color: var(--color-danger);
+}
+
+.cm-map__pin--tone-info {
+  --cm-map-pin-color: var(--color-info);
+}
+
+/* Pin do modo picker: maior destaque + anel para diferenciar dos markers. */
+.cm-map__pin--pick {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--cm-map-pin-color) 25%, transparent),
+    var(--shadow-md);
+}
+
+/* Popup e controles de zoom com os tokens do tema (claro/escuro).
+   O !important é necessário: o leaflet.css do consumidor é UNLAYERED e, pela
+   ordem de cascata, venceria estas regras dentro de @layer cm.components —
+   declarações important em layer invertem essa prioridade. Tudo escopado em
+   .cm-map. */
+.cm-map .leaflet-popup-content-wrapper,
+.cm-map .leaflet-popup-tip {
+  background: var(--color-popover) !important;
+  color: var(--color-popover-foreground) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.cm-map .leaflet-popup-content-wrapper {
+  border-radius: var(--radius-md) !important;
+}
+
+.cm-map .leaflet-bar a {
+  background: var(--color-card) !important;
+  color: var(--color-card-foreground) !important;
+  border-bottom-color: var(--color-border) !important;
+}
+
+.cm-map .leaflet-bar a:hover,
+.cm-map .leaflet-bar a:focus {
+  background: var(--color-muted) !important;
+}
+
+.cm-map .leaflet-container a.leaflet-popup-close-button {
+  color: var(--color-muted-foreground) !important;
+}
+
+.cm-map .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--color-card) 80%, transparent) !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+.cm-map .leaflet-control-attribution a {
+  color: var(--color-primary) !important;
+}
+
+/* Tema escuro: inverte os tiles raster (OSM) mantendo legibilidade; os pins,
+   popups e controles ficam de fora do filtro. */
+.cm-map--dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9) saturate(0.7);
+}
