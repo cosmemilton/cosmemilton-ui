@@ -50,6 +50,7 @@ export * from "./components/ui/scheduler.js";
 export * from "./components/ui/scroll-area.js";
 export * from "./components/ui/select.js";
 export * from "./components/ui/sidebar.js";
+export * from "./components/ui/signature-pad.js";
 export * from "./components/ui/split-button.js";
 export * from "./components/ui/switch.js";
 export * from "./components/ui/tabs.js";

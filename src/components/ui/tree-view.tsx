@@ -29,6 +29,7 @@ import type {
   CmTreeDropPosition,
   CmTreeMoveDetails,
   CmTreeNode,
+  CmTreeNodeAction,
 } from "./tree-view.types.js";
 import { TreeBranch } from "./tree-view-branch.js";
 import {
@@ -47,6 +48,7 @@ export type {
   CmTreeDropPosition,
   CmTreeMoveDetails,
   CmTreeNode,
+  CmTreeNodeAction,
 } from "./tree-view.types.js";
 
 export interface CmTreeViewProps {
@@ -54,6 +56,8 @@ export interface CmTreeViewProps {
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
+  /** Ações extras por nó (ex.: "clonar"), renderizadas entre editar e remover. Recebe o nó e retorna a lista de ações a exibir para ele. */
+  nodeActions?: (node: CmTreeNode) => CmTreeNodeAction[];
   onMove?: (
     nodeId: string,
     newParentId: string | null,
@@ -115,6 +119,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
   onAdd,
   onEdit,
   onDelete,
+  nodeActions,
   onMove,
   onReorder,
   canDrop,
@@ -466,6 +471,7 @@ export const CmTreeView: React.FC<CmTreeViewProps> = ({
               onAdd={onAdd}
               onEdit={onEdit}
               onDelete={onDelete}
+              nodeActions={nodeActions}
               onSelect={setSelectedNode}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}

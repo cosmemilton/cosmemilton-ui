@@ -15,7 +15,7 @@ import {
 import { CmButton } from "./button.js";
 import { CmCheckbox } from "./checkbox.js";
 import { cn } from "../../lib/utils.js";
-import type { CmTreeDropPosition, CmTreeNode } from "./tree-view.types.js";
+import type { CmTreeDropPosition, CmTreeNode, CmTreeNodeAction } from "./tree-view.types.js";
 
 export interface SortableTreeItemProps {
   node: CmTreeNode;
@@ -28,6 +28,7 @@ export interface SortableTreeItemProps {
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
+  nodeActions?: (node: CmTreeNode) => CmTreeNodeAction[];
   onSelect?: (node: CmTreeNode) => void;
   onDragStart?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
   onDragOver?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
@@ -57,6 +58,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   onAdd,
   onEdit,
   onDelete,
+  nodeActions,
   onSelect,
   onDragStart,
   onDragOver,
@@ -96,6 +98,7 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
   ];
 
   const colorClass = levelColors[level % levelColors.length];
+  const customActions = nodeActions?.(node) ?? [];
 
   // Ícone do nó. Precedência: ícone próprio do nó > override por tipo/estado
   // (branch/branchOpen/leaf) > default (Folder/FolderOpen/File).
@@ -238,6 +241,23 @@ export const SortableTreeItem: FC<SortableTreeItemProps> = ({
                 <Pencil className="cm-tree-view__small-icon" />
               </CmButton>
             )}
+            {customActions.map((action) => (
+              <CmButton
+                key={action.key}
+                unstyled
+                type="button"
+                onClick={() => action.onClick(node)}
+                className={cn(
+                  "cm-tree-view__action-button",
+                  "cm-tree-view__action-button--custom",
+                  action.className,
+                )}
+                aria-label={action.label}
+                title={action.label}
+              >
+                {action.icon}
+              </CmButton>
+            ))}
             {onDelete && (
               <CmButton
                 unstyled

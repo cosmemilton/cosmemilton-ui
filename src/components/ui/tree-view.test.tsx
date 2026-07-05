@@ -143,6 +143,40 @@ describe("CmTreeView", () => {
     expect(screen.getByTestId("leaf-icon")).toBeInTheDocument();
   });
 
+  it("renders per-node custom actions and invokes them with the node", async () => {
+    const user = userEvent.setup();
+    const onClone = vi.fn();
+    render(
+      <CmTreeView
+        data={tree}
+        nodeActions={(node) => [
+          { key: "clone", icon: <span>C</span>, label: `Clonar ${node.name}`, onClick: onClone },
+        ]}
+      />,
+    );
+
+    const cloneButton = screen.getByRole("button", { name: "Clonar Fruits" });
+    await user.click(cloneButton);
+
+    expect(onClone).toHaveBeenCalledWith(tree[0]);
+  });
+
+  it("can restrict custom actions to a subset of nodes", () => {
+    render(
+      <CmTreeView
+        data={tree}
+        expandedByDefault
+        nodeActions={(node) =>
+          node.id === "1-1"
+            ? [{ key: "clone", icon: <span>C</span>, label: "Clonar", onClick: () => {} }]
+            : []
+        }
+      />,
+    );
+
+    expect(screen.getAllByRole("button", { name: "Clonar" })).toHaveLength(1);
+  });
+
   it("hides the add-subcategory button at the deepest allowed level via maxDepth", () => {
     const onAdd = () => {};
     render(<CmTreeView data={tree} maxDepth={2} onAdd={onAdd} expandedByDefault />);

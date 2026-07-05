@@ -1,0 +1,89 @@
+/* CmSignaturePad — canvas de assinatura manuscrita. Zero-dep; tokens only. */
+.cm-signature-pad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm, 0.5rem);
+}
+
+.cm-signature-pad__frame {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.cm-signature-pad__frame--disabled {
+  opacity: 0.6;
+}
+
+.cm-signature-pad__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--color-foreground);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.cm-signature-pad__frame--disabled .cm-signature-pad__canvas {
+  cursor: not-allowed;
+}
+
+.cm-signature-pad__canvas:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px;
+}
+
+.cm-signature-pad__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.cm-signature-pad__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cm-signature-pad__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted-foreground);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--motion-duration-fast, 150ms) var(--motion-ease-standard, ease),
+    border-color var(--motion-duration-fast, 150ms) var(--motion-ease-standard, ease);
+}
+
+.cm-signature-pad__clear:hover:not(:disabled) {
+  color: var(--color-foreground);
+  border-color: var(--color-primary);
+}
+
+.cm-signature-pad__clear:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.cm-signature-pad__clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cm-signature-pad__clear-icon {
+  width: 1rem;
+  height: 1rem;
+}

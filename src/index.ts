@@ -122,6 +122,8 @@ export const CmScrollArea: unknown = /*#__PURE__*/ createProxy("CmScrollArea", "
 export const CmSelect: unknown = /*#__PURE__*/ createProxy("CmSelect", "client");
 /** @deprecated O componente "CmSidebar" foi movido para "cosmemilton-ui/client". */
 export const CmSidebar: unknown = /*#__PURE__*/ createProxy("CmSidebar", "client");
+/** @deprecated O componente "CmSignaturePad" foi movido para "cosmemilton-ui/client". */
+export const CmSignaturePad: unknown = /*#__PURE__*/ createProxy("CmSignaturePad", "client");
 /** @deprecated O componente "CmSplitButton" foi movido para "cosmemilton-ui/client". */
 export const CmSplitButton: unknown = /*#__PURE__*/ createProxy("CmSplitButton", "client");
 /** @deprecated O componente "CmStack" foi movido para "cosmemilton-ui/server". */

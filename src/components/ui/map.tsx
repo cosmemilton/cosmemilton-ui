@@ -30,8 +30,13 @@ export type CmMapMarker = {
   label?: string;
   /** Conteúdo React do popup aberto ao clicar no pin. */
   popup?: ReactNode;
-  /** Tom do pin, mapeado para os tokens de cor do tema. Padrão `primary`. */
+  /** Tom do pin, mapeado para os tokens de cor do tema. Padrão `primary`. Ignorado quando `color` é definido. */
   tone?: CmTone;
+  /**
+   * Cor livre do pin (qualquer valor CSS de cor: hex, rgb(), var(...), nome).
+   * Sobrepõe `tone` — use para reaproveitar cores cadastradas em entidades de domínio.
+   */
+  color?: string;
 };
 
 export type CmMapProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
@@ -231,6 +236,14 @@ export const CmMap = forwardRef<HTMLDivElement, CmMapProps>(function CmMap(
         title: marker.label,
         alt: marker.label ?? `Marcador ${marker.id}`,
       }).addTo(layer);
+      /* Setado via CSSOM (não concatenado no html do divIcon) para aceitar cor
+         livre do consumidor sem abrir um vetor de injeção de HTML/atributo. */
+      if (marker.color) {
+        instance
+          .getElement()
+          ?.querySelector<HTMLElement>(".cm-map__pin")
+          ?.style.setProperty("--cm-map-pin-color", marker.color);
+      }
       if (marker.popup !== undefined) {
         const container = document.createElement("div");
         container.className = "cm-map__popup";

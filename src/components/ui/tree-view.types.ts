@@ -40,3 +40,15 @@ export interface CmTreeMoveDetails {
   newParentId: string | null;
   newOrder: number;
 }
+
+/** Ação customizada por nó (ex.: "clonar"), renderizada ao lado de editar/remover. */
+export interface CmTreeNodeAction {
+  /** Identifica a ação na lista; usado como React key. */
+  key: string;
+  icon: ReactNode;
+  /** Usado como aria-label e title do botão. */
+  label: string;
+  onClick: (node: CmTreeNode) => void;
+  /** Classe extra no botão, para tingir o ícone com uma cor própria. */
+  className?: string;
+}

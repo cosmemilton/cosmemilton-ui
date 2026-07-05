@@ -18,6 +18,7 @@ const h = vi.hoisted(() => {
     remove: ReturnType<typeof vi.fn>;
     on: (type: string, fn: Listener) => MarkerInstance;
     getLatLng: () => { lat: number; lng: number };
+    getElement: () => HTMLElement;
   };
 
   const state = {
@@ -53,6 +54,12 @@ const h = vi.hoisted(() => {
       return group;
     }),
     marker: vi.fn((latlng: [number, number], options: Record<string, unknown>) => {
+      // Emula o elemento que o Leaflet criaria a partir do html do divIcon,
+      // para poder verificar o setProperty aplicado em getElement().
+      const element = document.createElement("div");
+      const icon = options.icon as { html?: string } | undefined;
+      if (icon?.html) element.innerHTML = icon.html;
+
       const instance: MarkerInstance = {
         latlng,
         options,
@@ -69,6 +76,7 @@ const h = vi.hoisted(() => {
           return instance;
         },
         getLatLng: () => ({ lat: latlng[0], lng: latlng[1] }),
+        getElement: () => element,
       };
       state.markers.push(instance);
       return instance;
@@ -124,6 +132,26 @@ describe("CmMap", () => {
     expect(first.options.title).toBe("Casa");
     expect((first.options.icon as { html: string }).html).toContain("cm-map__pin--tone-success");
     expect((second.options.icon as { html: string }).html).toContain("cm-map__pin--tone-primary");
+  });
+
+  it("applies a free-form pin color that overrides the tone", async () => {
+    await renderReady(
+      <CmMap
+        markers={[
+          { id: "casa", position: { lat: -23.55, lng: -46.63 }, tone: "success", color: "#fabada" },
+        ]}
+      />,
+    );
+    await waitFor(() => expect(h.state.markers).toHaveLength(1));
+    const pin = h.state.markers[0].getElement().querySelector<HTMLElement>(".cm-map__pin");
+    expect(pin?.style.getPropertyValue("--cm-map-pin-color")).toBe("#fabada");
+  });
+
+  it("leaves the tonal color untouched when no marker color is given", async () => {
+    await renderReady(<CmMap markers={markers} />);
+    await waitFor(() => expect(h.state.markers).toHaveLength(2));
+    const pin = h.state.markers[0].getElement().querySelector<HTMLElement>(".cm-map__pin");
+    expect(pin?.style.getPropertyValue("--cm-map-pin-color")).toBe("");
   });
 
   it("fits bounds to markers when there is no explicit center", async () => {

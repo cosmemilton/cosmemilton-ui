@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.15.0
+
+### Minor Changes
+
+- CmMap: adiciona o campo `color` em `CmMapMarker` — cor livre do pin (hex, rgb(), var(...), nome), sobrepondo `tone`.
+- Adiciona `CmSignaturePad` (entry `/client`): captura de assinatura manuscrita via canvas (mouse/touch/caneta), com fundo branco, suporte a `devicePixelRatio`, `name` (sincroniza `<input type="hidden">`), `defaultValue` para pré-carregar uma assinatura existente, `onChange(dataUrl)` e `apiRef` (`clear`/`isEmpty`/`toDataURL`/`toSVG`).
+- CmTreeView: adiciona a prop `nodeActions(node)`, que retorna ações customizadas por nó (ex.: "clonar"), renderizadas entre editar e remover.
+
 ## 3.14.0
 
 ### Minor Changes

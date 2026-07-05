@@ -2,7 +2,7 @@
 
 import { Fragment, type DragEvent, type FC, type ReactNode } from "react";
 import { SortableTreeItem } from "./tree-view-item.js";
-import type { CmTreeDropPosition, CmTreeNode } from "./tree-view.types.js";
+import type { CmTreeDropPosition, CmTreeNode, CmTreeNodeAction } from "./tree-view.types.js";
 
 export interface TreeBranchProps {
   nodes: CmTreeNode[];
@@ -16,6 +16,7 @@ export interface TreeBranchProps {
   onAdd?: (parentId: string | null) => void;
   onEdit?: (node: CmTreeNode) => void;
   onDelete?: (node: CmTreeNode) => void;
+  nodeActions?: (node: CmTreeNode) => CmTreeNodeAction[];
   onSelect?: (node: CmTreeNode) => void;
   onDragStart?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
   onDragOver?: (event: DragEvent<HTMLElement>, node: CmTreeNode) => void;
@@ -44,6 +45,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
   onAdd,
   onEdit,
   onDelete,
+  nodeActions,
   onSelect,
   onDragStart,
   onDragOver,
@@ -76,6 +78,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
             onAdd={onAdd}
             onEdit={onEdit}
             onDelete={onDelete}
+            nodeActions={nodeActions}
             onSelect={onSelect}
             onDragStart={onDragStart}
             onDragOver={onDragOver}
@@ -104,6 +107,7 @@ export const TreeBranch: FC<TreeBranchProps> = ({
               onAdd={onAdd}
               onEdit={onEdit}
               onDelete={onDelete}
+              nodeActions={nodeActions}
               onSelect={onSelect}
               onDragStart={onDragStart}
               onDragOver={onDragOver}

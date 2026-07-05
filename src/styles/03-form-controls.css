@@ -985,6 +985,10 @@
   color: var(--color-danger)
 }
 
+.cm-tree-view__action-button--custom {
+  color: var(--color-accent)
+}
+
 .cm-tree-view__action-button--add:hover {
   background: color-mix(in srgb, var(--color-success) 15%, transparent)
 }
@@ -995,6 +999,10 @@
 
 .cm-tree-view__action-button--delete:hover {
   background: color-mix(in srgb, var(--color-danger) 15%, transparent)
+}
+
+.cm-tree-view__action-button--custom:hover {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent)
 }
 
 .cm-tree-view__header {
