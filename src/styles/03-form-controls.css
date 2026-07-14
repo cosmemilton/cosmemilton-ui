@@ -428,6 +428,14 @@
   color: var(--color-primary-foreground)
 }
 
+.cm-combobox-multi__option-text {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: .125rem
+}
+
 .cm-data-table {
   overflow: hidden;
   border: 1px solid var(--color-border);

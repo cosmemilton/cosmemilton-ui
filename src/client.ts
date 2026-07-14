@@ -18,6 +18,7 @@ export * from "./components/ui/checkbox.js";
 export * from "./components/ui/code-block.js";
 export * from "./components/ui/collapsible.js";
 export * from "./components/ui/combobox.js";
+export * from "./components/ui/combobox-multi.js";
 export * from "./components/ui/command.js";
 export * from "./components/ui/confirm-dialog.js";
 export * from "./components/ui/context-menu.js";

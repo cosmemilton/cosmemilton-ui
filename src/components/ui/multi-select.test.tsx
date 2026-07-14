@@ -81,6 +81,14 @@ describe("CmMultiSelect", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("summarizes three or more selections in pt-BR", () => {
+    render(<ControlledMultiSelect initialValue={["math", "pt", "sci"]} />);
+
+    expect(screen.getByRole("combobox", { name: "Disciplinas" })).toHaveTextContent(
+      "3 selecionados",
+    );
+  });
+
   it("marks checked options with aria-selected", async () => {
     const user = userEvent.setup();
     render(<ControlledMultiSelect initialValue={["pt"]} />);

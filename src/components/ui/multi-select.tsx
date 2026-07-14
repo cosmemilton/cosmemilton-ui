@@ -32,8 +32,6 @@ export type CmMultiSelectProps = {
   width?: string | number;
 };
 
-
-
 export function CmMultiSelect({
   value,
   onChange,
@@ -63,7 +61,7 @@ export function CmMultiSelect({
       ? ""
       : selectedOptions.length <= 2
         ? selectedOptions.map((option) => option.label).join(", ")
-        : `${selectedOptions.length} schools selected`;
+        : `${selectedOptions.length} selecionados`;
 
   const toggleValue = useCallback(
     (nextValue: string) => {
@@ -87,8 +85,6 @@ export function CmMultiSelect({
   });
 
   useClickOutside([panelRef, triggerRef], () => setOpen(false), open);
-
-
 
   useFloating(triggerRef, panelRef, { enabled: open, matchWidth: true });
 

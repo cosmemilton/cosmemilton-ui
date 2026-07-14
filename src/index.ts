@@ -50,6 +50,8 @@ export const CmCol: unknown = /*#__PURE__*/ createProxy("CmCol", "server");
 export const CmCollapsible: unknown = /*#__PURE__*/ createProxy("CmCollapsible", "client");
 /** @deprecated O componente "CmCombobox" foi movido para "cosmemilton-ui/client". */
 export const CmCombobox: unknown = /*#__PURE__*/ createProxy("CmCombobox", "client");
+/** @deprecated O componente "CmComboboxMulti" foi movido para "cosmemilton-ui/client". */
+export const CmComboboxMulti: unknown = /*#__PURE__*/ createProxy("CmComboboxMulti", "client");
 /** @deprecated O componente "CmCommand" foi movido para "cosmemilton-ui/client". */
 export const CmCommand: unknown = /*#__PURE__*/ createProxy("CmCommand", "client");
 /** @deprecated O componente "CmConfirmDialog" foi movido para "cosmemilton-ui/client". */
