@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.16.0
+
+### Minor Changes
+
+- Adiciona `CmComboboxMulti` (entry `/client`): combobox de seleção múltipla — o mesmo campo de texto com filtro digitado do `CmCombobox` (busca por `label`, `description` e `keywords`, com `onSearch` debounced para busca no servidor), alternando itens com checkbox sem fechar a lista, como o `CmMultiSelect`. Fora do foco, o campo exibe o resumo da seleção ("A, B" até 2 itens; "N selecionados" acima disso), com botão de limpar tudo, `name` (sincroniza `<input type="hidden">` com os valores separados por vírgula), suporte a itens desabilitados e navegação por teclado do padrão listbox (WAI-ARIA).
+
+  Corrige o resumo do `CmMultiSelect` com 3+ seleções, que exibia o texto em inglês "N schools selected" — agora "N selecionados".
+
 ## 3.15.0
 
 ### Minor Changes
