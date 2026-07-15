@@ -142,6 +142,25 @@ describe("CmComboboxMulti", () => {
     expect(hidden).toHaveValue("");
   });
 
+  it("keeps the popup open and the input focused when clearing the selection", async () => {
+    const user = userEvent.setup();
+    render(<ControlledComboboxMulti initialValue={["math"]} />);
+
+    const input = screen.getByPlaceholderText("Pesquisar");
+    await user.click(input);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    // Clearing unmounts the button on the same interaction; the click-outside
+    // hook must not mistake the detached node for a click outside the field.
+    await user.click(screen.getByTitle("Limpar seleção"));
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    expect(input).toHaveFocus();
+    expect(screen.getByRole("option", { name: "Matemática" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+  });
+
   it("closes with Escape and on click outside", async () => {
     const user = userEvent.setup();
     render(<ControlledComboboxMulti />);

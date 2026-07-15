@@ -261,11 +261,12 @@ export function CmComboboxMulti({
           <CmButton
             unstyled
             type="button"
-            onMouseDown={(event) => {
-              // Keeps focus (and the popup) on the input while clearing.
-              event.preventDefault();
-              handleClear();
-            }}
+            // preventDefault on mousedown keeps focus on the input; the state
+            // change waits for click so this button is still mounted when the
+            // click-outside hook inspects the mousedown target (otherwise the
+            // detached node reads as "outside" and closes the popup).
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={handleClear}
             className="cm-combobox__clear"
             title="Limpar seleção"
           >
