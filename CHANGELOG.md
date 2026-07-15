@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.1
+
+### Patch Changes
+
+- `CmComboboxMulti`: o botão "Limpar seleção" não fecha mais a lista. A limpeza acontecia no `mousedown` e o botão era desmontado antes do listener global de click-outside inspecionar o alvo — o nó já destacado era lido como "fora do campo" e fechava o popup. A mudança de estado agora espera o `click` (o `mousedown` só previne o roubo de foco do input).
+
 ## 3.16.0
 
 ### Minor Changes
