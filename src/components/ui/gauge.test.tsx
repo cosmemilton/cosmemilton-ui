@@ -72,4 +72,62 @@ describe("CmGauge", () => {
     render(<CmGauge value={10} data-testid="g" />);
     expect(screen.getByTestId("g")).toHaveClass("cm-gauge");
   });
+
+  it("exposes the content inset so the text clears the ring", () => {
+    render(<CmGauge value={50} size={200} thickness={30} data-testid="g" />);
+    // strokeWidth + 4% do tamanho = 30 + 8
+    expect(screen.getByTestId("g").style.getPropertyValue("--cm-gauge-inset")).toBe("38px");
+  });
+
+  // Nos tamanhos padrão (size 128): traço 13, folga 18 de cada lado → 92px úteis,
+  // fonte base 28px e piso 15px.
+  it("keeps the base font size while the value fits", () => {
+    render(<CmGauge value={72} aria-label="Fits" />);
+    expect(screen.getByText("72%")).toHaveStyle({ fontSize: "28px" });
+  });
+
+  it("shrinks the value font until the text fits the ring", () => {
+    render(<CmGauge value={350} max={500} valueFormat={({ value, max }) => `${value}/${max}`} />);
+    const el = screen.getByText("350/500");
+    const fontSize = Number.parseInt(el.style.fontSize, 10);
+    expect(fontSize).toBeLessThan(28);
+    expect(fontSize).toBeGreaterThanOrEqual(15);
+  });
+
+  it("never shrinks the value past the minimum font size", () => {
+    render(<CmGauge value={72} valueFormat={() => "9".repeat(40)} />);
+    // 55% de 28, arredondado
+    expect(screen.getByText("9".repeat(40))).toHaveStyle({ fontSize: "15px" });
+  });
+
+  it("honors an explicit minValueFontSize", () => {
+    render(<CmGauge value={72} minValueFontSize={22} valueFormat={() => "9".repeat(40)} />);
+    expect(screen.getByText("9".repeat(40))).toHaveStyle({ fontSize: "22px" });
+  });
+
+  it("keeps the base font size when autoFitValue is off", () => {
+    render(<CmGauge value={72} autoFitValue={false} valueFormat={() => "9".repeat(40)} />);
+    expect(screen.getByText("9".repeat(40))).toHaveStyle({ fontSize: "28px" });
+  });
+
+  it("uses valueFontSize as a ceiling, never as a floor", () => {
+    // Num gauge grande o texto curto cabe folgado e mantém a fonte pedida...
+    const { rerender } = render(<CmGauge value={72} size={220} valueFontSize={40} />);
+    expect(screen.getByText("72%")).toHaveStyle({ fontSize: "40px" });
+    // ...mas no tamanho padrão 40px não caberia, então o autoajuste reduz.
+    rerender(<CmGauge value={72} valueFontSize={40} />);
+    expect(Number.parseInt(screen.getByText("72%").style.fontSize, 10)).toBeLessThan(40);
+  });
+
+  it("gives more room to the text when the ring is thin", () => {
+    const { rerender } = render(<CmGauge value={9} valueFormat={() => "1.284.930"} />);
+    const thick = Number.parseInt(screen.getByText("1.284.930").style.fontSize, 10);
+    rerender(<CmGauge value={9} thickness={4} valueFormat={() => "1.284.930"} />);
+    expect(Number.parseInt(screen.getByText("1.284.930").style.fontSize, 10)).toBeGreaterThan(thick);
+  });
+
+  it("falls back to the base font size for JSX values it cannot measure", () => {
+    render(<CmGauge value={72} valueFormat={() => <b data-testid="jsx">350/500</b>} />);
+    expect(screen.getByTestId("jsx").parentElement).toHaveStyle({ fontSize: "28px" });
+  });
 });

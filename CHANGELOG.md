@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.17.0
+
+### Minor Changes
+
+- `CmGauge`: o valor central agora se ajusta ao anel em vez de transbordar. Textos mais largos que a área útil (ex.: `valueFormat` devolvendo `350/500`) reduzem a fonte só o necessário para caber e, ao chegar no piso, o excedente vira reticências. Três props novas controlam o comportamento: `valueFontSize` (fonte base/teto, padrão ~22% do `size`), `minValueFontSize` (piso, padrão ~55% da base) e `autoFitValue` (desliga o ajuste).
+
+  O cálculo é feito na renderização a partir do texto, sem medir o DOM — o `CmGauge` continua server-safe (sem hooks) e sem salto visual na hidratação. Valores montados com JSX, e `children`, mantêm a fonte base.
+
+  A folga lateral do conteúdo central passou a acompanhar a espessura do anel (`--cm-gauge-inset`), então `thickness` alto não empurra mais o texto para debaixo do traço; rótulos longos param em duas linhas com reticências.
+
 ## 3.16.1
 
 ### Patch Changes
