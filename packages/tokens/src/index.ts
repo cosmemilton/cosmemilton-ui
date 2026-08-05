@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/index.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 export * from "./types.js";
 export * from "./themes.js";
 export { customThemeCSS, themeSelector, themeToCSSBlock, themeToCSSVars } from "./theme-to-css.js";

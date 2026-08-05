@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/themes.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import type { ThemeConfig, ThemeRegistry } from "./types.js";
 
 const sansStack = "var(--font-geist-sans, 'Inter', sans-serif)";

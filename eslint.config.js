@@ -7,12 +7,20 @@ import globals from "globals";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "coverage/", "node_modules/", "tmp/", ".changeset/", "package-lock.json"],
+    ignores: [
+      "dist/",
+      "**/dist/",
+      "coverage/",
+      "node_modules/",
+      "tmp/",
+      ".changeset/",
+      "package-lock.json",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}", "packages/*/src/**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
@@ -48,7 +56,7 @@ export default tseslint.config(
     files: [
       "**/*.{test,spec}.{ts,tsx}",
       "vitest.setup.ts",
-      "vitest.config.ts",
+      "**/vitest.config.ts",
       "playwright.config.ts",
     ],
     languageOptions: { globals: { ...globals.node } },

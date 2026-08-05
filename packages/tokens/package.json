@@ -1,0 +1,28 @@
+{
+  "name": "@cosmemilton/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design tokens da cosmemilton-ui — os 11 temas, tipos e geradores de CSS vars. Fonte da verdade consumida pela lib (vendorizada em src/lib/theme) e pelo runtime nativo do Frevo.",
+  "author": "Cosme Milton <milton.cosme@gmail.com>",
+  "license": "ISC",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

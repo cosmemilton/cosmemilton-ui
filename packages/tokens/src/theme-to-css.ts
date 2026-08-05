@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/theme-to-css.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import type {
   ThemeBreakpointScale,
   ThemeConfig,

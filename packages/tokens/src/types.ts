@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/types.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 export type ThemeColorScale = {
   background: string;
   foreground: string;

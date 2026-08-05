@@ -84,8 +84,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
-    "build:browser": "tsc -p tsconfig.build.json && node scripts/build-browser.mjs",
+    "build": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
+    "build:browser": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-browser.mjs",
+    "sync:tokens": "node scripts/sync-tokens.mjs",
+    "check:tokens-sync": "node scripts/sync-tokens.mjs --check",
+    "tokens:typecheck": "tsc -p packages/tokens/tsconfig.json --noEmit",
+    "tokens:build": "tsc -p packages/tokens/tsconfig.build.json",
+    "tokens:test": "vitest run -c packages/tokens/vitest.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -103,7 +108,7 @@
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run test:visual"
+    "prepublishOnly": "npm run check:tokens-sync && npm run typecheck && npm run lint && npm run test && npm run test:visual"
   },
   "peerDependencies": {
     "@iconify/react": ">=5",

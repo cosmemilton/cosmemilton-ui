@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/theme-to-css.test.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import { describe, expect, it } from "vitest";
 import { customThemeCSS, themeSelector, themeToCSSBlock, themeToCSSVars } from "./theme-to-css.js";
 import { darkTheme, defaultTheme, extendThemes, themes } from "./themes.js";

@@ -9,6 +9,7 @@ const outputDir = join(root, "tmp", "visual-tests");
 const host = "127.0.0.1";
 const port = 4178;
 
+await import("./sync-tokens.mjs");
 await import("./generate-theme-css.mjs");
 await import("./build-styles.mjs");
 await mkdir(outputDir, { recursive: true });

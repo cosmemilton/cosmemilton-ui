@@ -1,5 +1,3 @@
-// GENERATED FILE — DO NOT EDIT.
-// Source: packages/tokens/src/contrast.test.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import { describe, expect, it } from "vitest";
 import { themes } from "./themes.js";
 
