@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.18.1
+
+### Patch Changes
+
+- Reorganização interna dos design tokens: os 11 temas, tipos e geradores de CSS (themeToCSSBlock, customThemeCSS etc.) agora têm como fonte da verdade o pacote packages/tokens do repositório, vendorizado em src/lib/theme durante o build. Nada muda para quem consome a lib: todos os entry points (/theme, /server, /client), a API exportada e o CSS publicado permanecem idênticos — o dist/styles.css desta versão é byte a byte igual ao da 3.18.0. A mudança prepara os tokens para serem consumidos também fora do React DOM (runtime nativo do projeto Frevo), sem alterar o ciclo de release da lib.
+
 ## 3.17.0
 
 ### Minor Changes
