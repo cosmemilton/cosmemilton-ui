@@ -58,3 +58,16 @@ describe("CmSidebar belowGroups", () => {
     expect(container.querySelector(".cm-sidebar__below-groups--divided")).not.toBeNull();
   });
 });
+
+describe("CmSidebar rail", () => {
+  it("does not add a rail modifier for the default (connectors)", () => {
+    const { container } = render(<CmSidebar standalone groups={groups} />);
+    const aside = container.querySelector("aside.cm-sidebar");
+    expect(aside?.className).not.toMatch(/cm-sidebar--rail-/);
+  });
+
+  it.each(["edge", "chip"] as const)("adds the modifier class for rail=%s", (rail) => {
+    const { container } = render(<CmSidebar standalone groups={groups} rail={rail} />);
+    expect(container.querySelector(`aside.cm-sidebar--rail-${rail}`)).not.toBeNull();
+  });
+});

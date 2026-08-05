@@ -58,6 +58,8 @@ export type CmSidebarBrand = {
   iconLabel?: string;
 };
 
+export type CmSidebarRail = "connectors" | "edge" | "chip";
+
 export type CmSidebarProps = {
   groups: CmSidebarGroup[];
   brand?: CmSidebarBrand;
@@ -83,6 +85,13 @@ export type CmSidebarProps = {
   autoCollapse?: boolean;
   autoCollapseBelow?: number;
   tone?: "surface" | "brand" | "neutral";
+  /**
+   * Estilo do trilho vertical dos subitens.
+   * - `"connectors"` (padrão): segmentos entre um ícone/marcador e o outro; a linha nunca cruza o glifo.
+   * - `"edge"`: linha contínua encostada à esquerda do painel, antes dos ícones; o trecho do item ativo acende.
+   * - `"chip"`: linha contínua ao centro; cada ícone ganha uma pastilha opaca que passa por cima dela.
+   */
+  rail?: CmSidebarRail;
   density?: CmDensity;
   width?: string | number;
   collapsedWidth?: string | number;

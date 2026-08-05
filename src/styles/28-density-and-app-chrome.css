@@ -222,6 +222,10 @@
   --cm-inverted-surface: color-mix(in srgb, var(--color-primary-foreground) 14%, transparent);
   --cm-inverted-surface-hover: color-mix(in srgb, var(--color-primary-foreground) 22%, transparent);
   --cm-sidebar-subitems-bg: color-mix(in srgb, var(--color-primary-foreground) 12%, transparent);
+  /* Pastilha do rail="chip" sobre o fundo primário: mistura opaca com o
+     próprio primário (não com --color-card, que destoaria do chrome). */
+  --cm-sidebar-rail-chip-bg: color-mix(in srgb, var(--color-primary-foreground) 16%, var(--color-primary));
+  --cm-sidebar-rail-chip-fg: var(--color-primary-foreground);
   --cm-sidebar-subitems-border: color-mix(in srgb, var(--color-primary-foreground) 24%, transparent);
   --cm-sidebar-subitems-scrollbar-thumb: color-mix(in srgb, var(--color-primary-foreground) 48%, transparent);
   --cm-sidebar-subitems-scrollbar-track: color-mix(in srgb, var(--color-primary-foreground) 12%, transparent);

@@ -387,6 +387,10 @@
   --cm-sidebar-last-group-items-max-height: min(34rem, 68dvh);
   --cm-sidebar-last-group-items-available-height: var(--cm-sidebar-last-group-items-max-height);
   --cm-sidebar-subitems-bg: color-mix(in srgb, var(--color-muted) 78%, var(--color-card) 22%);
+  /* Pastilha do rail="chip": precisa ser OPACA para esconder a linha que
+     passa por trás do ícone (por isso mistura com --color-card, não com
+     transparent). */
+  --cm-sidebar-rail-chip-bg: color-mix(in srgb, var(--color-primary) 10%, var(--color-card));
   --cm-sidebar-subitems-border: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   --cm-sidebar-subitems-scrollbar-thumb: color-mix(in srgb, var(--color-primary) 46%, var(--color-muted-foreground) 28%);
   --cm-sidebar-subitems-scrollbar-track: color-mix(in srgb, var(--color-muted) 52%, transparent);
@@ -879,32 +883,43 @@
   padding-inline: 0.6875rem;
 }
 
-/* Subitens formam um "trilho": cada item desenha o próprio segmento (altura
-   do item + gap acima), alinhado ao centro do marcador (padding de .6875rem
-   + metade do ícone de 1.25rem). Substitui a barra de destaque lateral que o
-   ::before desenha nos itens de topo. */
-.cm-sidebar__group-items .cm-sidebar__item::before {
-  top: -0.25rem;
-  bottom: 0;
+/* Subitens formam um "trilho" de conectores: cada item desenha o trecho
+   acima (::before, incluindo o gap de .25rem) e abaixo (::after) do próprio
+   ícone, alinhados ao centro do slot (padding de .6875rem + metade do ícone
+   de 1.25rem). O recuo de calc(50% + .8125rem) — metade do ícone + respiro —
+   interrompe a linha na altura do glifo, para o trilho nunca passar por cima
+   dele. Substitui a barra de destaque lateral que o ::before desenha nos
+   itens de topo. */
+.cm-sidebar__group-items .cm-sidebar__item::before,
+.cm-sidebar__group-items .cm-sidebar__item::after {
+  position: absolute;
   left: 1.25rem;
   width: 0.125rem;
   height: auto;
-  border-radius: 0;
   background: color-mix(in srgb, currentColor 22%, transparent);
   box-shadow: none;
+  content: "";
   opacity: 1;
   transform: none;
 }
 
-.cm-sidebar__group-items .cm-sidebar__item:first-child::before {
-  top: 0;
-  border-top-left-radius: var(--radius-full);
-  border-top-right-radius: var(--radius-full);
+.cm-sidebar__group-items .cm-sidebar__item::before {
+  top: -0.25rem;
+  bottom: calc(50% + 0.8125rem);
+  border-radius: 0 0 var(--radius-full) var(--radius-full);
 }
 
-.cm-sidebar__group-items .cm-sidebar__item:last-child::before {
-  border-bottom-left-radius: var(--radius-full);
-  border-bottom-right-radius: var(--radius-full);
+.cm-sidebar__group-items .cm-sidebar__item::after {
+  top: calc(50% + 0.8125rem);
+  bottom: 0;
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
+}
+
+/* O trilho começa no primeiro ícone e termina no último — sem tocos soltos
+   nas bordas do painel. */
+.cm-sidebar__group-items .cm-sidebar__item:first-child::before,
+.cm-sidebar__group-items .cm-sidebar__item:last-child::after {
+  display: none;
 }
 
 /* transform: none anula o translateX do hover; o deslocamento quebraria a
@@ -924,16 +939,116 @@
   font-weight: 700;
 }
 
-/* No item ativo o segmento do trilho acende com a mesma identidade da barra
-   de destaque dos itens de topo, e o marcador ganha um halo. */
+/* No item ativo os conectores vizinhos acendem com a mesma identidade da
+   barra de destaque dos itens de topo (o gradiente é fatiado no meio para os
+   dois trechos lerem como um segmento só), e o marcador ganha um halo. */
 .cm-sidebar__group-items .cm-sidebar__item--active::before {
-  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  background:
+    linear-gradient(180deg,
+      var(--color-primary),
+      color-mix(in srgb, var(--color-primary) 50%, var(--color-secondary)));
+  box-shadow: 0 0 0.875rem color-mix(in srgb, var(--color-primary) 58%, transparent);
+}
+
+.cm-sidebar__group-items .cm-sidebar__item--active::after {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-primary) 50%, var(--color-secondary)),
+      var(--color-secondary));
   box-shadow: 0 0 0.875rem color-mix(in srgb, var(--color-primary) 58%, transparent);
 }
 
 .cm-sidebar__group-items .cm-sidebar__item--active .cm-sidebar__nav-icon--marker::before {
   box-shadow: 0 0 0 0.1875rem color-mix(in srgb, currentColor 20%, transparent);
   opacity: 1;
+}
+
+/* rail="edge": linha contínua encostada à esquerda do painel, antes dos
+   ícones (estilo docs). Cada item desenha um segmento inteiro no ::before e
+   o ::after (conector de baixo) sai de cena. */
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item::before {
+  top: -0.25rem;
+  bottom: 0;
+  left: -0.1875rem;
+  width: 0.1875rem;
+  border-radius: 0;
+}
+
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item::after,
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item::after {
+  display: none;
+}
+
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item:first-child::before,
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item:first-child::before {
+  display: block;
+  top: 0;
+  border-top-left-radius: var(--radius-full);
+  border-top-right-radius: var(--radius-full);
+}
+
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item:last-child::before,
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item:last-child::before {
+  border-bottom-left-radius: var(--radius-full);
+  border-bottom-right-radius: var(--radius-full);
+}
+
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item--active::before {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+}
+
+/* No modo edge o destaque do ativo é uma "aba": a pílula perde o
+   arredondamento do lado esquerdo e encosta no indicador — que é o ::after
+   (sem uso nesse modo) com exatamente a altura do item, para topo e base
+   coincidirem com a borda reta. No item ativo a linha apagada (::before)
+   some por inteiro: ela cobre também o gap acima da pílula e deixaria um
+   toco visível além do indicador. */
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item {
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+}
+
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item--active::before {
+  display: none;
+}
+
+.cm-sidebar--rail-edge .cm-sidebar__group-items .cm-sidebar__item--active::after {
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: -0.1875rem;
+  width: 0.1875rem;
+  border-radius: 0;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 0 0.875rem color-mix(in srgb, var(--color-primary) 58%, transparent);
+}
+
+/* rail="chip": a linha volta a ser contínua ao centro do slot do ícone, e o
+   ícone ganha uma pastilha opaca que a esconde. ::before (posicionado) pinta
+   antes do span do ícone (também posicionado), então a ordem do DOM garante
+   a pastilha por cima da linha. O anel de box-shadow alarga a pastilha sem
+   mexer no layout, mantendo o centro alinhado à linha. Markers (bolinha)
+   ficam de fora: neles a linha atravessando o ponto é o efeito de timeline
+   original. */
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item::before {
+  top: -0.25rem;
+  bottom: 0;
+  border-radius: 0;
+}
+
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__nav-icon:not(.cm-sidebar__nav-icon--marker) {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--cm-sidebar-rail-chip-bg);
+  box-shadow: 0 0 0 0.1875rem var(--cm-sidebar-rail-chip-bg);
+  color: var(--cm-sidebar-rail-chip-fg, var(--color-primary));
+}
+
+.cm-sidebar--rail-chip .cm-sidebar__group-items .cm-sidebar__item--active .cm-sidebar__nav-icon:not(.cm-sidebar__nav-icon--marker) {
+  box-shadow:
+    0 0 0 0.1875rem var(--cm-sidebar-rail-chip-bg),
+    0 0 0.875rem color-mix(in srgb, var(--color-primary) 45%, transparent);
 }
 
 .cm-sidebar__footer {

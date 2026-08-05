@@ -28,6 +28,7 @@ export type {
   CmSidebarActiveContext,
   CmSidebarBrand,
   CmSidebarProps,
+  CmSidebarRail,
 } from "./sidebar.types.js";
 
 const defaultAutoCollapseBelow = 1180;
@@ -87,6 +88,7 @@ export function CmSidebar({
   onCollapsedChange,
   onOpenGroupChange,
   openGroupId,
+  rail = "connectors",
   sidebarClassName,
   standalone = false,
   style,
@@ -421,7 +423,12 @@ export function CmSidebar({
     >
       <aside
         ref={sidebarRef}
-        className={cn("cm-sidebar", `cm-sidebar--tone-${tone}`, sidebarClassName)}
+        className={cn(
+          "cm-sidebar",
+          `cm-sidebar--tone-${tone}`,
+          rail !== "connectors" && `cm-sidebar--rail-${rail}`,
+          sidebarClassName,
+        )}
         aria-label={navLabel}
         onMouseEnter={openSidebarPreview}
         onMouseLeave={() => closeSidebarPreview()}
