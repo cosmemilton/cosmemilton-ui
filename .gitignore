@@ -25,3 +25,7 @@ tmp/
 
 # Local editor/agent settings
 .claude/
+
+# Documentação de trabalho: só entra no repo o que serve a quem USA a lib.
+# Notas de desenvolvimento e de agente ficam na máquina de quem desenvolve.
+NOTAS-INSTALADOR.md

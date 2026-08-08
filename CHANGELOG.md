@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.19.0
+
+### Minor Changes
+
+- Componentes aditivos para telas de configuração e instalação: cartão de opção com título e descrição (rádio e checkbox), linha de opção com switch, barra de proporção com segmentos rotulados e alça de ajuste, bloco de log de execução com estado por linha, medidor de força de senha, lista selecionável com indicador de intensidade de sinal, faixa de resumo rótulo/valor e `CmSlider`.
+
+  Todos são aditivos: nenhuma API existente muda de assinatura ou de comportamento. A motivação é o instalador do Frevo OS, que hoje reimplementaria cada um desses elementos com estilo inline — exatamente o que a auditoria da 3.18 apontou como causa de as telas não parecerem com o desenho.
+
 ## 3.18.1
 
 ### Patch Changes
