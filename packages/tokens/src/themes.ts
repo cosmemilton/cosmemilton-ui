@@ -737,8 +737,130 @@ export const auroraTheme: ThemeConfig = {
   },
 };
 
+// A tipografia da identidade do Frevo OS. Archivo primeiro, e o stack padrão
+// atrás como rede: numa máquina sem a fonte instalada o texto continua legível
+// em vez de cair no serif do navegador.
+const archivoStack = `'Archivo', ${sansStack}`;
+
+/**
+ * Frevo OS — "flat, translúcido e escuro por padrão. A sombrinha vira ícone de
+ * app: colorida sobre grafite."
+ *
+ * Nenhum valor aqui é novo. Os cinco que definem a pele já estavam rodando no
+ * shell do Frevo, escritos à mão em JavaScript inline porque o tema não
+ * existia — com um comentário no próprio código dizendo que virariam
+ * `var(--…)` no dia em que existisse. Este é o dia:
+ *
+ *   background  #0d0d0f   o CLEAR_COLOR do compositor (e não preto puro de
+ *                         propósito: na foto do boot, preto puro só pode
+ *                         significar "sem scanout", e é assim que o handoff
+ *                         do splash é medido)
+ *   card        #141416   o MENU.fundo do painel, sem a transparência
+ *   foreground  #f2f2f4   o MENU.texto — sobre grafite, branco puro vibra
+ *   border      #2a2a2e   o rgba(255,255,255,.08) resolvido sobre o grafite
+ *   primary     #c62828   o MENU.vermelho, o mesmo do .botao-frevo do instalador
+ *
+ * As três coisas que a identidade pede e que o modelo de tema não sabia dizer
+ * — vidro, tracking e pílula — passaram a caber: `surfaces`,
+ * `typography.tracking` e `radii.button` entraram como escalas OPCIONAIS, na
+ * mesma forma que `space`, `motion` e `density` já usavam. Tema que não as
+ * declara recebe o default da biblioteca e continua idêntico ao que era.
+ */
+export const frevoTheme: ThemeConfig = {
+  name: "frevo",
+  colorScheme: "dark",
+  colors: {
+    background: "#0d0d0f",
+    foreground: "#f2f2f4",
+    muted: "#1a1a1d",
+    mutedForeground: "#9a9aa2",
+    card: "#141416",
+    cardForeground: "#f2f2f4",
+    popover: "#18181b",
+    popoverForeground: "#f2f2f4",
+
+    // O vermelho é a ÚNICA cor da casa, e mora no `primary` — que é o botão de
+    // ação, o mesmo papel do `.botao-frevo` do instalador.
+    //
+    // `accent` fica num grafite elevado, e a escolha é deliberada: nesta
+    // biblioteca o `accent` pinta realce e hover, então vermelho aqui deixaria
+    // TODA passagem de ponteiro vermelha. Nos mockups o vermelho aparece três
+    // vezes por tela — sombrinha, avatar e a marca da janela ativa — e nunca
+    // como superfície. Para inverter, troque estas duas linhas e mais nada.
+    primary: "#c62828",
+    primaryForeground: "#ffffff",
+    // Claro o bastante para manter AA sobre o vermelho (o contrast.test.ts
+    // cobra 4.5:1): um cinza comum aqui reprova.
+    primaryMutedForeground: "#fae9e9",
+    secondary: "#242428",
+    secondaryForeground: "#f2f2f4",
+    accent: "#242428",
+    accentForeground: "#f2f2f4",
+
+    // Semânticas dessaturadas para conviver com o grafite sem competir com o
+    // vermelho — cor de estado não é acento de marca.
+    success: "#3ea76a",
+    successForeground: "#06140c",
+    warning: "#d9a441",
+    warningForeground: "#1a1204",
+    danger: "#e05252",
+    dangerForeground: "#1a0808",
+    info: "#5aa6d8",
+    infoForeground: "#06131c",
+
+    border: "#2a2a2e",
+    input: "#33333a",
+    ring: "#c62828",
+    selection: "#3a1416",
+    selectionForeground: "#f7dede",
+    overlay: "rgba(8, 8, 10, 0.68)",
+  },
+  typography: {
+    fontFamily: archivoStack,
+    monospaceFamily: monoStack,
+    baseSize: "16px",
+    scaleRatio: 1.2,
+    // "800 títulos com tracking apertado" (identidade v2). O -0.028em é o que
+    // faz "Aa Oxe" ler como uma palavra e não como três letras soltas.
+    tracking: { tight: "-0.028em", normal: "0", wide: "0.12em" },
+  },
+  // Os valores literais que o shell já usava à mão, agora com dono. Não são
+  // `color-mix` do default porque estes três foram escolhidos olhando um
+  // desktop de verdade, com foto atrás — e é essa a medida que vale.
+  surfaces: {
+    glass: "rgba(20, 20, 22, 0.82)",
+    glassBorder: "rgba(255, 255, 255, 0.08)",
+    glassBlur: "24px",
+  },
+  // 12 no `lg` e 16 no `xl`, que é a faixa que a identidade pede para janelas
+  // e cartões. Os temas anteriores param em 10 no maior, e a diferença é
+  // justamente o que separa "cartaz" de "profundidade suave".
+  radii: {
+    xs: "0.25rem",
+    sm: "0.375rem",
+    md: "0.5625rem",
+    lg: "0.75rem",
+    xl: "1rem",
+    full: "9999px",
+    // "Pílulas em botões" — a regra da identidade, aplicada de uma vez em vez
+    // de repetida em cada `shape="pill"`. Só vale para este tema.
+    button: "9999px",
+  },
+  // Preto puro com um anel de 1px, sem brilho colorido: sobre grafite, sombra
+  // colorida suja a superfície em vez de afastá-la do fundo. "Nada de borda
+  // dupla" — o anel É a borda.
+  shadows: {
+    xs: "0 1px 2px 0 rgba(0, 0, 0, 0.5)",
+    sm: "0 2px 6px -2px rgba(0, 0, 0, 0.55)",
+    md: "0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 20px -10px rgba(0, 0, 0, 0.6)",
+    lg: "0 0 0 1px rgba(255, 255, 255, 0.07), 0 16px 36px -14px rgba(0, 0, 0, 0.66)",
+    xl: "0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 64px -18px rgba(0, 0, 0, 0.72)",
+  },
+};
+
 export const themes: ThemeRegistry = {
   [defaultTheme.name]: defaultTheme,
+  [frevoTheme.name]: frevoTheme,
   [schoolTheme.name]: schoolTheme,
   [darkTheme.name]: darkTheme,
   [orangeTheme.name]: orangeTheme,
