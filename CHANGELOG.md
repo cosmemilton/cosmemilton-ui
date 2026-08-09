@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.20.0
+
+### Minor Changes
+
+- Três escalas novas no modelo de tema — vidro, tracking e raio de botão — e o tema `frevo` do Frevo OS.
+
+  **Vidro** (`surfaces`, tokens `--surface-glass`, `--surface-glass-border`, `--surface-glass-blur`). Superfície translúcida com desfoque do fundo, para painéis e menus que ficam sobre um desktop, uma foto ou um vídeo. É uma escala e não uma cor porque vidro é três coisas ao mesmo tempo — preenchimento, borda de um fio e desfoque —, e nenhuma cor sozinha carrega o desfoque; quem precisava disso antes escrevia os três à mão em cada página. Tema que não declara recebe um vidro derivado das PRÓPRIAS cores por `color-mix`, em vez de um cinza que não pertence a paleta nenhuma. Acompanha a classe `.cm-glass`, que compõe os três e, onde não há `backdrop-filter`, cai para superfície opaca: perde-se o efeito, nunca a leitura.
+
+  **Tracking** (`typography.tracking`, tokens `--tracking-tight|normal|wide`). Nenhum componente aplica sozinho, de propósito: re-espaçar todo título de todo consumidor seria mudança visual quebrando, e esta versão é aditiva. Os tokens ficam disponíveis para quem quiser opinar.
+
+  **Raio de botão** (`radii.button`, token `--radius-button`). `CmButton` já aceitava `shape="pill"`; o que faltava era o tema poder tornar a pílula o padrão da casa sem repetir a prop em cada chamada — que é como uma regra do design system acaba aplicada na maioria dos lugares em vez de em todos. O token é emitido SEMPRE, com valor igual a `radii.md` quando o tema não declara: é exatamente o que os botões liam antes, então nenhum tema existente muda de aparência.
+
+  **Tema `frevo`**: grafite, vidro e papel, raio 12–16, pílula nos botões, Archivo e o vermelho `#c62828` como acento único. Os valores da pele vieram do shell do Frevo OS, onde já rodavam escritos à mão.
+
+  Tudo aditivo: nenhum campo obrigatório novo, nenhuma assinatura alterada, nenhum default de aparência mexido.
+
 ## 3.19.0
 
 ### Minor Changes
