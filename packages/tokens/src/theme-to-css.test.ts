@@ -33,6 +33,49 @@ describe("themeToCSSBlock", () => {
   });
 });
 
+describe("escalas opcionais: vidro, tracking e raio de botão", () => {
+  // O ponto destas três é serem ADITIVAS. O que precisa ficar provado não é
+  // que o tema novo as usa — é que os antigos continuam idênticos sem elas.
+  it("dá vidro a tema que nunca ouviu falar de vidro, derivado das cores dele", () => {
+    const vars = themeToCSSVars(defaultTheme);
+    expect(vars["--surface-glass"]).toContain("var(--color-card)");
+    expect(vars["--surface-glass-border"]).toContain("var(--color-foreground)");
+    expect(vars["--surface-glass-blur"]).toBe("24px");
+  });
+
+  it("deixa o tema declarar o vidro dele, e aí o default sai de cena", () => {
+    const comVidro: ThemeConfig = {
+      ...defaultTheme,
+      name: "acme-glass",
+      surfaces: { glass: "rgba(1, 2, 3, 0.5)" },
+    };
+    const vars = themeToCSSVars(comVidro);
+    expect(vars["--surface-glass"]).toBe("rgba(1, 2, 3, 0.5)");
+    // Declarar UM campo não pode apagar os outros dois.
+    expect(vars["--surface-glass-blur"]).toBe("24px");
+  });
+
+  it("tracking nasce em zero, que é o mesmo que não existir", () => {
+    expect(themeToCSSVars(defaultTheme)["--tracking-normal"]).toBe("0");
+  });
+
+  it("emite --radius-button mesmo quando o tema não declara, igual ao md", () => {
+    // É esta linha que garante que nenhum tema existente muda de aparência:
+    // o botão lia --radius-md e passa a ler --radius-button com o mesmo valor.
+    const vars = themeToCSSVars(defaultTheme);
+    expect(vars["--radius-button"]).toBe(defaultTheme.radii.md);
+  });
+
+  it("um tema pode fazer da pílula o padrão da casa", () => {
+    const pilula: ThemeConfig = {
+      ...defaultTheme,
+      name: "acme-pill",
+      radii: { ...defaultTheme.radii, button: "9999px" },
+    };
+    expect(themeToCSSVars(pilula)["--radius-button"]).toBe("9999px");
+  });
+});
+
 describe("customThemeCSS", () => {
   it("returns empty for the stock registry", () => {
     expect(customThemeCSS(themes)).toBe("");

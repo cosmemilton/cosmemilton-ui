@@ -7,6 +7,8 @@ import type {
   ThemeMotionEaseScale,
   ThemeRegistry,
   ThemeSpaceScale,
+  ThemeSurfaceScale,
+  ThemeTrackingScale,
   ThemeZIndexScale,
 } from "./types.js";
 import { themes } from "./themes.js";
@@ -98,6 +100,32 @@ const defaultLayers: ThemeLayerScale = {
   overlay: "var(--color-overlay)",
 };
 
+/**
+ * Glass derived from the theme's own colors, so a theme that never heard of
+ * this scale still gets a coherent translucent surface in its own hues instead
+ * of a grey that belongs to no palette. Same technique `defaultLayers` already
+ * uses for `elevated`.
+ *
+ * 82% is not arbitrary: it is the alpha the Frevo shell arrived at by eye on a
+ * real desktop — enough to read text over a photograph, little enough that the
+ * wallpaper still reads as a wallpaper.
+ */
+const defaultSurfaces: ThemeSurfaceScale = {
+  glass: "color-mix(in srgb, var(--color-card) 82%, transparent)",
+  glassBorder: "color-mix(in srgb, var(--color-foreground) 8%, transparent)",
+  glassBlur: "24px",
+};
+
+/**
+ * Letter-spacing defaults. `normal` is 0 — the same as not setting it — so a
+ * theme that ignores this scale renders exactly as it did before.
+ */
+const defaultTracking: ThemeTrackingScale = {
+  tight: "-0.02em",
+  normal: "0",
+  wide: "0.08em",
+};
+
 export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
   const density = {
     compact: mergeScale(defaultDensityMode.compact, theme.density?.compact),
@@ -111,7 +139,15 @@ export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
     ["--font-mono", theme.typography.monospaceFamily],
     ["--font-base", theme.typography.baseSize],
     ["--font-scale", theme.typography.scaleRatio.toString()],
+    ...tokenEntries("tracking", mergeScale(defaultTracking, theme.typography.tracking)),
     ...Object.entries(theme.radii).map<ThemeKV>(([token, value]) => [`--radius-${token}`, value]),
+    // Emitido SEMPRE, mesmo quando o tema não declara: componentes leem
+    // `--radius-button` e um token que às vezes não existe é um componente que
+    // às vezes não tem raio. O default é o `md`, que é exatamente o que os
+    // botões usavam antes deste token existir — por isso nada muda de aparência
+    // em tema nenhum que já existe.
+    ["--radius-button", theme.radii.button ?? theme.radii.md],
+    ...tokenEntries("surface", mergeScale(defaultSurfaces, theme.surfaces)),
     ...Object.entries(theme.shadows).map<ThemeKV>(([token, value]) => [`--shadow-${token}`, value]),
     ...tokenEntries("space", mergeScale(defaultSpace, theme.space)),
     ...tokenEntries("z", mergeScale(defaultZIndex, theme.zIndex)),

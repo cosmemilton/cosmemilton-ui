@@ -547,9 +547,15 @@
   padding: 0
 }
 
+/* O fallback para --radius-md não é zelo: mantém o botão com raio mesmo numa
+   folha antiga, ou num tema escrito à mão que não passou pelo gerador. E como
+   o gerador emite --radius-button igual a --radius-md quando o tema não
+   declara, nenhum tema existente muda de aparência. Um tema que queira pílula
+   como padrão da casa declara `radii.button: "9999px"` e pronto — sem repetir
+   shape="pill" em cada chamada. */
 .cm-button--shape-default,
 .cm-button--shape-square {
-  border-radius: var(--radius-md)
+  border-radius: var(--radius-button, var(--radius-md))
 }
 
 .cm-button--shape-pill {

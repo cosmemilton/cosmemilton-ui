@@ -36,11 +36,49 @@ export type ThemeColorScale = {
   overlay: string;
 };
 
+/**
+ * Letter-spacing scale. Optional everywhere: themes that omit it get the
+ * library defaults, and no existing component applies these automatically —
+ * emitting a token changes nothing until something opts in. That is deliberate:
+ * silently re-tracking every heading in every consumer is a visual breaking
+ * change, and this addition is meant to be additive.
+ *
+ * - `tight` — display/headings. Large type looks loose at 0; pulling it in is
+ *   what makes a title read as one shape instead of a row of letters.
+ * - `normal` — running text.
+ * - `wide` — small uppercase labels, where the caps need air to stay legible.
+ */
+export type ThemeTrackingScale = {
+  tight: string;
+  normal: string;
+  wide: string;
+};
+
 export type ThemeTypography = {
   fontFamily: string;
   monospaceFamily: string;
   baseSize: string;
   scaleRatio: number;
+  tracking?: Partial<ThemeTrackingScale>;
+};
+
+/**
+ * Translucent "glass" surface: the panel/menu/overlay tone that sits over a
+ * desktop or an image and lets it show through.
+ *
+ * It is its own scale and not a color token because glass is three things at
+ * once — a translucent fill, a hairline edge, and a backdrop blur — and a
+ * single color cannot carry the blur. Every page that wanted glass before this
+ * hand-rolled all three, which is exactly how two surfaces end up with
+ * different alpha in the same product.
+ *
+ * Defaults derive from the theme's own `card` and `foreground` via `color-mix`,
+ * so every existing theme gets a coherent glass for free, in its own hues.
+ */
+export type ThemeSurfaceScale = {
+  glass: string;
+  glassBorder: string;
+  glassBlur: string;
 };
 
 export type ThemeRadius = {
@@ -50,6 +88,16 @@ export type ThemeRadius = {
   lg: string;
   xl: string;
   full: string;
+  /**
+   * Radius for buttons in their default shape. Optional: falls back to `md`,
+   * which is exactly what buttons used before this token existed.
+   *
+   * It exists so a theme can make pills the house default without every call
+   * site passing `shape="pill"` — `CmButton` already accepts that prop, and
+   * having to repeat it in hundreds of places is how a design system's own
+   * rule ends up applied in most places instead of all of them.
+   */
+  button?: string;
 };
 
 export type ThemeShadows = {
@@ -140,6 +188,7 @@ export type ThemeConfig = {
   typography: ThemeTypography;
   radii: ThemeRadius;
   shadows: ThemeShadows;
+  surfaces?: Partial<ThemeSurfaceScale>;
   space?: Partial<ThemeSpaceScale>;
   zIndex?: Partial<ThemeZIndexScale>;
   motion?: ThemeMotionScale;

@@ -1,0 +1,37 @@
+/* Superfície de vidro — a terceira superfície da escala, ao lado do fundo e do
+   cartão. Painéis, menus e sobreposições que ficam por cima de um desktop, uma
+   foto ou um vídeo, e deixam o que está atrás aparecer.
+
+   Existe como classe além do token porque vidro nunca é uma coisa só: é
+   preenchimento translúcido MAIS uma borda de um fio MAIS desfoque do fundo.
+   Quem precisava disso antes escrevia os três à mão em cada página — e é assim
+   que duas superfícies do mesmo produto acabam com alfa diferente.
+
+   Uma borda só, nunca duas: a `border` aqui é a borda. Empilhar um
+   `box-shadow` de anel por cima devolve a borda dupla que a escala existe para
+   evitar. */
+.cm-glass {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-glass-border);
+}
+
+/* O desfoque é condicional de propósito. Sem `backdrop-filter`, o
+   preenchimento translúcido sozinho deixa o texto sobre o que estiver atrás —
+   legível sobre um fundo liso, ilegível sobre uma foto. Então quem não tem
+   desfoque recebe uma superfície OPACA, que é a troca certa: perde-se o efeito,
+   nunca a leitura.
+
+   O `-webkit-` vem junto porque é ele que o WebKit entende, e há WebKit em
+   produção (WPE, Safari mais antigo) que não responde à forma sem prefixo. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cm-glass {
+    -webkit-backdrop-filter: blur(var(--surface-glass-blur));
+    backdrop-filter: blur(var(--surface-glass-blur));
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cm-glass {
+    background: var(--color-card);
+  }
+}
