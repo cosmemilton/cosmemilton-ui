@@ -1,0 +1,186 @@
+/* CmSlider — <input type="range"> estilizado. O preenchimento é um gradiente
+   parado em --cm-slider-fill (calculado no componente), porque nenhum navegador
+   expõe a parte "antes da alça" da trilha nativa de forma portátil. Estilizar o
+   nativo em vez de reimplementar com div é o que mantém teclado, toque, roda do
+   mouse e leitor de tela corretos de graça. */
+.cm-slider {
+  --cm-slider-color: var(--color-primary);
+  --cm-slider-track-height: 0.375rem;
+  --cm-slider-thumb-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.cm-slider--sm {
+  --cm-slider-track-height: 0.25rem;
+  --cm-slider-thumb-size: 0.75rem;
+}
+
+.cm-slider--lg {
+  --cm-slider-track-height: 0.5rem;
+  --cm-slider-thumb-size: 1.25rem;
+}
+
+.cm-slider--tone-default {
+  --cm-slider-color: var(--color-foreground);
+}
+
+.cm-slider--tone-secondary {
+  --cm-slider-color: var(--color-secondary);
+}
+
+.cm-slider--tone-accent {
+  --cm-slider-color: var(--color-accent);
+}
+
+.cm-slider--tone-success {
+  --cm-slider-color: var(--color-success);
+}
+
+.cm-slider--tone-warning {
+  --cm-slider-color: var(--color-warning);
+}
+
+.cm-slider--tone-danger {
+  --cm-slider-color: var(--color-danger);
+}
+
+.cm-slider--tone-info {
+  --cm-slider-color: var(--color-info);
+}
+
+.cm-slider__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cm-slider__label {
+  color: var(--color-foreground);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.cm-slider__value {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-slider__row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.cm-slider__adornment {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-muted-foreground);
+}
+
+.cm-slider__track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cm-slider__input {
+  appearance: none;
+  width: 100%;
+  height: var(--cm-slider-thumb-size);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cm-slider__input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.cm-slider__input::-webkit-slider-runnable-track {
+  height: var(--cm-slider-track-height);
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--cm-slider-color) 0 var(--cm-slider-fill, 0%),
+    var(--color-muted) var(--cm-slider-fill, 0%) 100%
+  );
+}
+
+.cm-slider__input::-moz-range-track {
+  height: var(--cm-slider-track-height);
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--cm-slider-color) 0 var(--cm-slider-fill, 0%),
+    var(--color-muted) var(--cm-slider-fill, 0%) 100%
+  );
+}
+
+.cm-slider__input::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--cm-slider-thumb-size);
+  height: var(--cm-slider-thumb-size);
+  /* Centra a alça na trilha: o WebKit alinha o thumb pelo topo da runnable
+     track, então a metade da diferença tem que sair na marra. */
+  margin-top: calc((var(--cm-slider-track-height) - var(--cm-slider-thumb-size)) / 2);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-background);
+  background: var(--cm-slider-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.cm-slider__input::-moz-range-thumb {
+  width: var(--cm-slider-thumb-size);
+  height: var(--cm-slider-thumb-size);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-background);
+  background: var(--cm-slider-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.cm-slider__input:focus-visible {
+  outline: none;
+}
+
+.cm-slider__input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+.cm-slider__input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+.cm-slider__marks {
+  position: relative;
+  height: 1rem;
+  margin-top: 0.125rem;
+}
+
+.cm-slider__mark {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  transform: translateX(-50%);
+}
+
+.cm-slider__mark-tick {
+  width: 1px;
+  height: 0.25rem;
+  background: var(--color-border);
+}
+
+.cm-slider__mark-label {
+  color: var(--color-muted-foreground);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}

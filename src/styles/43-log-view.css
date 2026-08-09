@@ -1,0 +1,89 @@
+/* CmLogView — bloco de log de execução, uma linha por etapa, com marcador de
+   estado. Monoespaçada porque o conteúdo é comando de verdade: quebrar a coluna
+   com fonte proporcional é o que transforma um log auditável em enfeite. */
+.cm-log-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cm-log-view__label {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cm-log-view__list {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+  color: var(--color-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  overflow: auto;
+  /* `overflow-anchor` mantém a rolagem presa embaixo quando linhas chegam
+     enquanto a pessoa está no fim do log, sem roubar o scroll de quem subiu. */
+  overflow-anchor: auto;
+}
+
+.cm-log-view__line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: var(--color-muted-foreground);
+  overflow-wrap: anywhere;
+}
+
+.cm-log-view__marker {
+  flex: none;
+  width: 1ch;
+  text-align: center;
+}
+
+.cm-log-view__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cm-log-view__meta {
+  flex: none;
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-log-view__line--done {
+  color: var(--color-foreground);
+}
+
+.cm-log-view__line--done .cm-log-view__marker {
+  color: var(--color-success);
+}
+
+/* A etapa corrente é a única em destaque: é a resposta para "o que está
+   acontecendo agora", que é a única pergunta de quem olha esta tela. */
+.cm-log-view__line--running {
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+.cm-log-view__line--running .cm-log-view__marker {
+  color: var(--color-primary);
+}
+
+.cm-log-view__line--failed {
+  color: var(--color-danger);
+}
+
+.cm-log-view__line--failed .cm-log-view__marker {
+  color: var(--color-danger);
+}
+
+.cm-log-view__line--skipped {
+  opacity: 0.75;
+}

@@ -1,0 +1,51 @@
+/* CmOptionRow — título + descrição à esquerda, controle (switch) à direita.
+   A linha desligada continua LEGÍVEL de propósito: é a descrição dela que
+   explica por que o controle está fora de alcance (ex.: instantâneos só existem
+   em btrfs). Esmaecer a ponto de não se ler seria esconder a explicação. */
+.cm-option-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.cm-option-row[data-disabled] .cm-option-row__title,
+.cm-option-row[data-disabled] .cm-option-row__icon {
+  opacity: 0.6;
+}
+
+.cm-option-row__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted-foreground);
+}
+
+.cm-option-row__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.cm-option-row__title {
+  color: var(--color-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.cm-option-row__description {
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.cm-option-row__control {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}

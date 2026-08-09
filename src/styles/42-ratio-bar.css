@@ -1,0 +1,132 @@
+/* CmRatioBar — barra de proporção com blocos rotulados e alça de ajuste.
+   A alça é `position: absolute` sobre a trilha e é o único elemento focável:
+   o teclado move a fronteira sem depender de arrasto, que é o que torna a
+   divisão possível sem mouse (e testável sem layout). */
+.cm-ratio-bar {
+  --cm-ratio-bar-height: 2.25rem;
+  width: 100%;
+}
+
+.cm-ratio-bar__track {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: var(--cm-ratio-bar-height);
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+  overflow: hidden;
+}
+
+.cm-ratio-bar__segment {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  padding-inline: 0.625rem;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  line-height: 1;
+  background: var(--cm-ratio-bar-segment-color, var(--color-muted));
+  color: var(--cm-ratio-bar-segment-foreground, var(--color-foreground));
+  transition: width var(--motion-duration-fast, 0.15s) var(--motion-ease-standard, ease);
+}
+
+.cm-ratio-bar__segment + .cm-ratio-bar__segment {
+  border-inline-start: 1px solid var(--color-background);
+}
+
+.cm-ratio-bar__segment-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cm-ratio-bar__segment-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-ratio-bar__segment--tone-default {
+  --cm-ratio-bar-segment-color: var(--color-muted);
+  --cm-ratio-bar-segment-foreground: var(--color-muted-foreground);
+}
+
+.cm-ratio-bar__segment--tone-primary {
+  --cm-ratio-bar-segment-color: var(--color-primary);
+  --cm-ratio-bar-segment-foreground: var(--color-primary-foreground);
+}
+
+.cm-ratio-bar__segment--tone-secondary {
+  --cm-ratio-bar-segment-color: var(--color-secondary);
+  --cm-ratio-bar-segment-foreground: var(--color-secondary-foreground);
+}
+
+.cm-ratio-bar__segment--tone-accent {
+  --cm-ratio-bar-segment-color: var(--color-accent);
+  --cm-ratio-bar-segment-foreground: var(--color-accent-foreground);
+}
+
+.cm-ratio-bar__segment--tone-success {
+  --cm-ratio-bar-segment-color: var(--color-success);
+  --cm-ratio-bar-segment-foreground: var(--color-success-foreground);
+}
+
+.cm-ratio-bar__segment--tone-warning {
+  --cm-ratio-bar-segment-color: var(--color-warning);
+  --cm-ratio-bar-segment-foreground: var(--color-warning-foreground);
+}
+
+.cm-ratio-bar__segment--tone-danger {
+  --cm-ratio-bar-segment-color: var(--color-danger);
+  --cm-ratio-bar-segment-foreground: var(--color-danger-foreground);
+}
+
+.cm-ratio-bar__segment--tone-info {
+  --cm-ratio-bar-segment-color: var(--color-info);
+  --cm-ratio-bar-segment-foreground: var(--color-info-foreground);
+}
+
+.cm-ratio-bar__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1rem;
+  /* A alça é centrada na fronteira; a área de toque é a largura toda, o traço
+     visível é o ::before de 2px. */
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ew-resize;
+  touch-action: none;
+  background: transparent;
+  border: 0;
+}
+
+.cm-ratio-bar__handle::before {
+  content: "";
+  width: 0.25rem;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-background);
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+.cm-ratio-bar__handle:focus-visible {
+  outline: none;
+}
+
+.cm-ratio-bar__handle:focus-visible::before {
+  box-shadow: 0 0 0 2px var(--color-ring);
+}
+
+.cm-ratio-bar[data-disabled] .cm-ratio-bar__handle {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-ratio-bar__segment {
+    transition: none;
+  }
+}

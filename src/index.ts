@@ -42,6 +42,10 @@ export const CmCarousel: unknown = /*#__PURE__*/ createProxy("CmCarousel", "clie
 export const CmChartFrame: unknown = /*#__PURE__*/ createProxy("CmChartFrame", "server");
 /** @deprecated O componente "CmCheckbox" foi movido para "cosmemilton-ui/client". */
 export const CmCheckbox: unknown = /*#__PURE__*/ createProxy("CmCheckbox", "client");
+/** @deprecated O componente "CmChoiceCard" foi movido para "cosmemilton-ui/client". */
+export const CmChoiceCard: unknown = /*#__PURE__*/ createProxy("CmChoiceCard", "client");
+/** @deprecated O componente "CmChoiceCardGroup" foi movido para "cosmemilton-ui/client". */
+export const CmChoiceCardGroup: unknown = /*#__PURE__*/ createProxy("CmChoiceCardGroup", "client");
 /** @deprecated O componente "CmCodeBlock" foi movido para "cosmemilton-ui/client". */
 export const CmCodeBlock: unknown = /*#__PURE__*/ createProxy("CmCodeBlock", "client");
 /** @deprecated O componente "CmCol" foi movido para "cosmemilton-ui/server". */
@@ -90,12 +94,16 @@ export const CmInputOTP: unknown = /*#__PURE__*/ createProxy("CmInputOTP", "clie
 export const CmLightbox: unknown = /*#__PURE__*/ createProxy("CmLightbox", "client");
 /** @deprecated O componente "CmLineChart" foi movido para "cosmemilton-ui/client". */
 export const CmLineChart: unknown = /*#__PURE__*/ createProxy("CmLineChart", "client");
+/** @deprecated O componente "CmLogView" foi movido para "cosmemilton-ui/client". */
+export const CmLogView: unknown = /*#__PURE__*/ createProxy("CmLogView", "client");
 /** @deprecated O componente "CmMenubar" foi movido para "cosmemilton-ui/client". */
 export const CmMenubar: unknown = /*#__PURE__*/ createProxy("CmMenubar", "client");
 /** @deprecated O componente "CmMultiSelect" foi movido para "cosmemilton-ui/client". */
 export const CmMultiSelect: unknown = /*#__PURE__*/ createProxy("CmMultiSelect", "client");
 /** @deprecated O componente "CmNavigationMenu" foi movido para "cosmemilton-ui/client". */
 export const CmNavigationMenu: unknown = /*#__PURE__*/ createProxy("CmNavigationMenu", "client");
+/** @deprecated O componente "CmOptionRow" foi movido para "cosmemilton-ui/client". */
+export const CmOptionRow: unknown = /*#__PURE__*/ createProxy("CmOptionRow", "client");
 /** @deprecated O componente "CmPagination" foi movido para "cosmemilton-ui/client". */
 export const CmPagination: unknown = /*#__PURE__*/ createProxy("CmPagination", "client");
 /** @deprecated O componente "CmPopover" foi movido para "cosmemilton-ui/client". */
@@ -110,6 +118,8 @@ export const CmProgress: unknown = /*#__PURE__*/ createProxy("CmProgress", "clie
 export const CmProgressModal: unknown = /*#__PURE__*/ createProxy("CmProgressModal", "client");
 /** @deprecated O componente "CmRadioGroup" foi movido para "cosmemilton-ui/client". */
 export const CmRadioGroup: unknown = /*#__PURE__*/ createProxy("CmRadioGroup", "client");
+/** @deprecated O componente "CmRatioBar" foi movido para "cosmemilton-ui/client". */
+export const CmRatioBar: unknown = /*#__PURE__*/ createProxy("CmRatioBar", "client");
 /** @deprecated O componente "CmResizable" foi movido para "cosmemilton-ui/client". */
 export const CmResizable: unknown = /*#__PURE__*/ createProxy("CmResizable", "client");
 /** @deprecated O componente "CmRichTextEditor" foi movido para "cosmemilton-ui/client". */
@@ -124,8 +134,12 @@ export const CmScrollArea: unknown = /*#__PURE__*/ createProxy("CmScrollArea", "
 export const CmSelect: unknown = /*#__PURE__*/ createProxy("CmSelect", "client");
 /** @deprecated O componente "CmSidebar" foi movido para "cosmemilton-ui/client". */
 export const CmSidebar: unknown = /*#__PURE__*/ createProxy("CmSidebar", "client");
+/** @deprecated O componente "CmSignalList" foi movido para "cosmemilton-ui/client". */
+export const CmSignalList: unknown = /*#__PURE__*/ createProxy("CmSignalList", "client");
 /** @deprecated O componente "CmSignaturePad" foi movido para "cosmemilton-ui/client". */
 export const CmSignaturePad: unknown = /*#__PURE__*/ createProxy("CmSignaturePad", "client");
+/** @deprecated O componente "CmSlider" foi movido para "cosmemilton-ui/client". */
+export const CmSlider: unknown = /*#__PURE__*/ createProxy("CmSlider", "client");
 /** @deprecated O componente "CmSplitButton" foi movido para "cosmemilton-ui/client". */
 export const CmSplitButton: unknown = /*#__PURE__*/ createProxy("CmSplitButton", "client");
 /** @deprecated O componente "CmStack" foi movido para "cosmemilton-ui/server". */
@@ -210,12 +224,18 @@ export const CmMetricCard: unknown = /*#__PURE__*/ createProxy("CmMetricCard", "
 export const CmPage: unknown = /*#__PURE__*/ createProxy("CmPage", "server");
 /** @deprecated O componente "CmPageHeader" foi movido para "cosmemilton-ui/server". */
 export const CmPageHeader: unknown = /*#__PURE__*/ createProxy("CmPageHeader", "server");
+/** @deprecated O componente "CmPasswordStrength" foi movido para "cosmemilton-ui/server". */
+export const CmPasswordStrength: unknown = /*#__PURE__*/ createProxy("CmPasswordStrength", "server");
 /** @deprecated O componente "CmSectionHeader" foi movido para "cosmemilton-ui/server". */
 export const CmSectionHeader: unknown = /*#__PURE__*/ createProxy("CmSectionHeader", "server");
 /** @deprecated O componente "CmSeparator" foi movido para "cosmemilton-ui/server". */
 export const CmSeparator: unknown = /*#__PURE__*/ createProxy("CmSeparator", "server");
+/** @deprecated O componente "CmSignalBars" foi movido para "cosmemilton-ui/server". */
+export const CmSignalBars: unknown = /*#__PURE__*/ createProxy("CmSignalBars", "server");
 /** @deprecated O componente "CmStatusDot" foi movido para "cosmemilton-ui/server". */
 export const CmStatusDot: unknown = /*#__PURE__*/ createProxy("CmStatusDot", "server");
+/** @deprecated O componente "CmSummaryList" foi movido para "cosmemilton-ui/server". */
+export const CmSummaryList: unknown = /*#__PURE__*/ createProxy("CmSummaryList", "server");
 /** @deprecated O componente "CmThemeScript" foi movido para "cosmemilton-ui/theme". */
 export const CmThemeScript: unknown = /*#__PURE__*/ createProxy("CmThemeScript", "theme");
 /** @deprecated O componente "CmTimeline" foi movido para "cosmemilton-ui/server". */
@@ -228,8 +248,12 @@ export const auroraTheme: unknown = /*#__PURE__*/ createProxy("auroraTheme", "th
 export const blueTheme: unknown = /*#__PURE__*/ createProxy("blueTheme", "theme");
 /** @deprecated O componente "cmDensityClass" foi movido para "cosmemilton-ui/server". */
 export const cmDensityClass: unknown = /*#__PURE__*/ createProxy("cmDensityClass", "server");
+/** @deprecated O componente "cmEstimatePasswordStrength" foi movido para "cosmemilton-ui/server". */
+export const cmEstimatePasswordStrength: unknown = /*#__PURE__*/ createProxy("cmEstimatePasswordStrength", "server");
 /** @deprecated O componente "cmFieldWidthStyle" foi movido para "cosmemilton-ui/server". */
 export const cmFieldWidthStyle: unknown = /*#__PURE__*/ createProxy("cmFieldWidthStyle", "server");
+/** @deprecated O componente "cmSignalLevel" foi movido para "cosmemilton-ui/server". */
+export const cmSignalLevel: unknown = /*#__PURE__*/ createProxy("cmSignalLevel", "server");
 /** @deprecated O componente "cmSizeValue" foi movido para "cosmemilton-ui/server". */
 export const cmSizeValue: unknown = /*#__PURE__*/ createProxy("cmSizeValue", "server");
 /** @deprecated O componente "cmSpacingValue" foi movido para "cosmemilton-ui/server". */
@@ -254,6 +278,8 @@ export const formatDate: unknown = /*#__PURE__*/ createProxy("formatDate", "serv
 export const formatNCM: unknown = /*#__PURE__*/ createProxy("formatNCM", "server");
 /** @deprecated O componente "formatPhone" foi movido para "cosmemilton-ui/server". */
 export const formatPhone: unknown = /*#__PURE__*/ createProxy("formatPhone", "server");
+/** @deprecated O componente "frevoTheme" foi movido para "cosmemilton-ui/theme". */
+export const frevoTheme: unknown = /*#__PURE__*/ createProxy("frevoTheme", "theme");
 /** @deprecated O componente "greenTheme" foi movido para "cosmemilton-ui/theme". */
 export const greenTheme: unknown = /*#__PURE__*/ createProxy("greenTheme", "theme");
 /** @deprecated O componente "midnightTheme" foi movido para "cosmemilton-ui/theme". */

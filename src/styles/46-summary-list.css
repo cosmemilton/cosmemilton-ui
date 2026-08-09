@@ -1,0 +1,88 @@
+/* CmSummaryList — pares rótulo/valor de uma tela de revisão.
+   Cada par é uma célula do grid (o <div> dentro do <dl>), então duas colunas de
+   pares continuam sendo dois pares por linha — e não rótulos de um lado e
+   valores do outro, que é o que acontece quando se joga dt/dd soltos no grid. */
+.cm-summary-list {
+  display: grid;
+  grid-template-columns: repeat(var(--cm-summary-list-columns, 1), minmax(0, 1fr));
+  gap: 0 2rem;
+  margin: 0;
+}
+
+@media (max-width: 40rem) {
+  .cm-summary-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cm-summary-list__item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  min-width: 0;
+}
+
+.cm-summary-list--divided .cm-summary-list__item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cm-summary-list--rows .cm-summary-list__item {
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.cm-summary-list--stacked .cm-summary-list__item {
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.cm-summary-list__label {
+  flex: none;
+  color: var(--color-muted-foreground);
+  font-size: 0.75rem;
+}
+
+.cm-summary-list__value {
+  margin: 0;
+  min-width: 0;
+  color: var(--color-foreground);
+  font-size: 0.8125rem;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+
+.cm-summary-list--stacked .cm-summary-list__value {
+  text-align: start;
+}
+
+.cm-summary-list__value--emphasis {
+  font-weight: 600;
+}
+
+.cm-summary-list__value--tone-primary {
+  color: var(--color-primary);
+}
+
+.cm-summary-list__value--tone-secondary {
+  color: var(--color-secondary-foreground);
+}
+
+.cm-summary-list__value--tone-accent {
+  color: var(--color-accent-foreground);
+}
+
+.cm-summary-list__value--tone-success {
+  color: var(--color-success);
+}
+
+.cm-summary-list__value--tone-warning {
+  color: var(--color-warning);
+}
+
+.cm-summary-list__value--tone-danger {
+  color: var(--color-danger);
+}
+
+.cm-summary-list__value--tone-info {
+  color: var(--color-info);
+}
