@@ -1,0 +1,432 @@
+/* Horizonte is an opt-in component skin. Theme tokens own the palette; this
+   partial owns typography and geometry. The html scope also reaches portals.
+   Floating labels, table details and tree drag geometry retain their CM state
+   classes and DOM: changing the skin never replaces those interactions. */
+html[data-cm-skin="horizonte"] {
+  --cm-horizonte-navy: #172b46;
+  --cm-horizonte-lime: #d8eea0;
+  --cm-horizonte-nav-text: #becbdd;
+  --cm-horizonte-nav-muted: #9bb0c7;
+  --cm-horizonte-nav-line: #61738a30;
+  --cm-horizonte-input-bg: var(--color-card);
+  --cm-horizonte-input-border: #d9e1e9;
+  --cm-horizonte-hover-border: #b1c0d0;
+  --cm-horizonte-link: var(--color-ring);
+  --cm-horizonte-table-head: #f8fafc;
+  --cm-horizonte-selected: #edf1fc;
+  --cm-horizonte-data-foreground: #687a91;
+  --cm-horizonte-weight-body: 400;
+  --cm-horizonte-weight-control: 500;
+  --cm-horizonte-weight-emphasis: 550;
+  --cm-horizonte-header-font: var(--font-family-heading, "CM Horizonte Manrope", "Manrope", sans-serif);
+  font-synthesis: none;
+}
+
+html[data-cm-skin="horizonte"][data-theme="cm-horizonte-dark"] {
+  --cm-horizonte-navy: #101c2d;
+  --cm-horizonte-nav-muted: #9caec5;
+  --cm-horizonte-nav-line: #26364b;
+  --cm-horizonte-input-bg: #111d2e;
+  --cm-horizonte-input-border: #35475f;
+  --cm-horizonte-hover-border: #627a99;
+  --cm-horizonte-link: #96b2ff;
+  --cm-horizonte-table-head: #1a293e;
+  --cm-horizonte-selected: #233958;
+  --cm-horizonte-data-foreground: #b8c7db;
+}
+
+html[data-cm-skin="horizonte"] body {
+  background: var(--color-background);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: var(--cm-horizonte-weight-body);
+  line-height: 1.6;
+}
+
+html[data-cm-skin="horizonte"] :is(.cm-app-shell, .cm-dialog__panel, .cm-popover__content, .cm-dropdown-menu, .cm-select__popover, .cm-combobox__popover, .cm-multi-select__popover, .cm-tree-view__drag-overlay) {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: var(--cm-horizonte-weight-body);
+}
+
+/* Shared reading weights apply equally to light/dark pages and portals.
+   Headings retain Manrope's display weight; regular data is distinguished by
+   contrast instead of being made bold against the dark card surface. */
+html[data-cm-skin="horizonte"] .cm-text--normal { font-weight: var(--cm-horizonte-weight-body); }
+html[data-cm-skin="horizonte"] .cm-text--medium { font-weight: var(--cm-horizonte-weight-control); }
+html[data-cm-skin="horizonte"] .cm-text--semibold { font-weight: var(--cm-horizonte-weight-emphasis); }
+
+html[data-cm-skin="horizonte"] :is(.cm-page-header__title, .cm-section-header__title, .cm-data-table__title, .cm-dialog__title, .cm-metric-card__value, .cm-card__title) {
+  font-family: var(--cm-horizonte-header-font);
+  font-weight: 750;
+  letter-spacing: -.4px;
+}
+
+html[data-cm-skin="horizonte"] .cm-page {
+  --cm-page-max-width: 1560px;
+  --cm-page-padding: 31px 36px 22px;
+  --cm-page-gap: 23px;
+}
+
+html[data-cm-skin="horizonte"] .cm-page-header__title {
+  font-size: 30px;
+  line-height: 1.25;
+  letter-spacing: -1.1px;
+}
+
+html[data-cm-skin="horizonte"] .cm-page-header__eyebrow {
+  color: var(--color-muted-foreground);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 1.3px;
+}
+
+html[data-cm-skin="horizonte"] :is(.cm-page-header__description, .cm-section-header__description, .cm-data-table__description) {
+  margin-top: 7px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+html[data-cm-skin="horizonte"] .cm-page-header__description { font-size: 13px; }
+html[data-cm-skin="horizonte"] :is(.cm-section-header__title, .cm-data-table__title) { font-size: 15px; }
+
+/* Fields keep the real label and its existing focus/value/autofill classes. */
+html[data-cm-skin="horizonte"] .cm-floating-field {
+  --cm-floating-control-height: 28px;
+  --cm-field-autofill-bg: var(--cm-horizonte-input-bg);
+  --cm-field-autofill-fg: var(--color-foreground);
+  --cm-field-autofill-caret: var(--color-foreground);
+  --cm-horizonte-field-height: 44px;
+  padding-top: 8px;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field--unlabeled { padding-top: 0; }
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control {
+  --cm-horizonte-field-state: var(--cm-horizonte-input-border);
+  min-height: var(--cm-horizonte-field-height);
+  gap: 9px;
+  padding: 7px 12px;
+  border: 1px solid var(--cm-horizonte-field-state);
+  border-radius: 8px;
+  background: var(--cm-horizonte-input-bg);
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control:hover:where(:not(:has(:disabled))) {
+  --cm-horizonte-field-state: var(--cm-horizonte-hover-border);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control:is(.cm-floating-field--focused, :focus-within) {
+  --cm-horizonte-field-state: var(--color-ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ring) 12%, transparent);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control.cm-floating-field--error {
+  --cm-horizonte-field-state: var(--color-danger);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control.cm-floating-field--success {
+  --cm-horizonte-field-state: var(--color-success);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control.cm-floating-field--error:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 12%, transparent);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control.cm-floating-field--success:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 12%, transparent);
+}
+
+html[data-cm-skin="horizonte"] :is(.cm-input__control, .cm-combobox__input, .cm-select__trigger, .cm-multi-select__trigger) {
+  height: var(--cm-floating-control-height);
+  min-height: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: var(--cm-horizonte-weight-body);
+  line-height: 20px;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field :is(.cm-input__control, .cm-combobox__input, .cm-select__trigger, .cm-select__value, .cm-multi-select__trigger, .cm-multi-select__value, .cm-textarea__control) { color: var(--color-foreground); }
+html[data-cm-skin="horizonte"] .cm-floating-field :is(.cm-select__value--placeholder, .cm-multi-select__value--placeholder) { color: var(--color-muted-foreground); }
+
+html[data-cm-skin="horizonte"] .cm-floating-field__label {
+  left: 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  color: var(--color-muted-foreground);
+  font-size: 13px;
+  font-weight: var(--cm-horizonte-weight-body);
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__label--resting-with-start { left: 38px; max-width: calc(100% - 50px); }
+
+html[data-cm-skin="horizonte"] .cm-floating-field__label--floating,
+html[data-cm-skin="horizonte"] .cm-floating-field__control:has(:is(.cm-input__control, .cm-textarea__control):-webkit-autofill) .cm-floating-field__label {
+  top: 0;
+  left: 9px;
+  max-width: calc(100% - 18px);
+  padding-inline: 4px;
+  background: var(--cm-horizonte-input-bg);
+  font-size: 11px;
+  font-weight: var(--cm-horizonte-weight-control);
+  line-height: 16px;
+  transform: translateY(-50%);
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__label--focused { color: var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-floating-field__label--error { color: var(--color-danger); }
+html[data-cm-skin="horizonte"] .cm-floating-field__label--success { color: var(--color-success); }
+
+html[data-cm-skin="horizonte"] .cm-floating-field__adornment > svg { width: 16px; height: 16px; }
+html[data-cm-skin="horizonte"] .cm-floating-field__clear { width: 24px; height: 24px; flex-shrink: 0; }
+html[data-cm-skin="horizonte"] .cm-floating-field__message { margin-top: 6px; font-size: 11px; line-height: 1.6; }
+html[data-cm-skin="horizonte"] .cm-floating-field--textarea .cm-floating-field__control { min-height: 100px; }
+html[data-cm-skin="horizonte"] .cm-floating-field__label--textarea-resting,
+html[data-cm-skin="horizonte"] .cm-floating-field__label--textarea-with-start { top: 10px; }
+html[data-cm-skin="horizonte"] .cm-floating-field__label--textarea-with-start { left: 38px; }
+
+html[data-cm-skin="horizonte"] .cm-textarea__control {
+  min-height: 84px;
+  padding: 2px 0;
+  font-size: 13px;
+  font-family: var(--font-family);
+  font-weight: var(--cm-horizonte-weight-body);
+  line-height: 1.6;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control:has(:disabled) {
+  background: color-mix(in srgb, var(--cm-horizonte-input-bg) 60%, var(--color-muted));
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control:has(:disabled) :is(input, textarea, button, .cm-floating-field__label) {
+  color: var(--color-muted-foreground);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+html[data-cm-skin="horizonte"] .cm-floating-field__control:has([readonly]) { border-color: var(--color-border); }
+html[data-cm-skin="horizonte"] .cm-field__label { font-size: 12px; font-weight: var(--cm-horizonte-weight-control); }
+html[data-cm-skin="horizonte"] :is(.cm-field__description, .cm-field__error) { font-size: 11px; line-height: 1.6; }
+
+/* Portalled choice controls use the same typography as their trigger. */
+html[data-cm-skin="horizonte"] :is(.cm-select__popover, .cm-combobox__popover, .cm-multi-select__popover, .cm-dropdown-menu, .cm-split-button__menu) {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-popover);
+  box-shadow: var(--shadow-lg);
+}
+
+html[data-cm-skin="horizonte"] :is(.cm-select__option, .cm-combobox__option, .cm-multi-select__option, .cm-dropdown-menu__item, .cm-split-button__option) {
+  min-height: 36px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* All explicit sizes/variants remain available, including icon-only and pill. */
+html[data-cm-skin="horizonte"] .cm-button { font-family: var(--font-family); font-weight: var(--cm-horizonte-weight-control); }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--xs { min-height: 30px; padding: 5px 9px; font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--sm { min-height: 35px; padding: 7px 12px; font-size: 12px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--md { min-height: 39px; padding: 9px 15px; font-size: 12px; line-height: 19px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--lg { min-height: 47px; padding: 11px 17px; font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--xl { min-height: 52px; padding: 13px 20px; font-size: 14px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--icon-xs { width: 30px; height: 30px; min-height: 30px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--icon-sm { width: 32px; height: 32px; min-height: 32px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--icon-md { width: 39px; height: 39px; min-height: 39px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--icon-lg { width: 47px; height: 47px; min-height: 47px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--icon-xl { width: 52px; height: 52px; min-height: 52px; }
+html[data-cm-skin="horizonte"] .cm-button--shape-default { border-radius: 8px; }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--tone-default.cm-button--solid { border-color: var(--color-border); background: var(--color-card); color: var(--color-foreground); }
+html[data-cm-skin="horizonte"] .cm-button.cm-button--solid.cm-button--tone-primary { border-color: var(--color-primary); box-shadow: 0 3px 7px color-mix(in srgb, var(--color-primary) 10%, transparent); }
+html[data-cm-skin="horizonte"] .cm-button:is(.cm-button--link, .cm-button--plain) { min-height: auto; height: auto; padding: 0; }
+html[data-cm-skin="horizonte"] .cm-button:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 3px; }
+
+/* Quiet panels and readable tables. Detail ribbons keep their measured
+   position/width; only their colors and the panel's exterior change. */
+html[data-cm-skin="horizonte"] :is(.cm-card, .cm-data-table, .cm-data-table-detail__panel, .cm-tree-view__panel--bordered, .cm-metric-card) {
+  border-radius: 16px;
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-xs);
+}
+
+html[data-cm-skin="horizonte"] .cm-data-table__top { padding: 20px 23px; gap: 16px; }
+html[data-cm-skin="horizonte"] .cm-data-table__head { background: var(--cm-horizonte-table-head); }
+html[data-cm-skin="horizonte"] .cm-data-table__foot { background: var(--color-card); }
+html[data-cm-skin="horizonte"] .cm-data-table__header { height: 42px; padding: 6px 16px; font-size: 10px; font-weight: var(--cm-horizonte-weight-control); letter-spacing: .2px; }
+html[data-cm-skin="horizonte"] .cm-data-table__toggle-cell { height: 42px; padding-block: 6px; }
+html[data-cm-skin="horizonte"] .cm-data-table__body { color: var(--cm-horizonte-data-foreground); font-size: 13px; font-weight: var(--cm-horizonte-weight-body); line-height: 1.6; }
+html[data-cm-skin="horizonte"] .cm-data-table__cell { height: 64px; padding: 12px 16px; border-bottom: 1px solid var(--color-border); font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-data-table__cell :is(small, .cm-text--muted) { color: var(--color-muted-foreground); font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-data-table__cell strong { color: var(--color-foreground); font-size: 13px; font-weight: var(--cm-horizonte-weight-emphasis); }
+html[data-cm-skin="horizonte"] .cm-data-table__row--zebra { background: color-mix(in srgb, var(--color-muted) 15%, var(--color-card)); }
+html[data-cm-skin="horizonte"] .cm-data-table__row--hoverable:hover { background: color-mix(in srgb, var(--color-muted) 48%, var(--color-card)); }
+html[data-cm-skin="horizonte"] .cm-data-table__row--selected { background: var(--cm-horizonte-selected); color: var(--cm-horizonte-data-foreground); font-weight: var(--cm-horizonte-weight-body); transform: none; box-shadow: inset 3px 0 0 var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-data-table--detail-active .cm-data-table__row--selected { box-shadow: none; }
+html[data-cm-skin="horizonte"] .cm-data-table__pagination-cell { padding: 16px 20px; }
+html[data-cm-skin="horizonte"] .cm-data-table__pagination { flex-wrap: wrap; gap: 12px; }
+html[data-cm-skin="horizonte"] .cm-data-table__pagination-text { font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-data-table__page-size { height: 32px; padding-inline: 10px; border-radius: 7px; font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-data-table__column-button { width: 28px; height: 28px; border-radius: 7px; }
+html[data-cm-skin="horizonte"] .cm-data-table__column-option { padding: 10px; font-size: 13px; border-radius: 8px; }
+html[data-cm-skin="horizonte"] .cm-data-table-detail__panel { --cm-data-table-detail-panel-padding: 20px; font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-badge { font-size: 11px; font-weight: var(--cm-horizonte-weight-control); letter-spacing: 0; text-transform: none; }
+html[data-cm-skin="horizonte"] .cm-metric-card { padding: 20px 21px; }
+html[data-cm-skin="horizonte"] .cm-metric-card__value { font-size: 29px; font-weight: 650; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+
+/* Node padding-left and the 24px indentation/drag-handle offsets remain
+   owned by CmTreeView. Keyboard focus reveals actions just like hover. */
+html[data-cm-skin="horizonte"] .cm-tree-view { gap: 16px; font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-tree-view__node { min-height: 40px; padding-block: 9px; padding-right: 12px; gap: 8px; border-radius: 8px; }
+html[data-cm-skin="horizonte"] .cm-tree-view__node-name { font-family: var(--font-family); font-size: 13px; font-weight: 450; line-height: 20px; }
+html[data-cm-skin="horizonte"] .cm-tree-view__node-icon { color: var(--color-muted-foreground); }
+html[data-cm-skin="horizonte"] .cm-tree-view__node--selected { background: var(--cm-horizonte-selected); box-shadow: inset 3px 0 0 var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-tree-view__node--highlighted { background: var(--color-selection); box-shadow: inset 0 0 0 1px var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-tree-view__node--drop-target { background: color-mix(in srgb, var(--color-ring) 15%, var(--color-card)); box-shadow: inset 0 0 0 2px var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-tree-view__node--dragging { background: color-mix(in srgb, var(--color-ring) 8%, var(--color-card)); }
+html[data-cm-skin="horizonte"] :is(.cm-tree-view__item--drop-before::before, .cm-tree-view__item--drop-after::after) { background: var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-tree-view__node:focus-within .cm-tree-view__actions,
+html[data-cm-skin="horizonte"] .cm-tree-view__item:focus-within > .cm-tree-view__node .cm-tree-view__drag-handle { opacity: 1; }
+html[data-cm-skin="horizonte"] :is(.cm-tree-view__node-name, .cm-tree-view__action-button, .cm-tree-view__toggle, .cm-tree-view__drag-handle, .cm-tree-view__control-icon):focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+html[data-cm-skin="horizonte"] .cm-tree-view__action-button { width: 28px; height: 28px; border-radius: 7px; }
+html[data-cm-skin="horizonte"] :is(.cm-tree-view__badge, .cm-tree-view__breadcrumb, .cm-tree-view__mode-label, .cm-tree-view__footer-stats) { font-size: 11px; font-weight: 450; }
+html[data-cm-skin="horizonte"] :is(.cm-tree-view__breadcrumb, .cm-tree-view__controls-bar) { border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-card); color: var(--color-muted-foreground); }
+html[data-cm-skin="horizonte"] .cm-tree-view__drag-overlay { border-radius: 10px; border-color: var(--color-ring); box-shadow: var(--shadow-lg); }
+html[data-cm-skin="horizonte"] .cm-tree-view__search-input .cm-input__control { padding-left: 28px; padding-right: 22px; }
+html[data-cm-skin="horizonte"] .cm-tree-view__search-icon { z-index: 1; pointer-events: none; }
+html[data-cm-skin="horizonte"] .cm-tree-view__search-clear { z-index: 1; }
+
+/* The navigation's navy is independent of the blue action color. */
+html[data-cm-skin="horizonte"] .cm-app-shell { --cm-app-shell-sidebar-width: 224px; }
+html[data-cm-skin="horizonte"] .cm-sidebar-shell { --cm-sidebar-expanded-width: 224px; }
+html[data-cm-skin="horizonte"] .cm-app-shell__sidebar { background: var(--cm-horizonte-navy); border-color: var(--cm-horizonte-nav-line); }
+
+html[data-cm-skin="horizonte"] .cm-sidebar {
+  --cm-sidebar-brand-fg: #fff;
+  --cm-sidebar-brand-muted: var(--cm-horizonte-nav-muted);
+  --cm-inverted-fg: #fff;
+  --cm-inverted-muted: var(--cm-horizonte-nav-muted);
+  --cm-inverted-border: var(--cm-horizonte-nav-line);
+  --cm-inverted-surface: #ffffff09;
+  --cm-inverted-surface-hover: #ffffff12;
+  --cm-sidebar-subitems-bg: transparent;
+  --cm-sidebar-subitems-border: var(--cm-horizonte-nav-line);
+  --cm-sidebar-rail-chip-bg: var(--cm-horizonte-navy);
+  --cm-sidebar-rail-chip-fg: var(--cm-horizonte-nav-muted);
+  --cm-sidebar-subitems-scrollbar-thumb: #61738a;
+  --cm-sidebar-subitems-scrollbar-track: transparent;
+  padding-block: 28px 18px;
+  gap: 23px;
+  border-right-color: var(--cm-horizonte-nav-line);
+  background: var(--cm-horizonte-navy);
+  color: var(--cm-horizonte-nav-text);
+  box-shadow: none;
+}
+
+html[data-cm-skin="horizonte"] .cm-sidebar__brand { grid-template-columns: 35px minmax(0, 1fr) 24px; gap: 10px; margin-inline: 20px 12px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand::after { background: var(--cm-horizonte-nav-line); }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon,
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon-button { width: 35px; height: 35px; border-radius: 10px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon { background: var(--cm-horizonte-lime); border: 0; color: #172b46; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon > svg { width: 23px; height: 23px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-text strong { color: #fff; font-family: var(--cm-horizonte-header-font); font-size: 17px; font-weight: 750; letter-spacing: -.5px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-text span { color: var(--cm-horizonte-nav-muted); font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__toggle { width: 24px; height: 30px; color: var(--cm-horizonte-nav-muted); border-radius: 6px; }
+html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger, .cm-sidebar__item) { min-height: 39px; border-radius: 8px; padding-block: 9px; padding-inline: 13px; color: var(--cm-horizonte-nav-text); font-size: 13px; font-weight: 450; line-height: 21px; gap: 11px; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__group-trigger { font-size: 10px; font-weight: 550; letter-spacing: normal; text-transform: none; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__group-items .cm-sidebar__item { font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger:hover, .cm-sidebar__item:hover) { background: #ffffff09; color: #fff; box-shadow: none; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active { background: var(--cm-horizonte-lime); color: #172b46; box-shadow: none; font-weight: 650; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active :is(.cm-sidebar__label, .cm-sidebar__nav-icon, svg) { color: #172b46; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__label { color: inherit; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__nav-icon { width: 18px; height: 18px; color: var(--cm-horizonte-nav-muted); }
+html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger, .cm-sidebar__item)::before { box-shadow: none; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__group-items { border-radius: 8px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__footer { color: var(--cm-horizonte-nav-muted); border-color: var(--cm-horizonte-nav-line); background: transparent; font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__below-groups--divided::before { border-color: var(--cm-horizonte-nav-line); }
+html[data-cm-skin="horizonte"] .cm-sidebar-shell--collapsed:not(.cm-sidebar-shell--preview) .cm-sidebar__brand { grid-template-columns: 1fr; margin-inline: auto; }
+html[data-cm-skin="horizonte"] .cm-sidebar-shell--collapsed:not(.cm-sidebar-shell--preview) .cm-sidebar :is(.cm-sidebar__group-trigger, .cm-sidebar__item) { padding-inline: 0; }
+
+html[data-cm-skin="horizonte"] .cm-topbar { --cm-topbar-height: 73px; padding-inline: 36px; font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-topbar__title { font-size: 12px; font-weight: var(--cm-horizonte-weight-control); }
+html[data-cm-skin="horizonte"] .cm-topbar .cm-text--muted { font-size: 11px; }
+
+/* Slim supplies its own geometry and one popover surface. Keep these after
+   the skin's general button/menu rules, including its explicit plain variant. */
+html[data-cm-skin="horizonte"] .cm-button.cm-user-menu__trigger--slim { min-height: var(--cm-user-menu-trigger-height, 38px); height: auto; padding: 0; }
+html[data-cm-skin="horizonte"] .cm-user-menu__trigger--slim:focus-visible { outline: none; box-shadow: none; }
+html[data-cm-skin="horizonte"] .cm-user-menu__trigger--slim-no-chevron:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+html[data-cm-skin="horizonte"] .cm-user-menu__popover--slim > .cm-dropdown-menu { border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 0; }
+html[data-cm-skin="horizonte"] .cm-user-menu__popover--slim .cm-dropdown-menu__item { min-height: 36px; font-size: 12px; }
+
+/* Size xl is the comfortable customer editor; sm/md keep their compact
+   semantic sizes and 2xl remains available for larger workflows. */
+html[data-cm-skin="horizonte"] .cm-dialog__positioner--xl { max-width: 882px; }
+html[data-cm-skin="horizonte"] .cm-dialog__panel { border-radius: 18px; background: var(--color-card); box-shadow: var(--shadow-xl); max-height: calc(100dvh - 40px); }
+html[data-cm-skin="horizonte"] .cm-dialog__panel[data-tone="default"] {
+  --cm-dialog-header-background: var(--color-card);
+  --cm-dialog-panel-background: var(--color-card);
+  --cm-dialog-title-color: var(--color-foreground);
+}
+html[data-cm-skin="horizonte"] .cm-dialog__panel[data-tone="default"] > .cm-dialog__tone-bar { display: none; }
+html[data-cm-skin="horizonte"] .cm-dialog__header { padding: 25px 30px 22px; border-bottom: 1px solid var(--color-border); }
+html[data-cm-skin="horizonte"] .cm-dialog__title { font-size: 22px; font-weight: 700; line-height: 1.3; letter-spacing: -.65px; }
+html[data-cm-skin="horizonte"] .cm-dialog__title--compact { font-size: 18px; }
+html[data-cm-skin="horizonte"] .cm-dialog__description { margin-top: 7px; font-size: 11px; line-height: 1.6; }
+html[data-cm-skin="horizonte"] .cm-dialog__close--header { top: 20px; right: 22px; }
+html[data-cm-skin="horizonte"] .cm-dialog__body { padding: 24px 30px 28px; }
+html[data-cm-skin="horizonte"] .cm-dialog__footer { padding: 17px 25px; border-top: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-background) 48%, var(--color-card)); flex-wrap: wrap; }
+html[data-cm-skin="horizonte"] .cm-dialog__tone-bar { height: 2px; }
+html[data-cm-skin="horizonte"] .cm-tabs-trigger { font-family: var(--font-family); font-size: 12px; font-weight: var(--cm-horizonte-weight-control); }
+html[data-cm-skin="horizonte"] .cm-tabs-list--modal { min-height: 52px; padding: 0; gap: 26px; border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0; background: transparent; }
+html[data-cm-skin="horizonte"] .cm-tabs-trigger--modal { align-self: stretch; min-height: 52px; padding: 13px 0; border-radius: 0; font-size: 12px; }
+html[data-cm-skin="horizonte"] .cm-tabs-trigger--modal.cm-tabs-trigger-active { background: transparent; color: var(--cm-horizonte-link); box-shadow: inset 0 -2px 0 var(--cm-horizonte-link); }
+html[data-cm-skin="horizonte"] .cm-tabs-content--modal { margin-top: 0; padding: 23px 0 0; border: 0; border-radius: 0; background: transparent; }
+
+/* Density changes geometry without shrinking Horizonte's reading sizes. */
+html[data-cm-skin="horizonte"][data-density="compact"] .cm-floating-field,
+html[data-cm-skin="horizonte"] .cm-floating-field.cm-density-compact { --cm-horizonte-field-height: 39px; --cm-floating-control-height: 23px; }
+html[data-cm-skin="horizonte"][data-density="comfortable"] .cm-floating-field,
+html[data-cm-skin="horizonte"] .cm-floating-field.cm-density-comfortable { --cm-horizonte-field-height: 48px; --cm-floating-control-height: 32px; }
+html[data-cm-skin="horizonte"] .cm-floating-field.cm-density-compact :is(.cm-input__control, .cm-combobox__input, .cm-select__trigger, .cm-multi-select__trigger) { height: var(--cm-floating-control-height); font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-floating-field.cm-density-compact .cm-floating-field__label { font-size: 13px; }
+html[data-cm-skin="horizonte"] .cm-floating-field.cm-density-compact :is(.cm-floating-field__label--floating, .cm-floating-field__message) { font-size: 11px; }
+html[data-cm-skin="horizonte"] .cm-data-table.cm-density-compact .cm-data-table__header { font-size: 10px; }
+html[data-cm-skin="horizonte"][data-density="compact"] .cm-data-table__cell,
+html[data-cm-skin="horizonte"] .cm-data-table.cm-density-compact .cm-data-table__cell { height: 48px; padding-block: 8px; font-size: 13px; }
+html[data-cm-skin="horizonte"][data-density="comfortable"] .cm-data-table__cell,
+html[data-cm-skin="horizonte"] .cm-data-table.cm-density-comfortable .cm-data-table__cell { height: 72px; padding-block: 16px; }
+
+@media (max-width: 1000px) {
+  html[data-cm-skin="horizonte"] .cm-page { --cm-page-padding: 25px 22px 20px; }
+  html[data-cm-skin="horizonte"] .cm-topbar { padding-inline: 22px; }
+  html[data-cm-skin="horizonte"] .cm-page-header__title { font-size: 26px; }
+}
+
+@media (max-width: 768px) {
+  html[data-cm-skin="horizonte"] .cm-page { --cm-page-padding: 24px 16px 20px; --cm-page-gap: 18px; }
+  html[data-cm-skin="horizonte"] .cm-topbar { --cm-topbar-height: 62px; padding-inline: 16px; }
+  html[data-cm-skin="horizonte"] .cm-page-header__title { font-size: 25px; }
+  html[data-cm-skin="horizonte"] .cm-data-table__top { padding: 16px; }
+  html[data-cm-skin="horizonte"] .cm-dialog__panel { border-radius: 14px; max-height: calc(100dvh - 24px); }
+  html[data-cm-skin="horizonte"] .cm-dialog__header { padding: 20px 17px; }
+  html[data-cm-skin="horizonte"] .cm-dialog__title { font-size: 20px; }
+  html[data-cm-skin="horizonte"] .cm-dialog__body { padding: 21px 17px; }
+  html[data-cm-skin="horizonte"] .cm-dialog__footer { padding: 14px 17px; }
+  html[data-cm-skin="horizonte"] .cm-tabs-list--modal { gap: 23px; }
+  html[data-cm-skin="horizonte"] .cm-tabs-trigger--modal { font-size: 11px; }
+}
+
+@media (hover: none) {
+  html[data-cm-skin="horizonte"] .cm-tree-view__actions,
+  html[data-cm-skin="horizonte"] .cm-tree-view__drag-handle { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-cm-skin="horizonte"] .cm-floating-field__control { transition: none; }
+}

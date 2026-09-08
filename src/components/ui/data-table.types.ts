@@ -6,6 +6,7 @@ export type CmDataTableColumn<T> = {
   key: string;
   header: string;
   render?: (row: T) => ReactNode;
+  /** Alinha cabeçalho, conteúdo e CmDataTableActions renderizado diretamente na célula. */
   align?: "left" | "center" | "right";
   headerClassName?: string;
   cellClassName?: string;
@@ -15,6 +16,7 @@ export type CmDataTableColumn<T> = {
   defaultHidden?: boolean; // se true, a coluna começa oculta (padrão antes de preferência do usuário)
 };
 
+/** Agrupa ações; na célula respeita column.align, fora dela mantém alinhamento à direita. */
 export type CmDataTableActionsProps = HTMLAttributes<HTMLDivElement>;
 
 export type CmSortDirection = "asc" | "desc";

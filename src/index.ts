@@ -282,6 +282,10 @@ export const formatPhone: unknown = /*#__PURE__*/ createProxy("formatPhone", "se
 export const frevoTheme: unknown = /*#__PURE__*/ createProxy("frevoTheme", "theme");
 /** @deprecated O componente "greenTheme" foi movido para "cosmemilton-ui/theme". */
 export const greenTheme: unknown = /*#__PURE__*/ createProxy("greenTheme", "theme");
+/** @deprecated O componente "horizonteDarkTheme" foi movido para "cosmemilton-ui/theme". */
+export const horizonteDarkTheme: unknown = /*#__PURE__*/ createProxy("horizonteDarkTheme", "theme");
+/** @deprecated O componente "horizonteLightTheme" foi movido para "cosmemilton-ui/theme". */
+export const horizonteLightTheme: unknown = /*#__PURE__*/ createProxy("horizonteLightTheme", "theme");
 /** @deprecated O componente "midnightTheme" foi movido para "cosmemilton-ui/theme". */
 export const midnightTheme: unknown = /*#__PURE__*/ createProxy("midnightTheme", "theme");
 /** @deprecated O componente "orangeTheme" foi movido para "cosmemilton-ui/theme". */

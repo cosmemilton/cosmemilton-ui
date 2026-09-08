@@ -199,3 +199,161 @@
   }
 }
 
+/* Slim keeps one accessible trigger. The square chevron is a visual part of
+   that button; it is never a nested interactive control. */
+.cm-user-menu__trigger--slim.cm-button--xs { --cm-user-menu-trigger-height: 34px; }
+.cm-user-menu__trigger--slim.cm-button--sm { --cm-user-menu-trigger-height: 38px; }
+.cm-user-menu__trigger--slim.cm-button--md { --cm-user-menu-trigger-height: 40px; }
+.cm-user-menu__trigger--slim.cm-button--lg { --cm-user-menu-trigger-height: 48px; }
+.cm-user-menu__trigger--slim.cm-button--xl { --cm-user-menu-trigger-height: 52px; }
+
+.cm-button.cm-user-menu__trigger--slim {
+  min-height: var(--cm-user-menu-trigger-height, 38px);
+  height: auto;
+  gap: 9px;
+  border-radius: 7px;
+  padding: 0;
+  text-decoration: none;
+}
+
+.cm-user-menu__trigger--slim.cm-button--plain,
+.cm-user-menu__trigger--slim.cm-button--plain:hover {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+}
+
+.cm-user-menu__trigger--slim-avatar-auto .cm-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.cm-user-menu__trigger--slim .cm-user-menu__trigger-text {
+  display: flex;
+  gap: 3px;
+  line-height: 1.3;
+}
+
+.cm-user-menu__trigger--slim .cm-user-menu__trigger-title {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cm-user-menu__trigger--slim .cm-user-menu__trigger-subtitle {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.cm-user-menu__trigger-chevron {
+  display: inline-flex;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--color-muted-foreground);
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+.cm-user-menu__trigger-chevron > svg {
+  width: 14px;
+  height: 14px;
+  transition: transform .15s ease;
+}
+
+.cm-user-menu__trigger--slim:hover .cm-user-menu__trigger-chevron,
+.cm-user-menu__trigger--slim[aria-expanded="true"] .cm-user-menu__trigger-chevron {
+  border-color: var(--color-border);
+  background: var(--color-muted);
+  color: var(--color-foreground);
+}
+
+.cm-user-menu__trigger--slim[aria-expanded="true"] .cm-user-menu__trigger-chevron > svg {
+  transform: rotate(180deg);
+}
+
+.cm-user-menu__trigger--slim:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.cm-user-menu__trigger--slim:focus-visible .cm-user-menu__trigger-chevron,
+.cm-user-menu__trigger--slim-no-chevron:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.cm-popover__panel.cm-user-menu__popover--slim {
+  width: var(--cm-user-menu-slim-width, 200px);
+  min-width: 0;
+  max-width: calc(100vw - 24px);
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-popover, var(--color-card));
+  color: var(--color-popover-foreground, var(--color-foreground));
+  box-shadow: var(--shadow-lg);
+}
+
+.cm-user-menu__popover--slim > .cm-dropdown-menu {
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cm-user-menu__popover--slim .cm-dropdown-menu__item {
+  min-height: 36px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.cm-user-menu__popover--slim .cm-dropdown-menu__shortcut { font-size: 10px; }
+.cm-user-menu__popover--slim .cm-dropdown-menu__separator { margin: 4px 3px; }
+
+.cm-user-menu__menu-header--slim {
+  gap: 9px;
+  margin: 0 3px 4px;
+  padding: 9px 6px 11px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cm-user-menu__menu-header-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--color-muted-foreground);
+}
+
+.cm-user-menu__menu-header--slim .cm-user-menu__menu-header-title {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.cm-user-menu__menu-header--slim :is(.cm-user-menu__menu-header-subtitle, .cm-user-menu__menu-header-email) {
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.cm-user-menu__popover--slim .cm-user-menu__menu-header--auto { display: none; }
+
+@media (max-width: 767.98px) {
+  .cm-user-menu__trigger--slim .cm-user-menu__trigger-text { display: none; }
+  .cm-user-menu__popover--slim .cm-user-menu__menu-header--auto { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-user-menu__trigger-chevron,
+  .cm-user-menu__trigger-chevron > svg { transition: none; }
+}

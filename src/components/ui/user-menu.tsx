@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, UserRound } from "lucide-react";
 import { cn } from "../../lib/utils.js";
 import { CmAvatar } from "./avatar.js";
 import { CmButton } from "./button.js";
@@ -11,7 +11,7 @@ import type { CmSize } from "./types.js";
 type CmUserMenuSize = CmSize;
 
 export type CmUserMenuHeaderMode = "auto" | "always" | "never";
-export type CmUserMenuPresentation = "default" | "compact";
+export type CmUserMenuPresentation = "default" | "compact" | "slim";
 
 export type CmUserMenuUser = {
   title: string;
@@ -60,7 +60,7 @@ export function CmUserMenu({
   align = "end",
   presentation = "default",
   size,
-  avatarSize = "sm",
+  avatarSize,
   variant,
   showTitle,
   showSubtitle,
@@ -70,8 +70,10 @@ export function CmUserMenu({
   menuClassName,
 }: CmUserMenuProps) {
   const isCompact = presentation === "compact";
+  const isSlim = presentation === "slim";
   const resolvedSize = size ?? "sm";
-  const resolvedVariant = variant ?? (isCompact ? "surface" : "ghost");
+  const resolvedAvatarSize = avatarSize ?? "sm";
+  const resolvedVariant = variant ?? (isCompact ? "surface" : isSlim ? "plain" : "ghost");
   const resolvedShowTitle = showTitle ?? !isCompact;
   const resolvedShowSubtitle = showSubtitle ?? !isCompact;
   const resolvedShowChevron = showChevron ?? true;
@@ -92,9 +94,23 @@ export function CmUserMenu({
   const header = shouldRenderHeader ? (
     <div
       role="presentation"
-      className={cn("cm-dropdown-menu__header", "cm-user-menu__menu-header", autoHeaderClass)}
+      className={cn(
+        "cm-dropdown-menu__header",
+        "cm-user-menu__menu-header",
+        isSlim && "cm-user-menu__menu-header--slim",
+        autoHeaderClass,
+      )}
     >
-      <CmAvatar src={user.imageUrl} alt={user.title} size={avatarSize} fallback={fallback} />
+      {isSlim ? (
+        <UserRound className="cm-user-menu__menu-header-icon" size={16} aria-hidden="true" />
+      ) : (
+        <CmAvatar
+          src={user.imageUrl}
+          alt={user.title}
+          size={resolvedAvatarSize}
+          fallback={fallback}
+        />
+      )}
       <div className="cm-user-menu__menu-header-content">
         <span className="cm-user-menu__menu-header-title">{user.title}</span>
         {user.subtitle ? (
@@ -108,7 +124,12 @@ export function CmUserMenu({
   return (
     <CmDropdownMenu
       align={align}
-      className={cn("cm-user-menu__popover", menuClassName)}
+      className={cn(
+        "cm-user-menu__popover",
+        isSlim && "cm-user-menu__popover--slim",
+        menuClassName,
+      )}
+      dismissOnEscape={isSlim}
       header={header}
       items={items}
       trigger={({ open, toggle, ref }) => (
@@ -116,7 +137,7 @@ export function CmUserMenu({
           ref={ref}
           size={resolvedSize}
           variant={resolvedVariant}
-          shape="pill"
+          shape={isSlim ? "default" : "pill"}
           aria-haspopup="menu"
           aria-expanded={open}
           aria-label={triggerLabel}
@@ -124,14 +145,24 @@ export function CmUserMenu({
           className={cn(
             "cm-user-menu__trigger",
             isCompact && "cm-user-menu__trigger--compact",
+            isSlim && "cm-user-menu__trigger--slim",
+            isSlim && !avatarSize && "cm-user-menu__trigger--slim-avatar-auto",
+            isSlim && !resolvedShowChevron && "cm-user-menu__trigger--slim-no-chevron",
             triggerClassName,
           )}
           trailingIcon={
-            resolvedShowChevron ? <ChevronDown aria-hidden="true" size={16} /> : undefined
+            resolvedShowChevron && !isSlim ? (
+              <ChevronDown aria-hidden="true" size={16} />
+            ) : undefined
           }
           onClick={toggle}
         >
-          <CmAvatar src={user.imageUrl} alt={user.title} size={avatarSize} fallback={fallback} />
+          <CmAvatar
+            src={user.imageUrl}
+            alt={user.title}
+            size={resolvedAvatarSize}
+            fallback={fallback}
+          />
           {hasTriggerText ? (
             <span className="cm-user-menu__trigger-text">
               {resolvedShowTitle ? (
@@ -140,6 +171,11 @@ export function CmUserMenu({
               {resolvedShowSubtitle && user.subtitle ? (
                 <span className="cm-user-menu__trigger-subtitle">{user.subtitle}</span>
               ) : null}
+            </span>
+          ) : null}
+          {isSlim && resolvedShowChevron ? (
+            <span className="cm-user-menu__trigger-chevron" aria-hidden="true">
+              <ChevronDown size={14} />
             </span>
           ) : null}
         </CmButton>

@@ -5,6 +5,7 @@ import { CmPortal } from "./portal.js";
 import { cmSizeValue } from "./types.js";
 import { cn } from "../../lib/utils.js";
 import { useClickOutside } from "../../hooks/use-click-outside.js";
+import { useEscapeKey } from "../../hooks/use-escape-key.js";
 import { useControllableState } from "../../hooks/use-controllable-state.js";
 import { useFloating } from "../../hooks/use-floating.js";
 
@@ -26,6 +27,8 @@ export type CmPopoverProps = {
   width?: string | number;
   /** Largura máxima do painel (número → px). Padrão: 22rem, limitada ao viewport. */
   maxWidth?: string | number;
+  /** Fecha com Escape e devolve o foco ao trigger. Opcional para preservar o comportamento existente. */
+  dismissOnEscape?: boolean;
 };
 
 export function CmPopover({
@@ -37,6 +40,7 @@ export function CmPopover({
   className,
   width,
   maxWidth,
+  dismissOnEscape = false,
 }: CmPopoverProps) {
   const [open, setOpen] = useControllableState<boolean>({
     value: controlledOpen,
@@ -55,6 +59,11 @@ export function CmPopover({
   }, [setOpen]);
 
   useClickOutside([panelRef, triggerRef], close, open);
+  useEscapeKey(open && dismissOnEscape, (event) => {
+    event.preventDefault();
+    close();
+    triggerRef.current?.focus();
+  });
 
   const placement = align === "center" ? "bottom" : align === "end" ? "bottom-end" : "bottom-start";
   useFloating(triggerRef, panelRef, { enabled: open, placement, offset: 8 });

@@ -56,6 +56,8 @@ export type ThemeTrackingScale = {
 
 export type ThemeTypography = {
   fontFamily: string;
+  /** Optional heading family. Components opt in with --font-family-heading. */
+  fontFamilyHeading?: string;
   monospaceFamily: string;
   baseSize: string;
   scaleRatio: number;

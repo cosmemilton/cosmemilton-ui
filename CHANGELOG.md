@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.21.0
+
+### Minor Changes
+
+- Adiciona a aparência opcional Horizonte (`skin="horizonte"`) com temas claro e escuro, fontes Inter e Manrope locais e estilos para os componentes existentes. O padrão continua `classic`, preservando a adoção explícita pelas aplicações.
+
+  Acrescenta `ThemeTypography.fontFamilyHeading` e a inicialização da aparência no `CmThemeScript`. Temas escuros passam a usar `colorScheme` para resolver a inversão do chrome, incluindo temas personalizados.
+
+- Add the optional `CmUserMenu` slim presentation with a flat avatar/name trigger, a distinct chevron area, a single compact popup surface and an icon/text header. Keep the default and compact presentations unchanged. Slim supports the existing visibility/size props and dismisses on Escape with focus restoration; consumers can opt other popovers and dropdown menus into that behavior with `dismissOnEscape`.
+
+### Patch Changes
+
+- Make `CmDataTableActions` rendered directly in a table cell respect the column's explicit `align` value. Centered action columns now align the header with the whole button group. Preserve right alignment for toolbar actions and columns without an explicit alignment.
+
+  Refine the optional Horizonte skin with shared 400/500/550 reading weights, softer table data colors and 42px headers, including the column selector cell.
+
 ## 3.20.0
 
 ### Minor Changes

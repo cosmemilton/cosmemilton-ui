@@ -5,6 +5,7 @@ import {
   type CustomThemeInput,
 } from "../../lib/theme/index.js";
 import type { CmDensity } from "../ui/types.js";
+import type { CmThemeSkin } from "./theme-provider.js";
 
 const LOCAL_STORAGE_KEY = "cm-theme";
 const LOCAL_STORAGE_DENSITY = "cm-density";
@@ -25,6 +26,8 @@ const serializeForScript = (value: unknown): string =>
 export type CmThemeScriptProps = {
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
+  /** Pass the same appearance as CmThemeProvider to avoid a first-paint flash. */
+  skin?: CmThemeSkin;
   /**
    * Density applied when localStorage has no persisted value. Pass the same
    * value as CmThemeProvider's defaultDensity to avoid a density flash on
@@ -51,6 +54,7 @@ export function CmThemeScript({
   defaultDensity = "default",
   defaultThemeName = defaultTheme.name,
   nonce,
+  skin = "classic",
 }: CmThemeScriptProps = {}) {
   const themeRegistry = extendThemes(customThemes);
   const fallbackThemeName = themeRegistry[defaultThemeName] ? defaultThemeName : defaultTheme.name;
@@ -58,6 +62,7 @@ export function CmThemeScript({
   const customCSS = customThemeCSS(themeRegistry);
 
   const script = `(() => {
+    document.documentElement.setAttribute('data-cm-skin', ${serializeForScript(skin)});
     const fallback = ${serializeForScript(fallbackThemeName)};
     const fallbackDensity = ${serializeForScript(fallbackDensity)};
     try {

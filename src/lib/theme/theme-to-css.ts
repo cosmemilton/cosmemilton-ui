@@ -138,6 +138,7 @@ export const themeToCSSVars = (theme: ThemeConfig): Record<string, string> => {
   const entries: ThemeKV[] = [
     ...tokenEntries("color", theme.colors),
     ["--font-family", theme.typography.fontFamily],
+    ["--font-family-heading", theme.typography.fontFamilyHeading ?? theme.typography.fontFamily],
     ["--font-mono", theme.typography.monospaceFamily],
     ["--font-base", theme.typography.baseSize],
     ["--font-scale", theme.typography.scaleRatio.toString()],

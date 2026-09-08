@@ -93,7 +93,15 @@ const icons: Record<CmToastTone, string> = {
   info: "ℹ",
 };
 
-function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: number) => void }) {
+function ToastSlot({
+  item,
+  onCloseStart,
+  onDismiss,
+}: {
+  item: ToastItem;
+  onCloseStart: (id: number) => void;
+  onDismiss: (id: number) => void;
+}) {
   const [visible, setVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
@@ -106,10 +114,11 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
   const handleClose = useCallback(() => {
     if (closingRef.current) return;
     closingRef.current = true;
+    onCloseStart(item.id);
     clearTimeout(timerRef.current);
     setVisible(false);
     setTimeout(() => onDismiss(item.id), 300);
-  }, [item.id, onDismiss]);
+  }, [item.id, onCloseStart, onDismiss]);
 
   useEffect(() => {
     // animate in
@@ -186,7 +195,7 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [mounted, setMounted] = useState(false);
   const nextId = useRef(0);
-  const recentToastRef = useRef<{ key: string; at: number } | null>(null);
+  const recentToastRef = useRef<{ id: number; key: string; at: number } | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -197,6 +206,12 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  const releaseRecentToast = useCallback((id: number) => {
+    // Uma nova tentativa já pode notificar durante a animação de saída.
+    // Fechar um toast anterior não libera a deduplicação de outro mais recente.
+    if (recentToastRef.current?.id === id) recentToastRef.current = null;
+  }, []);
+
   const toast = useCallback((message: string, options?: ToastOptions) => {
     const key = `${options?.tone ?? "default"}|${options?.title ?? ""}|${message}`;
     const now = Date.now();
@@ -204,8 +219,8 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
 
     if (recent?.key === key && now - recent.at < 1000) return;
 
-    recentToastRef.current = { key, at: now };
     const id = ++nextId.current;
+    recentToastRef.current = { id, key, at: now };
     setToasts((prev) => [
       ...prev,
       {
@@ -228,7 +243,7 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
             data-position={position}
           >
             {toasts.map((t) => (
-              <ToastSlot key={t.id} item={t} onDismiss={dismiss} />
+              <ToastSlot key={t.id} item={t} onCloseStart={releaseRecentToast} onDismiss={dismiss} />
             ))}
           </div>,
           document.body,

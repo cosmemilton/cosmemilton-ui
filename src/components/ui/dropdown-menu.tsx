@@ -35,12 +35,22 @@ export type CmDropdownMenuProps = {
   header?: ReactNode;
   align?: "start" | "center" | "end";
   className?: string;
+  /** Fecha com Escape e devolve o foco ao trigger quando habilitado. */
+  dismissOnEscape?: boolean;
 };
 
-export function CmDropdownMenu({ trigger, items, header, align, className }: CmDropdownMenuProps) {
+export function CmDropdownMenu({
+  trigger,
+  items,
+  header,
+  align,
+  className,
+  dismissOnEscape = false,
+}: CmDropdownMenuProps) {
   return (
     <CmPopover
       align={align}
+      dismissOnEscape={dismissOnEscape}
       trigger={(controls) =>
         trigger({
           ...controls,

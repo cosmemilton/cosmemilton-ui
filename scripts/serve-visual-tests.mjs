@@ -15,11 +15,14 @@ await import("./build-styles.mjs");
 await mkdir(outputDir, { recursive: true });
 
 await build({
-  entryPoints: [join(root, "tests", "visual", "fixture.tsx")],
+  entryPoints: [
+    join(root, "tests", "visual", "fixture.tsx"),
+    join(root, "tests", "visual", "horizonte.fixture.tsx"),
+  ],
   bundle: true,
   format: "esm",
   jsx: "automatic",
-  outfile: join(outputDir, "fixture.js"),
+  outdir: outputDir,
   platform: "browser",
   target: ["chrome120"],
   sourcemap: true,
@@ -40,11 +43,26 @@ const indexHtml = `<!doctype html>
   </body>
 </html>`;
 
+const horizonteHtml = indexHtml
+  .replace("/fixture.css", "/horizonte.fixture.css")
+  .replace("/fixture.js", "/horizonte.fixture.js");
+
 const files = new Map([
   ["/fixture.js", join(outputDir, "fixture.js")],
   ["/fixture.js.map", join(outputDir, "fixture.js.map")],
+  ["/horizonte.fixture.js", join(outputDir, "horizonte.fixture.js")],
+  ["/horizonte.fixture.js.map", join(outputDir, "horizonte.fixture.js.map")],
+  ["/horizonte.fixture.css", join(root, "tests", "visual", "horizonte.fixture.css")],
   ["/styles.css", join(root, "dist", "styles.css")],
   ["/fixture.css", join(root, "tests", "visual", "fixture.css")],
+  [
+    "/fonts/horizonte-inter-latin.woff2",
+    join(root, "dist", "fonts", "horizonte-inter-latin.woff2"),
+  ],
+  [
+    "/fonts/horizonte-manrope-latin.woff2",
+    join(root, "dist", "fonts", "horizonte-manrope-latin.woff2"),
+  ],
   [
     "/fonts/inter-variable-latin.woff2",
     join(
@@ -71,6 +89,12 @@ const server = createServer(async (request, response) => {
   if (pathname === "/" || pathname === "/index.html") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(indexHtml);
+    return;
+  }
+
+  if (pathname === "/horizonte") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(horizonteHtml);
     return;
   }
 

@@ -82,6 +82,20 @@
   gap: .375rem
 }
 
+/* O grupo de ações acompanha o alinhamento da coluna. O toolbar e colunas
+   sem align explícito preservam o alinhamento à direita. */
+.cm-data-table__cell--left > .cm-data-table__actions {
+  justify-content: flex-start
+}
+
+.cm-data-table__cell--center > .cm-data-table__actions {
+  justify-content: center
+}
+
+.cm-data-table__cell--right > .cm-data-table__actions {
+  justify-content: flex-end
+}
+
 /* stretch garante painel >= tabela; o bridge da linha selecionada sempre
    encontra o painel em vez de apontar para o vazio abaixo dele. */
 .cm-data-table-detail-layout {

@@ -2,7 +2,14 @@
 // Source: packages/tokens/src/theme-to-css.test.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import { describe, expect, it } from "vitest";
 import { customThemeCSS, themeSelector, themeToCSSBlock, themeToCSSVars } from "./theme-to-css.js";
-import { darkTheme, defaultTheme, extendThemes, themes } from "./themes.js";
+import {
+  darkTheme,
+  defaultTheme,
+  extendThemes,
+  horizonteDarkTheme,
+  horizonteLightTheme,
+  themes,
+} from "./themes.js";
 import type { ThemeConfig } from "./types.js";
 
 const customTheme: ThemeConfig = {
@@ -12,6 +19,24 @@ const customTheme: ThemeConfig = {
 };
 
 describe("themeToCSSBlock", () => {
+  it("ships both Horizonte palettes as built-ins with separate heading typography", () => {
+    expect(themes["cm-horizonte-light"]).toBe(horizonteLightTheme);
+    expect(themes["cm-horizonte-dark"]).toBe(horizonteDarkTheme);
+    expect(themeToCSSVars(horizonteLightTheme)["--font-family"]).toContain("CM Horizonte Inter");
+    expect(themeToCSSVars(horizonteLightTheme)["--font-family-heading"]).toContain(
+      "CM Horizonte Manrope",
+    );
+    expect(themeToCSSBlock(horizonteLightTheme)).toContain("color-scheme: light;");
+    expect(themeToCSSBlock(horizonteDarkTheme)).toContain("color-scheme: dark;");
+    expect(customThemeCSS(extendThemes())).toBe("");
+  });
+
+  it("preserves the body family for themes that omit a heading family", () => {
+    expect(themeToCSSVars(defaultTheme)["--font-family-heading"]).toBe(
+      defaultTheme.typography.fontFamily,
+    );
+  });
+
   it("renders every token of the theme under the data-theme selector", () => {
     const block = themeToCSSBlock(defaultTheme);
     expect(block).toContain(':root[data-theme="cm-neutral"] {');

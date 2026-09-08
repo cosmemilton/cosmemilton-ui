@@ -11,7 +11,7 @@
 //                        an existing app (page-level styles stay untouched).
 // Both are also emitted minified (.min.css). Autoprefixer targets the
 // .browserslistrc baseline; it also validates the partials parse cleanly.
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import autoprefixer from "autoprefixer";
@@ -58,5 +58,7 @@ const emit = async (name, css) => {
 };
 
 await mkdir(distDir, { recursive: true });
+// The CSS URLs are relative to dist/*.css; retain OFL notices in the package.
+await cp(join(root, "src", "assets", "fonts"), join(distDir, "fonts"), { recursive: true });
 await emit("styles", await bundle([GLOBAL_REBOOT, SCOPED_REBOOT]));
 await emit("components", await bundle([SCOPED_REBOOT]));

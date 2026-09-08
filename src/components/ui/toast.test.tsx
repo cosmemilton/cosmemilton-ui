@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { StrictMode } from "react";
 
-import { CmToastProvider, useCmToast } from "./toast.js";
+import { CmToastNotice, CmToastProvider, useCmToast } from "./toast.js";
 
 function Trigger({ duration }: { duration?: number }) {
   const { toast } = useCmToast();
@@ -38,6 +39,59 @@ afterEach(() => {
 });
 
 describe("CmToastProvider", () => {
+  it("deduplica o aviso declarativo durante os efeitos repetidos do StrictMode", () => {
+    render(
+      <StrictMode>
+        <CmToastProvider>
+          <CmToastNotice title="Não foi possível entrar" description="Informe uma loja válida." tone="danger" />
+        </CmToastProvider>
+      </StrictMode>,
+    );
+
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+  });
+
+  it("aceita a mesma mensagem assim que o usuário fecha o toast, preservando a animação", () => {
+    const anterior = renderToast(5000);
+
+    fireEvent.click(screen.getByRole("button", { name: "Fechar" }));
+    fireEvent.click(screen.getByRole("button", { name: "disparar" }));
+    expect(screen.getAllByRole("alert")).toHaveLength(2);
+    expect(anterior).toHaveClass("cm-toast__item--hidden");
+
+    advance(300);
+    expect(anterior).not.toBeInTheDocument();
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+
+    // A remoção tardia do anterior não libera duplicatas do novo toast.
+    fireEvent.click(screen.getByRole("button", { name: "disparar" }));
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+  });
+
+  it("aceita a mesma mensagem quando o fechamento automático começa antes de um segundo", () => {
+    const anterior = renderToast(600);
+    advance(600);
+
+    fireEvent.click(screen.getByRole("button", { name: "disparar" }));
+    expect(screen.getAllByRole("alert")).toHaveLength(2);
+    advance(300);
+    expect(anterior).not.toBeInTheDocument();
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+  });
+
+  it("fechar um toast anterior mantém a deduplicação do mais recente", () => {
+    renderToast(5000);
+    advance(1000);
+    fireEvent.click(screen.getByRole("button", { name: "disparar" }));
+    expect(screen.getAllByRole("alert")).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Fechar" })[0]);
+    fireEvent.click(screen.getByRole("button", { name: "disparar" }));
+    expect(screen.getAllByRole("alert")).toHaveLength(2);
+    advance(300);
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+  });
+
   it("fecha sozinho após a duração", () => {
     renderToast(5000);
     advance(4999);

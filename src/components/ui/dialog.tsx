@@ -133,10 +133,11 @@ export function CmDialog({
       >
         <div
           className="cm-dialog__panel"
+          data-tone={tone}
           style={{
             ...dialogStyle,
             background:
-              "linear-gradient(180deg, color-mix(in srgb, var(--color-card) 96%, var(--color-background) 4%), var(--color-card))",
+              "var(--cm-dialog-panel-background, linear-gradient(180deg, color-mix(in srgb, var(--color-card) 96%, var(--color-background) 4%), var(--color-card)))",
             borderColor: "var(--color-border)",
             color: "var(--color-card-foreground, var(--color-foreground))",
             boxShadow: "var(--shadow-xl, 0 30px 90px rgba(15, 23, 42, 0.22))",
@@ -153,7 +154,7 @@ export function CmDialog({
             <div
               className="cm-dialog__header"
               style={{
-                background: headerBackground,
+                background: `var(--cm-dialog-header-background, ${headerBackground})`,
                 borderBottom: "1px solid var(--color-border)",
               }}
             >
@@ -180,7 +181,7 @@ export function CmDialog({
                       // A base em --color-foreground preserva contraste AA em
                       // temas claros e escuros.
                       color:
-                        "color-mix(in srgb, var(--dialog-tone) 55%, var(--color-foreground))",
+                        "var(--cm-dialog-title-color, color-mix(in srgb, var(--dialog-tone) 55%, var(--color-foreground)))",
                     }}
                   >
                     {title}

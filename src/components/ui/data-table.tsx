@@ -401,6 +401,7 @@ export function CmDataTable<T>({
                     key={`${key}-${colIndex}`}
                     className={cn(
                       "cm-data-table__cell",
+                      column.align === "left" && "cm-data-table__cell--left",
                       column.align === "center" && "cm-data-table__cell--center",
                       column.align === "right" && "cm-data-table__cell--right",
                       column.cellClassName,

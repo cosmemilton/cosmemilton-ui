@@ -23,11 +23,73 @@ function ThemeSwitcher({ to }: { to: string }) {
 beforeEach(() => {
   window.localStorage.clear();
   document.documentElement.removeAttribute("data-theme");
+  document.documentElement.removeAttribute("data-cm-skin");
+  document.documentElement.removeAttribute("data-cm-chrome");
   document.documentElement.removeAttribute("style");
   document.getElementById("cm-theme-custom")?.remove();
 });
 
 describe("CmThemeProvider", () => {
+  it("keeps the classic appearance unless the application explicitly opts in", () => {
+    window.localStorage.setItem("cm-skin", "horizonte");
+    render(
+      <CmThemeProvider>
+        <span>app</span>
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "classic");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-neutral");
+  });
+
+  it("applies and removes the opted-in skin at the document root, covering portals", () => {
+    function Appearance() {
+      return <span>{useCmTheme().skin}</span>;
+    }
+    const { rerender } = render(
+      <CmThemeProvider skin="horizonte" defaultThemeName="cm-horizonte-light">
+        <Appearance />
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-light");
+    expect(screen.getByText("horizonte")).toBeInTheDocument();
+    rerender(
+      <CmThemeProvider skin="classic">
+        <Appearance />
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "classic");
+    expect(screen.getByText("classic")).toBeInTheDocument();
+  });
+
+  it("switches Horizonte palettes without changing the selected skin", async () => {
+    const user = userEvent.setup();
+    render(
+      <CmThemeProvider skin="horizonte" defaultThemeName="cm-horizonte-light" chrome="inverted">
+        <ThemeSwitcher to="cm-horizonte-dark" />
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-cm-chrome", "inverted");
+    await user.click(screen.getByRole("button", { name: "switch" }));
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-dark");
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
+    expect(document.documentElement).toHaveAttribute("data-cm-chrome", "surface");
+    expect(window.localStorage.getItem("cm-theme")).toBe("cm-horizonte-dark");
+  });
+
+  it("uses colorScheme to prevent inverted chrome on consumer dark themes", () => {
+    render(
+      <CmThemeProvider
+        customThemes={[{ ...customTheme, colorScheme: "dark" }]}
+        defaultThemeName="acme-brand"
+        chrome="inverted"
+      >
+        <span>app</span>
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-cm-chrome", "surface");
+  });
+
   it("applies the theme as a data-theme attribute without inline token styles", () => {
     render(
       <CmThemeProvider>

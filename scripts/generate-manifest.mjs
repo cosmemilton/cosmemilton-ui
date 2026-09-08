@@ -28,6 +28,8 @@ const expectedDuplicateExports = new Set([
   'defaultTheme',
   'extendThemes',
   'greenTheme',
+  'horizonteDarkTheme',
+  'horizonteLightTheme',
   'midnightTheme',
   'orangeTheme',
   'redTheme',

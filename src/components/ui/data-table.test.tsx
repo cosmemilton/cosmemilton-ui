@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { CmDataTable, type CmDataTableColumn } from "./data-table.js";
+import { CmDataTable, CmDataTableActions, type CmDataTableColumn } from "./data-table.js";
 
 type Person = { id: string; name: string; age: number };
 
@@ -79,6 +80,68 @@ describe("CmDataTable", () => {
     await user.click(nameHeader);
     expect(nameHeader).toHaveAttribute("aria-sort", "descending");
     expect(bodyRowNames()).toEqual(["Charlie", "Bob", "Alice"]);
+  });
+
+  describe("action alignment", () => {
+    const stylesheet = document.createElement("style");
+
+    beforeAll(() => {
+      stylesheet.textContent = readFileSync("src/styles/14-data-table.css", "utf8");
+      document.head.appendChild(stylesheet);
+    });
+
+    afterAll(() => stylesheet.remove());
+
+    it.each([
+      ["left", "flex-start"],
+      ["center", "center"],
+      ["right", "flex-end"],
+    ] as const)("aligns the action group with its %s column", (align, justifyContent) => {
+      renderTable({
+        data: data.slice(0, 1),
+        columns: [
+          {
+            key: "actions",
+            header: "Actions",
+            align,
+            render: () => (
+              <CmDataTableActions data-testid="row-actions">
+                <button>Edit</button>
+              </CmDataTableActions>
+            ),
+          },
+        ],
+      });
+
+      expect(screen.getByRole("columnheader", { name: "Actions" })).toHaveClass(
+        `cm-data-table__cell--${align}`,
+      );
+      expect(getComputedStyle(screen.getByTestId("row-actions")).justifyContent).toBe(
+        justifyContent,
+      );
+    });
+
+    it("keeps unaligned row actions and toolbar actions at the right", () => {
+      renderTable({
+        data: data.slice(0, 1),
+        actions: <button>Export</button>,
+        columns: [
+          {
+            key: "actions",
+            header: "Actions",
+            render: () => (
+              <CmDataTableActions data-testid="row-actions">
+                <button>Edit</button>
+              </CmDataTableActions>
+            ),
+          },
+        ],
+      });
+
+      expect(getComputedStyle(screen.getByTestId("row-actions")).justifyContent).toBe("flex-end");
+      const toolbarActions = screen.getByRole("button", { name: "Export" }).parentElement!;
+      expect(getComputedStyle(toolbarActions).justifyContent).toBe("flex-end");
+    });
   });
 
   describe("rowKey as field name", () => {

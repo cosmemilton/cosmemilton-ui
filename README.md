@@ -183,6 +183,10 @@ via `linkComponent` e informe a rota ativa (ex.: `activeHref`/`activePathname`).
 
 ## Documentação
 
+A aparência opcional [Horizonte](docs/horizonte.md) oferece temas claro e escuro,
+fontes locais Inter e Manrope e mantém os comportamentos dos componentes CM-UI.
+Ative com `skin="horizonte"` no provider; o padrão continua `classic`.
+
 Exemplos por componente, variantes, tabela de props e notas de acessibilidade nas
 docs vivas:
 

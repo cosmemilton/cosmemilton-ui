@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { CmThemeScript } from "./theme-script.js";
 import { defaultTheme } from "../../lib/theme/index.js";
@@ -9,6 +9,12 @@ const customTheme: ThemeConfig = {
   name: "acme-brand",
   colors: { ...defaultTheme.colors, primary: "#ff0000" },
 };
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  window.localStorage.clear();
+  document.documentElement.removeAttribute("data-cm-skin");
+});
 
 describe("CmThemeScript", () => {
   it("emits only the data-theme bootstrap, not serialized theme tokens", () => {
@@ -21,7 +27,7 @@ describe("CmThemeScript", () => {
     // Tokens live in the static stylesheet now — the script must not inline them.
     expect(code).not.toContain("--color-background");
     expect(code).not.toContain("setProperty");
-    expect(code.length).toBeLessThan(1000);
+    expect(code.length).toBeLessThan(1300);
   });
 
   it("renders no style tag when there are no custom themes", () => {
@@ -79,5 +85,27 @@ describe("CmThemeScript", () => {
     const { container } = render(<CmThemeScript defaultDensity="compact" />);
     const code = container.querySelector("#cm-theme-script")!.innerHTML;
     expect(code).toContain('const fallbackDensity = "compact"');
+  });
+
+  it("sets the explicit skin before first paint and restores the dark palette", () => {
+    window.localStorage.setItem("cm-theme", "cm-horizonte-dark");
+    const { container } = render(
+      <CmThemeScript skin="horizonte" defaultThemeName="cm-horizonte-light" />,
+    );
+    const code = container.querySelector("#cm-theme-script")!.innerHTML;
+    new Function(code)();
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-dark");
+  });
+
+  it("defaults to classic and still applies skin when storage is unavailable", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("storage unavailable");
+    });
+    const { container } = render(<CmThemeScript />);
+    new Function(container.querySelector("#cm-theme-script")!.innerHTML)();
+    expect(document.documentElement).toHaveAttribute("data-cm-skin", "classic");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-neutral");
+    expect(document.documentElement).toHaveAttribute("data-density", "default");
   });
 });

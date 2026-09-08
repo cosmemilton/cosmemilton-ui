@@ -20,6 +20,8 @@ import {
 import type { CmDensity } from "../ui/types.js";
 
 export type CmThemeChrome = "surface" | "inverted";
+/** Component appearance. Explicit opt-in keeps existing applications unchanged. */
+export type CmThemeSkin = "classic" | "horizonte";
 
 type ThemeContextValue = {
   theme: ThemeConfig;
@@ -29,6 +31,7 @@ type ThemeContextValue = {
   setDensity: (density: CmDensity) => void;
   chrome: CmThemeChrome;
   setChrome: (chrome: CmThemeChrome) => void;
+  skin: CmThemeSkin;
   invertHeader: boolean;
   setInvertHeader: (value: boolean) => void;
 };
@@ -48,6 +51,8 @@ export type CmThemeProviderProps = {
   defaultDensity?: CmDensity;
   chrome?: CmThemeChrome;
   defaultChrome?: CmThemeChrome;
+  /** Applied to <html>, including dialogs and menus rendered through portals. */
+  skin?: CmThemeSkin;
 };
 
 // Built-in theme tokens ship statically inside styles.css, so switching themes
@@ -80,12 +85,13 @@ const ensureCustomThemeStyles = (registry: ThemeRegistry) => {
   }
 };
 
-const applyThemePreferences = (density: CmDensity, chrome: CmThemeChrome) => {
+const applyThemePreferences = (density: CmDensity, chrome: CmThemeChrome, skin: CmThemeSkin) => {
   if (typeof document === "undefined") return;
 
   const root = document.documentElement;
   root.setAttribute("data-density", density);
   root.setAttribute("data-cm-chrome", chrome);
+  root.setAttribute("data-cm-skin", skin);
 };
 
 export function CmThemeProvider({
@@ -96,6 +102,7 @@ export function CmThemeProvider({
   defaultDensity = "default",
   defaultThemeName = defaultTheme.name,
   density,
+  skin = "classic",
 }: CmThemeProviderProps) {
   const themeRegistry = useMemo(() => extendThemes(customThemes), [customThemes]);
   const fallbackTheme = themeRegistry[defaultThemeName] ?? defaultTheme;
@@ -134,10 +141,7 @@ export function CmThemeProvider({
   // Desativar invertHeader automaticamente para temas escuros
   const requestedDensity = density ?? uncontrolledDensity;
   const requestedChrome = chrome ?? uncontrolledChrome;
-  const darkThemes = ["cm-dark", "cm-midnight", "cm-aurora"];
-  const effectiveChrome: CmThemeChrome = darkThemes.includes(theme.name)
-    ? "surface"
-    : requestedChrome;
+  const effectiveChrome: CmThemeChrome = theme.colorScheme === "dark" ? "surface" : requestedChrome;
   const effectiveInvert = effectiveChrome === "inverted";
 
   const setDensity = useCallback(
@@ -178,13 +182,14 @@ export function CmThemeProvider({
   }, [theme]);
 
   useEffect(() => {
-    applyThemePreferences(requestedDensity, effectiveChrome);
-  }, [effectiveChrome, requestedDensity]);
+    applyThemePreferences(requestedDensity, effectiveChrome, skin);
+  }, [effectiveChrome, requestedDensity, skin]);
 
   const value = useMemo<ThemeContextValue>(
     () => ({
       chrome: effectiveChrome,
       density: requestedDensity,
+      skin,
       theme,
       themes: themeRegistry,
       setThemeByName: (name: string) => {
@@ -201,6 +206,7 @@ export function CmThemeProvider({
       effectiveChrome,
       effectiveInvert,
       requestedDensity,
+      skin,
       theme,
       themeRegistry,
       setChrome,
