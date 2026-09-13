@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.22.0
+
+### Minor Changes
+
+- Adiciona rolagem horizontal nativa ao `CmDataTable`, restrita ao cabeçalho de colunas e às linhas. Cabeçalho da listagem, filtros, ações e paginação permanecem fora da área rolável, incluindo telas estreitas e o painel de detalhes.
+
+  As novas props opcionais `scrollAreaLabel` e `tableMinWidth` permitem nomear a tabela e a área rolável para tecnologias assistivas e definir a largura mínima da tabela. A área entra na sequência de Tab apenas quando há conteúdo horizontal excedente, com foco visível e navegação nativa, preservando os controles internos. O comportamento usa os tokens compartilhados e atende às aparências Classic e Horizonte, nos temas claro e escuro.
+
 ## 3.21.0
 
 ### Minor Changes

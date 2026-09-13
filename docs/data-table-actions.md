@@ -32,3 +32,6 @@ Sua classe pública é `.cm-data-table__actions`. Estilos da aplicação que def
 `justify-content` sobre essa classe podem sobrescrever o alinhamento da coluna.
 Mantenha nos botões o tratamento de propagação já usado pela aplicação quando
 as ações não devem acionar `onRowClick`; o agrupador não altera eventos.
+
+Em telas estreitas, a [rolagem horizontal do `CmDataTable`](data-table-scroll.md)
+permite alcançar as ações nas últimas colunas sem deslocar filtros ou paginação.

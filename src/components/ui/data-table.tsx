@@ -4,6 +4,7 @@ import {
   type CSSProperties,
   forwardRef,
   useCallback,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -50,6 +51,8 @@ export function CmDataTable<T>({
   zebra = true,
   className,
   tableClassName,
+  tableMinWidth,
+  scrollAreaLabel,
   density,
   fullWidth = true,
   pagination = true,
@@ -109,6 +112,10 @@ export function CmDataTable<T>({
     defaultValue: defaultSortDirection,
   });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
+  const titleId = useId();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const [hasHorizontalOverflow, setHasHorizontalOverflow] = useState(false);
   const detailTableWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedRowRect, setSelectedRowRect] = useState<{
     top: number;
@@ -184,6 +191,23 @@ export function CmDataTable<T>({
   );
 
   const detailPanelActive = detailPanelEnabled && !!renderSelectedRowDetail;
+  const hasRows = currentData.length > 0;
+  useLayoutEffect(() => {
+    const scroll = scrollRef.current;
+    const tableElement = tableRef.current;
+    if (!scroll || !tableElement) return;
+
+    const measure = () => setHasHorizontalOverflow(scroll.scrollWidth > scroll.clientWidth + 1);
+    measure();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    observer?.observe(scroll);
+    observer?.observe(tableElement);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [hasRows, detailPanelActive, tableMinWidth, visibleColumns]);
   const detailPanelSize =
     typeof detailPanelWidth === "number" ? `${detailPanelWidth}px` : detailPanelWidth;
   const selectedDetailRow = useMemo(() => {
@@ -258,6 +282,9 @@ export function CmDataTable<T>({
   };
 
   const hasIntegratedHeader = Boolean(header || title || description || toolbar || actions);
+  const explicitLabel = scrollAreaLabel?.trim();
+  const labelledBy = !explicitLabel && !header && title ? titleId : undefined;
+  const accessibleLabel = labelledBy ? undefined : explicitLabel || "Tabela de dados";
   const rootClassName = cn(
     "cm-data-table data-table-root",
     detailPanelActive && "cm-data-table--detail-active",
@@ -272,7 +299,11 @@ export function CmDataTable<T>({
         <div className="cm-data-table__header-slot">{header}</div>
       ) : title || description ? (
         <div className="cm-data-table__heading">
-          {title ? <h3 className="cm-data-table__title">{title}</h3> : null}
+          {title ? (
+            <h3 id={titleId} className="cm-data-table__title">
+              {title}
+            </h3>
+          ) : null}
           {description ? <p className="cm-data-table__description">{description}</p> : null}
         </div>
       ) : null}
@@ -315,150 +346,164 @@ export function CmDataTable<T>({
   const table = (
     <div className={rootClassName} aria-busy={loading || undefined}>
       {integratedHeader}
-      <table className={cn("cm-data-table__table", tableClassName)}>
-        <thead className="cm-data-table__head">
-          <tr>
-            {hasColumnToggle && (
-              <th className="cm-data-table__toggle-cell">
-                <CmButton
-                  unstyled
-                  type="button"
-                  onClick={() => setColumnMenuOpen(true)}
-                  className="cm-data-table__column-button"
-                  title="Configurar colunas"
-                  aria-label="Configurar colunas"
-                >
-                  <SlidersHorizontal className="cm-data-table__column-icon" />
-                  {hiddenCount > 0 && (
-                    <span className="cm-data-table__hidden-count">{hiddenCount}</span>
-                  )}
-                </CmButton>
-              </th>
-            )}
-            {visibleColumns.map((column, colIndex) => {
-              const isSortable = !!column.sortable;
-              const isActive = sortKey === column.key;
-              return (
-                <th
-                  key={colIndex}
-                  className={cn(
-                    "cm-data-table__header",
-                    (!column.align || column.align === "left") && "cm-data-table__cell--left",
-                    column.align === "center" && "cm-data-table__cell--center",
-                    column.align === "right" && "cm-data-table__cell--right",
-                    isSortable && "cm-data-table__header--sortable",
-                    column.headerClassName,
-                  )}
-                  onClick={isSortable ? () => handleSort(column) : undefined}
-                  aria-sort={
-                    isActive ? (sortDirection === "asc" ? "ascending" : "descending") : undefined
-                  }
-                >
-                  <span
-                    className={cn(
-                      "cm-data-table__header-content",
-                      column.align === "center" && "cm-data-table__header-content--center",
-                      column.align === "right" && "cm-data-table__header-content--right",
-                    )}
-                  >
-                    {column.header}
-                    {isSortable &&
-                      (isActive ? (
-                        sortDirection === "asc" ? (
-                          <ArrowUp className="cm-data-table__sort-icon" />
-                        ) : (
-                          <ArrowDown className="cm-data-table__sort-icon" />
-                        )
-                      ) : (
-                        <ArrowUpDown className="cm-data-table__sort-icon cm-data-table__sort-icon--inactive" />
-                      ))}
-                  </span>
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody className="cm-data-table__body">
-          {currentData.map((row, rowIndex) => {
-            const key = getRowKey(row, rowIndex);
-            const isSelected = selectedRowKey != null && key === selectedRowKey;
-            return (
-              <tr
-                key={key}
-                data-selected={isSelected || undefined}
-                className={cn(
-                  "cm-data-table__row",
-                  zebra && !isSelected && rowIndex % 2 === 1 && "cm-data-table__row--zebra",
-                  !isSelected && "cm-data-table__row--hoverable",
-                  onRowClick && "cm-data-table__row--clickable",
-                  isSelected && "cm-data-table__row--selected",
-                )}
-                onClick={onRowClick ? () => onRowClick(row) : undefined}
-              >
-                {hasColumnToggle && <td className="cm-data-table__toggle-spacer" />}
-                {visibleColumns.map((column, colIndex) => (
-                  <td
-                    key={`${key}-${colIndex}`}
-                    className={cn(
-                      "cm-data-table__cell",
-                      column.align === "left" && "cm-data-table__cell--left",
-                      column.align === "center" && "cm-data-table__cell--center",
-                      column.align === "right" && "cm-data-table__cell--right",
-                      column.cellClassName,
-                    )}
-                  >
-                    {column.render
-                      ? column.render(row)
-                      : String((row as Record<string, unknown>)[column.key] ?? "")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-        {pagination && totalCount > 0 && (
-          <tfoot className="cm-data-table__foot">
-            <tr>
-              <td
-                colSpan={visibleColumns.length + (hasColumnToggle ? 1 : 0)}
-                className="cm-data-table__pagination-cell"
-              >
-                <div className="cm-data-table__pagination">
-                  <div className="cm-data-table__pagination-group">
-                    <span className="cm-data-table__pagination-text">Linhas por página:</span>
-                    <select
-                      value={rowsPerPage}
-                      onChange={(e) => handleChangeRowsPerPage(e.target.value)}
-                      className="cm-data-table__page-size"
-                      aria-label="Linhas por página"
+      <div className="cm-data-table__viewport">
+        <div
+          ref={scrollRef}
+          className="cm-data-table__scroll"
+          role={hasHorizontalOverflow ? "region" : undefined}
+          tabIndex={hasHorizontalOverflow ? 0 : undefined}
+          aria-label={hasHorizontalOverflow ? accessibleLabel : undefined}
+          aria-labelledby={hasHorizontalOverflow ? labelledBy : undefined}
+        >
+          <table
+            ref={tableRef}
+            className={cn("cm-data-table__table", tableClassName)}
+            style={tableMinWidth === undefined ? undefined : { minWidth: tableMinWidth }}
+            aria-label={accessibleLabel}
+            aria-labelledby={labelledBy}
+          >
+            <thead className="cm-data-table__head">
+              <tr>
+                {hasColumnToggle && (
+                  <th className="cm-data-table__toggle-cell">
+                    <CmButton
+                      unstyled
+                      type="button"
+                      onClick={() => setColumnMenuOpen(true)}
+                      className="cm-data-table__column-button"
+                      title="Configurar colunas"
+                      aria-label="Configurar colunas"
                     >
-                      {pageSizeOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="cm-data-table__pagination-text">
-                      {indexOfFirstItem + 1}-
-                      {manualPagination
-                        ? indexOfFirstItem + currentData.length
-                        : Math.min(indexOfLastItem, totalCount)}{" "}
-                      de {totalCount}
-                    </span>
-                  </div>
-                  <CmPagination
-                    mode="compact"
-                    page={currentPage}
-                    totalPages={totalPages}
-                    onChange={setCurrentPage}
-                    nextLabel="Próxima"
-                  />
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        )}
-      </table>
+                      <SlidersHorizontal className="cm-data-table__column-icon" />
+                      {hiddenCount > 0 && (
+                        <span className="cm-data-table__hidden-count">{hiddenCount}</span>
+                      )}
+                    </CmButton>
+                  </th>
+                )}
+                {visibleColumns.map((column, colIndex) => {
+                  const isSortable = !!column.sortable;
+                  const isActive = sortKey === column.key;
+                  return (
+                    <th
+                      key={colIndex}
+                      className={cn(
+                        "cm-data-table__header",
+                        (!column.align || column.align === "left") && "cm-data-table__cell--left",
+                        column.align === "center" && "cm-data-table__cell--center",
+                        column.align === "right" && "cm-data-table__cell--right",
+                        isSortable && "cm-data-table__header--sortable",
+                        column.headerClassName,
+                      )}
+                      onClick={isSortable ? () => handleSort(column) : undefined}
+                      aria-sort={
+                        isActive
+                          ? sortDirection === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : undefined
+                      }
+                    >
+                      <span
+                        className={cn(
+                          "cm-data-table__header-content",
+                          column.align === "center" && "cm-data-table__header-content--center",
+                          column.align === "right" && "cm-data-table__header-content--right",
+                        )}
+                      >
+                        {column.header}
+                        {isSortable &&
+                          (isActive ? (
+                            sortDirection === "asc" ? (
+                              <ArrowUp className="cm-data-table__sort-icon" />
+                            ) : (
+                              <ArrowDown className="cm-data-table__sort-icon" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="cm-data-table__sort-icon cm-data-table__sort-icon--inactive" />
+                          ))}
+                      </span>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody className="cm-data-table__body">
+              {currentData.map((row, rowIndex) => {
+                const key = getRowKey(row, rowIndex);
+                const isSelected = selectedRowKey != null && key === selectedRowKey;
+                return (
+                  <tr
+                    key={key}
+                    data-selected={isSelected || undefined}
+                    className={cn(
+                      "cm-data-table__row",
+                      zebra && !isSelected && rowIndex % 2 === 1 && "cm-data-table__row--zebra",
+                      !isSelected && "cm-data-table__row--hoverable",
+                      onRowClick && "cm-data-table__row--clickable",
+                      isSelected && "cm-data-table__row--selected",
+                    )}
+                    onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  >
+                    {hasColumnToggle && <td className="cm-data-table__toggle-spacer" />}
+                    {visibleColumns.map((column, colIndex) => (
+                      <td
+                        key={`${key}-${colIndex}`}
+                        className={cn(
+                          "cm-data-table__cell",
+                          column.align === "left" && "cm-data-table__cell--left",
+                          column.align === "center" && "cm-data-table__cell--center",
+                          column.align === "right" && "cm-data-table__cell--right",
+                          column.cellClassName,
+                        )}
+                      >
+                        {column.render
+                          ? column.render(row)
+                          : String((row as Record<string, unknown>)[column.key] ?? "")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {pagination && totalCount > 0 && (
+        <div className="cm-data-table__foot cm-data-table__pagination-cell">
+          <div className="cm-data-table__pagination">
+            <div className="cm-data-table__pagination-group">
+              <span className="cm-data-table__pagination-text">Linhas por página:</span>
+              <select
+                value={rowsPerPage}
+                onChange={(e) => handleChangeRowsPerPage(e.target.value)}
+                className="cm-data-table__page-size"
+                aria-label="Linhas por página"
+              >
+                {pageSizeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <span className="cm-data-table__pagination-text">
+                {indexOfFirstItem + 1}-
+                {manualPagination
+                  ? indexOfFirstItem + currentData.length
+                  : Math.min(indexOfLastItem, totalCount)}{" "}
+                de {totalCount}
+              </span>
+            </div>
+            <CmPagination
+              mode="compact"
+              page={currentPage}
+              totalPages={totalPages}
+              onChange={setCurrentPage}
+              nextLabel="Próxima"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Modal de configuração de colunas */}
       {hasColumnToggle && (

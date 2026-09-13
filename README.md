@@ -187,6 +187,10 @@ A aparência opcional [Horizonte](docs/horizonte.md) oferece temas claro e escur
 fontes locais Inter e Manrope e mantém os comportamentos dos componentes CM-UI.
 Ative com `skin="horizonte"` no provider; o padrão continua `classic`.
 
+O `CmDataTable` oferece [rolagem horizontal nativa](docs/data-table-scroll.md)
+restrita às colunas, com filtros e paginação separados, e
+[alinhamento compartilhado de ações](docs/data-table-actions.md).
+
 Exemplos por componente, variantes, tabela de props e notas de acessibilidade nas
 docs vivas:
 

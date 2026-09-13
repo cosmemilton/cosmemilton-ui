@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import type { CmDensity } from "./types.js";
 
 export type CmDataTableColumn<T> = {
@@ -36,6 +36,10 @@ export type CmDataTableProps<T> = {
   zebra?: boolean;
   className?: string;
   tableClassName?: string;
+  /** Largura mínima das colunas; números são pixels. O excedente rola dentro da tabela. */
+  tableMinWidth?: CSSProperties["minWidth"];
+  /** Nome acessível da tabela e da região rolável. Padrão: title ou "Tabela de dados". */
+  scrollAreaLabel?: string;
   density?: CmDensity;
   fullWidth?: boolean;
   pagination?: boolean;

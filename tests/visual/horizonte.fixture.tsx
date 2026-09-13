@@ -7,8 +7,13 @@ import { CmSelect } from "../../src/components/ui/select.js";
 import { CmTextarea } from "../../src/components/ui/textarea.js";
 import { CmButton } from "../../src/components/ui/button.js";
 import { CmUserMenu, type CmUserMenuPresentation } from "../../src/components/ui/user-menu.js";
-import { CmDataTable, CmDataTableActions, type CmDataTableColumn } from "../../src/components/ui/data-table.js";
+import {
+  CmDataTable,
+  CmDataTableActions,
+  type CmDataTableColumn,
+} from "../../src/components/ui/data-table.js";
 import { Eye, Grid2X2, LogOut, PanelsTopLeft, Pencil, Settings, UserRoundX } from "lucide-react";
+import { DataTableScrollFixture } from "./data-table-scroll.fixture.js";
 
 const initialNodes: CmTreeNode[] = [
   {
@@ -114,7 +119,13 @@ function UserMenuFixture() {
           <h1>Menu do usuário</h1>
           <p>Componentes reais · identidade de teste</p>
         </div>
-        <CmButton onClick={() => setThemeByName(theme.name === "cm-horizonte-dark" ? "cm-horizonte-light" : "cm-horizonte-dark")}>
+        <CmButton
+          onClick={() =>
+            setThemeByName(
+              theme.name === "cm-horizonte-dark" ? "cm-horizonte-light" : "cm-horizonte-dark",
+            )
+          }
+        >
           Alternar tema
         </CmButton>
       </header>
@@ -132,10 +143,26 @@ function UserMenuFixture() {
               menuHeader={presentation === "slim" ? "always" : undefined}
               user={{ title: "Milton Andrade", subtitle: "Administrador", initials: "MA" }}
               items={[
-                { id: "products", label: "Meus produtos", icon: <Grid2X2 size={16} />, onSelect: () => setEvent(`${presentation}: produtos`) },
-                { id: "settings", label: "Preferências", icon: <Settings size={16} />, disabled: true },
+                {
+                  id: "products",
+                  label: "Meus produtos",
+                  icon: <Grid2X2 size={16} />,
+                  onSelect: () => setEvent(`${presentation}: produtos`),
+                },
+                {
+                  id: "settings",
+                  label: "Preferências",
+                  icon: <Settings size={16} />,
+                  disabled: true,
+                },
                 { type: "separator", id: "account" },
-                { id: "logout", label: "Sair", icon: <LogOut size={16} />, danger: true, onSelect: () => setEvent(`${presentation}: sair`) },
+                {
+                  id: "logout",
+                  label: "Sair",
+                  icon: <LogOut size={16} />,
+                  danger: true,
+                  onSelect: () => setEvent(`${presentation}: sair`),
+                },
               ]}
             />
           </div>
@@ -143,7 +170,9 @@ function UserMenuFixture() {
       ))}
       <footer className="user-menu-fixture__footer">
         <CmButton data-testid="user-menu-outside">Área fora do menu</CmButton>
-        <output data-testid="user-menu-event" aria-live="polite">{event}</output>
+        <output data-testid="user-menu-event" aria-live="polite">
+          {event}
+        </output>
       </footer>
     </main>
   );
@@ -212,12 +241,27 @@ const root = document.getElementById("root");
 if (!root) throw new Error("Horizonte fixture root not found");
 const params = new URLSearchParams(window.location.search);
 const fixture = params.get("fixture");
+const skin = params.get("skin") === "classic" ? "classic" : "horizonte";
+const theme = params.get("theme") === "dark" ? "dark" : "light";
 createRoot(root).render(
   <CmThemeProvider
-    skin="horizonte"
-    defaultThemeName={params.get("theme") === "dark" ? "cm-horizonte-dark" : "cm-horizonte-light"}
+    skin={skin}
+    defaultThemeName={
+      skin === "horizonte" ? `cm-horizonte-${theme}` : theme === "dark" ? "cm-dark" : "cm-neutral"
+    }
     chrome="surface"
   >
-    {fixture === "user-menu" ? <UserMenuFixture /> : fixture === "data-table" ? <DataTableFixture /> : <HorizonteFixture />}
+    {fixture === "user-menu" ? (
+      <UserMenuFixture />
+    ) : fixture === "data-table" ? (
+      <DataTableFixture />
+    ) : fixture === "data-table-scroll" ? (
+      <DataTableScrollFixture
+        detail={params.get("detail") === "true"}
+        tableMinWidth={params.get("tableWidth") === "600" ? 600 : 1600}
+      />
+    ) : (
+      <HorizonteFixture />
+    )}
   </CmThemeProvider>,
 );

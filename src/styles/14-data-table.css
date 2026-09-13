@@ -1,7 +1,59 @@
 /* CmDataTable visual reset */
 .cm-data-table {
+  min-width: 0;
+  max-width: 100%;
   background: var(--color-card);
   color: var(--color-card-foreground, var(--color-foreground))
+}
+
+/* Apenas as colunas rolam; cabeçalho integrado e paginação continuam na largura
+   disponível, inclusive dentro de diálogos e layouts flex/grid. */
+.cm-data-table:not(.cm-data-table--detail-active),
+.cm-data-table-detail-layout {
+  isolation: isolate
+}
+
+.cm-data-table__viewport {
+  position: relative;
+  min-width: 0;
+  max-width: 100%
+}
+
+.cm-data-table__scroll {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain
+}
+
+.cm-data-table__scroll:focus-visible {
+  outline: none
+}
+
+/* O foco fica preso ao viewport e acima dos fundos de linhas posicionadas.
+   O contorno não rola com as colunas nem altera a largura da tabela. */
+.cm-data-table__scroll:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  border: 2px solid var(--color-ring);
+  pointer-events: none
+}
+
+.cm-data-table__pagination,
+.cm-data-table__pagination-group {
+  flex-wrap: wrap;
+  gap: .75rem
+}
+
+.cm-data-table__pagination-group {
+  min-width: 0;
+  gap: .5rem
+}
+
+.cm-data-table__pagination > .cm-pagination {
+  flex-wrap: wrap
 }
 
 .cm-data-table__head,
