@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.22.1
+
+### Patch Changes
+
+- Corrige o cabeçalho personalizado de `CmDataTable` quando ele é o único conteúdo da área superior: o slot passa a ocupar a largura disponível, permitindo filtros responsivos sem sobrescritas na aplicação. Preserva os cabeçalhos com `toolbar`/`actions` separados e a rolagem nativa das colunas. Inclui regressão geométrica em Classic/Horizonte, claro/escuro, desktop/celular e estados preenchido, vazio e carregando. [#4](https://github.com/cosmemilton/cosmemilton-ui/issues/4).
+
 ## 3.22.0
 
 ### Minor Changes
