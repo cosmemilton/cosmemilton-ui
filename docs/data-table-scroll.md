@@ -10,6 +10,11 @@ disponível. Não é necessário criar um contêiner com `overflow-x` na aplica�
 O componente usa a rolagem nativa do navegador, inclusive por toque, e os tokens
 de foco compartilhados nas aparências Classic e Horizonte, em claro e escuro.
 
+Desde 3.22.1, um `header` personalizado sem `toolbar`/`actions` separados ocupa
+a largura disponível da área fixa. Seu conteúdo pode usar, por exemplo,
+`CmStack fullWidth` com filtros responsivos. Títulos e barras de ações separados
+mantêm a disposição existente.
+
 ## Props
 
 | Prop              | Tipo               | Comportamento                                                                                                                                                           |

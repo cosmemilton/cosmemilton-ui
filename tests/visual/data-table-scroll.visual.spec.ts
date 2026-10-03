@@ -27,6 +27,14 @@ for (const skin of ["classic", "horizonte"] as const) {
         const footer = dialog.locator(".cm-data-table__foot");
         await expect(scroll).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
+        if (skin === "classic") {
+          await expect(page.locator("body")).toHaveCSS("font-family", /CmVisualTestInter/);
+          expect(
+            await page.evaluate(() => document.fonts.check('16px "CmVisualTestInter"')),
+          ).toBe(true);
+          // The custom-header fix must not select the title/toolbar/action layout.
+          await expect(dialog.locator(".cm-data-table__header-slot:only-child")).toHaveCount(0);
+        }
         await expect(page.locator("html")).toHaveAttribute(
           "data-theme",
           skin === "horizonte"

@@ -259,6 +259,9 @@ createRoot(root).render(
       <DataTableScrollFixture
         detail={params.get("detail") === "true"}
         tableMinWidth={params.get("tableWidth") === "600" ? 600 : 1600}
+        customHeader={params.get("customHeader") === "true"}
+        empty={params.get("empty") === "true"}
+        loading={params.get("loading") === "true"}
       />
     ) : (
       <HorizonteFixture />

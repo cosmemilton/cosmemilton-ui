@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CmButton } from "../../src/components/ui/button.js";
 import { CmDialog } from "../../src/components/ui/dialog.js";
 import { CmInput } from "../../src/components/ui/input.js";
+import { CmStack } from "../../src/components/ui/layout.js";
 import { CmDataTable, type CmDataTableColumn } from "../../src/components/ui/data-table.js";
 
 const rows = Array.from({ length: 12 }, (_, index) => ({
@@ -32,9 +33,15 @@ const columns: CmDataTableColumn<(typeof rows)[number]>[] = [
 export function DataTableScrollFixture({
   detail = false,
   tableMinWidth = 1600,
+  customHeader = false,
+  empty = false,
+  loading = false,
 }: {
   detail?: boolean;
   tableMinWidth?: number;
+  customHeader?: boolean;
+  empty?: boolean;
+  loading?: boolean;
 }) {
   const [open, setOpen] = useState(true);
   const [busca, setBusca] = useState("");
@@ -56,23 +63,56 @@ export function DataTableScrollFixture({
       >
         <CmDataTable
           columns={columns}
-          data={filteredRows}
+          data={empty ? [] : filteredRows}
+          loading={loading}
           rowKey="id"
-          title="Produtos da loja 0002"
-          description="Prévia de produtos com nove colunas e paginação."
+          title={customHeader ? undefined : "Produtos da loja 0002"}
+          description={
+            customHeader ? undefined : "Prévia de produtos com nove colunas e paginação."
+          }
+          header={
+            customHeader ? (
+              <CmStack fullWidth gap="md">
+                <h3>Produtos da loja 0002</h3>
+                <div
+                  data-testid="custom-header-filters"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))",
+                    gap: ".75rem",
+                  }}
+                >
+                  <CmInput
+                    label="Buscar produtos"
+                    value={busca}
+                    onChange={(event) => setBusca(event.target.value)}
+                  />
+                  <CmInput label="Data inicial" type="date" defaultValue="2026-10-03" />
+                  <CmInput label="Data final" type="date" defaultValue="2026-10-03" />
+                  <CmButton onClick={() => setEvent("Exportação solicitada")}>Exportar</CmButton>
+                </div>
+              </CmStack>
+            ) : undefined
+          }
           tableMinWidth={tableMinWidth}
           scrollAreaLabel="Tabela de produtos"
           tableKey="visual-scroll-products"
           defaultRowsPerPage={5}
           rowsPerPageOptions={[5, 10]}
           toolbar={
-            <CmInput
-              label="Buscar produtos"
-              value={busca}
-              onChange={(event) => setBusca(event.target.value)}
-            />
+            customHeader ? undefined : (
+              <CmInput
+                label="Buscar produtos"
+                value={busca}
+                onChange={(event) => setBusca(event.target.value)}
+              />
+            )
           }
-          actions={<CmButton onClick={() => setEvent("Exportação solicitada")}>Exportar</CmButton>}
+          actions={
+            customHeader ? undefined : (
+              <CmButton onClick={() => setEvent("Exportação solicitada")}>Exportar</CmButton>
+            )
+          }
           selectedRowKey={selected}
           onRowClick={(row) => setSelected(row.id)}
           detailPanelEnabled={detail}
