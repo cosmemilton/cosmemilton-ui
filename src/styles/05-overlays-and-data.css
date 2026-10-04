@@ -1191,7 +1191,10 @@
   right: 0;
   bottom: 0;
   z-index: var(--z-toast, 9999);
+  box-sizing: border-box;
   display: flex;
+  width: max-content;
+  max-width: 100%;
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-sm, .5rem);
@@ -1201,9 +1204,11 @@
 .cm-toast__item {
   pointer-events: auto;
   position: relative;
+  box-sizing: border-box;
   overflow: hidden;
   display: flex;
   width: 100%;
+  min-width: 0;
   max-width: 24rem;
   align-items: flex-start;
   gap: .75rem;
@@ -1302,9 +1307,11 @@
 
 .cm-toast__content {
   display: flex;
+  min-width: 0;
   flex: 1 1 0%;
   flex-direction: column;
-  gap: .125rem
+  gap: .125rem;
+  overflow-wrap: anywhere
 }
 
 .cm-toast__title {

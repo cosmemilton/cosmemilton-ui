@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.22.2
+
+### Patch Changes
+
+- Corrige a apresentação de abas e toasts em telas estreitas:
+  - `CmTabsList` reserva espaço lateral para os controles de rolagem, sem cobrir a aba selecionada, e recalcula sua visibilidade ao redimensionar a lista. A faixa permanece limitada à largura disponível.
+  - `CmToastProvider` limita a pilha à largura da tela e permite quebrar títulos, URLs e mensagens sem espaços, mantendo o texto completo e o botão de fechar acessíveis. O cartão mantém o limite de 24rem.
+
 ## 3.22.1
 
 ### Patch Changes

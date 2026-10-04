@@ -72,6 +72,7 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
 ) {
   const context = useContext(TabsContext);
   const variant = context?.variant ?? "default";
+  const shellRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [scrollState, setScrollState] = useState({
     hasOverflow: false,
@@ -86,8 +87,12 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
     if (!list) return;
 
     const maxScrollLeft = Math.max(0, list.scrollWidth - list.clientWidth);
+    // Check against the full shell, before space is reserved for the controls.
+    // Otherwise the controls themselves could keep overflow enabled after a resize.
+    const borderWidth = Math.max(0, list.offsetWidth - list.clientWidth);
+    const availableWidth = (shellRef.current?.clientWidth || list.clientWidth) - borderWidth;
     const nextState = {
-      hasOverflow: maxScrollLeft > 1,
+      hasOverflow: list.scrollWidth > availableWidth + 1,
       canScrollBack: list.scrollLeft > 1,
       canScrollForward: list.scrollLeft < maxScrollLeft - 1,
     };
@@ -101,40 +106,16 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
     );
   }, []);
 
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-
-    const frame = window.requestAnimationFrame(updateScrollState);
-    const resizeObserver =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScrollState);
-    resizeObserver?.observe(list);
-    Array.from(list.children).forEach((child) => resizeObserver?.observe(child));
-
-    const mutationObserver = new MutationObserver(updateScrollState);
-    mutationObserver.observe(list, { childList: true, subtree: true, characterData: true });
-
-    list.addEventListener("scroll", updateScrollState, { passive: true });
-    window.addEventListener("resize", updateScrollState);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      resizeObserver?.disconnect();
-      mutationObserver.disconnect();
-      list.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-    };
-  }, [children, updateScrollState]);
-
   const scrollListTo = useCallback(
-    (left: number) => {
+    (left: number, behavior: ScrollBehavior = "smooth") => {
       const list = listRef.current;
       if (!list) return;
 
       const maxScrollLeft = Math.max(0, list.scrollWidth - list.clientWidth);
       const nextLeft = Math.min(Math.max(0, left), maxScrollLeft);
+      if (Math.abs(list.scrollLeft - nextLeft) <= 1) return;
       if (typeof list.scrollTo === "function") {
-        list.scrollTo({ left: nextLeft, behavior: "smooth" });
+        list.scrollTo({ left: nextLeft, behavior });
       } else {
         list.scrollLeft = nextLeft;
         updateScrollState();
@@ -142,6 +123,74 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
     },
     [updateScrollState],
   );
+
+  const ensureActiveTabVisible = useCallback(
+    (behavior: ScrollBehavior = "instant") => {
+      const list = listRef.current;
+      const activeTab = list?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
+      if (!list || !activeTab || list.clientWidth <= 0) return;
+
+      // The positioned list makes these offsets relative to its scrollable area.
+      const tabStart = activeTab.offsetLeft;
+      const tabEnd = tabStart + activeTab.offsetWidth;
+      if (activeTab.offsetWidth > list.clientWidth || tabStart < list.scrollLeft) {
+        scrollListTo(tabStart, behavior);
+      } else if (tabEnd > list.scrollLeft + list.clientWidth) {
+        scrollListTo(tabEnd - list.clientWidth, behavior);
+      }
+    },
+    [scrollListTo],
+  );
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const updateLayout = () => {
+      updateScrollState();
+      ensureActiveTabVisible();
+    };
+    const frame = window.requestAnimationFrame(updateLayout);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateLayout);
+    resizeObserver?.observe(list);
+    if (shellRef.current) resizeObserver?.observe(shellRef.current);
+    const observedChildren = new Set<Element>();
+    const observeChildren = () => {
+      const currentChildren = new Set(Array.from(list.children));
+      observedChildren.forEach((child) => {
+        if (!currentChildren.has(child)) {
+          resizeObserver?.unobserve(child);
+          observedChildren.delete(child);
+        }
+      });
+      currentChildren.forEach((child) => {
+        if (!observedChildren.has(child)) {
+          resizeObserver?.observe(child);
+          observedChildren.add(child);
+        }
+      });
+    };
+    observeChildren();
+
+    const mutationObserver = new MutationObserver(() => {
+      observeChildren();
+      updateLayout();
+    });
+    mutationObserver.observe(list, { childList: true, subtree: true, characterData: true });
+
+    // Scrolling with an arrow should not pull the list back to the selected tab.
+    list.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateLayout);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+      mutationObserver.disconnect();
+      list.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateLayout);
+    };
+  }, [updateScrollState, ensureActiveTabVisible]);
 
   const scrollByPage = (direction: -1 | 1) => {
     const list = listRef.current;
@@ -151,37 +200,32 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
   };
 
   useEffect(() => {
-    const list = listRef.current;
-    const activeTab = list?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
-    if (!list || !activeTab || list.clientWidth <= 0) return;
+    ensureActiveTabVisible("smooth");
+  }, [context?.value, ensureActiveTabVisible]);
 
-    const tabStart = activeTab.offsetLeft;
-    const tabEnd = tabStart + activeTab.offsetWidth;
-    if (tabStart < list.scrollLeft) {
-      scrollListTo(tabStart);
-    } else if (tabEnd > list.scrollLeft + list.clientWidth) {
-      scrollListTo(tabEnd - list.clientWidth);
-    }
-  }, [context?.value, scrollListTo]);
+  useEffect(() => {
+    ensureActiveTabVisible();
+  }, [scrollState.hasOverflow, showScrollButtons, ensureActiveTabVisible]);
 
-  const showBackButton = showScrollButtons && scrollState.hasOverflow && scrollState.canScrollBack;
-  const showForwardButton =
-    showScrollButtons && scrollState.hasOverflow && scrollState.canScrollForward;
+  const showControls = showScrollButtons && scrollState.hasOverflow;
 
   return (
     <div
+      ref={shellRef}
       className={cn(
         "cm-tabs-list-shell",
         variant === "modal" && "cm-tabs-list-shell--modal",
         variant === "folder" && "cm-tabs-list-shell--folder",
       )}
     >
-      {showBackButton ? (
+      {showControls ? (
         <CmButton
           unstyled
           type="button"
           className="cm-tabs-scroll-button cm-tabs-scroll-button--back"
           aria-label="Rolar abas para a esquerda"
+          aria-hidden={!scrollState.canScrollBack}
+          disabled={!scrollState.canScrollBack}
           onClick={() => scrollByPage(-1)}
         >
           <ChevronLeft aria-hidden="true" />
@@ -201,12 +245,14 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
         {children}
       </div>
 
-      {showForwardButton ? (
+      {showControls ? (
         <CmButton
           unstyled
           type="button"
           className="cm-tabs-scroll-button cm-tabs-scroll-button--forward"
           aria-label="Rolar abas para a direita"
+          aria-hidden={!scrollState.canScrollForward}
+          disabled={!scrollState.canScrollForward}
           onClick={() => scrollByPage(1)}
         >
           <ChevronRight aria-hidden="true" />
