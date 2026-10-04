@@ -4,7 +4,10 @@ import userEvent from "@testing-library/user-event";
 
 import { CmTabs, CmTabsList, CmTabsTrigger } from "./tabs.js";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 function renderTabs(variant: "default" | "modal" | "folder" = "default", showScrollButtons = true) {
   return render(
@@ -18,8 +21,17 @@ function renderTabs(variant: "default" | "modal" | "folder" = "default", showScr
   );
 }
 
-function mockHorizontalLayout(list: HTMLElement, clientWidth: number, scrollWidth: number) {
+function mockHorizontalLayout(
+  list: HTMLElement,
+  clientWidth: number,
+  scrollWidth: number,
+  shellWidth = clientWidth,
+) {
   let scrollLeft = 0;
+  Object.defineProperty(list.parentElement, "clientWidth", {
+    configurable: true,
+    value: shellWidth,
+  });
   Object.defineProperties(list, {
     clientWidth: { configurable: true, value: clientWidth },
     scrollWidth: { configurable: true, value: scrollWidth },
@@ -41,6 +53,13 @@ function mockHorizontalLayout(list: HTMLElement, clientWidth: number, scrollWidt
   fireEvent(window, new Event("resize"));
 }
 
+function mockTabLayout(tab: HTMLElement, offsetLeft: number, offsetWidth: number) {
+  Object.defineProperties(tab, {
+    offsetLeft: { configurable: true, value: offsetLeft },
+    offsetWidth: { configurable: true, value: offsetWidth },
+  });
+}
+
 describe("CmTabsList overflow navigation", () => {
   it.each(["default", "modal", "folder"] as const)(
     "shows scroll controls only when the %s variant overflows",
@@ -57,6 +76,7 @@ describe("CmTabsList overflow navigation", () => {
 
       await user.click(screen.getByRole("button", { name: "Rolar abas para a direita" }));
       expect(list.scrollTo).toHaveBeenCalledWith({ left: 160, behavior: "smooth" });
+      expect(list.scrollLeft).toBe(160);
       expect(screen.getByRole("button", { name: "Rolar abas para a esquerda" })).toBeVisible();
     },
   );
@@ -75,5 +95,104 @@ describe("CmTabsList overflow navigation", () => {
 
     expect(screen.queryByLabelText(/Rolar abas/)).not.toBeInTheDocument();
     expect(list).toHaveClass("cm-tabs-list--folder");
+  });
+
+  it.each(["default", "modal", "folder"] as const)(
+    "reveals selected tabs using the %s list width after reserving space for the arrows",
+    async (variant) => {
+      const user = userEvent.setup();
+      renderTabs(variant);
+      const list = screen.getByRole("tablist");
+      mockTabLayout(screen.getByRole("tab", { name: "One" }), 4, 100);
+      mockTabLayout(screen.getByRole("tab", { name: "Three" }), 300, 120);
+      mockHorizontalLayout(list, 200, 500, 264);
+
+      await user.click(screen.getByRole("tab", { name: "Three" }));
+      expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 220, behavior: "smooth" });
+
+      await user.click(screen.getByRole("tab", { name: "One" }));
+      expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 4, behavior: "smooth" });
+    },
+  );
+
+  it.each(["default", "modal", "folder"] as const)(
+    "keeps the selected %s tab visible when the viewport shrinks",
+    async (variant) => {
+      const user = userEvent.setup();
+      renderTabs(variant);
+      const list = screen.getByRole("tablist");
+      mockTabLayout(screen.getByRole("tab", { name: "Three" }), 300, 120);
+      mockHorizontalLayout(list, 500, 500);
+      await user.click(screen.getByRole("tab", { name: "Three" }));
+      expect(list.scrollLeft).toBe(0);
+
+      mockHorizontalLayout(list, 200, 500, 264);
+      expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 220, behavior: "instant" });
+      expect(list.scrollLeft).toBe(220);
+    },
+  );
+
+  it("removes controls when the tabs fit the full shell, even if the reserved list still overflows", () => {
+    renderTabs();
+    const list = screen.getByRole("tablist");
+    mockHorizontalLayout(list, 200, 500, 264);
+    expect(screen.getByRole("button", { name: "Rolar abas para a direita" })).toBeVisible();
+
+    mockHorizontalLayout(list, 250, 300, 314);
+    expect(screen.queryByLabelText(/Rolar abas/)).not.toBeInTheDocument();
+  });
+
+  it("reveals selected tabs when scroll controls are disabled", async () => {
+    const user = userEvent.setup();
+    renderTabs("folder", false);
+    const list = screen.getByRole("tablist");
+    mockTabLayout(screen.getByRole("tab", { name: "Three" }), 300, 120);
+    mockHorizontalLayout(list, 264, 500);
+
+    await user.click(screen.getByRole("tab", { name: "Three" }));
+    expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 156, behavior: "smooth" });
+    expect(screen.queryByLabelText(/Rolar abas/)).not.toBeInTheDocument();
+  });
+
+  it("aligns an oversized tab to its start without repeated scrolling during resize", async () => {
+    const user = userEvent.setup();
+    renderTabs();
+    const list = screen.getByRole("tablist");
+    mockTabLayout(screen.getByRole("tab", { name: "Two" }), 200, 260);
+    mockHorizontalLayout(list, 200, 600, 264);
+
+    await user.click(screen.getByRole("tab", { name: "Two" }));
+    expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 200, behavior: "smooth" });
+
+    vi.mocked(list.scrollTo).mockClear();
+    fireEvent(window, new Event("resize"));
+    expect(list.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it("preserves manual arrow navigation when the parent renders the same tabs again", async () => {
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0);
+      return 0;
+    });
+    const user = userEvent.setup();
+    const view = renderTabs();
+    const list = screen.getByRole("tablist");
+    mockTabLayout(screen.getByRole("tab", { name: "One" }), 4, 100);
+    mockHorizontalLayout(list, 200, 500, 264);
+
+    await user.click(screen.getByRole("button", { name: "Rolar abas para a direita" }));
+    vi.mocked(list.scrollTo).mockClear();
+    view.rerender(
+      <CmTabs defaultValue="one">
+        <CmTabsList>
+          <CmTabsTrigger value="one">One</CmTabsTrigger>
+          <CmTabsTrigger value="two">Two</CmTabsTrigger>
+          <CmTabsTrigger value="three">Three</CmTabsTrigger>
+        </CmTabsList>
+      </CmTabs>,
+    );
+
+    expect(list.scrollLeft).toBe(160);
+    expect(list.scrollTo).not.toHaveBeenCalled();
   });
 });

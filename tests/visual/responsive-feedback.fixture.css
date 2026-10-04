@@ -1,0 +1,47 @@
+@font-face {
+  font-family: "CmVisualTestInter";
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 900;
+  src: url("/fonts/inter-variable-latin.woff2") format("woff2-variations");
+}
+
+:root {
+  --font-geist-sans: "CmVisualTestInter", sans-serif;
+}
+body {
+  margin: 0;
+  font-family: "CmVisualTestInter", sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+.responsive-page {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+.responsive-page section {
+  min-width: 0;
+}
+.responsive-page h1,
+.responsive-page h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.responsive-page h2 {
+  margin-bottom: 8px;
+}
+.responsive-page label {
+  display: grid;
+  gap: 4px;
+}
+.responsive-page select,
+.responsive-actions button {
+  max-width: 100%;
+  font: inherit;
+}
+.responsive-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

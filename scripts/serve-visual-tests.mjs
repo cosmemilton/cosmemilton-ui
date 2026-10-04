@@ -18,6 +18,7 @@ await build({
   entryPoints: [
     join(root, "tests", "visual", "fixture.tsx"),
     join(root, "tests", "visual", "horizonte.fixture.tsx"),
+    join(root, "tests", "visual", "responsive-feedback.fixture.tsx"),
   ],
   bundle: true,
   format: "esm",
@@ -47,6 +48,10 @@ const horizonteHtml = indexHtml
   .replace("/fixture.css", "/horizonte.fixture.css")
   .replace("/fixture.js", "/horizonte.fixture.js");
 
+const responsiveHtml = indexHtml
+  .replace("/fixture.css", "/responsive-feedback.fixture.css")
+  .replace("/fixture.js", "/responsive-feedback.fixture.js");
+
 const files = new Map([
   ["/fixture.js", join(outputDir, "fixture.js")],
   ["/fixture.js.map", join(outputDir, "fixture.js.map")],
@@ -54,6 +59,12 @@ const files = new Map([
   ["/horizonte.fixture.js.map", join(outputDir, "horizonte.fixture.js.map")],
   ["/horizonte.fixture.css", join(root, "tests", "visual", "horizonte.fixture.css")],
   ["/styles.css", join(root, "dist", "styles.css")],
+  ["/components.css", join(root, "dist", "components.css")],
+  ["/responsive-feedback.fixture.js", join(outputDir, "responsive-feedback.fixture.js")],
+  [
+    "/responsive-feedback.fixture.css",
+    join(root, "tests", "visual", "responsive-feedback.fixture.css"),
+  ],
   ["/fixture.css", join(root, "tests", "visual", "fixture.css")],
   [
     "/fonts/horizonte-inter-latin.woff2",
@@ -95,6 +106,16 @@ const server = createServer(async (request, response) => {
   if (pathname === "/horizonte") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(horizonteHtml);
+    return;
+  }
+
+  if (pathname === "/responsive-feedback") {
+    const componentsOnly =
+      new URL(request.url, `http://${host}:${port}`).searchParams.get("css") === "components";
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(
+      componentsOnly ? responsiveHtml.replace("/styles.css", "/components.css") : responsiveHtml,
+    );
     return;
   }
 

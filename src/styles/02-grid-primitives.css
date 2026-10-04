@@ -1278,9 +1278,11 @@
 
 .cm-tabs-list-shell {
   position: relative;
+  display: flex;
   width: fit-content;
   max-width: 100%;
   min-width: 0;
+  align-items: center;
 }
 
 .cm-tabs-list-shell--modal,
@@ -1289,11 +1291,14 @@
 }
 
 .cm-tabs-list {
+  position: relative;
   display: inline-flex;
+  min-width: 0;
   max-width: 100%;
+  flex: 0 1 auto;
   height: 2.5rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
   border-radius: var(--radius-lg);
@@ -1310,30 +1315,25 @@
 }
 
 .cm-tabs-scroll-button {
-  position: absolute;
-  top: 50%;
   z-index: 4;
   display: inline-flex;
   width: 1.75rem;
   height: 1.75rem;
+  flex: 0 0 1.75rem;
   align-items: center;
   justify-content: center;
+  margin: 0 0.125rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   border-radius: 9999px;
   background: color-mix(in srgb, var(--color-card) 94%, transparent);
   color: var(--color-foreground);
   box-shadow: var(--shadow-md);
   cursor: pointer;
-  transform: translateY(-50%);
   backdrop-filter: blur(4px);
 }
 
-.cm-tabs-scroll-button--back {
-  left: 0.25rem;
-}
-
-.cm-tabs-scroll-button--forward {
-  right: 0.25rem;
+.cm-tabs-scroll-button:disabled {
+  visibility: hidden;
 }
 
 .cm-tabs-scroll-button:hover {
