@@ -88,7 +88,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
+    "build": "node scripts/clean-dist.mjs && node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
     "build:browser": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/build-browser.mjs",
     "sync:tokens": "node scripts/sync-tokens.mjs",
     "check:tokens-sync": "node scripts/sync-tokens.mjs --check",
