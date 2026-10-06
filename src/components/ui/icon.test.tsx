@@ -32,4 +32,13 @@ describe("CmIcon", () => {
     expect(icon).toHaveAttribute("width", "12");
     expect(icon).toHaveAttribute("height", "12");
   });
+
+  it("renders bundled navigation icons without Iconify requests and preserves their accessible label", () => {
+    render(<CmIcon name="lucide:library" title="Biblioteca" size={18} />);
+    const icon = screen.getByRole("img", { name: "Biblioteca" });
+    expect(icon).toHaveClass("lucide-library", "cm-icon");
+    expect(icon).toHaveAttribute("width", "18");
+    expect(icon.querySelector("path")).not.toBeNull();
+    expect(screen.queryByTestId("icon")).not.toBeInTheDocument();
+  });
 });

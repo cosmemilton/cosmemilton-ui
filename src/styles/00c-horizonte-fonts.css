@@ -1,7 +1,6 @@
-/* Unique family names keep existing themes' font loading unchanged. Fonts are
-   requested by the browser only when the Horizonte typography is selected. */
+/* V4 local typography. Font files retain their licensed source notices. */
 @font-face {
-  font-family: "CM Horizonte Inter";
+  font-family: "CM UI Sans";
   src: url("./fonts/horizonte-inter-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
@@ -9,7 +8,7 @@
 }
 
 @font-face {
-  font-family: "CM Horizonte Manrope";
+  font-family: "CM UI Display";
   src: url("./fonts/horizonte-manrope-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 200 800;

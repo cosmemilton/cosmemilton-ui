@@ -13,6 +13,8 @@ const FOCUSABLE_SELECTOR = [
 
 type UseFocusTrapOptions = {
   enabled?: boolean;
+  /** Element that receives focus when the trap opens, such as a search input. */
+  initialFocusRef?: RefObject<HTMLElement | null>;
   /** Restore focus to the previously focused element on teardown. */
   returnFocus?: boolean;
 };
@@ -28,7 +30,7 @@ type UseFocusTrapOptions = {
  */
 export function useFocusTrap(
   containerRef: RefObject<HTMLElement | null>,
-  { enabled = true, returnFocus = true }: UseFocusTrapOptions = {},
+  { enabled = true, initialFocusRef, returnFocus = true }: UseFocusTrapOptions = {},
 ): void {
   useEffect(() => {
     if (!enabled || typeof document === "undefined") return;
@@ -43,7 +45,11 @@ export function useFocusTrap(
       );
 
     const focusables = getFocusable();
-    (focusables[0] ?? container).focus({ preventScroll: true });
+    const initialFocus = initialFocusRef?.current;
+    (initialFocus && container.contains(initialFocus)
+      ? initialFocus
+      : (focusables[0] ?? container)
+    ).focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
@@ -76,5 +82,5 @@ export function useFocusTrap(
         previouslyFocused.focus({ preventScroll: true });
       }
     };
-  }, [enabled, containerRef, returnFocus]);
+  }, [enabled, containerRef, initialFocusRef, returnFocus]);
 }

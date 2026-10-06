@@ -2,26 +2,44 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [release]
   pull_request:
-    branches: [main]
+    branches: [main, release]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Uma publicação iniciada não deve ser interrompida por outro push.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   verify:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/release'
     name: Typecheck, lint, test, visual, build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      name: ${{ steps.pack.outputs.name }}
+      version: ${{ steps.pack.outputs.version }}
+      tarball: ${{ steps.pack.outputs.tarball }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
+
+      - name: Validate stable release version
+        if: github.event_name != 'pull_request'
+        run: node .github/scripts/release-package.mjs version
 
       - name: Install dependencies
         run: npm ci
@@ -48,14 +66,22 @@ jobs:
       - name: Visual regression
         run: npm run test:visual
 
+      - name: Upload visual failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Build
         run: npm run build
 
       - name: Check generated files are committed
-        # O build regenera a cópia vendorizada dos tokens (src/lib/theme), o CSS
-        # de temas (00a-theme-tokens.generated.css) e src/index.ts — qualquer
-        # diff (ou arquivo novo não rastreado) aqui significa fonte e artefato
-        # commitado fora de sincronia.
+        # Fontes geradas devem estar sincronizadas com o commit de release.
         run: |
           if [ -n "$(git status --porcelain -- src)" ]; then
             git status -- src
@@ -63,18 +89,88 @@ jobs:
             exit 1
           fi
 
-      - name: Validate package (publint)
-        run: npx publint
+      - name: Pack and validate release artifact
+        id: pack
+        run: node .github/scripts/release-package.mjs pack
+
+      - name: Validate packed package (publint)
+        env:
+          RELEASE_TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: npm exec -- publint "release-output/$RELEASE_TARBALL" --strict
 
       - name: Validate types resolution (attw)
-        # Exports de CSS não resolvem para JS/types por natureza — fora do escopo do attw.
-        run: npx attw --pack . --profile esm-only --exclude-entrypoints styles.css styles.min.css components.css components.min.css
+        # Arquivos estáticos não são entrypoints JS/types.
+        env:
+          RELEASE_TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: npm exec -- attw "release-output/$RELEASE_TARBALL" --profile esm-only --exclude-entrypoints styles.css styles.min.css components.css components.min.css map.css brand.svg brand-mark.svg manifest.json package.json
 
-      - name: Check tarball contents
+      - name: Upload validated npm package
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package-${{ github.sha }}
+          path: release-output/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish validated package to npm
+    needs: verify
+    if: github.ref == 'refs/heads/release' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout release helpers
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+
+      - name: Setup npm registry
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Download validated npm package
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-package-${{ github.sha }}
+          path: release-output/
+
+      - name: Check immutable version and artifact integrity
+        id: registry
+        run: node .github/scripts/release-package.mjs inspect
+
+      - name: Publish exact validated tarball
+        if: steps.registry.outputs.publish == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RELEASE_TARBALL: ${{ needs.verify.outputs.tarball }}
         run: |
-          npm pack --dry-run --json --ignore-scripts | node -e "
-            const files = JSON.parse(require('fs').readFileSync(0, 'utf8'))[0].files.map(f => f.path);
-            const stray = files.filter(f => !f.startsWith('dist/') && !f.startsWith('bin/') && !['package.json','README.md','LICENSE','CHANGELOG.md'].includes(f));
-            if (stray.length) { console.error('Unexpected files in tarball:', stray); process.exit(1); }
-            console.log(files.length + ' files, all expected.');
-          "
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN is required to publish."
+            exit 1
+          fi
+          npm publish "release-output/$RELEASE_TARBALL" --ignore-scripts --access public --tag latest --provenance
+
+      - name: Confirm npm registry propagation
+        if: steps.registry.outputs.publish == 'true'
+        run: node .github/scripts/release-package.mjs confirm
+
+      - name: Publication result
+        env:
+          PACKAGE_NAME: ${{ needs.verify.outputs.name }}
+          PACKAGE_VERSION: ${{ needs.verify.outputs.version }}
+          PUBLISHED_NOW: ${{ steps.registry.outputs.publish }}
+        run: |
+          if [ "$PUBLISHED_NOW" = "true" ]; then
+            echo "Published and confirmed: $PACKAGE_NAME@$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Already published with identical integrity: $PACKAGE_NAME@$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "https://www.npmjs.com/package/$PACKAGE_NAME/v/$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"

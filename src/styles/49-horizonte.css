@@ -3,36 +3,24 @@
    Floating labels, table details and tree drag geometry retain their CM state
    classes and DOM: changing the skin never replaces those interactions. */
 html[data-cm-skin="horizonte"] {
-  --cm-horizonte-navy: #172b46;
-  --cm-horizonte-lime: #d8eea0;
-  --cm-horizonte-nav-text: #becbdd;
-  --cm-horizonte-nav-muted: #9bb0c7;
-  --cm-horizonte-nav-line: #61738a30;
+  --cm-horizonte-nav-background: var(--color-card);
+  --cm-horizonte-nav-selected: var(--color-selection);
+  --cm-horizonte-nav-selected-foreground: var(--color-selection-foreground);
+  --cm-horizonte-nav-text: var(--color-card-foreground);
+  --cm-horizonte-nav-muted: var(--color-muted-foreground);
+  --cm-horizonte-nav-line: var(--color-border);
   --cm-horizonte-input-bg: var(--color-card);
-  --cm-horizonte-input-border: #d9e1e9;
-  --cm-horizonte-hover-border: #b1c0d0;
+  --cm-horizonte-input-border: var(--color-input);
+  --cm-horizonte-hover-border: var(--color-ring);
   --cm-horizonte-link: var(--color-ring);
-  --cm-horizonte-table-head: #f8fafc;
-  --cm-horizonte-selected: #edf1fc;
-  --cm-horizonte-data-foreground: #687a91;
+  --cm-horizonte-table-head: var(--color-muted);
+  --cm-horizonte-selected: var(--color-selection);
+  --cm-horizonte-data-foreground: var(--color-muted-foreground);
   --cm-horizonte-weight-body: 400;
   --cm-horizonte-weight-control: 500;
   --cm-horizonte-weight-emphasis: 550;
-  --cm-horizonte-header-font: var(--font-family-heading, "CM Horizonte Manrope", "Manrope", sans-serif);
+  --cm-horizonte-header-font: var(--font-family-heading, "CM UI Display", "Manrope", sans-serif);
   font-synthesis: none;
-}
-
-html[data-cm-skin="horizonte"][data-theme="cm-horizonte-dark"] {
-  --cm-horizonte-navy: #101c2d;
-  --cm-horizonte-nav-muted: #9caec5;
-  --cm-horizonte-nav-line: #26364b;
-  --cm-horizonte-input-bg: #111d2e;
-  --cm-horizonte-input-border: #35475f;
-  --cm-horizonte-hover-border: #627a99;
-  --cm-horizonte-link: #96b2ff;
-  --cm-horizonte-table-head: #1a293e;
-  --cm-horizonte-selected: #233958;
-  --cm-horizonte-data-foreground: #b8c7db;
 }
 
 html[data-cm-skin="horizonte"] body {
@@ -266,7 +254,7 @@ html[data-cm-skin="horizonte"] .cm-data-table__cell :is(small, .cm-text--muted) 
 html[data-cm-skin="horizonte"] .cm-data-table__cell strong { color: var(--color-foreground); font-size: 13px; font-weight: var(--cm-horizonte-weight-emphasis); }
 html[data-cm-skin="horizonte"] .cm-data-table__row--zebra { background: color-mix(in srgb, var(--color-muted) 15%, var(--color-card)); }
 html[data-cm-skin="horizonte"] .cm-data-table__row--hoverable:hover { background: color-mix(in srgb, var(--color-muted) 48%, var(--color-card)); }
-html[data-cm-skin="horizonte"] .cm-data-table__row--selected { background: var(--cm-horizonte-selected); color: var(--cm-horizonte-data-foreground); font-weight: var(--cm-horizonte-weight-body); transform: none; box-shadow: inset 3px 0 0 var(--color-ring); }
+html[data-cm-skin="horizonte"] .cm-data-table__row--selected { background: var(--cm-horizonte-selected); color: var(--color-selection-foreground); font-weight: var(--cm-horizonte-weight-body); transform: none; box-shadow: inset 3px 0 0 var(--color-ring); }
 html[data-cm-skin="horizonte"] .cm-data-table--detail-active .cm-data-table__row--selected { box-shadow: none; }
 html[data-cm-skin="horizonte"] .cm-data-table__pagination-cell { padding: 16px 20px; }
 html[data-cm-skin="horizonte"] .cm-data-table__pagination { flex-wrap: wrap; gap: 12px; }
@@ -301,29 +289,29 @@ html[data-cm-skin="horizonte"] .cm-tree-view__search-input .cm-input__control { 
 html[data-cm-skin="horizonte"] .cm-tree-view__search-icon { z-index: 1; pointer-events: none; }
 html[data-cm-skin="horizonte"] .cm-tree-view__search-clear { z-index: 1; }
 
-/* The navigation's navy is independent of the blue action color. */
+/* Navigation colors follow the active V4 palette; geometry remains opt-in. */
 html[data-cm-skin="horizonte"] .cm-app-shell { --cm-app-shell-sidebar-width: 224px; }
 html[data-cm-skin="horizonte"] .cm-sidebar-shell { --cm-sidebar-expanded-width: 224px; }
-html[data-cm-skin="horizonte"] .cm-app-shell__sidebar { background: var(--cm-horizonte-navy); border-color: var(--cm-horizonte-nav-line); }
+html[data-cm-skin="horizonte"] .cm-app-shell__sidebar { background: var(--cm-horizonte-nav-background); border-color: var(--cm-horizonte-nav-line); }
 
 html[data-cm-skin="horizonte"] .cm-sidebar {
-  --cm-sidebar-brand-fg: #fff;
+  --cm-sidebar-brand-fg: var(--color-card-foreground);
   --cm-sidebar-brand-muted: var(--cm-horizonte-nav-muted);
-  --cm-inverted-fg: #fff;
+  --cm-inverted-fg: var(--color-card-foreground);
   --cm-inverted-muted: var(--cm-horizonte-nav-muted);
   --cm-inverted-border: var(--cm-horizonte-nav-line);
-  --cm-inverted-surface: #ffffff09;
-  --cm-inverted-surface-hover: #ffffff12;
+  --cm-inverted-surface: var(--color-muted);
+  --cm-inverted-surface-hover: var(--color-selection);
   --cm-sidebar-subitems-bg: transparent;
   --cm-sidebar-subitems-border: var(--cm-horizonte-nav-line);
-  --cm-sidebar-rail-chip-bg: var(--cm-horizonte-navy);
+  --cm-sidebar-rail-chip-bg: var(--cm-horizonte-nav-background);
   --cm-sidebar-rail-chip-fg: var(--cm-horizonte-nav-muted);
-  --cm-sidebar-subitems-scrollbar-thumb: #61738a;
+  --cm-sidebar-subitems-scrollbar-thumb: var(--color-muted-foreground);
   --cm-sidebar-subitems-scrollbar-track: transparent;
   padding-block: 28px 18px;
   gap: 23px;
   border-right-color: var(--cm-horizonte-nav-line);
-  background: var(--cm-horizonte-navy);
+  background: var(--cm-horizonte-nav-background);
   color: var(--cm-horizonte-nav-text);
   box-shadow: none;
 }
@@ -332,17 +320,17 @@ html[data-cm-skin="horizonte"] .cm-sidebar__brand { grid-template-columns: 35px 
 html[data-cm-skin="horizonte"] .cm-sidebar__brand::after { background: var(--cm-horizonte-nav-line); }
 html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon,
 html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon-button { width: 35px; height: 35px; border-radius: 10px; }
-html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon { background: var(--cm-horizonte-lime); border: 0; color: #172b46; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon { background: var(--color-primary); border: 0; color: var(--color-primary-foreground); }
 html[data-cm-skin="horizonte"] .cm-sidebar__brand-icon > svg { width: 23px; height: 23px; }
-html[data-cm-skin="horizonte"] .cm-sidebar__brand-text strong { color: #fff; font-family: var(--cm-horizonte-header-font); font-size: 17px; font-weight: 750; letter-spacing: -.5px; }
+html[data-cm-skin="horizonte"] .cm-sidebar__brand-text strong { color: var(--color-card-foreground); font-family: var(--cm-horizonte-header-font); font-size: 17px; font-weight: 750; letter-spacing: -.5px; }
 html[data-cm-skin="horizonte"] .cm-sidebar__brand-text span { color: var(--cm-horizonte-nav-muted); font-size: 11px; }
 html[data-cm-skin="horizonte"] .cm-sidebar__toggle { width: 24px; height: 30px; color: var(--cm-horizonte-nav-muted); border-radius: 6px; }
 html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger, .cm-sidebar__item) { min-height: 39px; border-radius: 8px; padding-block: 9px; padding-inline: 13px; color: var(--cm-horizonte-nav-text); font-size: 13px; font-weight: 450; line-height: 21px; gap: 11px; }
 html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__group-trigger { font-size: 10px; font-weight: 550; letter-spacing: normal; text-transform: none; }
 html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__group-items .cm-sidebar__item { font-size: 13px; }
-html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger:hover, .cm-sidebar__item:hover) { background: #ffffff09; color: #fff; box-shadow: none; }
-html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active { background: var(--cm-horizonte-lime); color: #172b46; box-shadow: none; font-weight: 650; }
-html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active :is(.cm-sidebar__label, .cm-sidebar__nav-icon, svg) { color: #172b46; }
+html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger:hover, .cm-sidebar__item:hover) { background: var(--color-muted); color: var(--color-card-foreground); box-shadow: none; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active { background: var(--cm-horizonte-nav-selected); color: var(--cm-horizonte-nav-selected-foreground); box-shadow: none; font-weight: 650; }
+html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__item.cm-sidebar__item--active :is(.cm-sidebar__label, .cm-sidebar__nav-icon, svg) { color: var(--cm-horizonte-nav-selected-foreground); }
 html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__label { color: inherit; }
 html[data-cm-skin="horizonte"] .cm-sidebar .cm-sidebar__nav-icon { width: 18px; height: 18px; color: var(--cm-horizonte-nav-muted); }
 html[data-cm-skin="horizonte"] .cm-sidebar :is(.cm-sidebar__group-trigger, .cm-sidebar__item)::before { box-shadow: none; }

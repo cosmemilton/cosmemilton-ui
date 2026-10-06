@@ -19,6 +19,9 @@ await build({
     join(root, "tests", "visual", "fixture.tsx"),
     join(root, "tests", "visual", "horizonte.fixture.tsx"),
     join(root, "tests", "visual", "responsive-feedback.fixture.tsx"),
+    join(root, "tests", "visual", "command.fixture.tsx"),
+    join(root, "tests", "visual", "button-tones.fixture.tsx"),
+    join(root, "tests", "visual", "mega-menu.fixture.tsx"),
   ],
   bundle: true,
   format: "esm",
@@ -30,7 +33,7 @@ await build({
 });
 
 const indexHtml = `<!doctype html>
-<html lang="pt-BR" data-theme="cm-neutral">
+<html lang="pt-BR" data-theme="cm-v4-light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,7 +55,20 @@ const responsiveHtml = indexHtml
   .replace("/fixture.css", "/responsive-feedback.fixture.css")
   .replace("/fixture.js", "/responsive-feedback.fixture.js");
 
+const commandHtml = indexHtml
+  .replace('<link rel="stylesheet" href="/fixture.css" />', "")
+  .replace("/fixture.js", "/command.fixture.js");
+
+const buttonTonesHtml = commandHtml.replace("/command.fixture.js", "/button-tones.fixture.js");
+const megaMenuHtml = commandHtml.replace("/command.fixture.js", "/mega-menu.fixture.js");
+
 const files = new Map([
+  ["/mega-menu.fixture.js", join(outputDir, "mega-menu.fixture.js")],
+  ["/mega-menu.fixture.js.map", join(outputDir, "mega-menu.fixture.js.map")],
+  ["/button-tones.fixture.js", join(outputDir, "button-tones.fixture.js")],
+  ["/button-tones.fixture.js.map", join(outputDir, "button-tones.fixture.js.map")],
+  ["/command.fixture.js", join(outputDir, "command.fixture.js")],
+  ["/command.fixture.js.map", join(outputDir, "command.fixture.js.map")],
   ["/fixture.js", join(outputDir, "fixture.js")],
   ["/fixture.js.map", join(outputDir, "fixture.js.map")],
   ["/horizonte.fixture.js", join(outputDir, "horizonte.fixture.js")],
@@ -106,6 +122,24 @@ const server = createServer(async (request, response) => {
   if (pathname === "/horizonte") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(horizonteHtml);
+    return;
+  }
+
+  if (pathname === "/command") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(commandHtml);
+    return;
+  }
+
+  if (pathname === "/button-tones") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(buttonTonesHtml);
+    return;
+  }
+
+  if (pathname === "/mega-menu") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(megaMenuHtml);
     return;
   }
 

@@ -1,4 +1,19 @@
 /* CmTreeView themed states */
+.cm-tree-view__breadcrumb {
+  flex-wrap: wrap;
+  background: var(--color-muted);
+}
+
+.cm-tree-view__breadcrumb-path {
+  flex-basis: 12rem;
+  flex-wrap: wrap;
+}
+
+.cm-tree-view__bar-controls {
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
 .cm-tree-view__node--highlighted {
   background: color-mix(in srgb, var(--color-selection) 72%, var(--color-card));
   color: var(--color-selection-foreground);
@@ -25,9 +40,8 @@
   color: var(--color-primary)
 }
 
-[data-theme=cm-dark] .cm-tree-view__node--highlighted {
+[data-theme="cm-v4-dark"] .cm-tree-view__node--highlighted {
   background: color-mix(in srgb, var(--color-selection) 58%, var(--color-card));
   color: var(--color-selection-foreground);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 55%, var(--color-border))
 }
-

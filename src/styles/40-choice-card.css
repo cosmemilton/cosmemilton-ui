@@ -5,6 +5,7 @@
 .cm-choice-card {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: 0.75rem;
   border: 1px solid var(--color-border);
@@ -100,8 +101,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  min-width: 0;
-  flex: 1 1 auto;
+  min-width: min(8rem, 100%);
+  flex: 1 1 8rem;
 }
 
 .cm-choice-card__title {
@@ -118,10 +119,12 @@
 }
 
 .cm-choice-card__meta {
-  flex: none;
+  flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
+  max-width: 100%;
+  margin-inline-start: auto;
   color: var(--color-muted-foreground);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;

@@ -3,3 +3,13 @@
   margin: 0
 }
 
+/* Editorial scales and semantics are part of the typography API. */
+.cm-text--display-sm { font-size: clamp(2rem, 3vw, 3rem); line-height: 1.12; }
+.cm-text--display { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.06; }
+.cm-text--family-sans { font-family: var(--font-family); }
+.cm-text--family-heading { font-family: var(--font-family-heading, var(--font-family)); }
+.cm-text--family-mono { font-family: var(--font-mono); }
+.cm-text--wrap-normal { overflow-wrap: normal; }
+.cm-text--wrap-balance { text-wrap: balance; }
+.cm-text--wrap-pretty { text-wrap: pretty; }
+.cm-text--wrap-anywhere { overflow-wrap: anywhere; }

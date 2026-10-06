@@ -29,7 +29,7 @@ if (!themeModule) {
   throw new Error("generate-theme-css: esbuild did not emit the theme registry");
 }
 
-const { defaultTheme, themes, themeToCSSBlock } = await import(
+const { defaultTheme, themes, themeSelector, themeToCSSBlock } = await import(
   `data:text/javascript;base64,${Buffer.from(themeModule).toString("base64")}`
 );
 
@@ -42,11 +42,16 @@ const banner = [
 ].join("\n");
 
 // Bare :root carries the default theme so markup without data-theme (or with
-// JavaScript disabled) still renders fully styled. The per-theme blocks use
-// :root[data-theme="…"] (0,2,0), which beats :root (0,1,0) regardless of order.
+// JavaScript disabled) still renders fully styled. Each public palette also
+// applies directly to static boundaries. Direct declarations on nested scopes
+// override inherited tokens without changing the document provider's theme.
 const blocks = [
   themeToCSSBlock(defaultTheme, ":root"),
-  ...Object.values(themes).map((theme) => themeToCSSBlock(theme)),
+  ...Object.values(themes).map((theme) => {
+    const documentSelector = themeSelector(theme);
+    const scopeSelector = documentSelector.replace(/^:root/, ".cm-theme-scope");
+    return themeToCSSBlock(theme, `${documentSelector},\n${scopeSelector}`);
+  }),
 ];
 
 await writeFile(target, `${banner}\n${blocks.join("\n")}\n`);

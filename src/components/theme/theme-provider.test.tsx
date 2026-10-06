@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CmThemeProvider, useCmTheme } from "./theme-provider.js";
@@ -38,7 +38,7 @@ describe("CmThemeProvider", () => {
       </CmThemeProvider>,
     );
     expect(document.documentElement).toHaveAttribute("data-cm-skin", "classic");
-    expect(document.documentElement).toHaveAttribute("data-theme", "cm-neutral");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-light");
   });
 
   it("applies and removes the opted-in skin at the document root, covering portals", () => {
@@ -46,12 +46,12 @@ describe("CmThemeProvider", () => {
       return <span>{useCmTheme().skin}</span>;
     }
     const { rerender } = render(
-      <CmThemeProvider skin="horizonte" defaultThemeName="cm-horizonte-light">
+      <CmThemeProvider skin="horizonte" defaultThemeName="cm-v4-light">
         <Appearance />
       </CmThemeProvider>,
     );
     expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
-    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-light");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-light");
     expect(screen.getByText("horizonte")).toBeInTheDocument();
     rerender(
       <CmThemeProvider skin="classic">
@@ -62,19 +62,19 @@ describe("CmThemeProvider", () => {
     expect(screen.getByText("classic")).toBeInTheDocument();
   });
 
-  it("switches Horizonte palettes without changing the selected skin", async () => {
+  it("switches V4 palettes without changing the selected skin", async () => {
     const user = userEvent.setup();
     render(
-      <CmThemeProvider skin="horizonte" defaultThemeName="cm-horizonte-light" chrome="inverted">
-        <ThemeSwitcher to="cm-horizonte-dark" />
+      <CmThemeProvider skin="horizonte" defaultThemeName="cm-v4-light" chrome="inverted">
+        <ThemeSwitcher to="cm-v4-dark" />
       </CmThemeProvider>,
     );
     expect(document.documentElement).toHaveAttribute("data-cm-chrome", "inverted");
     await user.click(screen.getByRole("button", { name: "switch" }));
-    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-dark");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-dark");
     expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
     expect(document.documentElement).toHaveAttribute("data-cm-chrome", "surface");
-    expect(window.localStorage.getItem("cm-theme")).toBe("cm-horizonte-dark");
+    expect(window.localStorage.getItem("cm-theme")).toBe("cm-v4-dark");
   });
 
   it("uses colorScheme to prevent inverted chrome on consumer dark themes", () => {
@@ -96,7 +96,7 @@ describe("CmThemeProvider", () => {
         <span>app</span>
       </CmThemeProvider>,
     );
-    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-neutral");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-v4-light");
     // Inline custom properties on <html> would outrank consumer stylesheets.
     expect(document.documentElement.style.getPropertyValue("--color-background")).toBe("");
     expect(document.documentElement.style.length).toBe(0);
@@ -106,13 +106,24 @@ describe("CmThemeProvider", () => {
     const user = userEvent.setup();
     render(
       <CmThemeProvider>
-        <ThemeSwitcher to="cm-dark" />
+        <ThemeSwitcher to="cm-v4-dark" />
       </CmThemeProvider>,
     );
     await user.click(screen.getByRole("button", { name: "switch" }));
-    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-dark");
-    expect(window.localStorage.getItem("cm-theme")).toBe("cm-dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-v4-dark");
+    expect(window.localStorage.getItem("cm-theme")).toBe("cm-v4-dark");
     expect(document.documentElement.style.length).toBe(0);
+  });
+
+  it("ignores persisted V3 theme names and starts with the new Claro palette", () => {
+    window.localStorage.setItem("cm-theme", "cm-horizonte-dark");
+    render(
+      <CmThemeProvider>
+        <span>V4</span>
+      </CmThemeProvider>,
+    );
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-light");
+    expect(localStorage.getItem("cm-theme")).toBe("cm-v4-light");
   });
 
   it("injects custom theme tokens once as a style tag in head", async () => {
@@ -133,12 +144,42 @@ describe("CmThemeProvider", () => {
   });
 
   it("restores the persisted theme on mount", () => {
-    window.localStorage.setItem("cm-theme", "cm-midnight");
+    window.localStorage.setItem("cm-theme", "cm-v4-dark");
     render(
       <CmThemeProvider>
         <span>app</span>
       </CmThemeProvider>,
     );
-    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-midnight");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("cm-v4-dark");
   });
+});
+
+it("keeps a controlled theme authoritative and reports requested changes", async () => {
+  const changed = vi.fn();
+  const view = render(
+    <CmThemeProvider themeName="cm-v4-aurora" onThemeChange={changed} storageKey={false}>
+      <ThemeSwitcher to="cm-v4-dark" />
+    </CmThemeProvider>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: "switch" }));
+  expect(changed).toHaveBeenCalledWith("cm-v4-dark");
+  expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-aurora");
+  view.rerender(
+    <CmThemeProvider themeName="cm-v4-dark" onThemeChange={changed} storageKey={false}>
+      <ThemeSwitcher to="cm-v4-dark" />
+    </CmThemeProvider>,
+  );
+  expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-dark");
+  expect(localStorage.getItem("cm-theme")).toBeNull();
+});
+it("isolates application preferences without replacing another application's theme", () => {
+  localStorage.setItem("cm-theme", "cm-rose");
+  localStorage.setItem("app-theme", "cm-v4-aurora");
+  render(
+    <CmThemeProvider storageKey="app-theme">
+      <span>isolated</span>
+    </CmThemeProvider>,
+  );
+  expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-aurora");
+  expect(localStorage.getItem("cm-theme")).toBe("cm-rose");
 });

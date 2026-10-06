@@ -204,7 +204,7 @@ export function CmComboboxMulti({
         !label && "cm-floating-field--unlabeled",
         className,
       )}
-      style={cmFieldWidthStyle(width)}
+      style={{ ...cmFieldWidthStyle(width), minWidth: 0, maxWidth: "100%" }}
     >
       {name ? (
         <input

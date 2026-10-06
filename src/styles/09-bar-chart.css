@@ -5,7 +5,38 @@
 
 .cm-bar-chart__plot {
   position: relative;
-  z-index: 1
+  z-index: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+  column-gap: .25rem;
+  row-gap: .5rem;
+  padding-bottom: 0
+}
+
+.cm-bar-chart__column,
+.cm-bar-chart__column-inner {
+  display: contents
+}
+
+.cm-bar-chart__value--above {
+  grid-row: 1;
+  align-self: end;
+  margin-bottom: 0;
+  text-align: center;
+  overflow-wrap: anywhere
+}
+
+.cm-bar-chart__fill--vertical {
+  grid-row: 2;
+  align-self: end
+}
+
+.cm-bar-chart__label--axis {
+  grid-row: 3;
+  overflow-wrap: anywhere
 }
 
 .cm-bar-chart__grid {
@@ -26,4 +57,3 @@
   height: 1px;
   background: color-mix(in srgb, var(--color-border) 78%, transparent)
 }
-

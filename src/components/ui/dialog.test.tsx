@@ -62,6 +62,18 @@ describe("CmDialog", () => {
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
 
+  it("portals by default and supports explicit local rendering", () => {
+    const { container, rerender } = renderDialog();
+    expect(container.contains(screen.getByRole("dialog"))).toBe(false);
+    rerender(
+      <CmThemeProvider>
+        <CmDialog open onClose={() => {}} title="Local" portal={false} />
+      </CmThemeProvider>,
+    );
+    expect(container.contains(screen.getByRole("dialog"))).toBe(true);
+    expect(screen.getByRole("dialog").contains(document.activeElement)).toBe(true);
+  });
+
   it("offers xl and 2xl native widths for wide forms", () => {
     const { rerender } = renderDialog({ size: "xl" });
     expect(screen.getByRole("dialog")).toHaveClass("cm-dialog__positioner--xl");

@@ -43,7 +43,11 @@ describe("CmToastProvider", () => {
     render(
       <StrictMode>
         <CmToastProvider>
-          <CmToastNotice title="Não foi possível entrar" description="Informe uma loja válida." tone="danger" />
+          <CmToastNotice
+            title="Não foi possível entrar"
+            description="Informe uma loja válida."
+            tone="danger"
+          />
         </CmToastProvider>
       </StrictMode>,
     );
@@ -131,4 +135,22 @@ describe("CmToastProvider", () => {
     advance(1000 + 300);
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
+});
+
+it("renders and updates the declared notice class and action without duplicating the notification", () => {
+  const view = render(
+    <CmToastProvider>
+      <CmToastNotice title="Pronto" className="first-notice" action={<button>Abrir</button>} />
+    </CmToastProvider>,
+  );
+  expect(screen.getByRole("alert")).toHaveClass("first-notice");
+  expect(screen.getByRole("button", { name: "Abrir" })).toBeInTheDocument();
+  view.rerender(
+    <CmToastProvider>
+      <CmToastNotice title="Pronto" className="updated-notice" action={<button>Revisar</button>} />
+    </CmToastProvider>,
+  );
+  expect(screen.getAllByRole("alert")).toHaveLength(1);
+  expect(screen.getByRole("alert")).toHaveClass("updated-notice");
+  expect(screen.getByRole("button", { name: "Revisar" })).toBeInTheDocument();
 });

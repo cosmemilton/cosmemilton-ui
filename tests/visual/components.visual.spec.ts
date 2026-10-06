@@ -63,8 +63,8 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await expect(page.getByTestId("controls-fixture")).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.locator("body")).toHaveCSS("font-family", /CmVisualTestInter/);
-  expect(await page.evaluate(() => document.fonts.check('16px "CmVisualTestInter"'))).toBe(true);
+  await expect(page.locator("body")).toHaveCSS("font-family", /CM UI Sans/);
+  expect(await page.evaluate(() => document.fonts.check('16px "CM UI Sans"'))).toBe(true);
 });
 
 test("form controls preserve equal heights across adornment and helper states", async ({

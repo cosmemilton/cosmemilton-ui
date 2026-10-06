@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as root from "./index.js";
 import * as client from "./client.js";
 import * as server from "./server.js";
 
@@ -25,4 +26,11 @@ describe("entries client/server", () => {
     expect(serverExport).toBeDefined();
     expect(clientExport).toBe(serverExport);
   });
+});
+
+it("exposes actual server-safe root exports rather than legacy proxy functions", () => {
+  expect(root.CmCard).toBe(server.CmCard);
+  expect(root.CmThemeScope).toBe(server.CmThemeScope);
+  expect(root.CmBox).toBe(server.CmBox);
+  expect("CmButton" in root).toBe(false);
 });

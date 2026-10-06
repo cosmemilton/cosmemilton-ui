@@ -4,3 +4,4 @@ export * from "./lib/theme/index.js";
 export * from "./components/theme/theme-script.js";
 export * from "./components/theme/theme-provider.js";
 export * from "./components/theme/theme-toggle.js";
+export * from "./components/theme/theme-scope.js";

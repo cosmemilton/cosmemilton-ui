@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/horizonte");
   await expect(page.getByTestId("horizonte-fixture")).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-cm-skin", "horizonte");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "cm-horizonte-light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "cm-v4-light");
   await page.evaluate(() => document.fonts.ready);
 });
 
@@ -112,15 +112,15 @@ test("Horizonte dark loads both fonts and styles choices rendered in a portal", 
   page,
 }) => {
   await page.getByRole("button", { name: "Alternar tema", exact: true }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "cm-horizonte-dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "cm-v4-dark");
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.locator("body")).toHaveCSS("font-family", /CM Horizonte Inter/);
+  await expect(page.locator("body")).toHaveCSS("font-family", /CM UI Sans/);
   await expect(page.getByRole("heading", { name: "Componentes Horizonte" })).toHaveCSS(
     "font-family",
-    /CM Horizonte Manrope/,
+    /CM UI Display/,
   );
-  expect(await page.evaluate(() => document.fonts.check('13px "CM Horizonte Inter"'))).toBe(true);
-  expect(await page.evaluate(() => document.fonts.check('30px "CM Horizonte Manrope"'))).toBe(true);
+  expect(await page.evaluate(() => document.fonts.check('13px "CM UI Sans"'))).toBe(true);
+  expect(await page.evaluate(() => document.fonts.check('30px "CM UI Display"'))).toBe(true);
 
   const select = page.getByRole("combobox", { name: "Município", exact: true });
   await select.click();

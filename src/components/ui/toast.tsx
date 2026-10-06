@@ -28,6 +28,8 @@ type ToastOptions = {
   tone?: CmToastTone;
   duration?: number;
   title?: string;
+  className?: string;
+  action?: ReactNode;
 };
 
 type ToastItem = {
@@ -36,6 +38,8 @@ type ToastItem = {
   message: string;
   tone: CmToastTone;
   duration: number;
+  className?: string;
+  action?: ReactNode;
 };
 
 type ToastContextValue = {
@@ -59,7 +63,14 @@ export type CmToastNoticeProps = {
   action?: ReactNode;
 };
 
-export function CmToastNotice({ title, description, tone = "info", duration }: CmToastNoticeProps) {
+export function CmToastNotice({
+  title,
+  description,
+  tone = "info",
+  duration,
+  className,
+  action,
+}: CmToastNoticeProps) {
   const { toast } = useCmToast();
 
   useEffect(() => {
@@ -70,8 +81,10 @@ export function CmToastNotice({ title, description, tone = "info", duration }: C
       duration,
       title: description ? title : undefined,
       tone,
+      className,
+      action,
     });
-  }, [description, duration, title, toast, tone]);
+  }, [description, duration, title, toast, tone, className, action]);
 
   return null;
 }
@@ -145,6 +158,7 @@ function ToastSlot({
       role="alert"
       className={cn(
         "cm-toast__item",
+        item.className,
         toneClasses[item.tone],
         visible ? "cm-toast__item--visible" : "cm-toast__item--hidden",
       )}
@@ -167,6 +181,7 @@ function ToastSlot({
           {item.message}
         </span>
       </span>
+      {item.action ? <span className="cm-toast__action">{item.action}</span> : null}
       <CmButton
         unstyled
         type="button"
@@ -217,7 +232,16 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
     const now = Date.now();
     const recent = recentToastRef.current;
 
-    if (recent?.key === key && now - recent.at < 1000) return;
+    if (recent?.key === key && now - recent.at < 1000) {
+      setToasts((previous) =>
+        previous.map((item) =>
+          item.id === recent.id
+            ? { ...item, className: options?.className, action: options?.action }
+            : item,
+        ),
+      );
+      return;
+    }
 
     const id = ++nextId.current;
     recentToastRef.current = { id, key, at: now };
@@ -226,6 +250,8 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
       {
         id,
         title: options?.title,
+        className: options?.className,
+        action: options?.action,
         message,
         tone: options?.tone ?? "default",
         duration: options?.duration ?? 5000,
@@ -243,7 +269,12 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
             data-position={position}
           >
             {toasts.map((t) => (
-              <ToastSlot key={t.id} item={t} onCloseStart={releaseRecentToast} onDismiss={dismiss} />
+              <ToastSlot
+                key={t.id}
+                item={t}
+                onCloseStart={releaseRecentToast}
+                onDismiss={dismiss}
+              />
             ))}
           </div>,
           document.body,

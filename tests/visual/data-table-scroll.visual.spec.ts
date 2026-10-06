@@ -12,7 +12,7 @@ async function expectNoPageOverflow(page: Page) {
 }
 
 for (const skin of ["classic", "horizonte"] as const) {
-  for (const theme of ["light", "dark"] as const) {
+  for (const theme of ["light", "dark", "aurora"] as const) {
     for (const width of [1440, 390]) {
       test(`wide dialog table keeps controls stationary in ${skin} ${theme} at ${width}px`, async ({
         page,
@@ -28,21 +28,12 @@ for (const skin of ["classic", "horizonte"] as const) {
         await expect(scroll).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
         if (skin === "classic") {
-          await expect(page.locator("body")).toHaveCSS("font-family", /CmVisualTestInter/);
-          expect(
-            await page.evaluate(() => document.fonts.check('16px "CmVisualTestInter"')),
-          ).toBe(true);
+          await expect(page.locator("body")).toHaveCSS("font-family", /CM UI Sans/);
+          expect(await page.evaluate(() => document.fonts.check('16px "CM UI Sans"'))).toBe(true);
           // The custom-header fix must not select the title/toolbar/action layout.
           await expect(dialog.locator(".cm-data-table__header-slot:only-child")).toHaveCount(0);
         }
-        await expect(page.locator("html")).toHaveAttribute(
-          "data-theme",
-          skin === "horizonte"
-            ? `cm-horizonte-${theme}`
-            : theme === "dark"
-              ? "cm-dark"
-              : "cm-neutral",
-        );
+        await expect(page.locator("html")).toHaveAttribute("data-theme", `cm-v4-${theme}`);
         await expect(scroll).toHaveAttribute("tabindex", "0");
         await expectNoPageOverflow(page);
         const initialToolbar = await xEdges(toolbar);

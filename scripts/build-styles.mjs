@@ -62,3 +62,12 @@ await mkdir(distDir, { recursive: true });
 await cp(join(root, "src", "assets", "fonts"), join(distDir, "fonts"), { recursive: true });
 await emit("styles", await bundle([GLOBAL_REBOOT, SCOPED_REBOOT]));
 await emit("components", await bundle([SCOPED_REBOOT]));
+
+// Map styling belongs to the library's optional map entry, including Leaflet assets.
+const mapCSS = (
+  await readFile(join(root, "node_modules/leaflet/dist/leaflet.css"), "utf8")
+).replaceAll("url(images/", "url(leaflet/");
+await cp(join(root, "node_modules/leaflet/dist/images"), join(distDir, "leaflet"), {
+  recursive: true,
+});
+await writeFile(join(distDir, "map.css"), mapCSS);

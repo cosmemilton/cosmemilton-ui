@@ -1,11 +1,11 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-async function openFixture(page: Page, theme: "light" | "dark") {
+async function openFixture(page: Page, theme: "light" | "dark" | "aurora") {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`/horizonte?fixture=user-menu&theme=${theme}`);
   await expect(page.getByTestId("user-menu-fixture")).toBeVisible();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", `cm-horizonte-${theme}`);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", `cm-v4-${theme}`);
   await page.evaluate(() => document.fonts.ready);
   return errors;
 }
@@ -38,8 +38,10 @@ async function expectWithinViewport(page: Page, locator: Locator) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 }
 
-for (const theme of ["light", "dark"] as const) {
-  test(`slim ${theme} preserves the small profile, visible chevron and single menu surface`, async ({ page }) => {
+for (const theme of ["light", "dark", "aurora"] as const) {
+  test(`slim ${theme} preserves the small profile, visible chevron and single menu surface`, async ({
+    page,
+  }) => {
     const errors = await openFixture(page, theme);
     const profile = trigger(page);
     const chevron = profile.locator(".cm-user-menu__trigger-chevron");
@@ -77,14 +79,19 @@ for (const theme of ["light", "dark"] as const) {
     await expect(menu.getByText("Administrador", { exact: true })).toBeVisible();
     await expect(menu).toHaveCSS("border-top-width", "0px");
     await expect(menu).toHaveCSS("box-shadow", "none");
-    await expect(menu.getByRole("menuitem", { name: "Meus produtos", exact: true })).toHaveCSS("font-size", "12px");
+    await expect(menu.getByRole("menuitem", { name: "Meus produtos", exact: true })).toHaveCSS(
+      "font-size",
+      "12px",
+    );
     await expect(menu.getByRole("menuitem", { name: "Preferências", exact: true })).toBeDisabled();
     await expectWithinViewport(page, surface);
     await expect(page.getByTestId("user-menu-slim")).toHaveScreenshot(`slim-${theme}-open.png`);
     expect(errors).toEqual([]);
   });
 
-  test(`slim ${theme} closes on Escape with focus return, outside click and item actions`, async ({ page }) => {
+  test(`slim ${theme} closes on Escape with focus return, outside click and item actions`, async ({
+    page,
+  }) => {
     const errors = await openFixture(page, theme);
     const profile = trigger(page);
     await profile.focus();
@@ -124,14 +131,18 @@ for (const theme of ["light", "dark"] as const) {
     await profile.click();
     await expect(page.getByRole("menu")).toBeVisible();
     await expectWithinViewport(page, page.locator(".cm-user-menu__popover--slim"));
-    await expect(page.getByTestId("user-menu-slim")).toHaveScreenshot(`slim-${theme}-mobile-open.png`);
+    await expect(page.getByTestId("user-menu-slim")).toHaveScreenshot(
+      `slim-${theme}-mobile-open.png`,
+    );
     await page.getByRole("menuitem", { name: "Sair", exact: true }).click();
     await expect(page.getByRole("menu")).toHaveCount(0);
     await expect(page.getByTestId("user-menu-event")).toHaveText("slim: sair");
     expect(errors).toEqual([]);
   });
 
-  test(`slim is opt-in and keeps default and compact presentations in ${theme}`, async ({ page }) => {
+  test(`slim is opt-in and keeps default and compact presentations in ${theme}`, async ({
+    page,
+  }) => {
     const errors = await openFixture(page, theme);
     const defaultProfile = trigger(page, "default");
     const compactProfile = trigger(page, "compact");
@@ -141,7 +152,9 @@ for (const theme of ["light", "dark"] as const) {
     await expect(compactProfile).toHaveClass(/trigger--compact/);
     await expect(compactProfile).not.toHaveClass(/trigger--slim/);
     await expect(compactProfile.locator(".cm-user-menu__trigger-text")).toHaveCount(0);
-    await expect(page.getByTestId("user-menu-fixture")).toHaveScreenshot(`user-menu-presentations-${theme}.png`);
+    await expect(page.getByTestId("user-menu-fixture")).toHaveScreenshot(
+      `user-menu-presentations-${theme}.png`,
+    );
 
     await defaultProfile.click();
     await expect(page.getByRole("menu")).toBeVisible();

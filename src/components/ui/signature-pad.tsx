@@ -77,7 +77,7 @@ export type CmSignaturePadProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange
   name?: string;
   /** Altura da área de assinatura. Padrão: `200`. */
   height?: number | string;
-  /** Cor do traço. Padrão: `--color-foreground`. */
+  /** Cor do traço. Padrão: tinta escura sobre a superfície branca, em todos os temas. */
   strokeColor?: string;
   disabled?: boolean;
   /** Texto do botão de limpar. Padrão: "Limpar". */

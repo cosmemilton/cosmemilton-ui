@@ -95,6 +95,7 @@
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
@@ -107,6 +108,8 @@
 
 .cm-timeline__main {
   min-width: 0;
+  flex: 1 1 10rem;
+  overflow-wrap: anywhere;
 }
 
 .cm-timeline__title {
@@ -124,6 +127,8 @@
 
 .cm-timeline__trailing {
   flex: 0 0 auto;
+  max-width: 100%;
+  margin-inline-start: auto;
 }
 
 .cm-timeline__marker--tone-default {

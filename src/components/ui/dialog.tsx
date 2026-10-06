@@ -1,6 +1,14 @@
 "use client";
 
-import { useId, useRef, type CSSProperties, type ReactNode } from "react";
+import {
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import { cn } from "../../lib/utils.js";
 import { X } from "lucide-react";
 import { useEscapeKey } from "../../hooks/use-escape-key.js";
@@ -27,6 +35,8 @@ export interface CmDialogProps {
   className?: string;
   tone?: CmDialogTone;
   portal?: boolean;
+  /** Element to focus when opened. Otherwise the first dialog control receives focus. */
+  initialFocusRef?: RefObject<HTMLElement | null>;
   presentation?: CmDialogPresentation;
   dismissible?: boolean;
   showClose?: boolean;
@@ -52,7 +62,6 @@ type DialogToneStyle = CSSProperties & {
   "--dialog-tone": string;
 };
 
-
 export function CmDialog({
   open,
   onClose,
@@ -63,7 +72,8 @@ export function CmDialog({
   size = "md",
   className,
   tone = "default",
-  portal = false,
+  portal = true,
+  initialFocusRef,
   presentation = "default",
   dismissible = true,
   showClose = true,
@@ -71,13 +81,12 @@ export function CmDialog({
   const titleId = useId();
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-
+  const [panel, setPanel] = useState<HTMLDivElement | null>(null);
+  const panelRef = useMemo(() => ({ current: panel }), [panel]);
 
   useScrollLock(open);
   useEscapeKey(open && dismissible, onClose);
-  useFocusTrap(panelRef, { enabled: open });
-
+  useFocusTrap(panelRef, { enabled: open && Boolean(panel), initialFocusRef });
 
   const { invertHeader } = useCmTheme();
 
@@ -118,7 +127,7 @@ export function CmDialog({
       />
 
       <div
-        ref={panelRef}
+        ref={setPanel}
         role="dialog"
         aria-modal="true"
         tabIndex={-1}
@@ -253,9 +262,7 @@ export function CmDialog({
     <>
       <span ref={sourceRef} hidden />
       <CmPortal>
-        <div className="cm-dialog-portal-scope">
-          {content}
-        </div>
+        <div className="cm-dialog-portal-scope">{content}</div>
       </CmPortal>
     </>
   );

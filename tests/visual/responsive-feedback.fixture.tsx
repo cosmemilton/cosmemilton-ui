@@ -8,10 +8,10 @@ import {
 } from "../../src/components/ui/toast.js";
 
 const params = new URLSearchParams(window.location.search);
-const theme = params.get("theme") === "dark" ? "dark" : "light";
+const theme =
+  params.get("theme") === "dark" ? "dark" : params.get("theme") === "aurora" ? "aurora" : "light";
 const skin = params.get("skin") === "horizonte" ? "horizonte" : "classic";
-document.documentElement.dataset.theme =
-  skin === "horizonte" ? `cm-horizonte-${theme}` : theme === "dark" ? "cm-dark" : "cm-neutral";
+document.documentElement.dataset.theme = `cm-v4-${theme}`;
 document.documentElement.dataset.cmSkin = skin;
 
 const labels = ["Visão geral", "Documentos", "Responsáveis", "Histórico", "Configurações"];

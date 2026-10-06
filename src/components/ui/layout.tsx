@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ElementType, CSSProperties, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmPresentation, type CmPresentationProps } from "./presentation.js";
 import {
   cmSpacingValue,
   resolveResponsiveValue,
@@ -24,7 +25,9 @@ type LayoutSurface =
   | "warning"
   | "danger"
   | "info"
-  | "transparent";
+  | "transparent"
+  | "glass"
+  | "gradient";
 type LayoutRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 type LayoutBorder = "none" | "sm" | "md" | "lg";
 type StackDirection = "vertical" | "horizontal";
@@ -32,7 +35,7 @@ type ResponsiveDirection = CmResponsiveValue<StackDirection>;
 
 type LayoutStyle = CSSProperties & Partial<Record<`--${string}`, string | number | undefined>>;
 
-type BaseLayoutProps<TElement extends ElementType> = {
+type BaseLayoutProps<TElement extends ElementType> = CmPresentationProps & {
   as?: TElement;
   children?: ReactNode;
   className?: string;
@@ -77,7 +80,10 @@ export type CmColProps<TElement extends ElementType = "div"> = BaseLayoutProps<T
 export type CmStackProps<TElement extends ElementType = "div"> = BaseLayoutProps<TElement> & {
   direction?: ResponsiveDirection;
   wrap?: boolean;
-} & Omit<ComponentPropsWithoutRef<TElement>, keyof BaseLayoutProps<TElement> | "direction" | "wrap">;
+} & Omit<
+    ComponentPropsWithoutRef<TElement>,
+    keyof BaseLayoutProps<TElement> | "direction" | "wrap"
+  >;
 
 type BaseContainerProps<TElement extends ElementType> = {
   as?: TElement;
@@ -246,9 +252,41 @@ export function CmRow<TElement extends ElementType = "div">({
   border,
   borderColor,
   style,
+  width,
+  minWidth,
+  maxWidth,
+  height,
+  minHeight,
+  maxHeight,
+  overflow,
+  overflowX,
+  overflowY,
+  elevation,
+  position,
+  top,
+  zIndex,
+  hiddenFrom,
+  visibleFrom,
   ...props
 }: CmRowProps<TElement>) {
   const Component: ElementType = as ?? "div";
+  const presentation = cmPresentation({
+    width,
+    minWidth,
+    maxWidth,
+    height,
+    minHeight,
+    maxHeight,
+    overflow,
+    overflowX,
+    overflowY,
+    elevation,
+    position,
+    top,
+    zIndex,
+    hiddenFrom,
+    visibleFrom,
+  });
   const growth = resolveGrow(grow);
   const boxProps = {
     padding,
@@ -266,6 +304,7 @@ export function CmRow<TElement extends ElementType = "div">({
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     ...growth.style,
     ...layoutBoxStyle(boxProps),
+    ...presentation.style,
     ...style,
   };
 
@@ -281,6 +320,7 @@ export function CmRow<TElement extends ElementType = "div">({
         surface && `cm-layout-surface-${surface}`,
         radius && `cm-layout-radius-${radius}`,
         border && `cm-layout-border-${border}`,
+        presentation.className,
         className,
       )}
       data-align={align}
@@ -314,9 +354,41 @@ export function CmCol<TElement extends ElementType = "div">({
   border,
   borderColor,
   style,
+  width,
+  minWidth,
+  maxWidth,
+  height,
+  minHeight,
+  maxHeight,
+  overflow,
+  overflowX,
+  overflowY,
+  elevation,
+  position,
+  top,
+  zIndex,
+  hiddenFrom,
+  visibleFrom,
   ...props
 }: CmColProps<TElement>) {
   const Component: ElementType = as ?? "div";
+  const presentation = cmPresentation({
+    width,
+    minWidth,
+    maxWidth,
+    height,
+    minHeight,
+    maxHeight,
+    overflow,
+    overflowX,
+    overflowY,
+    elevation,
+    position,
+    top,
+    zIndex,
+    hiddenFrom,
+    visibleFrom,
+  });
   const growth = resolveGrow(grow);
   const boxProps = {
     padding,
@@ -334,6 +406,7 @@ export function CmCol<TElement extends ElementType = "div">({
     "--cm-layout-gap": spacingValue(gap, "1rem"),
     ...growth.style,
     ...layoutBoxStyle(boxProps),
+    ...presentation.style,
     ...style,
   };
 
@@ -348,6 +421,7 @@ export function CmCol<TElement extends ElementType = "div">({
         surface && `cm-layout-surface-${surface}`,
         radius && `cm-layout-radius-${radius}`,
         border && `cm-layout-border-${border}`,
+        presentation.className,
         className,
       )}
       data-align={align}
@@ -383,9 +457,41 @@ export function CmStack<TElement extends ElementType = "div">({
   border,
   borderColor,
   style,
+  width,
+  minWidth,
+  maxWidth,
+  height,
+  minHeight,
+  maxHeight,
+  overflow,
+  overflowX,
+  overflowY,
+  elevation,
+  position,
+  top,
+  zIndex,
+  hiddenFrom,
+  visibleFrom,
   ...props
 }: CmStackProps<TElement>) {
   const Component: ElementType = as ?? "div";
+  const presentation = cmPresentation({
+    width,
+    minWidth,
+    maxWidth,
+    height,
+    minHeight,
+    maxHeight,
+    overflow,
+    overflowX,
+    overflowY,
+    elevation,
+    position,
+    top,
+    zIndex,
+    hiddenFrom,
+    visibleFrom,
+  });
   const directions = resolveStackDirections(direction);
   const growth = resolveGrow(grow);
   const boxProps = {
@@ -409,6 +515,7 @@ export function CmStack<TElement extends ElementType = "div">({
     "--cm-stack-direction-xl": directions.xl,
     ...growth.style,
     ...layoutBoxStyle(boxProps),
+    ...presentation.style,
     ...style,
   };
 
@@ -424,6 +531,7 @@ export function CmStack<TElement extends ElementType = "div">({
         surface && `cm-layout-surface-${surface}`,
         radius && `cm-layout-radius-${radius}`,
         border && `cm-layout-border-${border}`,
+        presentation.className,
         className,
       )}
       data-align={align}
@@ -462,7 +570,11 @@ export function CmContainer<TElement extends ElementType = "div">({
           ? containerPadding(undefined)
           : basePadding,
     "--cm-container-padding-block":
-      paddingBlock !== undefined ? containerPadding(paddingBlock) : padding === undefined ? "0" : basePadding,
+      paddingBlock !== undefined
+        ? containerPadding(paddingBlock)
+        : padding === undefined
+          ? "0"
+          : basePadding,
     ...style,
   };
 

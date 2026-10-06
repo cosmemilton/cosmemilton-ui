@@ -199,7 +199,7 @@ export function CmBarChart({
                   className="cm-bar-chart__fill cm-bar-chart__fill--vertical"
                   title={tooltipFormat?.(bar)}
                   style={{
-                    height: `${(bar.percentage / 100) * (chartHeight - 60)}px`,
+                    height: `${bar.percentage}%`,
                     backgroundColor: barColor(bar),
                   }}
                 />

@@ -1,13 +1,28 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode, CSSProperties } from "react";
 import { cn } from "../../lib/utils.js";
 import { cmSpacingValue, type CmSpacing } from "./types.js";
+import { cmPresentation, type CmPresentationProps } from "./presentation.js";
 
-type SurfaceTheme = "default" | "muted" | "card" | "raised" | "inverse" | "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "transparent";
+type SurfaceTheme =
+  | "default"
+  | "muted"
+  | "card"
+  | "raised"
+  | "inverse"
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "transparent"
+  | "glass"
+  | "gradient";
 type Radius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 type BorderWidth = "none" | "sm" | "md" | "lg";
 type BoxStyle = CSSProperties & Partial<Record<`--${string}`, string | number | undefined>>;
 
-type CmBoxCustomProps<TElement extends ElementType> = {
+type CmBoxCustomProps<TElement extends ElementType> = CmPresentationProps & {
   as?: TElement;
   children?: ReactNode;
   className?: string;
@@ -48,19 +63,54 @@ export function CmBox<TElement extends ElementType = "div">({
   marginInline,
   marginBlock,
   fullWidth,
+  width,
+  minWidth,
+  maxWidth,
+  height,
+  minHeight,
+  maxHeight,
+  overflow,
+  overflowX,
+  overflowY,
+  elevation,
+  position,
+  top,
+  zIndex,
+  hiddenFrom,
+  visibleFrom,
   ...props
 }: CmBoxProps<TElement>) {
   const Component: ElementType = as ?? "div";
+  const presentation = cmPresentation({
+    width,
+    minWidth,
+    maxWidth,
+    height,
+    minHeight,
+    maxHeight,
+    overflow,
+    overflowX,
+    overflowY,
+    elevation,
+    position,
+    top,
+    zIndex,
+    hiddenFrom,
+    visibleFrom,
+  });
 
   const boxStyle: BoxStyle = {
     ...style,
+    ...presentation.style,
     "--cm-box-padding": padding !== undefined ? spacingValue(padding) : undefined,
-    "--cm-box-padding-inline": paddingInline !== undefined ? spacingValue(paddingInline) : undefined,
+    "--cm-box-padding-inline":
+      paddingInline !== undefined ? spacingValue(paddingInline) : undefined,
     "--cm-box-padding-block": paddingBlock !== undefined ? spacingValue(paddingBlock) : undefined,
     "--cm-box-margin": margin !== undefined ? spacingValue(margin) : undefined,
     "--cm-box-margin-inline": marginInline !== undefined ? spacingValue(marginInline) : undefined,
     "--cm-box-margin-block": marginBlock !== undefined ? spacingValue(marginBlock) : undefined,
-    "--cm-box-border-color": borderColor !== undefined ? `var(--color-${borderColor}, ${borderColor})` : undefined,
+    "--cm-box-border-color":
+      borderColor !== undefined ? `var(--color-${borderColor}, ${borderColor})` : undefined,
   };
 
   return (
@@ -71,6 +121,7 @@ export function CmBox<TElement extends ElementType = "div">({
         radius && `cm-box--radius-${radius}`,
         border && `cm-box--border-${border}`,
         fullWidth && "cm-box--full-width",
+        presentation.className,
         className,
       )}
       style={boxStyle}
