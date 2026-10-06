@@ -512,6 +512,17 @@
   object-fit: cover;
 }
 
+.cm-sidebar__brand-icon--plain {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.cm-sidebar__brand-icon--plain>img,
+.cm-sidebar__brand-icon--plain>svg {
+  object-fit: contain;
+}
+
 .cm-sidebar__brand-icon-button {
   width: 3rem;
   height: 3rem;

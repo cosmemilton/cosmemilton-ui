@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.1
+
+- Substitui a marca `cm:ui`, `brand.svg` e `brand-mark.svg` pelo monograma CM
+  com selo UI fornecido, preservando os pixels, as cores e a transparência.
+  O PNG original também está disponível em `cosmemilton-ui/brand.png`.
+- Adiciona `CmSidebar` `brand.iconVariant="plain"` para exibir logos sem
+  moldura adicional, mantendo a proporção da imagem.
+
 ## 4.0.0
 
 ### Mudanças de versão principal

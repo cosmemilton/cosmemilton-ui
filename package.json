@@ -1,6 +1,6 @@
 {
   "name": "cosmemilton-ui",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -76,7 +76,8 @@
     "./brand-mark.svg": "./dist/brand-mark.svg",
     "./manifest.json": "./dist/manifest.json",
     "./package.json": "./package.json",
-    "./map.css": "./dist/map.css"
+    "./map.css": "./dist/map.css",
+    "./brand.png": "./dist/brand.png"
   },
   "bin": {
     "cm-ui-codemod": "bin/codemod.mjs"
@@ -88,8 +89,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "node scripts/clean-dist.mjs && node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
-    "build:browser": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/build-browser.mjs",
+    "build": "node scripts/clean-dist.mjs && node scripts/sync-tokens.mjs && node scripts/sync-brand.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
+    "build:browser": "node scripts/sync-tokens.mjs && node scripts/sync-brand.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/build-browser.mjs",
     "sync:tokens": "node scripts/sync-tokens.mjs",
     "check:tokens-sync": "node scripts/sync-tokens.mjs --check",
     "tokens:typecheck": "tsc -p packages/tokens/tsconfig.json --noEmit",

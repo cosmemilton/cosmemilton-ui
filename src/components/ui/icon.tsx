@@ -68,11 +68,6 @@ export function CmIcon({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox={BRAND_SYMBOL.viewBox}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={BRAND_SYMBOL.strokeWidth}
-        strokeLinecap={BRAND_SYMBOL.linecap}
-        strokeLinejoin={BRAND_SYMBOL.linejoin}
         className={cn("cm-icon", size === undefined && "cm-icon--default-size", className)}
         width={size}
         height={size}
@@ -80,7 +75,7 @@ export function CmIcon({
         style={style}
         {...accessibilityProps}
       >
-        {BRAND_SYMBOL.paths.map((path) => <path key={path} d={path} />)}
+        <image width={BRAND_SYMBOL.width} height={BRAND_SYMBOL.height} href={BRAND_SYMBOL.href} />
       </svg>
     );
   }

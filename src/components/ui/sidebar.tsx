@@ -377,12 +377,24 @@ export function CmSidebar({
           title={brand?.iconLabel ?? "Abrir menu lateral"}
           onClick={openSidebarPreview}
         >
-          <span className="cm-sidebar__brand-icon" aria-hidden="true">
+          <span
+            className={cn(
+              "cm-sidebar__brand-icon",
+              brand?.iconVariant === "plain" && "cm-sidebar__brand-icon--plain",
+            )}
+            aria-hidden="true"
+          >
             {brandIcon}
           </span>
         </CmButton>
       ) : (
-        <span className="cm-sidebar__brand-icon" aria-hidden="true">
+        <span
+          className={cn(
+            "cm-sidebar__brand-icon",
+            brand?.iconVariant === "plain" && "cm-sidebar__brand-icon--plain",
+          )}
+          aria-hidden="true"
+        >
           {brandIcon}
         </span>
       )}
