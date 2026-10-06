@@ -1,10 +1,30 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createRef, useState } from "react";
+import { act, createRef, useState } from "react";
 import { CmMegaMenu, type CmMegaMenuAnchorProps, type CmMegaMenuItem } from "./mega-menu.js";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
+
+function delayPanelPositioning() {
+  const frames = new Map<number, FrameRequestCallback>();
+  let nextId = 0;
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+    frames.set(++nextId, callback);
+    return nextId;
+  });
+  vi.stubGlobal("cancelAnimationFrame", (id: number) => frames.delete(id));
+  return async () => {
+    await act(async () => {
+      const pending = [...frames.values()];
+      frames.clear();
+      pending.forEach((callback) => callback(performance.now()));
+    });
+  };
+}
 
 const makeItems = (select = vi.fn()): CmMegaMenuItem[] => [
   {
@@ -207,6 +227,70 @@ describe("CmMegaMenu", () => {
     await actor.tab({ shift: true });
     expect(getPanel()).toBeNull();
     expect(screen.getByRole("button", { name: "Antes" })).toHaveFocus();
+  });
+
+  it("queues Tab while the portal is unpositioned, then focuses and selects its first item", async () => {
+    const actor = userEvent.setup();
+    const position = delayPanelPositioning();
+    const select = vi.fn();
+    render(
+      <>
+        <style>{'.cm-mega-panel:not([data-positioned="true"]) { visibility: hidden; }'}</style>
+        <CmMegaMenu items={makeItems(select)} />
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "Produtos" });
+    await actor.click(trigger);
+    expect(getPanel()).not.toHaveAttribute("data-positioned");
+    await actor.tab();
+    expect(getPanel()).not.toBeNull();
+    expect(trigger).toHaveFocus();
+    await position();
+    await waitFor(() => expect(screen.getByRole("link", { name: /Projetos/ })).toHaveFocus());
+    await actor.keyboard("{ArrowDown}{Enter}");
+    expect(select).toHaveBeenCalledOnce();
+    expect(getPanel()).toBeNull();
+    expect(trigger).toHaveFocus();
+  });
+
+  it("continues Tab outside an all-disabled panel even when positioning is pending", async () => {
+    const actor = userEvent.setup();
+    const position = delayPanelPositioning();
+    render(
+      <>
+        <style>{'.cm-mega-panel:not([data-positioned="true"]) { visibility: hidden; }'}</style>
+        <CmMegaMenu
+          items={[
+            {
+              id: "products",
+              label: "Produtos",
+              groups: [
+                {
+                  id: "soon",
+                  label: "Em breve",
+                  items: [{ id: "disabled", label: "Indisponível", disabled: true }],
+                },
+              ],
+            },
+            { id: "about", label: "Sobre", href: "/about" },
+          ]}
+        />
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "Produtos" });
+    await actor.click(trigger);
+    await actor.tab();
+    expect(getPanel()).not.toBeNull();
+    expect(trigger).toHaveFocus();
+    await position();
+    await waitFor(() => expect(getPanel()).toBeNull());
+    expect(screen.getByRole("link", { name: "Sobre" })).toHaveFocus();
+    await actor.click(trigger);
+    await position();
+    await waitFor(() => expect(getPanel()).toHaveAttribute("data-positioned", "true"));
+    await actor.tab();
+    expect(getPanel()).toBeNull();
+    expect(screen.getByRole("link", { name: "Sobre" })).toHaveFocus();
   });
 
   it("honors link adapters without intercepting native navigation", async () => {

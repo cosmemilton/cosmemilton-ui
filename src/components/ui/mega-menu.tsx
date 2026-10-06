@@ -142,11 +142,20 @@ export const CmMegaMenu = forwardRef<HTMLElement, CmMegaMenuProps>(function CmMe
     setOpenId(null);
   }, [setOpenId]);
 
+  const focusAfterAnchor = useCallback(() => {
+    const outside = focusableElements(document).filter((node) => !panelRef.current?.contains(node));
+    const anchorIndex = outside.indexOf(anchorRef.current!);
+    close();
+    (outside[anchorIndex + 1] ?? anchorRef.current)?.focus();
+  }, [close]);
+
   const focusPanelBoundary = useCallback((boundary: "first" | "last" | "tab-first") => {
     const targets = focusableElements(panelRef.current).filter(
       (node) => boundary === "tab-first" || node.matches(".cm-mega-panel__item"),
     );
-    (boundary === "last" ? targets[targets.length - 1] : targets[0])?.focus();
+    const target = boundary === "last" ? targets[targets.length - 1] : targets[0];
+    target?.focus();
+    return Boolean(target);
   }, []);
 
   useMegaPanel(anchorRef, panelRef, {
@@ -154,9 +163,10 @@ export const CmMegaMenu = forwardRef<HTMLElement, CmMegaMenuProps>(function CmMe
     align,
     anchorKey: openEntry?.id,
     onPosition: () => {
-      if (pendingFocus.current) {
-        focusPanelBoundary(pendingFocus.current);
-        pendingFocus.current = null;
+      const boundary = pendingFocus.current;
+      pendingFocus.current = null;
+      if (boundary && !focusPanelBoundary(boundary) && boundary === "tab-first") {
+        focusAfterAnchor();
       }
     },
   });
@@ -202,7 +212,12 @@ export const CmMegaMenu = forwardRef<HTMLElement, CmMegaMenuProps>(function CmMe
     if (event.key === "Tab" && openEntry?.id === item.id) {
       if (event.shiftKey) {
         close();
-      } else if (focusableElements(panelRef.current).length) {
+      } else if (
+        // The portal is hidden until positioned. Queue Tab during that gap so
+        // native focus cannot leave the trigger and dismiss the opening panel.
+        panelRef.current?.dataset.positioned !== "true" ||
+        focusableElements(panelRef.current).length
+      ) {
         event.preventDefault();
         openFromKeyboard(item, "tab-first");
       }
@@ -253,12 +268,7 @@ export const CmMegaMenu = forwardRef<HTMLElement, CmMegaMenuProps>(function CmMe
         anchorRef.current?.focus();
       } else if (!event.shiftKey && index === allFocusables.length - 1) {
         event.preventDefault();
-        const outside = focusableElements(document).filter(
-          (node) => !panelRef.current?.contains(node),
-        );
-        const anchorIndex = outside.indexOf(anchorRef.current!);
-        close();
-        (outside[anchorIndex + 1] ?? anchorRef.current)?.focus();
+        focusAfterAnchor();
       }
       return;
     }
