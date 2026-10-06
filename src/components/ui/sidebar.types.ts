@@ -52,6 +52,8 @@ export type CmSidebarActiveContext = {
 
 export type CmSidebarBrand = {
   icon?: ReactNode;
+  /** Use plain for an image that already contains its own background and frame. */
+  iconVariant?: "tile" | "plain";
   title?: ReactNode;
   subtitle?: ReactNode;
   fallbackTitle?: string;

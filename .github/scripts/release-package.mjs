@@ -61,6 +61,7 @@ function pack() {
     "dist/styles.css",
     "dist/cm-ui.min.js",
     "dist/brand.svg",
+    "dist/brand.png",
     "dist/manifest.json",
   ]) {
     assert(files.has(file), `Missing public asset: ${file}`);

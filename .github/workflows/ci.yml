@@ -102,7 +102,7 @@ jobs:
         # Arquivos estáticos não são entrypoints JS/types.
         env:
           RELEASE_TARBALL: ${{ steps.pack.outputs.tarball }}
-        run: npm exec -- attw "release-output/$RELEASE_TARBALL" --profile esm-only --exclude-entrypoints styles.css styles.min.css components.css components.min.css map.css brand.svg brand-mark.svg manifest.json package.json
+        run: npm exec -- attw "release-output/$RELEASE_TARBALL" --profile esm-only --exclude-entrypoints styles.css styles.min.css components.css components.min.css map.css brand.svg brand-mark.svg brand.png manifest.json package.json
 
       - name: Upload validated npm package
         if: github.event_name != 'pull_request'
