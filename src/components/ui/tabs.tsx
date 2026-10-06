@@ -74,6 +74,7 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
   const variant = context?.variant ?? "default";
   const shellRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const manualScrollRevision = useRef(0);
   const [scrollState, setScrollState] = useState({
     hasOverflow: false,
     canScrollBack: false,
@@ -150,7 +151,14 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
       updateScrollState();
       ensureActiveTabVisible();
     };
-    const frame = window.requestAnimationFrame(updateLayout);
+    const initialScrollRevision = manualScrollRevision.current;
+    const frame = window.requestAnimationFrame(() => {
+      updateScrollState();
+      // Initial measurement may arrive after an arrow click. It must not undo
+      // that newer scroll intent; actual resize/selection updates still reveal
+      // the selected tab through their own layout handlers.
+      if (manualScrollRevision.current === initialScrollRevision) ensureActiveTabVisible();
+    });
     const resizeObserver =
       typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateLayout);
     resizeObserver?.observe(list);
@@ -195,6 +203,7 @@ export const CmTabsList = forwardRef<HTMLDivElement, CmTabsListProps>(function C
   const scrollByPage = (direction: -1 | 1) => {
     const list = listRef.current;
     if (!list) return;
+    manualScrollRevision.current += 1;
     const distance = Math.max(160, list.clientWidth * 0.7);
     scrollListTo(list.scrollLeft + distance * direction);
   };

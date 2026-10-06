@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { CmTabs, CmTabsList, CmTabsTrigger } from "./tabs.js";
@@ -9,9 +9,13 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function renderTabs(variant: "default" | "modal" | "folder" = "default", showScrollButtons = true) {
+function renderTabs(
+  variant: "default" | "modal" | "folder" = "default",
+  showScrollButtons = true,
+  defaultValue = "one",
+) {
   return render(
-    <CmTabs defaultValue="one" variant={variant}>
+    <CmTabs defaultValue={defaultValue} variant={variant}>
       <CmTabsList showScrollButtons={showScrollButtons}>
         <CmTabsTrigger value="one">One</CmTabsTrigger>
         <CmTabsTrigger value="two">Two</CmTabsTrigger>
@@ -80,6 +84,23 @@ describe("CmTabsList overflow navigation", () => {
       expect(screen.getByRole("button", { name: "Rolar abas para a esquerda" })).toBeVisible();
     },
   );
+
+  it("still reveals the initially selected tab when no manual scroll supersedes the frame", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      frames.push(callback);
+      return frames.length;
+    });
+    renderTabs("folder", true, "three");
+    const list = screen.getByRole("tablist");
+    // Measure overflow first, then let the initial frame see the final tab offsets.
+    mockHorizontalLayout(list, 200, 500, 264);
+    mockTabLayout(screen.getByRole("tab", { name: "Three" }), 300, 120);
+    expect(list.scrollLeft).toBe(0);
+    act(() => frames.splice(0).forEach((callback) => callback(0)));
+    expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 220, behavior: "instant" });
+    expect(list.scrollLeft).toBe(220);
+  });
 
   it("does not render controls when every tab fits", () => {
     renderTabs();
@@ -195,4 +216,33 @@ describe("CmTabsList overflow navigation", () => {
     expect(list.scrollLeft).toBe(160);
     expect(list.scrollTo).not.toHaveBeenCalled();
   });
+
+  it.each(["default", "modal", "folder"] as const)(
+    "preserves manual %s scrolling when the initial layout frame arrives later",
+    async (variant) => {
+      const frames: FrameRequestCallback[] = [];
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+        frames.push(callback);
+        return frames.length;
+      });
+      const user = userEvent.setup();
+      renderTabs(variant);
+      const list = screen.getByRole("tablist");
+      mockTabLayout(screen.getByRole("tab", { name: "One" }), 4, 100);
+      mockTabLayout(screen.getByRole("tab", { name: "Three" }), 300, 120);
+      mockHorizontalLayout(list, 200, 500, 264);
+
+      await user.click(screen.getByRole("button", { name: "Rolar abas para a direita" }));
+      expect(list.scrollLeft).toBe(160);
+      act(() => frames.splice(0).forEach((callback) => callback(0)));
+      expect(list.scrollLeft).toBe(160);
+      expect(screen.getByRole("button", { name: "Rolar abas para a esquerda" })).toBeVisible();
+
+      // A later resize and an explicit selection must still reveal the active tab.
+      fireEvent(window, new Event("resize"));
+      expect(list.scrollLeft).toBe(4);
+      await user.click(screen.getByRole("tab", { name: "Three" }));
+      expect(list.scrollTo).toHaveBeenLastCalledWith({ left: 220, behavior: "smooth" });
+    },
+  );
 });
