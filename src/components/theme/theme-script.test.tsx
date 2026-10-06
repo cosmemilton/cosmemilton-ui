@@ -23,7 +23,7 @@ describe("CmThemeScript", () => {
     expect(script).not.toBeNull();
     const code = script!.innerHTML;
     expect(code).toContain("data-theme");
-    expect(code).toContain('"cm-neutral"');
+    expect(code).toContain('"cm-v4-light"');
     // Tokens live in the static stylesheet now — the script must not inline them.
     expect(code).not.toContain("--color-background");
     expect(code).not.toContain("setProperty");
@@ -43,6 +43,53 @@ describe("CmThemeScript", () => {
     expect(style!.innerHTML).toContain("--color-primary: #ff0000;");
     const script = container.querySelector("#cm-theme-script");
     expect(script!.innerHTML).toContain('"acme-brand"');
+  });
+
+  it("keeps two bootstrap instances and their custom theme styles distinct", () => {
+    const exampleTheme: ThemeConfig = {
+      ...customTheme,
+      name: "example-brand",
+      colors: { ...customTheme.colors, primary: "#0000ff" },
+    };
+    const { container } = render(
+      <>
+        <CmThemeScript
+          id="application-theme"
+          customThemes={[customTheme]}
+          defaultThemeName={customTheme.name}
+          defaultDensity="compact"
+          storageKey={false}
+        />
+        <CmThemeScript
+          id="example-theme"
+          customThemes={[exampleTheme]}
+          defaultThemeName={exampleTheme.name}
+          defaultDensity="comfortable"
+          storageKey={false}
+        />
+      </>,
+    );
+    const ids = [...container.querySelectorAll("[id]")].map((element) => element.id);
+    expect(ids).toEqual([
+      "application-theme-custom",
+      "application-theme",
+      "example-theme-custom",
+      "example-theme",
+    ]);
+    expect(new Set(ids).size).toBe(4);
+    const applicationStyle = container.querySelector("#application-theme-custom")!;
+    const exampleStyle = container.querySelector("#example-theme-custom")!;
+    expect(applicationStyle.innerHTML).toContain("--color-primary: #ff0000;");
+    expect(applicationStyle.innerHTML).not.toContain("example-brand");
+    expect(exampleStyle.innerHTML).toContain("--color-primary: #0000ff;");
+    expect(exampleStyle.innerHTML).not.toContain("acme-brand");
+
+    new Function(container.querySelector("#application-theme")!.innerHTML)();
+    expect(document.documentElement).toHaveAttribute("data-theme", customTheme.name);
+    expect(document.documentElement).toHaveAttribute("data-density", "compact");
+    new Function(container.querySelector("#example-theme")!.innerHTML)();
+    expect(document.documentElement).toHaveAttribute("data-theme", exampleTheme.name);
+    expect(document.documentElement).toHaveAttribute("data-density", "comfortable");
   });
 
   it("neutralizes </script> breakout sequences in custom theme names", () => {
@@ -70,7 +117,7 @@ describe("CmThemeScript", () => {
   it("falls back to the default theme when defaultThemeName is unknown", () => {
     const { container } = render(<CmThemeScript defaultThemeName="does-not-exist" />);
     const script = container.querySelector("#cm-theme-script");
-    expect(script!.innerHTML).toContain('const fallback = "cm-neutral"');
+    expect(script!.innerHTML).toContain('const fallback = "cm-v4-light"');
   });
 
   it("bootstraps the persisted density alongside the theme", () => {
@@ -88,14 +135,19 @@ describe("CmThemeScript", () => {
   });
 
   it("sets the explicit skin before first paint and restores the dark palette", () => {
-    window.localStorage.setItem("cm-theme", "cm-horizonte-dark");
-    const { container } = render(
-      <CmThemeScript skin="horizonte" defaultThemeName="cm-horizonte-light" />,
-    );
+    window.localStorage.setItem("cm-theme", "cm-v4-dark");
+    const { container } = render(<CmThemeScript skin="horizonte" defaultThemeName="cm-v4-light" />);
     const code = container.querySelector("#cm-theme-script")!.innerHTML;
     new Function(code)();
     expect(document.documentElement).toHaveAttribute("data-cm-skin", "horizonte");
-    expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-dark");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-dark");
+  });
+
+  it("ignores V3 persisted names before first paint", () => {
+    window.localStorage.setItem("cm-theme", "cm-horizonte-dark");
+    const { container } = render(<CmThemeScript />);
+    new Function(container.querySelector("#cm-theme-script")!.innerHTML)();
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-light");
   });
 
   it("defaults to classic and still applies skin when storage is unavailable", () => {
@@ -105,7 +157,7 @@ describe("CmThemeScript", () => {
     const { container } = render(<CmThemeScript />);
     new Function(container.querySelector("#cm-theme-script")!.innerHTML)();
     expect(document.documentElement).toHaveAttribute("data-cm-skin", "classic");
-    expect(document.documentElement).toHaveAttribute("data-theme", "cm-neutral");
+    expect(document.documentElement).toHaveAttribute("data-theme", "cm-v4-light");
     expect(document.documentElement).toHaveAttribute("data-density", "default");
   });
 });

@@ -1,7 +1,8 @@
 "use client";
 
-import { forwardRef, ReactNode, TextareaHTMLAttributes, useState } from "react";
+import { forwardRef, ReactNode, TextareaHTMLAttributes, useId, useState } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmDensityClass, type CmDensity } from "./types.js";
 
 export type CmTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string;
@@ -12,12 +13,14 @@ export type CmTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   endIcon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
+  density?: CmDensity;
 };
 
 export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
   (
     {
       className,
+      density,
       label,
       error,
       success,
@@ -30,10 +33,15 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
       defaultValue,
       onFocus,
       onBlur,
+      onChange,
+      id,
       ...props
     },
     ref,
   ) => {
+    const generatedId = useId();
+    const textareaId = id ?? generatedId;
+    const messageId = `${textareaId}-message`;
     const [isFocused, setIsFocused] = useState(false);
     const [internalValue, setInternalValue] = useState(defaultValue || "");
 
@@ -62,12 +70,14 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
         className={cn(
           "cm-textarea cm-floating-field cm-floating-field--textarea",
           !label && "cm-floating-field--unlabeled",
+          cmDensityClass(density),
           className,
         )}
       >
         <div className={cn("cm-floating-field__control", getBorderColor())}>
           {label && (
             <label
+              htmlFor={textareaId}
               className={cn(
                 "cm-floating-field__label",
                 getLabelColor(),
@@ -91,7 +101,15 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
 
           <div className="cm-floating-field__input-wrap">
             <textarea
+              {...props}
               ref={ref}
+              id={textareaId}
+              aria-invalid={props["aria-invalid"] ?? Boolean(error)}
+              aria-describedby={
+                [props["aria-describedby"], error || helperText ? messageId : undefined]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
               value={value}
               defaultValue={defaultValue}
               className="cm-textarea__control"
@@ -107,9 +125,8 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
                 if (value === undefined) {
                   setInternalValue(e.target.value);
                 }
-                props.onChange?.(e);
+                onChange?.(e);
               }}
-              {...props}
             />
           </div>
 
@@ -123,6 +140,8 @@ export const CmTextarea = forwardRef<HTMLTextAreaElement, CmTextareaProps>(
 
         {(error || helperText) && (
           <p
+            id={messageId}
+            role={error ? "alert" : undefined}
             className={cn(
               "cm-floating-field__message cm-floating-field__message--static",
               error ? "cm-floating-field__message--error" : "",

@@ -1,5 +1,45 @@
 # Changelog
 
+## 4.0.0
+
+### Mudanças de versão principal
+
+- A V4 usa três paletas próprias e o entry raiz exporta componentes seguros para
+  servidor. Aplicações V3 devem migrar os temas legados e importar componentes
+  interativos de `cosmemilton-ui/client`; a V3 permanece na tag `v3.22.2`.
+
+- Torna a biblioteca responsável pela apresentação completa da documentação:
+  adiciona `CmWorkbench`, `CmCanvas`, `CmInspector`, `CmFrame`, `CmDisclosure`,
+  `CmThemeScope`, `CmSkeleton` e `CmTable`, além de dimensões responsivas,
+  superfícies de vidro, elevação e tipografia de destaque.
+- Substitui as paletas V3 por três temas V4 independentes: `cm-v4-light` (Claro,
+  padrão), `cm-v4-dark` (Escuro) e `cm-v4-aurora` (Aurora). Os seletores usam
+  ícones próprios, rótulos amigáveis e `getThemeIcon` para personalização.
+- Corrige popups de busca em headers com vidro por meio do portal de `CmDialog`,
+  com foco inicial configurável e rolagem limitada aos resultados. `CmCommand`
+  oferece acionador com aparência de input, tamanhos e largura de diálogo.
+- Corrige o alinhamento dos slots de `CmTopbar`; a prop `height` permite headers
+  finos sem CSS na aplicação.
+- Ajusta o contraste dos tons secundários e de `CmButton variant="soft"`,
+  inclusive em hover, pressionado e selecionado, nas três paletas.
+- Amplia `CmAppShell` com chrome/fundos, navegação móvel acessível e reinicialização
+  da rolagem ao trocar de conteúdo; `CmCommand` ganha atalho e busca sem acentos.
+- Amplia os campos compactos, as seções recolhíveis e o bloco de código com
+  feedback de cópia. `CmToastNotice` passa a aplicar `action` e `className`.
+- Substitui os proxies do entry raiz por exports reais e tipados de `/server`.
+  Publica os estilos e imagens do mapa no entry `cosmemilton-ui/map.css`.
+- A documentação viva passa a usar apenas as APIs e os estilos públicos da V4,
+  com rotas e playgrounds para todos os componentes, recursos e guias.
+- Adiciona `CmMegaMenu` e `CmMegaMenuSearch`, com grupos, ícones, descrições,
+  links, ações e navegação por teclado, além da identidade visual `cm:ui` e
+  assets públicos `brand.svg`/`brand-mark.svg` para marca e favicon.
+- Corrige a responsividade de escolhas, botões agrupados, gráficos, OTP,
+  navegação, menus contextuais, timelines, árvores e seletores de tema.
+  `CmResizable` respeita o espaço disponível e `CmWorkbench` responde à largura
+  do contêiner. `CmTable` oferece `tableMinWidth` com rolagem interna.
+- Corrige paletas em `CmThemeScope` aninhado, contraste da assinatura no tema
+  escuro, pesquisa com texto ampliado e controles sobrepostos no menu móvel.
+
 ## 3.22.2
 
 ### Patch Changes

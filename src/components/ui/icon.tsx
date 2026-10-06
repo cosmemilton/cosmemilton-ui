@@ -1,6 +1,34 @@
 import { Icon as IconifyIcon } from "@iconify/react";
+import {
+  BookOpen,
+  Boxes,
+  ChartColumn,
+  ClipboardList,
+  Library,
+  MessageSquare,
+  MousePointer2,
+  Palette,
+  PanelsTopLeft,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import type { CSSProperties } from "react";
 import { cn } from "../../lib/utils.js";
+import { BRAND_SYMBOL } from "../../lib/brand-symbol.js";
+
+// Common navigation icons ship with the library and render without a network request.
+const bundledIcons: Record<string, LucideIcon> = {
+  "lucide:library": Library,
+  "lucide:boxes": Boxes,
+  "lucide:book-open": BookOpen,
+  "lucide:palette": Palette,
+  "lucide:panels-top-left": PanelsTopLeft,
+  "lucide:mouse-pointer-2": MousePointer2,
+  "lucide:clipboard-list": ClipboardList,
+  "lucide:message-square": MessageSquare,
+  "lucide:chart-column": ChartColumn,
+  "lucide:users": Users,
+};
 
 export interface CmIconProps {
   name: string;
@@ -34,6 +62,44 @@ export function CmIcon({
   const accessibilityProps = title
     ? { role: "img", "aria-label": title, "aria-hidden": ariaHidden }
     : { "aria-hidden": ariaHidden };
+
+  if (name === "cm:ui") {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox={BRAND_SYMBOL.viewBox}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={BRAND_SYMBOL.strokeWidth}
+        strokeLinecap={BRAND_SYMBOL.linecap}
+        strokeLinejoin={BRAND_SYMBOL.linejoin}
+        className={cn("cm-icon", size === undefined && "cm-icon--default-size", className)}
+        width={size}
+        height={size}
+        color={color}
+        style={style}
+        {...accessibilityProps}
+      >
+        {BRAND_SYMBOL.paths.map((path) => <path key={path} d={path} />)}
+      </svg>
+    );
+  }
+
+  const BundledIcon = Object.prototype.hasOwnProperty.call(bundledIcons, name)
+    ? bundledIcons[name]
+    : undefined;
+  if (BundledIcon) {
+    return (
+      <BundledIcon
+        className={cn("cm-icon", size === undefined && "cm-icon--default-size", className)}
+        width={size}
+        height={size}
+        color={color}
+        style={style}
+        {...accessibilityProps}
+      />
+    );
+  }
 
   return (
     <IconifyIcon

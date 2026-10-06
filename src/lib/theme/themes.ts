@@ -2,1003 +2,373 @@
 // Source: packages/tokens/src/themes.ts · Sync: scripts/sync-tokens.mjs (npm run sync:tokens)
 import type { ThemeConfig, ThemeRegistry } from "./types.js";
 
-const sansStack = "var(--font-geist-sans, 'Inter', sans-serif)";
-const monoStack = "var(--font-geist-mono, 'JetBrains Mono', monospace)";
+// V4 palettes are authored independently. Each theme declares its complete
+// visual scales; the V3 registry and theme inheritance are intentionally absent.
 
-export const defaultTheme: ThemeConfig = {
-  name: "cm-neutral",
+export const lightTheme: ThemeConfig = {
+  name: "cm-v4-light",
+  colorScheme: "light",
   colors: {
-    background: "#f8fafc",
-    foreground: "#20242a",
-    muted: "#eef1f4",
-    mutedForeground: "#69717d",
+    background: "#f5f7fb",
+    foreground: "#182236",
+    muted: "#ebeff5",
+    mutedForeground: "#536079",
     card: "#ffffff",
-    cardForeground: "#20242a",
+    cardForeground: "#182236",
     popover: "#ffffff",
-    popoverForeground: "#20242a",
-    primary: "#334155",
+    popoverForeground: "#182236",
+    primary: "#2f47b5",
     primaryForeground: "#ffffff",
-    primaryMutedForeground: "#a9afb8",
-    secondary: "#d9e0e8",
-    secondaryForeground: "#20242a",
-    accent: "#0f766e",
+    primaryMutedForeground: "#e7ecff",
+    secondary: "#435a7e",
+    secondaryForeground: "#ffffff",
+    accent: "#076d67",
     accentForeground: "#ffffff",
-    success: "#2f855a",
+    success: "#137448",
     successForeground: "#ffffff",
-    warning: "#b7791f",
-    warningForeground: "#1f2933",
-    danger: "#c2413a",
+    warning: "#875900",
+    warningForeground: "#ffffff",
+    danger: "#b22e4b",
     dangerForeground: "#ffffff",
-    info: "#2563a8",
+    info: "#24609c",
     infoForeground: "#ffffff",
-    border: "#d8dee6",
-    input: "#cfd6df",
-    ring: "#475569",
-    selection: "#dbeafe",
-    selectionForeground: "#1e293b",
-    overlay: "rgba(32, 36, 42, 0.48)",
+    border: "#ccd5e3",
+    input: "#76859f",
+    ring: "#4055bf",
+    selection: "#dee5ff",
+    selectionForeground: "#1e2e68",
+    overlay: "rgba(15, 25, 48, 0.46)",
   },
   typography: {
-    fontFamily: sansStack,
-    monospaceFamily: monoStack,
-    baseSize: "16px",
-    scaleRatio: 1.18,
-  },
-  radii: {
-    xs: "0.125rem",
-    sm: "0.25rem",
-    md: "0.375rem",
-    lg: "0.5rem",
-    xl: "0.625rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(15, 23, 42, 0.05)",
-    sm: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
-    md: "0 8px 24px -18px rgba(15, 23, 42, 0.28)",
-    lg: "0 18px 44px -28px rgba(15, 23, 42, 0.32)",
-    xl: "0 28px 70px -38px rgba(15, 23, 42, 0.38)",
-  },
-};
-
-export const schoolTheme: ThemeConfig = {
-  name: "cm-school",
-  colors: {
-    background: "#f7f1e7",
-    foreground: "#17231f",
-    muted: "#efe5d5",
-    mutedForeground: "#6d756e",
-    card: "#fffaf0",
-    cardForeground: "#17231f",
-    popover: "#fffaf0",
-    popoverForeground: "#17231f",
-    primary: "#1f3d35",
-    primaryForeground: "#f7f1e7",
-    primaryMutedForeground: "#9da69d",
-    secondary: "#587b57",
-    secondaryForeground: "#f7f1e7",
-    accent: "#d35d3f",
-    accentForeground: "#fffaf0",
-    success: "#386a45",
-    successForeground: "#f7f1e7",
-    warning: "#c78b2d",
-    warningForeground: "#17231f",
-    danger: "#9f382e",
-    dangerForeground: "#ffffff",
-    info: "#3d6f82",
-    infoForeground: "#f7f1e7",
-    border: "#d8cdbd",
-    input: "#d8cdbd",
-    ring: "#1f3d35",
-    selection: "#d9e8e5",
-    selectionForeground: "#17231f",
-    overlay: "rgba(49, 38, 23, 0.45)",
-  },
-  typography: {
-    fontFamily: '"Trebuchet MS", "Gill Sans", sans-serif',
-    monospaceFamily: '"Cascadia Mono", "Courier New", monospace',
+    fontFamily: '"CM UI Sans", "Inter", "Segoe UI", sans-serif',
+    fontFamilyHeading: '"CM UI Display", "Manrope", "CM UI Sans", sans-serif',
+    monospaceFamily: 'ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.2,
-  },
-  radii: {
-    xs: "0.125rem",
-    sm: "0.25rem",
-    md: "0.5rem",
-    lg: "0.5rem",
-    xl: "0.5rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(49, 38, 23, 0.08)",
-    sm: "0 1px 3px 0 rgba(49, 38, 23, 0.10)",
-    md: "0 18px 60px rgba(49, 38, 23, 0.12)",
-    lg: "0 24px 72px rgba(49, 38, 23, 0.16)",
-    xl: "0 30px 90px rgba(49, 38, 23, 0.2)",
-  },
-};
-
-export const darkTheme: ThemeConfig = {
-  name: "cm-dark",
-  colorScheme: "dark",
-  colors: {
-    background: "#020617",
-    foreground: "#f8fafc",
-    muted: "#111827",
-    mutedForeground: "#9ca3af",
-    card: "#0f172a",
-    cardForeground: "#e2e8f0",
-    popover: "#1e293b",
-    popoverForeground: "#e0f2fe",
-    primary: "#3b82f6",
-    primaryForeground: "#0f172a",
-    primaryMutedForeground: "#101a30",
-    secondary: "#8b5cf6",
-    secondaryForeground: "#f5f3ff",
-    accent: "#22d3ee",
-    accentForeground: "#083344",
-    success: "#34d399",
-    successForeground: "#022c22",
-    warning: "#fbbf24",
-    warningForeground: "#422006",
-    danger: "#f87171",
-    dangerForeground: "#ffffff",
-    info: "#0ea5e9",
-    infoForeground: "#082f49",
-    border: "#27354d",
-    input: "#3a4a63",
-    ring: "#3b82f6",
-    selection: "#1d4ed8",
-    selectionForeground: "#e0f2fe",
-    overlay: "rgba(2, 6, 23, 0.65)",
-  },
-  typography: {
-    fontFamily: sansStack,
-    monospaceFamily: monoStack,
-    baseSize: "16px",
-    scaleRatio: 1.18,
-  },
-  radii: {
-    xs: "0.125rem",
-    sm: "0.25rem",
-    md: "0.375rem",
-    lg: "0.5rem",
-    xl: "0.75rem",
-    full: "9999px",
-  },
-  // Sombras escuras nítidas: profundidade vem de preto + anel de 1px,
-  // sem glow colorido que deixa as superfícies com aparência borrada.
-  shadows: {
-    xs: "0 1px 2px 0 rgba(0, 0, 0, 0.45)",
-    sm: "0 2px 4px -1px rgba(0, 0, 0, 0.5)",
-    md: "0 0 0 1px rgba(148, 163, 184, 0.08), 0 6px 16px -8px rgba(0, 0, 0, 0.55)",
-    lg: "0 0 0 1px rgba(148, 163, 184, 0.09), 0 12px 28px -12px rgba(0, 0, 0, 0.6)",
-    xl: "0 0 0 1px rgba(148, 163, 184, 0.1), 0 20px 48px -16px rgba(0, 0, 0, 0.65)",
-  },
-};
-
-export const orangeTheme: ThemeConfig = {
-  name: "cm-orange",
-  colors: {
-    // Base neutra warm — fundo areia suave, cards brancas
-    background: "#f7f5f3",
-    foreground: "#1c1917",
-    muted: "#eae7e3",
-    mutedForeground: "#57534e",
-    card: "#ffffff",
-    cardForeground: "#1c1917",
-    popover: "#ffffff",
-    popoverForeground: "#1c1917",
-    // Orange brand — laranja queimado premium
-    primary: "#cd4014",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#fefbfa",
-    // Secondary dark — marrom escuro para contraste
-    secondary: "#3e2723",
-    secondaryForeground: "#f7f5f3",
-    // Accent — teal como complementar fria
-    accent: "#00838f",
-    accentForeground: "#ffffff",
-    // Status colors
-    success: "#2e7d32",
-    successForeground: "#ffffff",
-    warning: "#f9a825",
-    warningForeground: "#1c1917",
-    danger: "#c62828",
-    dangerForeground: "#ffffff",
-    info: "#1565c0",
-    infoForeground: "#ffffff",
-    // Estruturais neutros
-    border: "#d6d3d1",
-    input: "#d6d3d1",
-    ring: "#cd4014",
-    selection: "#ffccbc",
-    selectionForeground: "#1c1917",
-    overlay: "rgba(28, 25, 23, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Avenir Next", "Segoe UI", sans-serif',
-    monospaceFamily: monoStack,
-    baseSize: "16px",
-    scaleRatio: 1.22,
-  },
-  radii: {
-    xs: "0.1875rem",
-    sm: "0.375rem",
-    md: "0.625rem",
-    lg: "0.875rem",
-    xl: "1.125rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(124, 45, 18, 0.10)",
-    sm: "0 2px 5px 0 rgba(124, 45, 18, 0.14)",
-    md: "0 14px 32px -20px rgba(194, 65, 12, 0.42)",
-    lg: "0 24px 56px -30px rgba(194, 65, 12, 0.44)",
-    xl: "0 36px 84px -42px rgba(124, 45, 18, 0.48)",
-  },
-};
-
-export const redTheme: ThemeConfig = {
-  name: "cm-red",
-  colors: {
-    // Base neutra — background cool gray, cards brancas, SEM rosa/pink
-    background: "#f5f5f6",
-    foreground: "#1a1a2e",
-    muted: "#e8e9ec",
-    mutedForeground: "#5f6368",
-    card: "#ffffff",
-    cardForeground: "#1a1a2e",
-    popover: "#ffffff",
-    popoverForeground: "#1a1a2e",
-    // Red brand — vermelho profundo de alto impacto
-    primary: "#c62828",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#f9e7e7",
-    // Secondary dark — gera contraste dramático no gradient bar
-    secondary: "#1a1a2e",
-    secondaryForeground: "#f5f5f6",
-    // Accent quente — âmbar/laranja dourado como complementar
-    accent: "#e65100",
-    accentForeground: "#ffffff",
-    // Status colors — ricos e independentes do tema
-    success: "#2e7d32",
-    successForeground: "#ffffff",
-    warning: "#f57f17",
-    warningForeground: "#1a1a2e",
-    danger: "#991b1b",
-    dangerForeground: "#ffffff",
-    info: "#1565c0",
-    infoForeground: "#ffffff",
-    // Estruturais — neutros, sem tom rosado
-    border: "#d5d7db",
-    input: "#d5d7db",
-    ring: "#c62828",
-    selection: "#ffcdd2",
-    selectionForeground: "#1a1a2e",
-    overlay: "rgba(26, 26, 46, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Arial Narrow", "Roboto Condensed", Arial, sans-serif',
-    monospaceFamily: '"IBM Plex Mono", "JetBrains Mono", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.16,
-  },
-  radii: {
-    xs: "0.0625rem",
-    sm: "0.125rem",
-    md: "0.25rem",
-    lg: "0.375rem",
-    xl: "0.5rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 1px 0 rgba(127, 29, 29, 0.10)",
-    sm: "0 2px 4px 0 rgba(127, 29, 29, 0.14)",
-    md: "0 10px 24px -18px rgba(185, 28, 28, 0.40)",
-    lg: "0 20px 44px -28px rgba(185, 28, 28, 0.42)",
-    xl: "0 30px 72px -38px rgba(127, 29, 29, 0.46)",
-  },
-};
-
-export const blueTheme: ThemeConfig = {
-  name: "cm-blue",
-  colors: {
-    // Base neutra cool — fundo cinza azulado levíssimo, cards brancas
-    background: "#f4f6f8",
-    foreground: "#0d1b2a",
-    muted: "#e3e8ed",
-    mutedForeground: "#546e7a",
-    card: "#ffffff",
-    cardForeground: "#0d1b2a",
-    popover: "#ffffff",
-    popoverForeground: "#0d1b2a",
-    // Blue brand — azul royal profundo
-    primary: "#1565c0",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#deeaf6",
-    // Secondary dark — navy para contraste dramático
-    secondary: "#0d1b2a",
-    secondaryForeground: "#f4f6f8",
-    // Accent — amber/dourado quente como complementar
-    accent: "#ff8f00",
-    accentForeground: "#ffffff",
-    // Status colors
-    success: "#2e7d32",
-    successForeground: "#ffffff",
-    warning: "#f9a825",
-    warningForeground: "#0d1b2a",
-    danger: "#c62828",
-    dangerForeground: "#ffffff",
-    info: "#0277bd",
-    infoForeground: "#ffffff",
-    // Estruturais neutros
-    border: "#cfd8dc",
-    input: "#cfd8dc",
-    ring: "#1565c0",
-    selection: "#bbdefb",
-    selectionForeground: "#0d1b2a",
-    overlay: "rgba(13, 27, 42, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Inter", "Segoe UI", sans-serif',
-    monospaceFamily: '"SFMono-Regular", "Cascadia Mono", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.2,
-  },
-  radii: {
-    xs: "0.125rem",
-    sm: "0.25rem",
-    md: "0.5rem",
-    lg: "0.75rem",
-    xl: "1rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(30, 64, 175, 0.08)",
-    sm: "0 1px 4px 0 rgba(30, 64, 175, 0.12)",
-    md: "0 12px 30px -20px rgba(37, 99, 235, 0.36)",
-    lg: "0 24px 56px -32px rgba(37, 99, 235, 0.40)",
-    xl: "0 36px 86px -44px rgba(29, 78, 216, 0.44)",
-  },
-};
-
-export const greenTheme: ThemeConfig = {
-  name: "cm-green",
-  colors: {
-    // Base neutra natural — fundo stone suave, cards brancas
-    background: "#f5f5f4",
-    foreground: "#1b2e1b",
-    muted: "#e7e5e4",
-    mutedForeground: "#57534e",
-    card: "#ffffff",
-    cardForeground: "#1b2e1b",
-    popover: "#ffffff",
-    popoverForeground: "#1b2e1b",
-    // Green brand — verde escuro floresta
-    primary: "#2e7d32",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#f1f6f1",
-    // Secondary dark — verde-musgo profundo para contraste
-    secondary: "#1b3a1b",
-    secondaryForeground: "#f5f5f4",
-    // Accent — dourado terroso como complementar quente
-    accent: "#bf8c00",
-    accentForeground: "#ffffff",
-    // Status colors
-    success: "#388e3c",
-    successForeground: "#ffffff",
-    warning: "#f9a825",
-    warningForeground: "#1b2e1b",
-    danger: "#c62828",
-    dangerForeground: "#ffffff",
-    info: "#1565c0",
-    infoForeground: "#ffffff",
-    // Estruturais neutros
-    border: "#d6d3d1",
-    input: "#d6d3d1",
-    ring: "#2e7d32",
-    selection: "#c8e6c9",
-    selectionForeground: "#1b2e1b",
-    overlay: "rgba(27, 46, 27, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Optima", "Trebuchet MS", sans-serif',
-    monospaceFamily: '"Cascadia Mono", "Courier New", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.19,
+    tracking: { tight: "-0.03em", normal: "0", wide: "0.08em" },
   },
   radii: {
     xs: "0.25rem",
-    sm: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.25rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(20, 83, 45, 0.08)",
-    sm: "0 2px 5px 0 rgba(20, 83, 45, 0.12)",
-    md: "0 14px 32px -22px rgba(47, 111, 62, 0.38)",
-    lg: "0 26px 58px -34px rgba(47, 111, 62, 0.40)",
-    xl: "0 38px 88px -46px rgba(20, 83, 45, 0.44)",
-  },
-};
-
-export const violetTheme: ThemeConfig = {
-  name: "cm-violet",
-  colors: {
-    // Base neutra fria — fundo lavanda acinzentado, cards brancas
-    background: "#f5f4f7",
-    foreground: "#1a1625",
-    muted: "#e8e6ed",
-    mutedForeground: "#6b6478",
-    card: "#ffffff",
-    cardForeground: "#1a1625",
-    popover: "#ffffff",
-    popoverForeground: "#1a1625",
-    // Violet brand — roxo profundo e vibrante
-    primary: "#6a1b9a",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#caaddb",
-    // Secondary dark — índigo escuro para contraste
-    secondary: "#1a1040",
-    secondaryForeground: "#f5f4f7",
-    // Accent — turquesa como complementar vibrante
-    accent: "#00897b",
-    accentForeground: "#ffffff",
-    // Status colors
-    success: "#2e7d32",
-    successForeground: "#ffffff",
-    warning: "#f9a825",
-    warningForeground: "#1a1625",
-    danger: "#c62828",
-    dangerForeground: "#ffffff",
-    info: "#1565c0",
-    infoForeground: "#ffffff",
-    // Estruturais neutros
-    border: "#d1cfd6",
-    input: "#d1cfd6",
-    ring: "#6a1b9a",
-    selection: "#e1bee7",
-    selectionForeground: "#1a1625",
-    overlay: "rgba(26, 22, 37, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Gill Sans", "Avenir Next", sans-serif',
-    monospaceFamily: '"JetBrains Mono", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.24,
-  },
-  radii: {
-    xs: "0.25rem",
-    sm: "0.5rem",
-    md: "0.875rem",
-    lg: "1.25rem",
-    xl: "1.5rem",
-    full: "9999px",
-  },
-  shadows: {
-    xs: "0 1px 2px 0 rgba(88, 28, 135, 0.10)",
-    sm: "0 2px 6px 0 rgba(88, 28, 135, 0.14)",
-    md: "0 14px 34px -20px rgba(109, 40, 217, 0.40)",
-    lg: "0 26px 64px -34px rgba(8, 145, 178, 0.34)",
-    xl: "0 42px 94px -48px rgba(109, 40, 217, 0.44)",
-  },
-};
-
-export const midnightTheme: ThemeConfig = {
-  name: "cm-midnight",
-  colorScheme: "dark",
-  colors: {
-    background: "#070d1a",
-    foreground: "#e2e8f0",
-    muted: "#0f1a2e",
-    mutedForeground: "#94a3b8",
-    card: "#0c1525",
-    cardForeground: "#e2e8f0",
-    popover: "#101e33",
-    popoverForeground: "#e0f2fe",
-    primary: "#818cf8",
-    primaryForeground: "#0f172a",
-    primaryMutedForeground: "#212a4b",
-    secondary: "#6366f1",
-    secondaryForeground: "#f5f3ff",
-    accent: "#a78bfa",
-    accentForeground: "#1e1b4b",
-    success: "#34d399",
-    successForeground: "#022c22",
-    warning: "#fbbf24",
-    warningForeground: "#422006",
-    danger: "#f87171",
-    dangerForeground: "#ffffff",
-    info: "#38bdf8",
-    infoForeground: "#082f49",
-    border: "#1e2d45",
-    input: "#1e3050",
-    ring: "#818cf8",
-    selection: "#3730a3",
-    selectionForeground: "#e0e7ff",
-    overlay: "rgba(7, 13, 26, 0.70)",
-  },
-  typography: {
-    fontFamily: '"Segoe UI", "Inter", sans-serif',
-    monospaceFamily: '"JetBrains Mono", "Cascadia Mono", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.21,
-  },
-  radii: {
-    xs: "0.125rem",
     sm: "0.375rem",
     md: "0.625rem",
     lg: "0.875rem",
     xl: "1.25rem",
     full: "9999px",
-  },
-  // Sombras escuras nítidas: base preta-azulada com anel indigo discreto,
-  // sem halos rosa/violeta que tiravam a nitidez das superfícies.
-  shadows: {
-    xs: "0 1px 2px 0 rgba(2, 6, 23, 0.5)",
-    sm: "0 2px 5px -1px rgba(2, 6, 23, 0.55)",
-    md: "0 0 0 1px rgba(129, 140, 248, 0.08), 0 8px 20px -10px rgba(2, 6, 23, 0.6)",
-    lg: "0 0 0 1px rgba(129, 140, 248, 0.09), 0 14px 32px -14px rgba(2, 6, 23, 0.65)",
-    xl: "0 0 0 1px rgba(129, 140, 248, 0.1), 0 22px 52px -18px rgba(2, 6, 23, 0.7)",
-  },
-};
-
-export const roseTheme: ThemeConfig = {
-  name: "cm-rose",
-  colors: {
-    // Base neutra rosada suavíssima — fundo off-white, cards brancas
-    background: "#f6f4f5",
-    foreground: "#2d1a24",
-    muted: "#ebe7e9",
-    mutedForeground: "#6d5c63",
-    card: "#ffffff",
-    cardForeground: "#2d1a24",
-    popover: "#ffffff",
-    popoverForeground: "#2d1a24",
-    // Rose brand — rosa intenso elegante
-    primary: "#ad1457",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#edcbda",
-    // Secondary dark — burgundy profundo para contraste
-    secondary: "#311b28",
-    secondaryForeground: "#f6f4f5",
-    // Accent — dourado rosé como complementar sofisticado
-    accent: "#c6a700",
-    accentForeground: "#ffffff",
-    // Status colors
-    success: "#2e7d32",
-    successForeground: "#ffffff",
-    warning: "#f9a825",
-    warningForeground: "#2d1a24",
-    danger: "#c62828",
-    dangerForeground: "#ffffff",
-    info: "#1565c0",
-    infoForeground: "#ffffff",
-    // Estruturais neutros
-    border: "#d4d0d2",
-    input: "#d4d0d2",
-    ring: "#ad1457",
-    selection: "#f8bbd0",
-    selectionForeground: "#2d1a24",
-    overlay: "rgba(45, 26, 36, 0.55)",
-  },
-  typography: {
-    fontFamily: '"Hoefler Text", Georgia, serif',
-    monospaceFamily: '"Courier New", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.2,
-  },
-  radii: {
-    xs: "0.25rem",
-    sm: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.5rem",
-    full: "9999px",
+    button: "0.625rem",
   },
   shadows: {
-    xs: "0 1px 2px 0 rgba(159, 18, 57, 0.08)",
-    sm: "0 2px 5px 0 rgba(159, 18, 57, 0.12)",
-    md: "0 14px 34px -22px rgba(190, 24, 93, 0.34)",
-    lg: "0 26px 62px -36px rgba(15, 118, 110, 0.28)",
-    xl: "0 40px 92px -48px rgba(190, 24, 93, 0.38)",
+    xs: "0 1px 2px rgba(20, 35, 66, 0.04)",
+    sm: "0 3px 10px -4px rgba(20, 35, 66, 0.12)",
+    md: "0 12px 28px -14px rgba(20, 35, 66, 0.19)",
+    lg: "0 24px 52px -24px rgba(20, 35, 66, 0.22)",
+    xl: "0 36px 88px -34px rgba(20, 35, 66, 0.28)",
   },
-};
-
-export const auroraTheme: ThemeConfig = {
-  name: "cm-aurora",
-  colorScheme: "dark",
-  colors: {
-    background: "#11110f",
-    foreground: "#fff8e6",
-    muted: "#24231f",
-    mutedForeground: "#bdb5a4",
-    card: "#191b17",
-    cardForeground: "#fff8e6",
-    popover: "#20251f",
-    popoverForeground: "#fff8e6",
-    primary: "#ffb703",
-    primaryForeground: "#1d1200",
-    primaryMutedForeground: "#694901",
-    secondary: "#84e6bf",
-    secondaryForeground: "#082219",
-    accent: "#ff6f61",
-    accentForeground: "#2a0a06",
-    success: "#5be49b",
-    successForeground: "#052316",
-    warning: "#ffd166",
-    warningForeground: "#241600",
-    danger: "#ff6b6b",
-    dangerForeground: "#2b0707",
-    info: "#7dd3fc",
-    infoForeground: "#082337",
-    border: "#393a30",
-    input: "#4a463a",
-    ring: "#ffb703",
-    selection: "#6f5c2f",
-    selectionForeground: "#fff8e6",
-    overlay: "rgba(12, 12, 10, 0.72)",
-  },
-  typography: {
-    fontFamily: '"Space Grotesk", "Inter", "Segoe UI", sans-serif',
-    monospaceFamily: '"IBM Plex Mono", "JetBrains Mono", monospace',
-    baseSize: "16px",
-    scaleRatio: 1.22,
-  },
-  radii: {
-    xs: "0.25rem",
-    sm: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.25rem",
-    full: "9999px",
-  },
-  // Sombras escuras nítidas: o anel âmbar de 1px mantém a identidade aurora,
-  // mas o glow difuso (0 0 NNpx) saiu — era ele que borrava os cards.
-  shadows: {
-    xs: "0 1px 2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 248, 230, 0.05)",
-    sm: "0 2px 6px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 248, 230, 0.06)",
-    md: "0 8px 20px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 183, 3, 0.12)",
-    lg: "0 14px 32px -16px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 183, 3, 0.12)",
-    xl: "0 22px 52px -22px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 183, 3, 0.14)",
-  },
+  surfaces: { glass: "rgba(255, 255, 255, 0.92)", glassBorder: "#ccd5e3", glassBlur: "24px" },
   space: {
     none: "0",
     xs: "0.25rem",
     sm: "0.5rem",
-    md: "0.875rem",
-    lg: "1.125rem",
-    xl: "1.75rem",
-    "2xl": "2.5rem",
-    "3xl": "3.5rem",
+    md: "0.75rem",
+    lg: "1rem",
+    xl: "1.5rem",
+    "2xl": "2rem",
+    "3xl": "3rem",
   },
   zIndex: {
     base: "0",
     docked: "30",
-    dropdown: "520",
-    sticky: "40",
-    overlay: "800",
-    modal: "900",
-    toast: "1100",
-    tooltip: "1200",
+    dropdown: "500",
+    sticky: "20",
+    overlay: "300",
+    modal: "301",
+    toast: "9999",
+    tooltip: "10000",
   },
   motion: {
-    duration: {
-      fast: "120ms",
-      base: "220ms",
-      slow: "360ms",
-    },
-    ease: {
-      standard: "cubic-bezier(0.2, 0, 0, 1)",
-      emphasized: "cubic-bezier(0.16, 1, 0.3, 1)",
-    },
+    duration: { fast: ".12s", base: ".2s", slow: ".32s" },
+    ease: { standard: "cubic-bezier(0.2, 0, 0, 1)", emphasized: "cubic-bezier(0.16, 1, 0.3, 1)" },
   },
-  breakpoints: {
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
-    "2xl": "1536px",
-  },
+  breakpoints: { sm: "640px", md: "768px", lg: "1024px", xl: "1280px", "2xl": "1536px" },
   density: {
     compact: {
-      controlHeight: "2.125rem",
+      controlHeight: "2rem",
       controlPaddingX: "0.625rem",
       controlPaddingY: "0.375rem",
       gap: "0.375rem",
       iconSize: "1rem",
     },
     default: {
-      controlHeight: "2.625rem",
-      controlPaddingX: "0.95rem",
-      controlPaddingY: "0.5625rem",
-      gap: "0.625rem",
+      controlHeight: "2.5rem",
+      controlPaddingX: "0.875rem",
+      controlPaddingY: "0.5rem",
+      gap: "0.5rem",
       iconSize: "1.125rem",
     },
     comfortable: {
-      controlHeight: "3.125rem",
-      controlPaddingX: "1.25rem",
-      controlPaddingY: "0.75rem",
-      gap: "0.875rem",
+      controlHeight: "3rem",
+      controlPaddingX: "1rem",
+      controlPaddingY: "0.625rem",
+      gap: "0.75rem",
       iconSize: "1.25rem",
     },
   },
-  // Tinturas bem mais leves que antes (4–6% vs 10–18%): o degradê forte de
-  // primary/secondary sobre os cards lavava o contraste do texto.
   layers: {
-    base: "radial-gradient(circle at 12% 0%, rgba(255, 183, 3, 0.08), transparent 30%), radial-gradient(circle at 88% 14%, rgba(132, 230, 191, 0.07), transparent 32%), var(--color-background)",
-    surface:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 96%, var(--color-primary) 4%), var(--color-card))",
-    elevated:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-card) 94%, var(--color-secondary) 6%), var(--color-card))",
-    floating:
-      "linear-gradient(145deg, color-mix(in srgb, var(--color-popover) 95%, var(--color-primary) 5%), var(--color-popover))",
-    overlay: "rgba(12, 12, 10, 0.72)",
+    base: "#f5f7fb",
+    surface: "#ffffff",
+    elevated: "#f8faff",
+    floating: "#ffffff",
+    overlay: "rgba(15, 25, 48, 0.46)",
   },
 };
 
-// A tipografia da identidade do Frevo OS. Archivo primeiro, e o stack padrão
-// atrás como rede: numa máquina sem a fonte instalada o texto continua legível
-// em vez de cair no serif do navegador.
-const archivoStack = `'Archivo', ${sansStack}`;
-
-/**
- * Frevo OS — "flat, translúcido e escuro por padrão. A sombrinha vira ícone de
- * app: colorida sobre grafite."
- *
- * Nenhum valor aqui é novo. Os cinco que definem a pele já estavam rodando no
- * shell do Frevo, escritos à mão em JavaScript inline porque o tema não
- * existia — com um comentário no próprio código dizendo que virariam
- * `var(--…)` no dia em que existisse. Este é o dia:
- *
- *   background  #0d0d0f   o CLEAR_COLOR do compositor (e não preto puro de
- *                         propósito: na foto do boot, preto puro só pode
- *                         significar "sem scanout", e é assim que o handoff
- *                         do splash é medido)
- *   card        #141416   o MENU.fundo do painel, sem a transparência
- *   foreground  #f2f2f4   o MENU.texto — sobre grafite, branco puro vibra
- *   border      #2a2a2e   o rgba(255,255,255,.08) resolvido sobre o grafite
- *   primary     #c62828   o MENU.vermelho, o mesmo do .botao-frevo do instalador
- *
- * As três coisas que a identidade pede e que o modelo de tema não sabia dizer
- * — vidro, tracking e pílula — passaram a caber: `surfaces`,
- * `typography.tracking` e `radii.button` entraram como escalas OPCIONAIS, na
- * mesma forma que `space`, `motion` e `density` já usavam. Tema que não as
- * declara recebe o default da biblioteca e continua idêntico ao que era.
- */
-export const frevoTheme: ThemeConfig = {
-  name: "frevo",
+export const darkTheme: ThemeConfig = {
+  name: "cm-v4-dark",
   colorScheme: "dark",
   colors: {
-    background: "#0d0d0f",
-    foreground: "#f2f2f4",
-    muted: "#1a1a1d",
-    mutedForeground: "#9a9aa2",
-    card: "#141416",
-    cardForeground: "#f2f2f4",
-    popover: "#18181b",
-    popoverForeground: "#f2f2f4",
-
-    // O vermelho é a ÚNICA cor da casa, e mora no `primary` — que é o botão de
-    // ação, o mesmo papel do `.botao-frevo` do instalador.
-    //
-    // `accent` fica num grafite elevado, e a escolha é deliberada: nesta
-    // biblioteca o `accent` pinta realce e hover, então vermelho aqui deixaria
-    // TODA passagem de ponteiro vermelha. Nos mockups o vermelho aparece três
-    // vezes por tela — sombrinha, avatar e a marca da janela ativa — e nunca
-    // como superfície. Para inverter, troque estas duas linhas e mais nada.
-    primary: "#c62828",
-    primaryForeground: "#ffffff",
-    // Claro o bastante para manter AA sobre o vermelho (o contrast.test.ts
-    // cobra 4.5:1): um cinza comum aqui reprova.
-    primaryMutedForeground: "#fae9e9",
-    secondary: "#242428",
-    secondaryForeground: "#f2f2f4",
-    accent: "#242428",
-    accentForeground: "#f2f2f4",
-
-    // Semânticas dessaturadas para conviver com o grafite sem competir com o
-    // vermelho — cor de estado não é acento de marca.
-    success: "#3ea76a",
-    successForeground: "#06140c",
-    warning: "#d9a441",
-    warningForeground: "#1a1204",
-    danger: "#e05252",
-    dangerForeground: "#1a0808",
-    info: "#5aa6d8",
-    infoForeground: "#06131c",
-
-    border: "#2a2a2e",
-    input: "#33333a",
-    ring: "#c62828",
-    selection: "#3a1416",
-    selectionForeground: "#f7dede",
-    overlay: "rgba(8, 8, 10, 0.68)",
+    background: "#0b101b",
+    foreground: "#e7edf8",
+    muted: "#1a2333",
+    mutedForeground: "#abb7ce",
+    card: "#111a29",
+    cardForeground: "#e7edf8",
+    popover: "#182337",
+    popoverForeground: "#e7edf8",
+    primary: "#9fb2ff",
+    primaryForeground: "#172245",
+    primaryMutedForeground: "#27345c",
+    secondary: "#c2a8f6",
+    secondaryForeground: "#281b3f",
+    accent: "#74dbc8",
+    accentForeground: "#102923",
+    success: "#72d7a6",
+    successForeground: "#0b3020",
+    warning: "#ebc276",
+    warningForeground: "#342508",
+    danger: "#ff9aaf",
+    dangerForeground: "#3c1221",
+    info: "#87c9f5",
+    infoForeground: "#092a3d",
+    border: "#34435c",
+    input: "#60708a",
+    ring: "#b5c4ff",
+    selection: "#334976",
+    selectionForeground: "#ffffff",
+    overlay: "rgba(3, 7, 16, 0.72)",
   },
   typography: {
-    fontFamily: archivoStack,
-    monospaceFamily: monoStack,
+    fontFamily: '"CM UI Sans", "Inter", "Segoe UI", sans-serif',
+    fontFamilyHeading: '"CM UI Display", "Manrope", "CM UI Sans", sans-serif',
+    monospaceFamily: 'ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace',
     baseSize: "16px",
     scaleRatio: 1.2,
-    // "800 títulos com tracking apertado" (identidade v2). O -0.028em é o que
-    // faz "Aa Oxe" ler como uma palavra e não como três letras soltas.
-    tracking: { tight: "-0.028em", normal: "0", wide: "0.12em" },
+    tracking: { tight: "-0.03em", normal: "0", wide: "0.08em" },
   },
-  // Os valores literais que o shell já usava à mão, agora com dono. Não são
-  // `color-mix` do default porque estes três foram escolhidos olhando um
-  // desktop de verdade, com foto atrás — e é essa a medida que vale.
-  surfaces: {
-    glass: "rgba(20, 20, 22, 0.82)",
-    glassBorder: "rgba(255, 255, 255, 0.08)",
-    glassBlur: "24px",
-  },
-  // 12 no `lg` e 16 no `xl`, que é a faixa que a identidade pede para janelas
-  // e cartões. Os temas anteriores param em 10 no maior, e a diferença é
-  // justamente o que separa "cartaz" de "profundidade suave".
   radii: {
     xs: "0.25rem",
     sm: "0.375rem",
-    md: "0.5625rem",
-    lg: "0.75rem",
-    xl: "1rem",
-    full: "9999px",
-    // "Pílulas em botões" — a regra da identidade, aplicada de uma vez em vez
-    // de repetida em cada `shape="pill"`. Só vale para este tema.
-    button: "9999px",
-  },
-  // Preto puro com um anel de 1px, sem brilho colorido: sobre grafite, sombra
-  // colorida suja a superfície em vez de afastá-la do fundo. "Nada de borda
-  // dupla" — o anel É a borda.
-  shadows: {
-    xs: "0 1px 2px 0 rgba(0, 0, 0, 0.5)",
-    sm: "0 2px 6px -2px rgba(0, 0, 0, 0.55)",
-    md: "0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 20px -10px rgba(0, 0, 0, 0.6)",
-    lg: "0 0 0 1px rgba(255, 255, 255, 0.07), 0 16px 36px -14px rgba(0, 0, 0, 0.66)",
-    xl: "0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 64px -18px rgba(0, 0, 0, 0.72)",
-  },
-};
-
-/** Horizonte pairs the optional component skin with the SRI proposal palette. */
-export const horizonteLightTheme: ThemeConfig = {
-  name: "cm-horizonte-light",
-  colorScheme: "light",
-  colors: {
-    background: "#f4f6f8",
-    foreground: "#1b2d46",
-    muted: "#eef2f7",
-    mutedForeground: "#65758b",
-    card: "#ffffff",
-    cardForeground: "#1b2d46",
-    popover: "#ffffff",
-    popoverForeground: "#1b2d46",
-    primary: "#3155d9",
-    primaryForeground: "#ffffff",
-    primaryMutedForeground: "#ffffff",
-    secondary: "#eef2f7",
-    secondaryForeground: "#1b2d46",
-    accent: "#d8eea0",
-    accentForeground: "#172b46",
-    success: "#207958",
-    successForeground: "#ffffff",
-    warning: "#98651b",
-    warningForeground: "#ffffff",
-    danger: "#b34d51",
-    dangerForeground: "#ffffff",
-    info: "#3155d9",
-    infoForeground: "#ffffff",
-    border: "#e5eaf0",
-    input: "#dce3ec",
-    ring: "#3155d9",
-    selection: "#edf1fc",
-    selectionForeground: "#3155d9",
-    overlay: "rgba(17, 34, 56, 0.46)",
-  },
-  typography: {
-    fontFamily: '"CM Horizonte Inter", "Inter", "Segoe UI", sans-serif',
-    fontFamilyHeading: '"CM Horizonte Manrope", "Manrope", "CM Horizonte Inter", sans-serif',
-    monospaceFamily: monoStack,
-    baseSize: "16px",
-    scaleRatio: 1.2,
-    tracking: { tight: "-0.025em", normal: "0", wide: "0.1em" },
-  },
-  radii: {
-    xs: "0.375rem",
-    sm: "0.5rem",
     md: "0.625rem",
-    lg: "0.75rem",
-    xl: "1rem",
+    lg: "0.875rem",
+    xl: "1.25rem",
     full: "9999px",
     button: "0.625rem",
   },
   shadows: {
-    xs: "0 1px 2px rgba(23, 43, 70, 0.03)",
-    sm: "0 4px 20px rgba(23, 43, 70, 0.016)",
-    md: "0 8px 30px rgba(23, 43, 70, 0.06)",
-    lg: "0 16px 48px rgba(23, 43, 70, 0.1)",
-    xl: "0 28px 90px rgba(17, 34, 56, 0.22)",
+    xs: "0 1px 2px rgba(0, 4, 12, 0.4)",
+    sm: "0 3px 10px -4px rgba(0, 4, 12, 0.52)",
+    md: "0 12px 28px -14px rgba(0, 4, 12, 0.64)",
+    lg: "0 24px 52px -24px rgba(0, 4, 12, 0.7)",
+    xl: "0 36px 88px -34px rgba(0, 4, 12, 0.8)",
   },
+  surfaces: { glass: "rgba(17, 26, 41, 0.94)", glassBorder: "#34435c", glassBlur: "24px" },
+  space: {
+    none: "0",
+    xs: "0.25rem",
+    sm: "0.5rem",
+    md: "0.75rem",
+    lg: "1rem",
+    xl: "1.5rem",
+    "2xl": "2rem",
+    "3xl": "3rem",
+  },
+  zIndex: {
+    base: "0",
+    docked: "30",
+    dropdown: "500",
+    sticky: "20",
+    overlay: "300",
+    modal: "301",
+    toast: "9999",
+    tooltip: "10000",
+  },
+  motion: {
+    duration: { fast: ".12s", base: ".2s", slow: ".32s" },
+    ease: { standard: "cubic-bezier(0.2, 0, 0, 1)", emphasized: "cubic-bezier(0.16, 1, 0.3, 1)" },
+  },
+  breakpoints: { sm: "640px", md: "768px", lg: "1024px", xl: "1280px", "2xl": "1536px" },
   density: {
-    default: { controlHeight: "2.75rem", controlPaddingX: "0.875rem" },
-    comfortable: { controlHeight: "3rem", controlPaddingX: "1rem" },
+    compact: {
+      controlHeight: "2rem",
+      controlPaddingX: "0.625rem",
+      controlPaddingY: "0.375rem",
+      gap: "0.375rem",
+      iconSize: "1rem",
+    },
+    default: {
+      controlHeight: "2.5rem",
+      controlPaddingX: "0.875rem",
+      controlPaddingY: "0.5rem",
+      gap: "0.5rem",
+      iconSize: "1.125rem",
+    },
+    comfortable: {
+      controlHeight: "3rem",
+      controlPaddingX: "1rem",
+      controlPaddingY: "0.625rem",
+      gap: "0.75rem",
+      iconSize: "1.25rem",
+    },
   },
-  layers: { elevated: "#f8fafc" },
+  layers: {
+    base: "#0b101b",
+    surface: "#111a29",
+    elevated: "#1a2333",
+    floating: "#182337",
+    overlay: "rgba(3, 7, 16, 0.72)",
+  },
 };
 
-export const horizonteDarkTheme: ThemeConfig = {
-  ...horizonteLightTheme,
-  name: "cm-horizonte-dark",
-  colorScheme: "dark",
+export const auroraTheme: ThemeConfig = {
+  name: "cm-v4-aurora",
+  colorScheme: "light",
   colors: {
-    background: "#0d1522",
-    foreground: "#e8edf5",
-    muted: "#1d2c42",
-    mutedForeground: "#9caec5",
-    card: "#162234",
-    cardForeground: "#e8edf5",
-    popover: "#1d2c42",
-    popoverForeground: "#e8edf5",
-    primary: "#4364da",
+    background: "#f7f4fc",
+    foreground: "#29213f",
+    muted: "#eee7f7",
+    mutedForeground: "#65536f",
+    card: "#fffafe",
+    cardForeground: "#29213f",
+    popover: "#fffafe",
+    popoverForeground: "#29213f",
+    primary: "#6541c9",
     primaryForeground: "#ffffff",
-    primaryMutedForeground: "#ffffff",
-    secondary: "#1d2c42",
-    secondaryForeground: "#e8edf5",
-    accent: "#d8eea0",
-    accentForeground: "#172b46",
-    success: "#87d8b5",
-    successForeground: "#132e25",
-    warning: "#e6c181",
-    warningForeground: "#312614",
-    danger: "#f0a0a6",
-    dangerForeground: "#3a171c",
-    info: "#96b2ff",
-    infoForeground: "#111d2e",
-    border: "#2a3a50",
-    input: "#35475f",
-    ring: "#96b2ff",
-    selection: "#243759",
-    selectionForeground: "#b2c8ff",
-    overlay: "rgba(3, 8, 16, 0.66)",
+    primaryMutedForeground: "#f5eeff",
+    secondary: "#075f69",
+    secondaryForeground: "#ffffff",
+    accent: "#af245f",
+    accentForeground: "#ffffff",
+    success: "#116d4c",
+    successForeground: "#ffffff",
+    warning: "#915403",
+    warningForeground: "#ffffff",
+    danger: "#b82a4f",
+    dangerForeground: "#ffffff",
+    info: "#245ca8",
+    infoForeground: "#ffffff",
+    border: "#d6c7e9",
+    input: "#91749f",
+    ring: "#7751d1",
+    selection: "#e1d6fa",
+    selectionForeground: "#36234d",
+    overlay: "rgba(30, 16, 52, 0.46)",
+  },
+  typography: {
+    fontFamily: '"CM UI Sans", "Inter", "Segoe UI", sans-serif',
+    fontFamilyHeading: '"CM UI Display", "Manrope", "CM UI Sans", sans-serif',
+    monospaceFamily: 'ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace',
+    baseSize: "16px",
+    scaleRatio: 1.2,
+    tracking: { tight: "-0.03em", normal: "0", wide: "0.08em" },
+  },
+  radii: {
+    xs: "0.25rem",
+    sm: "0.375rem",
+    md: "0.625rem",
+    lg: "0.875rem",
+    xl: "1.25rem",
+    full: "9999px",
+    button: "0.625rem",
   },
   shadows: {
-    xs: "0 1px 2px rgba(3, 8, 16, 0.16)",
-    sm: "0 5px 22px rgba(3, 8, 16, 0.13)",
-    md: "0 8px 30px rgba(3, 8, 16, 0.2)",
-    lg: "0 16px 48px rgba(3, 8, 16, 0.3)",
-    xl: "0 28px 90px rgba(3, 8, 16, 0.5)",
+    xs: "0 1px 2px rgba(54, 26, 92, 0.04)",
+    sm: "0 3px 12px -5px rgba(71, 35, 116, 0.13)",
+    md: "0 12px 32px -16px rgba(71, 35, 116, 0.21)",
+    lg: "0 24px 60px -26px rgba(71, 35, 116, 0.25)",
+    xl: "0 36px 92px -34px rgba(71, 35, 116, 0.29)",
   },
-  layers: { elevated: "#1d2c42" },
+  surfaces: { glass: "rgba(255, 250, 254, 0.93)", glassBorder: "#d6c7e9", glassBlur: "24px" },
+  space: {
+    none: "0",
+    xs: "0.25rem",
+    sm: "0.5rem",
+    md: "0.75rem",
+    lg: "1rem",
+    xl: "1.5rem",
+    "2xl": "2rem",
+    "3xl": "3rem",
+  },
+  zIndex: {
+    base: "0",
+    docked: "30",
+    dropdown: "500",
+    sticky: "20",
+    overlay: "300",
+    modal: "301",
+    toast: "9999",
+    tooltip: "10000",
+  },
+  motion: {
+    duration: { fast: ".12s", base: ".2s", slow: ".32s" },
+    ease: { standard: "cubic-bezier(0.2, 0, 0, 1)", emphasized: "cubic-bezier(0.16, 1, 0.3, 1)" },
+  },
+  breakpoints: { sm: "640px", md: "768px", lg: "1024px", xl: "1280px", "2xl": "1536px" },
+  density: {
+    compact: {
+      controlHeight: "2rem",
+      controlPaddingX: "0.625rem",
+      controlPaddingY: "0.375rem",
+      gap: "0.375rem",
+      iconSize: "1rem",
+    },
+    default: {
+      controlHeight: "2.5rem",
+      controlPaddingX: "0.875rem",
+      controlPaddingY: "0.5rem",
+      gap: "0.5rem",
+      iconSize: "1.125rem",
+    },
+    comfortable: {
+      controlHeight: "3rem",
+      controlPaddingX: "1rem",
+      controlPaddingY: "0.625rem",
+      gap: "0.75rem",
+      iconSize: "1.25rem",
+    },
+  },
+  layers: {
+    base: "#f7f4fc",
+    surface: "#fffafe",
+    elevated: "#f2edfa",
+    floating: "#fffafe",
+    overlay: "rgba(30, 16, 52, 0.46)",
+  },
 };
 
+/** Claro is the default theme for new V4 applications. */
+export const defaultTheme = lightTheme;
+
 export const themes: ThemeRegistry = {
-  [defaultTheme.name]: defaultTheme,
-  [frevoTheme.name]: frevoTheme,
-  [schoolTheme.name]: schoolTheme,
+  [lightTheme.name]: lightTheme,
   [darkTheme.name]: darkTheme,
-  [orangeTheme.name]: orangeTheme,
-  [redTheme.name]: redTheme,
-  [blueTheme.name]: blueTheme,
-  [greenTheme.name]: greenTheme,
-  [violetTheme.name]: violetTheme,
-  [midnightTheme.name]: midnightTheme,
-  [roseTheme.name]: roseTheme,
   [auroraTheme.name]: auroraTheme,
-  [horizonteLightTheme.name]: horizonteLightTheme,
-  [horizonteDarkTheme.name]: horizonteDarkTheme,
 };
 
 export type CustomThemeInput = ThemeConfig[] | ThemeRegistry;
 
 export const extendThemes = (customThemes?: CustomThemeInput): ThemeRegistry => {
-  if (!customThemes) {
-    return themes;
-  }
-
+  if (!customThemes) return themes;
   const customEntries = Array.isArray(customThemes)
     ? customThemes.map((theme) => [theme.name, theme] as const)
     : Object.entries(customThemes);
-
   return {
     ...themes,
     ...Object.fromEntries(customEntries.filter(([name, theme]) => name && theme?.name)),

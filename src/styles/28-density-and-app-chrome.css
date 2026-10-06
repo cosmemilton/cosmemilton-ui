@@ -831,11 +831,17 @@
   gap: .75rem;
 }
 
+.cm-topbar__section--start {
+  grid-column: 1;
+}
+
 .cm-topbar__section--center {
+  grid-column: 2;
   justify-content: center;
 }
 
 .cm-topbar__section--end {
+  grid-column: 3;
   justify-content: flex-end;
 }
 
@@ -1754,6 +1760,14 @@
     border-radius: 0;
   }
 
+  .cm-app-shell__mobile-drawer .cm-sidebar__toggle {
+    display: none;
+  }
+
+  .cm-app-shell__mobile-drawer .cm-sidebar__brand {
+    padding-inline-end: .75rem;
+  }
+
   .cm-page-header {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -1767,6 +1781,10 @@
 @media (max-width: 640px) {
   .cm-topbar:not(.cm-topbar--mobile-inline) {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cm-topbar:not(.cm-topbar--mobile-inline) .cm-topbar__section {
+    grid-column: 1;
   }
 
   .cm-topbar:not(.cm-topbar--mobile-inline) .cm-topbar__section--center,
@@ -1840,4 +1858,61 @@
 
 .cm-metric-card__trend-value--negative {
   color: var(--color-danger);
+}
+
+/* Application presentation, including document readers and public portals. */
+.cm-app-shell--backdrop-aurora {
+  background: radial-gradient(ellipse at 5% 0%, color-mix(in srgb, var(--color-primary) 9%, transparent), transparent 42%), radial-gradient(ellipse at 100% 80%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 45%), var(--layer-base, var(--color-background));
+}
+.cm-app-shell--backdrop-grid {
+  background: linear-gradient(color-mix(in srgb, var(--color-border) 32%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-border) 32%, transparent) 1px, transparent 1px), var(--layer-base, var(--color-background));
+  background-size: 32px 32px;
+}
+.cm-app-shell--chrome-glass .cm-app-shell__sidebar,
+.cm-app-shell--chrome-glass .cm-app-shell__mobile-drawer,
+.cm-topbar--tone-glass {
+  background: var(--surface-glass);
+  color: var(--color-card-foreground);
+  border-color: var(--surface-glass-border);
+}
+.cm-app-shell--chrome-glass .cm-sidebar,
+.cm-app-shell--chrome-glass .cm-sidebar-shell { background: transparent; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cm-app-shell--chrome-glass .cm-app-shell__sidebar,
+  .cm-app-shell--chrome-glass .cm-app-shell__mobile-drawer {
+    -webkit-backdrop-filter: blur(var(--surface-glass-blur));
+    backdrop-filter: blur(var(--surface-glass-blur));
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cm-app-shell--chrome-glass .cm-app-shell__sidebar,
+  .cm-app-shell--chrome-glass .cm-app-shell__mobile-drawer { background: var(--color-card); }
+}
+.cm-app-shell__skip-link {
+  position: fixed;
+  top: .5rem;
+  left: .5rem;
+  z-index: var(--z-tooltip, 10000);
+  transform: translateY(calc(-100% - 1rem));
+  border: 1px solid var(--color-ring);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  padding: .625rem 1rem;
+  text-decoration: none;
+}
+.cm-app-shell__skip-link:focus { transform: none; outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.cm-app-shell__content:focus-visible { outline: 2px solid var(--color-ring); outline-offset: -2px; }
+.cm-app-shell__footer {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+  border-top: 1px solid var(--color-border);
+  padding: .75rem 1.25rem;
+  background: var(--surface-glass);
+  color: var(--color-muted-foreground);
+  font-size: .75rem;
 }

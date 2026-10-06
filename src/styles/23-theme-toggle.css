@@ -1,4 +1,18 @@
 /* CmThemeToggle must keep active text readable after button base styles. */
+.cm-theme-toggle {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.cm-theme-toggle-label { max-width: 100%; }
+
+.cm-theme-toggle-options {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  border-radius: var(--radius-lg);
+}
+
 .cm-theme-toggle .cm-theme-toggle-option {
   background: transparent;
   color: var(--color-muted-foreground);
@@ -20,4 +34,3 @@
   box-shadow: var(--shadow-sm);
   filter: none
 }
-

@@ -24,8 +24,11 @@ const serializeForScript = (value: unknown): string =>
     .replace(/\u2029/g, "\\u2029");
 
 export type CmThemeScriptProps = {
+  /** Unique bootstrap id; custom themes use `${id}-custom` for their style tag. */
+  id?: string;
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
+  storageKey?: string | false;
   /** Pass the same appearance as CmThemeProvider to avoid a first-paint flash. */
   skin?: CmThemeSkin;
   /**
@@ -53,13 +56,16 @@ export function CmThemeScript({
   customThemes,
   defaultDensity = "default",
   defaultThemeName = defaultTheme.name,
+  id = "cm-theme-script",
   nonce,
   skin = "classic",
+  storageKey = LOCAL_STORAGE_KEY,
 }: CmThemeScriptProps = {}) {
   const themeRegistry = extendThemes(customThemes);
   const fallbackThemeName = themeRegistry[defaultThemeName] ? defaultThemeName : defaultTheme.name;
   const fallbackDensity = densities.includes(defaultDensity) ? defaultDensity : "default";
   const customCSS = customThemeCSS(themeRegistry);
+  const customStyleId = id === "cm-theme-script" ? "cm-theme-custom" : `${id}-custom`;
 
   const script = `(() => {
     document.documentElement.setAttribute('data-cm-skin', ${serializeForScript(skin)});
@@ -67,11 +73,11 @@ export function CmThemeScript({
     const fallbackDensity = ${serializeForScript(fallbackDensity)};
     try {
       const names = ${serializeForScript(Object.keys(themeRegistry))};
-      const stored = window.localStorage.getItem('${LOCAL_STORAGE_KEY}');
+      const stored = (${serializeForScript(storageKey)} === false ? null : window.localStorage.getItem(${serializeForScript(storageKey)}));
       const themeName = stored && names.includes(stored) ? stored : fallback;
       document.documentElement.setAttribute('data-theme', themeName);
       const densities = ${serializeForScript(densities)};
-      const storedDensity = window.localStorage.getItem('${LOCAL_STORAGE_DENSITY}');
+      const storedDensity = (${serializeForScript(storageKey)} === false ? null : window.localStorage.getItem(${serializeForScript(storageKey === false ? false : storageKey === LOCAL_STORAGE_KEY ? LOCAL_STORAGE_DENSITY : `${storageKey}-density`)}));
       const density = storedDensity && densities.includes(storedDensity) ? storedDensity : fallbackDensity;
       document.documentElement.setAttribute('data-density', density);
     } catch (err) {
@@ -83,10 +89,10 @@ export function CmThemeScript({
   return (
     <>
       {customCSS ? (
-        <style id="cm-theme-custom" nonce={nonce} dangerouslySetInnerHTML={{ __html: customCSS }} />
+        <style id={customStyleId} nonce={nonce} dangerouslySetInnerHTML={{ __html: customCSS }} />
       ) : null}
       <script
-        id="cm-theme-script"
+        id={id}
         nonce={nonce}
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: script }}

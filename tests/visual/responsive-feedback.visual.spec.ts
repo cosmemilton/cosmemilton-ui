@@ -66,7 +66,7 @@ async function expectToastContained(page: Page) {
 }
 
 for (const skin of ["classic", "horizonte"] as const) {
-  for (const theme of ["light", "dark"] as const) {
+  for (const theme of ["light", "dark", "aurora"] as const) {
     test(`selected tabs stay fully visible at 320px in ${skin} ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 1000 });
       await page.goto(`/responsive-feedback?theme=${theme}&skin=${skin}`);
@@ -130,7 +130,7 @@ test("tabs preserve automatic visibility with scroll buttons disabled", async ({
 });
 
 for (const css of ["styles", "components"] as const) {
-  for (const theme of ["light", "dark"] as const) {
+  for (const theme of ["light", "dark", "aurora"] as const) {
     test(`long toasts fit all six positions at 320px in ${theme} with ${css}.css`, async ({
       page,
     }) => {

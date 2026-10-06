@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
 import type { CmSize } from "./types.js";
 
-type TextSize = CmSize | "2xl" | "3xl";
+type TextSize = CmSize | "2xl" | "3xl" | "display-sm" | "display";
 type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary" | "inverse";
 type TextWeight = "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black";
 type TextVariant = "default" | "modalTabDescription";
@@ -24,6 +24,9 @@ type CmTextCustomProps<TElement extends ElementType> = {
   weight?: TextWeight;
   align?: TextAlign;
   tracking?: TextTracking;
+  whiteSpace?: "normal" | "pre-wrap" | "nowrap";
+  family?: "sans" | "heading" | "mono";
+  wrap?: "normal" | "balance" | "pretty" | "anywhere";
 };
 
 export type CmTextProps<TElement extends ElementType = "p"> = CmTextCustomProps<TElement> &
@@ -40,6 +43,8 @@ const textVariants = cmVariants({
       xl: "cm-text--xl",
       "2xl": "cm-text--2xl",
       "3xl": "cm-text--3xl",
+      "display-sm": "cm-text--display-sm",
+      display: "cm-text--display",
     },
     tone: {
       default: "cm-text--default",
@@ -92,6 +97,9 @@ export function CmText<TElement extends ElementType = "p">({
   weight = "normal",
   align,
   tracking = "normal",
+  whiteSpace = "normal",
+  family = "sans",
+  wrap = "normal",
   ...props
 }: CmTextProps<TElement>) {
   const Component: ElementType = as ?? (inline ? "span" : "p");
@@ -100,6 +108,9 @@ export function CmText<TElement extends ElementType = "p">({
     <Component
       className={cn(
         textVariants({ size, tone, weight, spacing, align, tracking }),
+        `cm-text--white-space-${whiteSpace}`,
+        `cm-text--family-${family}`,
+        `cm-text--wrap-${wrap}`,
         truncate && "cm-text--truncate",
         variant === "modalTabDescription" && "cm-text--modal-tab-description",
         className,

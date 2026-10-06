@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 for (const skin of ["classic", "horizonte"] as const) {
-  for (const theme of ["light", "dark"] as const) {
+  for (const theme of ["light", "dark", "aurora"] as const) {
     for (const width of [1440, 320]) {
       for (const state of ["populated", "empty", "loading"] as const) {
         test(`custom header uses available width in ${skin} ${theme} ${width}px ${state}`, async ({

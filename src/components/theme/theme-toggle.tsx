@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, ChevronDown, Palette } from "lucide-react";
+import { ChevronDown, MoonStar, Palette, Sparkles, Sun } from "lucide-react";
+import type { ReactNode } from "react";
 import { useCmTheme } from "./theme-provider.js";
 import type { ThemeConfig } from "../../lib/theme/index.js";
 import { cn } from "../../lib/utils.js";
@@ -22,10 +23,26 @@ export type CmThemeToggleProps = {
   labelVisibility?: CmThemeToggleLabelVisibility;
   align?: "start" | "center" | "end";
   getThemeLabel?: (theme: ThemeConfig) => string;
+  /** Icon for the current theme and each menu option. */
+  getThemeIcon?: (theme: ThemeConfig) => ReactNode;
   themes?: CmThemeToggleThemeOption[];
 };
 
-const defaultGetThemeLabel = (theme: ThemeConfig) => theme.name.replace(/^cm-/, "");
+const defaultGetThemeLabel = (theme: ThemeConfig) => {
+  const labels: Record<string, string> = {
+    "cm-v4-light": "Claro",
+    "cm-v4-dark": "Escuro",
+    "cm-v4-aurora": "Aurora",
+  };
+  return labels[theme.name] ?? theme.name.replace(/^cm-/, "");
+};
+
+const defaultGetThemeIcon = (theme: ThemeConfig) => {
+  if (theme.name === "cm-v4-light") return <Sun size={16} aria-hidden="true" />;
+  if (theme.name === "cm-v4-dark") return <MoonStar size={16} aria-hidden="true" />;
+  if (theme.name === "cm-v4-aurora") return <Sparkles size={16} aria-hidden="true" />;
+  return <Palette size={16} aria-hidden="true" />;
+};
 
 function resolveThemeOptions(
   registry: Record<string, ThemeConfig>,
@@ -60,13 +77,16 @@ export function CmThemeToggle({
   align = "end",
   className,
   getThemeLabel = defaultGetThemeLabel,
+  getThemeIcon = defaultGetThemeIcon,
   labelVisibility = "always",
   presentation = "default",
   themes: allowedThemes,
 }: CmThemeToggleProps) {
   const { theme, themes, setThemeByName } = useCmTheme();
   const themeOptions = resolveThemeOptions(themes, allowedThemes, getThemeLabel);
-  const currentThemeLabel = getThemeLabel(theme);
+  const currentThemeLabel =
+    themeOptions.find((candidate) => candidate.theme.name === theme.name)?.label ??
+    getThemeLabel(theme);
 
   if (presentation === "compact") {
     return (
@@ -80,7 +100,7 @@ export function CmThemeToggle({
             tone="primary"
             size="sm"
             shape="pill"
-            icon={<Palette size={16} />}
+            icon={getThemeIcon(theme)}
             trailingIcon={<ChevronDown size={16} />}
             aria-haspopup="menu"
             aria-expanded={open}
@@ -98,7 +118,7 @@ export function CmThemeToggle({
         items={themeOptions.map((candidate) => ({
           id: candidate.theme.name,
           label: candidate.label,
-          icon: candidate.theme.name === theme.name ? <Check size={16} /> : undefined,
+          icon: getThemeIcon(candidate.theme),
           shortcut: candidate.theme.name === theme.name ? "Atual" : undefined,
           onSelect: () => setThemeByName(candidate.theme.name),
         }))}
@@ -124,6 +144,7 @@ export function CmThemeToggle({
               "cm-theme-toggle-option",
               candidate.theme.name === theme.name && "cm-theme-toggle-option-active",
             )}
+            icon={getThemeIcon(candidate.theme)}
           >
             {candidate.label}
           </CmButton>

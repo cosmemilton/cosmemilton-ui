@@ -1,8 +1,8 @@
 # Aparência Horizonte
 
-Horizonte é uma aparência opcional da CM-UI. Ela combina a fonte Inter no corpo,
-Manrope nos títulos, azul nas ações e azul profundo com acento cítrico na navegação.
-Os temas `cm-horizonte-light` e `cm-horizonte-dark` já fazem parte do registro padrão.
+Horizonte é uma aparência opcional da CM-UI V4 para a geometria dos controles,
+com rótulos flutuantes, tabelas compactas e tipografia local. Suas cores acompanham
+o tema ativo: `cm-v4-light` (Claro), `cm-v4-dark` (Escuro) ou `cm-v4-aurora` (Aurora).
 
 ## Ativação
 
@@ -12,7 +12,7 @@ import { CmThemeProvider, useCmTheme } from "cosmemilton-ui/theme";
 
 export function App() {
   return (
-    <CmThemeProvider skin="horizonte" defaultThemeName="cm-horizonte-light" chrome="surface">
+    <CmThemeProvider skin="horizonte" defaultThemeName="cm-v4-light" chrome="surface">
       <YourApplication />
     </CmThemeProvider>
   );
@@ -22,11 +22,7 @@ function Toggle() {
   const { theme, setThemeByName } = useCmTheme();
   return (
     <button
-      onClick={() =>
-        setThemeByName(
-          theme.name === "cm-horizonte-dark" ? "cm-horizonte-light" : "cm-horizonte-dark",
-        )
-      }
+      onClick={() => setThemeByName(theme.name === "cm-v4-dark" ? "cm-v4-light" : "cm-v4-dark")}
     >
       Alternar claro / escuro
     </button>
@@ -39,15 +35,15 @@ function Toggle() {
 a aparência ativa. O provider aplica `data-cm-skin` no elemento `html`, incluindo
 componentes que renderizam portais diretamente no `body`.
 
-O tema de cores continua independente da aparência. A preferência existente
-`cm-theme` no `localStorage` tem precedência sobre `defaultThemeName`. Na adoção,
-a aplicação deve decidir se mantém a cor anterior ou migra preferências antigas
-para uma das duas paletas Horizonte. Evite sobrescrever a escolha a cada carregamento.
+O tema de cores continua independente da aparência. A preferência válida em
+`cm-theme` no `localStorage` tem precedência sobre `defaultThemeName`.
+Paletas V3 não fazem parte do registro V4. Para prévias sem persistência, passe
+`storageKey={false}`; para controle externo, use `themeName` e `onThemeChange`.
 
 Aplicações SSR devem passar a mesma aparência ao script de inicialização:
 
 ```tsx
-<CmThemeScript skin="horizonte" defaultThemeName="cm-horizonte-light" />
+<CmThemeScript skin="horizonte" defaultThemeName="cm-v4-light" />
 ```
 
 O script define a aparência antes do primeiro paint. Quando a aplicação já informa
@@ -57,9 +53,8 @@ atributos no HTML do servidor, use `data-cm-skin="horizonte"` no mesmo elemento.
 
 Os arquivos variáveis Inter e Manrope, com suas licenças OFL, acompanham o pacote em
 `dist/fonts`. Não dependem de Google Fonts ou de requisições a serviços externos.
-As famílias internas `CM Horizonte Inter` e `CM Horizonte Manrope` evitam alterar o
-carregamento de fontes dos temas existentes. Os arquivos são solicitados somente
-quando uma família Horizonte é usada; o bundler precisa processar as URLs do CSS.
+As famílias internas `CM UI Sans` e `CM UI Display` são compartilhadas pelos temas
+V4. O bundler precisa processar as URLs do CSS para servir esses arquivos locais.
 Ao hospedar o CSS diretamente, mantenha `fonts/` ao lado de `styles.css`.
 
 `ThemeTypography.fontFamilyHeading` é opcional e produz `--font-family-heading`.
@@ -70,7 +65,7 @@ densidade continuam personalizáveis pelas APIs de temas da biblioteca.
 Os pesos compartilhados da skin são `--cm-horizonte-weight-body: 400`,
 `--cm-horizonte-weight-control: 500` e `--cm-horizonte-weight-emphasis: 550`.
 Use-os também nas composições da aplicação para manter o mesmo padrão no claro
-e no escuro. Títulos conservam os pesos de destaque da Manrope.
+e nos três temas. Títulos conservam os pesos de destaque da fonte de títulos.
 
 As tabelas usam `--cm-horizonte-data-foreground` para os dados e foreground para
 nomes em `strong`; o cabeçalho tem 42px inclusive com seletor de colunas. Para
@@ -90,8 +85,8 @@ coluna e `CmDataTableActions` como filho direto da célula. Consulte
 
 Horizonte altera a apresentação dos componentes. A composição das páginas,
 autenticação, dados, permissões e persistência dos movimentos continuam a cargo
-da aplicação. Para retornar à aparência anterior, use `skin="classic"` e selecione
-o tema de cores anterior. A adoção não exige substituir os componentes funcionais.
+da aplicação. Para usar a geometria padrão, passe `skin="classic"`; a paleta V4
+selecionada permanece ativa. A adoção não exige substituir os componentes funcionais.
 
 ## Menu de usuário slim
 

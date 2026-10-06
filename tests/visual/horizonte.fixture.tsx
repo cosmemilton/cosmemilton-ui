@@ -57,9 +57,7 @@ function HorizonteFixture() {
         </div>
         <CmButton
           onClick={() =>
-            setThemeByName(
-              theme.name === "cm-horizonte-light" ? "cm-horizonte-dark" : "cm-horizonte-light",
-            )
+            setThemeByName(theme.name === "cm-v4-light" ? "cm-v4-dark" : "cm-v4-light")
           }
         >
           Alternar tema
@@ -120,11 +118,7 @@ function UserMenuFixture() {
           <p>Componentes reais · identidade de teste</p>
         </div>
         <CmButton
-          onClick={() =>
-            setThemeByName(
-              theme.name === "cm-horizonte-dark" ? "cm-horizonte-light" : "cm-horizonte-dark",
-            )
-          }
+          onClick={() => setThemeByName(theme.name === "cm-v4-dark" ? "cm-v4-light" : "cm-v4-dark")}
         >
           Alternar tema
         </CmButton>
@@ -242,13 +236,13 @@ if (!root) throw new Error("Horizonte fixture root not found");
 const params = new URLSearchParams(window.location.search);
 const fixture = params.get("fixture");
 const skin = params.get("skin") === "classic" ? "classic" : "horizonte";
-const theme = params.get("theme") === "dark" ? "dark" : "light";
+const theme =
+  params.get("theme") === "dark" ? "dark" : params.get("theme") === "aurora" ? "aurora" : "light";
 createRoot(root).render(
   <CmThemeProvider
     skin={skin}
-    defaultThemeName={
-      skin === "horizonte" ? `cm-horizonte-${theme}` : theme === "dark" ? "cm-dark" : "cm-neutral"
-    }
+    defaultThemeName={`cm-v4-${theme}`}
+    storageKey={false}
     chrome="surface"
   >
     {fixture === "user-menu" ? (

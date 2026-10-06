@@ -279,6 +279,8 @@
 .cm-breadcrumb {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
   gap: .5rem;
   font-size: .875rem;
   line-height: 1.25rem
@@ -287,11 +289,14 @@
 .cm-breadcrumb__item {
   display: flex;
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
   gap: .5rem;
   color: var(--color-muted-foreground)
 }
 
 .cm-breadcrumb__link {
+  overflow-wrap: anywhere;
   transition: color .15s ease
 }
 
@@ -301,10 +306,13 @@
 }
 
 .cm-breadcrumb__current {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600
 }
 
 .cm-breadcrumb__separator {
+  flex-shrink: 0;
   font-size: .75rem;
   line-height: 1rem
 }
@@ -444,12 +452,12 @@
 }
 
 .cm-button--soft {
-  background: color-mix(in srgb, var(--cm-button-bg) 80%, transparent);
-  color: var(--cm-button-fg)
+  background: color-mix(in srgb, var(--cm-button-bg) 12%, var(--color-card));
+  color: var(--cm-button-outline)
 }
 
-.cm-button--soft:hover {
-  background: var(--cm-button-bg)
+.cm-button--soft:not(.cm-button--active):is(:hover, :active) {
+  background: color-mix(in srgb, var(--cm-button-bg) 16%, var(--color-card))
 }
 
 .cm-button--surface {
@@ -589,7 +597,14 @@
 }
 
 .cm-button-group--horizontal {
-  flex-direction: row
+  flex-direction: row;
+  flex-wrap: wrap
+}
+
+.cm-button-group--horizontal>.cm-button {
+  flex: 1 1 auto;
+  white-space: normal;
+  overflow-wrap: anywhere
 }
 
 .cm-button-group--vertical {
@@ -1210,4 +1225,3 @@
 .cm-box--border-sm { border-width: 1px; }
 .cm-box--border-md { border-width: 2px; }
 .cm-box--border-lg { border-width: 4px; }
-

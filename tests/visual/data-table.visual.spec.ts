@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-for (const theme of ["light", "dark"] as const) {
+for (const theme of ["light", "dark", "aurora"] as const) {
   test(`Horizonte ${theme} aligns action headers with their button groups`, async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(`/horizonte?fixture=data-table&theme=${theme}`);
     const fixture = page.getByTestId("data-table-fixture");
     await expect(fixture).toBeVisible();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", `cm-horizonte-${theme}`);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", `cm-v4-${theme}`);
     await page.evaluate(() => document.fonts.ready);
 
     for (const [align, label] of [
@@ -53,7 +53,14 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.getByText("Ana Beatriz", { exact: true })).toHaveCSS("font-weight", "550");
     await expect(page.getByText("Recife · PE", { exact: true })).toHaveCSS(
       "color",
-      theme === "light" ? "rgb(104, 122, 145)" : "rgb(184, 199, 219)",
+      await page.getByText("Recife · PE", { exact: true }).evaluate((element) => {
+        const probe = document.createElement("span");
+        probe.style.color = "var(--color-muted-foreground)";
+        element.append(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      }),
     );
     await expect(fixture).toHaveScreenshot(`data-table-actions-${theme}.png`);
 

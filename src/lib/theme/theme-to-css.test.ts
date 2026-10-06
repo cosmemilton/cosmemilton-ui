@@ -6,8 +6,8 @@ import {
   darkTheme,
   defaultTheme,
   extendThemes,
-  horizonteDarkTheme,
-  horizonteLightTheme,
+  auroraTheme,
+  lightTheme,
   themes,
 } from "./themes.js";
 import type { ThemeConfig } from "./types.js";
@@ -19,27 +19,37 @@ const customTheme: ThemeConfig = {
 };
 
 describe("themeToCSSBlock", () => {
-  it("ships both Horizonte palettes as built-ins with separate heading typography", () => {
-    expect(themes["cm-horizonte-light"]).toBe(horizonteLightTheme);
-    expect(themes["cm-horizonte-dark"]).toBe(horizonteDarkTheme);
-    expect(themeToCSSVars(horizonteLightTheme)["--font-family"]).toContain("CM Horizonte Inter");
-    expect(themeToCSSVars(horizonteLightTheme)["--font-family-heading"]).toContain(
-      "CM Horizonte Manrope",
-    );
-    expect(themeToCSSBlock(horizonteLightTheme)).toContain("color-scheme: light;");
-    expect(themeToCSSBlock(horizonteDarkTheme)).toContain("color-scheme: dark;");
+  it("ships only the three independently authored V4 palettes", () => {
+    expect(Object.keys(themes)).toEqual(["cm-v4-light", "cm-v4-dark", "cm-v4-aurora"]);
+    expect(themes["cm-v4-light"]).toBe(lightTheme);
+    expect(themes["cm-v4-dark"]).toBe(darkTheme);
+    expect(themes["cm-v4-aurora"]).toBe(auroraTheme);
+    expect(defaultTheme).toBe(lightTheme);
+    for (const theme of Object.values(themes)) {
+      expect(themeToCSSVars(theme)["--font-family"]).toContain("CM UI Sans");
+      expect(themeToCSSVars(theme)["--font-family-heading"]).toContain("CM UI Display");
+      expect(theme.surfaces).toBeDefined();
+      expect(theme.layers).toBeDefined();
+      expect(theme.density).toBeDefined();
+    }
+    expect(themeToCSSBlock(lightTheme)).toContain("color-scheme: light;");
+    expect(themeToCSSBlock(darkTheme)).toContain("color-scheme: dark;");
     expect(customThemeCSS(extendThemes())).toBe("");
   });
 
   it("preserves the body family for themes that omit a heading family", () => {
-    expect(themeToCSSVars(defaultTheme)["--font-family-heading"]).toBe(
+    const withoutHeading = {
+      ...defaultTheme,
+      typography: { ...defaultTheme.typography, fontFamilyHeading: undefined },
+    };
+    expect(themeToCSSVars(withoutHeading)["--font-family-heading"]).toBe(
       defaultTheme.typography.fontFamily,
     );
   });
 
   it("renders every token of the theme under the data-theme selector", () => {
     const block = themeToCSSBlock(defaultTheme);
-    expect(block).toContain(':root[data-theme="cm-neutral"] {');
+    expect(block).toContain(':root[data-theme="cm-v4-light"] {');
     for (const [token, value] of Object.entries(themeToCSSVars(defaultTheme))) {
       expect(block).toContain(`${token}: ${value};`);
     }
@@ -47,7 +57,7 @@ describe("themeToCSSBlock", () => {
 
   it("emits color-scheme when the theme declares one", () => {
     expect(themeToCSSBlock(darkTheme)).toContain("color-scheme: dark;");
-    expect(themeToCSSBlock(defaultTheme)).not.toContain("color-scheme");
+    expect(themeToCSSBlock(defaultTheme)).toContain("color-scheme: light;");
   });
 
   it("accepts a custom selector (used for the bare :root default block)", () => {
@@ -64,7 +74,7 @@ describe("escalas opcionais: vidro, tracking e raio de botão", () => {
   // O ponto destas três é serem ADITIVAS. O que precisa ficar provado não é
   // que o tema novo as usa — é que os antigos continuam idênticos sem elas.
   it("dá vidro a tema que nunca ouviu falar de vidro, derivado das cores dele", () => {
-    const vars = themeToCSSVars(defaultTheme);
+    const vars = themeToCSSVars({ ...defaultTheme, surfaces: undefined });
     expect(vars["--surface-glass"]).toContain("var(--color-card)");
     expect(vars["--surface-glass-border"]).toContain("var(--color-foreground)");
     expect(vars["--surface-glass-blur"]).toBe("24px");
@@ -89,7 +99,10 @@ describe("escalas opcionais: vidro, tracking e raio de botão", () => {
   it("emite --radius-button mesmo quando o tema não declara, igual ao md", () => {
     // É esta linha que garante que nenhum tema existente muda de aparência:
     // o botão lia --radius-md e passa a ler --radius-button com o mesmo valor.
-    const vars = themeToCSSVars(defaultTheme);
+    const vars = themeToCSSVars({
+      ...defaultTheme,
+      radii: { ...defaultTheme.radii, button: undefined },
+    });
     expect(vars["--radius-button"]).toBe(defaultTheme.radii.md);
   });
 
@@ -113,7 +126,7 @@ describe("customThemeCSS", () => {
     const css = customThemeCSS(extendThemes([customTheme]));
     expect(css).toContain(':root[data-theme="acme-brand"][data-theme] {');
     expect(css).toContain("--color-primary: #ff0000;");
-    expect(css).not.toContain('[data-theme="cm-neutral"]');
+    expect(css).not.toContain('[data-theme="cm-v4-light"]');
   });
 
   it("includes consumer overrides of built-in theme names", () => {
@@ -122,7 +135,7 @@ describe("customThemeCSS", () => {
       colors: { ...darkTheme.colors, primary: "#123456" },
     };
     const css = customThemeCSS(extendThemes([override]));
-    expect(css).toContain(':root[data-theme="cm-dark"][data-theme] {');
+    expect(css).toContain(':root[data-theme="cm-v4-dark"][data-theme] {');
     expect(css).toContain("--color-primary: #123456;");
   });
 });

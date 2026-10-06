@@ -2,7 +2,7 @@ import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } f
 import { cn } from "../../lib/utils.js";
 import { cmDensityClass, cmSizeValue, type CmDensity } from "./types.js";
 
-type CmTopbarTone = "surface" | "brand" | "transparent";
+type CmTopbarTone = "surface" | "brand" | "transparent" | "glass";
 type CmTopbarLayout = "balanced" | "start";
 type CmTopbarMobileLayout = "stack" | "inline";
 type CmTopbarSectionAlign = "start" | "center" | "end" | "stretch";
@@ -16,6 +16,7 @@ export type CmTopbarProps = HTMLAttributes<HTMLElement> & {
   title?: ReactNode;
   density?: CmDensity;
   tone?: CmTopbarTone;
+  /** Balanced centers the middle slot; start gives it the remaining available width. */
   layout?: CmTopbarLayout;
   mobileLayout?: CmTopbarMobileLayout;
   startAlign?: CmTopbarSectionAlign;
@@ -23,6 +24,7 @@ export type CmTopbarProps = HTMLAttributes<HTMLElement> & {
   endAlign?: CmTopbarSectionAlign;
   sticky?: boolean;
   bordered?: boolean;
+  /** Minimum header height in pixels or a CSS length; taller content can expand it. */
   height?: string | number;
 };
 

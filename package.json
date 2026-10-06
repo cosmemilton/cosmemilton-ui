@@ -1,10 +1,10 @@
 {
   "name": "cosmemilton-ui",
-  "version": "3.22.2",
+  "version": "4.0.0",
   "description": "Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
-  "homepage": "https://miltonjunior.dev.br/cosmemilton-ui/v3",
+  "homepage": "https://miltonjunior.dev.br/cosmemilton-ui/v4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cosmemilton/cosmemilton-ui.git"
@@ -39,7 +39,8 @@
     "./dist/components.min.css",
     "./dist/cm-ui.js",
     "./dist/cm-ui.min.js",
-    "./dist/index.js"
+    "./dist/index.js",
+    "./dist/map.css"
   ],
   "exports": {
     ".": {
@@ -71,8 +72,11 @@
     "./styles.min.css": "./dist/styles.min.css",
     "./components.css": "./dist/components.css",
     "./components.min.css": "./dist/components.min.css",
+    "./brand.svg": "./dist/brand.svg",
+    "./brand-mark.svg": "./dist/brand-mark.svg",
     "./manifest.json": "./dist/manifest.json",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./map.css": "./dist/map.css"
   },
   "bin": {
     "cm-ui-codemod": "bin/codemod.mjs"
@@ -84,8 +88,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
-    "build:browser": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-browser.mjs",
+    "build": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/generate-theme-css.mjs && node scripts/build-styles.mjs && node scripts/generate-manifest.mjs && node scripts/build-browser.mjs",
+    "build:browser": "node scripts/sync-tokens.mjs && tsc -p tsconfig.build.json && node scripts/build-brand.mjs && node scripts/build-browser.mjs",
     "sync:tokens": "node scripts/sync-tokens.mjs",
     "check:tokens-sync": "node scripts/sync-tokens.mjs --check",
     "tokens:typecheck": "tsc -p packages/tokens/tsconfig.json --noEmit",

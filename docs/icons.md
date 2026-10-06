@@ -41,6 +41,21 @@ environments without a tree-shaking bundler (e.g. importing `/client` directly
 in Node), install `@iconify/react` alongside it. v4 will change
 `SelectOption.icon` to a `ReactNode` and drop that internal reference.
 
+## Library identity
+
+The original CM monogram is bundled and renders locally through `CmIcon`:
+
+```tsx
+import { CmIcon } from "cosmemilton-ui/server";
+
+<CmIcon name="cm:ui" size={24} title="cosmemilton-ui" />;
+```
+
+The symbol inherits the current text color. For standalone use, the package
+exports `cosmemilton-ui/brand-mark.svg` (transparent mark) and
+`cosmemilton-ui/brand.svg` (white mark on an indigo tile, suitable for a favicon).
+Both SVGs are generated from the same geometry as the component.
+
 ## Optional: bring your own icons
 
 Every component that takes an icon accepts a plain `ReactNode`, so you can pass
