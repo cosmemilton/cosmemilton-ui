@@ -60,6 +60,18 @@ jobs:
           npm run tokens:build
           npm run tokens:test
 
+      - name: Build
+        run: npm run build
+
+      - name: Check generated files are committed
+        # Fontes geradas devem estar sincronizadas com o commit de release.
+        run: |
+          if [ -n "$(git status --porcelain -- src)" ]; then
+            git status -- src
+            git diff -- src
+            exit 1
+          fi
+
       - name: Install Playwright Chromium
         run: npm run test:visual:install
 
@@ -76,18 +88,6 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 7
-
-      - name: Build
-        run: npm run build
-
-      - name: Check generated files are committed
-        # Fontes geradas devem estar sincronizadas com o commit de release.
-        run: |
-          if [ -n "$(git status --porcelain -- src)" ]; then
-            git status -- src
-            git diff -- src
-            exit 1
-          fi
 
       - name: Pack and validate release artifact
         id: pack
