@@ -161,8 +161,8 @@ function inspect() {
 
 async function confirm() {
   const metadata = artifact();
-  // npm/CDN metadata may take several minutes to expose a successful publication.
-  for (let attempt = 1; attempt <= 30; attempt++) {
+  // npm processing and CDN propagation can exceed five minutes after an accepted publication.
+  for (let attempt = 1; attempt <= 60; attempt++) {
     const published = view(`${metadata.name}@${metadata.version}`, "version", "dist.integrity");
     const latest = published ? view(metadata.name, "dist-tags.latest") : null;
     if (
@@ -175,11 +175,11 @@ async function confirm() {
       );
       return;
     }
-    console.log(`Waiting for npm propagation (${attempt}/30).`);
-    if (attempt < 30) await new Promise((resolve) => setTimeout(resolve, 10000));
+    console.log(`Waiting for npm processing/propagation (${attempt}/60; up to 10 minutes).`);
+    if (attempt < 60) await new Promise((resolve) => setTimeout(resolve, 10000));
   }
   throw new Error(
-    "npm publication was attempted, but registry propagation was not confirmed within the polling window. Check the registry before retrying.",
+    "npm publication was attempted, but processing/propagation was not confirmed within the 10-minute polling window. Check the registry before retrying.",
   );
 }
 
