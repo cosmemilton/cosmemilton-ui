@@ -156,7 +156,7 @@ jobs:
             echo "NPM_TOKEN is required to publish."
             exit 1
           fi
-          npm publish "release-output/$RELEASE_TARBALL" --ignore-scripts --access public --tag latest --provenance
+          npm publish "./release-output/$RELEASE_TARBALL" --ignore-scripts --access public --tag latest --provenance
 
       - name: Confirm npm registry propagation
         if: steps.registry.outputs.publish == 'true'
