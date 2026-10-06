@@ -1,5 +1,22 @@
 import { expect, test, type Locator } from "@playwright/test";
 
+async function settleTransitions(button: Locator) {
+  await button.evaluate(async (element) => {
+    // The theme provider and pointer states can start color transitions before
+    // a readable contrast ratio is reached. Capture the final state, rather
+    // than treating that first passing animation frame as the reference color.
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    for (;;) {
+      getComputedStyle(element).getPropertyValue("background-color");
+      const animations = element
+        .getAnimations()
+        .filter((animation) => animation.pending || animation.playState === "running");
+      if (animations.length === 0) return;
+      await Promise.all(animations.map((animation) => animation.finished.catch(() => {})));
+    }
+  });
+}
+
 async function contrast(button: Locator) {
   return button.evaluate((element) => {
     const css = getComputedStyle(element);
@@ -48,19 +65,24 @@ for (const skin of ["classic", "horizonte"]) {
         const rest = page.locator(`button[data-tone="${tone}"][data-state="rest"]`);
         const selected = page.locator(`button[data-tone="${tone}"][data-state="selected"]`);
         await page.mouse.move(0, 0);
+        await settleTransitions(rest);
+        await settleTransitions(selected);
         await expect.poll(async () => (await contrast(rest)).ratio).toBeGreaterThanOrEqual(4.5);
         const restColor = await contrast(rest);
         const selectedColor = await contrast(selected);
         expect(selectedColor.ratio).toBeGreaterThanOrEqual(4.5);
         await rest.hover();
+        await settleTransitions(rest);
         await expect
           .poll(async () => (await contrast(rest)).background)
           .not.toEqual(restColor.background);
         await expect.poll(async () => (await contrast(rest)).ratio).toBeGreaterThanOrEqual(4.5);
         await page.mouse.down();
+        await settleTransitions(rest);
         await expect.poll(async () => (await contrast(rest)).ratio).toBeGreaterThanOrEqual(4.5);
         await page.mouse.up();
         await selected.hover();
+        await settleTransitions(selected);
         await expect.poll(() => contrast(selected)).toEqual(selectedColor);
         expect((await contrast(selected)).ratio).toBeGreaterThanOrEqual(4.5);
       }
