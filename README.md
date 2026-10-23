@@ -212,3 +212,7 @@ fica em [CHANGELOG.md](./CHANGELOG.md).
 ## Licença
 
 [ISC](./LICENSE) © Cosme Milton
+
+### Appearance storage namespaces
+
+Pass the same `storagePrefix` to `CmThemeProvider` and `CmThemeScript` when applications share one origin. For example, `storagePrefix="tenant-a:"` stores theme, density, chrome and inverted-header preferences under that prefix. The default empty prefix preserves the existing keys. Changing the prefix restores the new namespace without copying preferences from the previous application. Blocked browser storage does not prevent changing the current appearance.

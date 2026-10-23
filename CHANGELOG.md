@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.22.3
+
+### Patch Changes
+
+- Add optional storagePrefix to isolate appearance preferences for applications sharing the same origin, including safe namespace changes and blocked-storage handling.
+
 ## 3.22.2
 
 ### Patch Changes

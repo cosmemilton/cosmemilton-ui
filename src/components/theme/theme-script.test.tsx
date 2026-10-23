@@ -109,3 +109,22 @@ describe("CmThemeScript", () => {
     expect(document.documentElement).toHaveAttribute("data-density", "default");
   });
 });
+
+it("uses the requested namespace before first paint", () => {
+  localStorage.setItem("cm-theme", "cm-dark");
+  localStorage.setItem("client-a:cm-theme", "cm-horizonte-light");
+  localStorage.setItem("client-a:cm-density", "compact");
+  const { container } = render(<CmThemeScript storagePrefix="client-a:" />);
+  new Function(container.querySelector("#cm-theme-script")!.innerHTML)();
+  expect(document.documentElement).toHaveAttribute("data-theme", "cm-horizonte-light");
+  expect(document.documentElement).toHaveAttribute("data-density", "compact");
+});
+
+it("escapes storage prefixes in inline script output", () => {
+  const { container } = render(<CmThemeScript storagePrefix={"</script><img src=x>"} />);
+  const code = container.querySelector("#cm-theme-script")!.innerHTML;
+  expect(code).not.toContain("</script>");
+  expect(code).not.toContain("<img");
+  new Function(code)();
+  expect(document.documentElement).toHaveAttribute("data-theme", "cm-neutral");
+});

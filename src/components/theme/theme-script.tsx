@@ -26,6 +26,8 @@ const serializeForScript = (value: unknown): string =>
 export type CmThemeScriptProps = {
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
+  /** Pass the same prefix as CmThemeProvider. */
+  storagePrefix?: string;
   /** Pass the same appearance as CmThemeProvider to avoid a first-paint flash. */
   skin?: CmThemeSkin;
   /**
@@ -55,6 +57,7 @@ export function CmThemeScript({
   defaultThemeName = defaultTheme.name,
   nonce,
   skin = "classic",
+  storagePrefix = "",
 }: CmThemeScriptProps = {}) {
   const themeRegistry = extendThemes(customThemes);
   const fallbackThemeName = themeRegistry[defaultThemeName] ? defaultThemeName : defaultTheme.name;
@@ -67,11 +70,11 @@ export function CmThemeScript({
     const fallbackDensity = ${serializeForScript(fallbackDensity)};
     try {
       const names = ${serializeForScript(Object.keys(themeRegistry))};
-      const stored = window.localStorage.getItem('${LOCAL_STORAGE_KEY}');
+      const stored = window.localStorage.getItem(${serializeForScript(storagePrefix + LOCAL_STORAGE_KEY)});
       const themeName = stored && names.includes(stored) ? stored : fallback;
       document.documentElement.setAttribute('data-theme', themeName);
       const densities = ${serializeForScript(densities)};
-      const storedDensity = window.localStorage.getItem('${LOCAL_STORAGE_DENSITY}');
+      const storedDensity = window.localStorage.getItem(${serializeForScript(storagePrefix + LOCAL_STORAGE_DENSITY)});
       const density = storedDensity && densities.includes(storedDensity) ? storedDensity : fallbackDensity;
       document.documentElement.setAttribute('data-density', density);
     } catch (err) {

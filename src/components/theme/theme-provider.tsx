@@ -47,6 +47,8 @@ export type CmThemeProviderProps = {
   children: ReactNode;
   customThemes?: CustomThemeInput;
   defaultThemeName?: string;
+  /** Prefix for all persisted appearance keys; the empty default preserves existing keys. */
+  storagePrefix?: string;
   density?: CmDensity;
   defaultDensity?: CmDensity;
   chrome?: CmThemeChrome;
@@ -103,19 +105,39 @@ export function CmThemeProvider({
   defaultThemeName = defaultTheme.name,
   density,
   skin = "classic",
+  storagePrefix = "",
 }: CmThemeProviderProps) {
   const themeRegistry = useMemo(() => extendThemes(customThemes), [customThemes]);
   const fallbackTheme = themeRegistry[defaultThemeName] ?? defaultTheme;
+  const [loadedPrefix, setLoadedPrefix] = useState<string | null>(null);
+  const readPreference = useCallback(
+    (key: string) => {
+      try {
+        return window.localStorage.getItem(storagePrefix + key);
+      } catch {
+        return null;
+      }
+    },
+    [storagePrefix],
+  );
+  const writePreference = useCallback(
+    (key: string, value: string) => {
+      try {
+        window.localStorage.setItem(storagePrefix + key, value);
+      } catch {
+        /* Unavailable storage leaves the current theme functional. */
+      }
+    },
+    [storagePrefix],
+  );
   const [themeName, setThemeName] = useState<string>(fallbackTheme.name);
   const [uncontrolledDensity, setUncontrolledDensity] = useState<CmDensity>(defaultDensity);
   const [uncontrolledChrome, setUncontrolledChrome] = useState<CmThemeChrome>(defaultChrome);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored && themeRegistry[stored]) {
-      setThemeName(stored);
-    }
-    const storedDensity = window.localStorage.getItem(LOCAL_STORAGE_DENSITY) as CmDensity | null;
+    const stored = readPreference(LOCAL_STORAGE_KEY);
+    setThemeName(stored && themeRegistry[stored] ? stored : fallbackTheme.name);
+    const storedDensity = readPreference(LOCAL_STORAGE_DENSITY) as CmDensity | null;
     if (
       !density &&
       (storedDensity === "default" ||
@@ -123,24 +145,37 @@ export function CmThemeProvider({
         storedDensity === "compact")
     ) {
       setUncontrolledDensity(storedDensity);
-    }
-    const storedChrome = window.localStorage.getItem(LOCAL_STORAGE_CHROME) as CmThemeChrome | null;
-    const storedInvert = window.localStorage.getItem(LOCAL_STORAGE_INVERT_HEADER);
+    } else if (!density) setUncontrolledDensity(defaultDensity);
+    const storedChrome = readPreference(LOCAL_STORAGE_CHROME) as CmThemeChrome | null;
+    const storedInvert = readPreference(LOCAL_STORAGE_INVERT_HEADER);
     if (!chrome && (storedChrome === "surface" || storedChrome === "inverted")) {
       setUncontrolledChrome(storedChrome);
     } else if (!chrome && storedInvert === "true") {
       setUncontrolledChrome("inverted");
-    }
-  }, [chrome, density, themeRegistry]);
+    } else if (!chrome) setUncontrolledChrome(defaultChrome);
+    setLoadedPrefix(storagePrefix);
+  }, [
+    chrome,
+    density,
+    themeRegistry,
+    readPreference,
+    fallbackTheme.name,
+    defaultChrome,
+    defaultDensity,
+    storagePrefix,
+  ]);
 
   const theme = useMemo<ThemeConfig>(
-    () => themeRegistry[themeName] ?? fallbackTheme,
-    [fallbackTheme, themeName, themeRegistry],
+    () =>
+      loadedPrefix === storagePrefix ? (themeRegistry[themeName] ?? fallbackTheme) : fallbackTheme,
+    [fallbackTheme, themeName, themeRegistry, loadedPrefix, storagePrefix],
   );
 
   // Desativar invertHeader automaticamente para temas escuros
-  const requestedDensity = density ?? uncontrolledDensity;
-  const requestedChrome = chrome ?? uncontrolledChrome;
+  const requestedDensity =
+    density ?? (loadedPrefix === storagePrefix ? uncontrolledDensity : defaultDensity);
+  const requestedChrome =
+    chrome ?? (loadedPrefix === storagePrefix ? uncontrolledChrome : defaultChrome);
   const effectiveChrome: CmThemeChrome = theme.colorScheme === "dark" ? "surface" : requestedChrome;
   const effectiveInvert = effectiveChrome === "inverted";
 
@@ -149,9 +184,9 @@ export function CmThemeProvider({
       if (density === undefined) {
         setUncontrolledDensity(nextDensity);
       }
-      window.localStorage.setItem(LOCAL_STORAGE_DENSITY, nextDensity);
+      writePreference(LOCAL_STORAGE_DENSITY, nextDensity);
     },
-    [density],
+    [density, writePreference],
   );
 
   const setChrome = useCallback(
@@ -159,10 +194,10 @@ export function CmThemeProvider({
       if (chrome === undefined) {
         setUncontrolledChrome(nextChrome);
       }
-      window.localStorage.setItem(LOCAL_STORAGE_CHROME, nextChrome);
-      window.localStorage.setItem(LOCAL_STORAGE_INVERT_HEADER, String(nextChrome === "inverted"));
+      writePreference(LOCAL_STORAGE_CHROME, nextChrome);
+      writePreference(LOCAL_STORAGE_INVERT_HEADER, String(nextChrome === "inverted"));
     },
-    [chrome],
+    [chrome, writePreference],
   );
 
   const setInvertHeader = useCallback(
@@ -178,8 +213,8 @@ export function CmThemeProvider({
 
   useEffect(() => {
     applyTheme(theme);
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, theme.name);
-  }, [theme]);
+    if (loadedPrefix === storagePrefix) writePreference(LOCAL_STORAGE_KEY, theme.name);
+  }, [theme, loadedPrefix, storagePrefix, writePreference]);
 
   useEffect(() => {
     applyThemePreferences(requestedDensity, effectiveChrome, skin);

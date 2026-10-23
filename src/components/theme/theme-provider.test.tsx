@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CmThemeProvider, useCmTheme } from "./theme-provider.js";
@@ -19,6 +19,8 @@ function ThemeSwitcher({ to }: { to: string }) {
     </button>
   );
 }
+
+afterEach(() => vi.restoreAllMocks());
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -140,5 +142,99 @@ describe("CmThemeProvider", () => {
       </CmThemeProvider>,
     );
     expect(document.documentElement.getAttribute("data-theme")).toBe("cm-midnight");
+  });
+});
+
+function Preferences() {
+  const theme = useCmTheme();
+  return (
+    <>
+      <output>{theme.theme.name + ":" + theme.density + ":" + theme.chrome}</output>
+      <button onClick={() => theme.setThemeByName("cm-dark")}>dark</button>
+      <button onClick={() => theme.setDensity("compact")}>compact</button>
+      <button onClick={() => theme.setChrome("inverted")}>invert</button>
+    </>
+  );
+}
+
+describe("appearance storage namespaces", () => {
+  it("isolates all four appearance keys and preserves existing unprefixed choices", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem("cm-theme", "cm-midnight");
+    const { unmount } = render(
+      <CmThemeProvider storagePrefix="client-a:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    await user.click(screen.getByText("compact"));
+    await user.click(screen.getByText("invert"));
+    await user.click(screen.getByText("dark"));
+    expect(localStorage.getItem("client-a:cm-theme")).toBe("cm-dark");
+    expect(localStorage.getItem("client-a:cm-density")).toBe("compact");
+    expect(localStorage.getItem("client-a:cm-chrome")).toBe("inverted");
+    expect(localStorage.getItem("client-a:cm-invert-header")).toBe("true");
+    expect(localStorage.getItem("cm-theme")).toBe("cm-midnight");
+    unmount();
+    render(
+      <CmThemeProvider storagePrefix="client-b:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:default:surface");
+    expect(localStorage.getItem("client-b:cm-density")).toBeNull();
+    expect(localStorage.getItem("client-a:cm-theme")).toBe("cm-dark");
+  });
+
+  it("reloads a changed prefix without ever copying the previous theme into it", () => {
+    localStorage.setItem("client-a:cm-theme", "cm-dark");
+    localStorage.setItem("client-a:cm-density", "compact");
+    localStorage.setItem("client-a:cm-chrome", "inverted");
+    const write = vi.spyOn(Storage.prototype, "setItem");
+    const { rerender } = render(
+      <CmThemeProvider storagePrefix="client-a:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("cm-dark:compact:surface");
+    rerender(
+      <CmThemeProvider storagePrefix="client-b:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:default:surface");
+    expect(
+      write.mock.calls.some(([key, value]) => key === "client-b:cm-theme" && value === "cm-dark"),
+    ).toBe(false);
+    expect(localStorage.getItem("client-a:cm-theme")).toBe("cm-dark");
+  });
+
+  it("restores preferences only from the requested namespace", () => {
+    localStorage.setItem("client-b:cm-theme", "cm-horizonte-light");
+    localStorage.setItem("client-b:cm-density", "comfortable");
+    localStorage.setItem("client-b:cm-invert-header", "true");
+    render(
+      <CmThemeProvider storagePrefix="client-b:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("cm-horizonte-light:comfortable:inverted");
+  });
+
+  it("remains usable when storage access is blocked", async () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    const user = userEvent.setup();
+    render(
+      <CmThemeProvider storagePrefix="client-a:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    await user.click(screen.getByText("dark"));
+    await user.click(screen.getByText("compact"));
+    expect(screen.getByRole("status")).toHaveTextContent("cm-dark:compact:surface");
   });
 });
