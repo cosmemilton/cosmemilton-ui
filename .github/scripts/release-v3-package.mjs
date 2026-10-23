@@ -144,7 +144,7 @@ function inspect() {
     );
     return;
   }
-  const latest = view(metadata.name, "dist-tags.v3");
+  const latest = view(metadata.name, "dist-tags.maintenance-v3");
   assert(
     latest === null ||
       (stableVersion.test(latest) && compareVersions(metadata.version, latest) > 0),
@@ -159,14 +159,14 @@ async function confirm() {
   // npm processing and CDN propagation can exceed five minutes after an accepted publication.
   for (let attempt = 1; attempt <= 60; attempt++) {
     const published = view(`${metadata.name}@${metadata.version}`, "version", "dist.integrity");
-    const latest = published ? view(metadata.name, "dist-tags.v3") : null;
+    const latest = published ? view(metadata.name, "dist-tags.maintenance-v3") : null;
     if (
       published?.version === metadata.version &&
       published["dist.integrity"] === metadata.integrity &&
       latest === metadata.version
     ) {
       console.log(
-        `Confirmed ${metadata.name}@${metadata.version}, v3 tag and tarball integrity on npm.`,
+        `Confirmed ${metadata.name}@${metadata.version}, maintenance-v3 tag and tarball integrity on npm.`,
       );
       return;
     }

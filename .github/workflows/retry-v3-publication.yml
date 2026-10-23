@@ -1,0 +1,71 @@
+name: Retry validated v3 publication
+
+on:
+  push:
+    branches: [fix/v3-theme-storage-prefix]
+    paths: [.github/workflows/retry-v3-publication.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
+concurrency:
+  group: npm-v3-publication-recovery
+  cancel-in-progress: false
+
+env:
+  VALIDATED_RUN_ID: "39942889381"
+  VALIDATED_SHA: f2a2aeee7c5952c062427f453ac1879196d8a8cb
+
+jobs:
+  publish:
+    name: Publish the already verified v3 tarball
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          sparse-checkout: .github/scripts
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Require the successful verification and unchanged package sources
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const options = {owner: context.repo.owner, repo: context.repo.repo, run_id: Number(process.env.VALIDATED_RUN_ID)};
+            const {data: run} = await github.rest.actions.getWorkflowRun(options);
+            if (run.head_sha !== process.env.VALIDATED_SHA || run.event !== 'push'
+              || run.head_repository.full_name !== context.payload.repository.full_name
+              || run.head_branch !== 'fix/v3-theme-storage-prefix') throw new Error('Unexpected validation source.');
+            const {data: jobs} = await github.rest.actions.listJobsForWorkflowRun(options);
+            if (!jobs.jobs.some(job => job.name === 'Typecheck, lint, test, visual, build' && job.conclusion === 'success')) throw new Error('The required validation did not pass.');
+            const {execFileSync} = require('node:child_process');
+            const files = execFileSync('git', ['diff', '--name-only', process.env.VALIDATED_SHA, 'HEAD'], {encoding:'utf8'}).trim().split('\n').filter(Boolean);
+            const allowed = new Set(['.github/scripts/release-v3-package.mjs', '.github/workflows/maintenance-v3.yml', '.github/workflows/retry-v3-publication.yml']);
+            if (files.some(file => !allowed.has(file))) throw new Error('Published sources or build inputs changed after verification.');
+      - name: Download the exact validated artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.VALIDATED_RUN_ID }}
+          name: npm-package-${{ env.VALIDATED_SHA }}
+          path: release-output
+      - name: Check artifact integrity and immutable registry version
+        id: registry
+        run: node .github/scripts/release-v3-package.mjs inspect
+      - name: Publish the same tarball under the maintenance tag
+        if: steps.registry.outputs.publish == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then echo 'NPM_TOKEN is required.'; exit 1; fi
+          npm publish ./release-output/cosmemilton-ui-3.22.3.tgz --ignore-scripts --access public --tag maintenance-v3 --provenance
+      - name: Confirm version, maintenance tag and artifact integrity
+        run: node .github/scripts/release-v3-package.mjs confirm
