@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.22.4
+
+### Patch Changes
+
+- Corrige o foco inicial de `CmDrawer` e `CmDialog` quando o painel é montado por portal.
+- Mantém Tab/Shift+Tab dentro do modal, excluindo itens ocultos, inertes e com `tabIndex` negativo. Grupos recolhidos de `CmSidebar` ficam fora da navegação por teclado sem perder sua animação.
+- Preserva temas e APIs da linha 3.x. Inclui regressões de foco, Escape, rolagem e retorno ao acionador em desktop/celular e nos temas Horizonte claro/escuro.
+
 ## 3.22.3
 
 ### Patch Changes

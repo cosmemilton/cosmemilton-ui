@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { render } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRef } from "react";
 
 import { useFocusTrap } from "./use-focus-trap.js";
+import { CmPortal } from "../components/ui/portal.js";
 
 afterEach(() => {
+  cleanup();
   document.body.innerHTML = "";
 });
 
@@ -20,7 +22,67 @@ function Trap({ enabled = true }: { enabled?: boolean }) {
   );
 }
 
+function PortalTrap() {
+  const ref = useRef<HTMLDivElement>(null);
+  useFocusTrap(ref);
+  return (
+    <CmPortal>
+      <div ref={ref} tabIndex={-1}>
+        <button>portal first</button>
+        <button>portal last</button>
+      </div>
+    </CmPortal>
+  );
+}
+
+function HiddenTrap() {
+  const ref = useRef<HTMLDivElement>(null);
+  useFocusTrap(ref);
+  return (
+    <div ref={ref} tabIndex={-1}>
+      <button tabIndex={-1}>programmatic</button>
+      <button>visible first</button>
+      <button>visible last</button>
+      <div aria-hidden="true">
+        <button>collapsed submenu</button>
+      </div>
+      <div hidden>
+        <button>hidden ancestor</button>
+      </div>
+      <div style={{ display: "none" }}>
+        <button>css hidden ancestor</button>
+      </div>
+      <div inert>
+        <button>inert ancestor</button>
+      </div>
+    </div>
+  );
+}
+
 describe("useFocusTrap", () => {
+  it("initializes when a portal mounts the panel after the parent effect", async () => {
+    const user = userEvent.setup();
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    trigger.focus();
+    const { getByText, unmount } = render(<PortalTrap />);
+    await waitFor(() => expect(document.activeElement).toBe(getByText("portal first")));
+    getByText("portal last").focus();
+    await user.tab();
+    expect(document.activeElement).toBe(getByText("portal first"));
+    unmount();
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("skips negative tabIndex and wraps around hidden or inert descendants", async () => {
+    const user = userEvent.setup();
+    const { getByText } = render(<HiddenTrap />);
+    expect(document.activeElement).toBe(getByText("visible first"));
+    await user.tab({ shift: true });
+    expect(document.activeElement).toBe(getByText("visible last"));
+    await user.tab();
+    expect(document.activeElement).toBe(getByText("visible first"));
+  });
   it("focuses the first focusable element on mount", () => {
     const { getByText } = render(<Trap />);
     expect(document.activeElement).toBe(getByText("first"));

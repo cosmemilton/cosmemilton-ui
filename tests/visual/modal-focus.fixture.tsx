@@ -1,0 +1,56 @@
+import { useState } from "react";
+import { createRoot } from "react-dom/client";
+import { CmThemeProvider } from "../../src/components/theme/theme-provider.js";
+import { CmButton } from "../../src/components/ui/button.js";
+import { CmDialog } from "../../src/components/ui/dialog.js";
+import { CmDrawer } from "../../src/components/ui/drawer.js";
+import { CmSidebar } from "../../src/components/ui/sidebar.js";
+
+function FocusFixture() {
+  const [open, setOpen] = useState(false);
+  const params = new URLSearchParams(location.search);
+  const menu = (
+    <CmSidebar
+      standalone
+      autoCollapse={false}
+      groups={[
+        {
+          id: "start",
+          label: "Operações",
+          defaultOpen: true,
+          items: [
+            { id: "home", label: "Visão geral", active: true },
+            { id: "list", label: "Lista" },
+          ],
+        },
+        {
+          id: "other",
+          label: "Outros",
+          items: [
+            { id: "hidden", label: "Opção recolhida" },
+            { id: "select", label: "Selecionar e fechar", onSelect: () => setOpen(false) },
+          ],
+        },
+      ]}
+    />
+  );
+  return (
+    <CmThemeProvider
+      skin="horizonte"
+      defaultThemeName={params.get("theme") ?? "cm-horizonte-light"}
+    >
+      <CmButton onClick={() => setOpen(true)}>Abrir menu</CmButton>
+      <CmButton>Fora do menu</CmButton>
+      {params.get("type") === "drawer" ? (
+        <CmDrawer title="Menu de teste" open={open} onClose={() => setOpen(false)}>
+          {menu}
+        </CmDrawer>
+      ) : (
+        <CmDialog portal title="Menu de teste" open={open} onClose={() => setOpen(false)}>
+          {menu}
+        </CmDialog>
+      )}
+    </CmThemeProvider>
+  );
+}
+createRoot(document.getElementById("root")!).render(<FocusFixture />);

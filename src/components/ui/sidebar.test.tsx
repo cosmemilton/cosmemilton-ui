@@ -1,8 +1,43 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { CmSidebar, type CmSidebarGroup } from "./sidebar.js";
 
 afterEach(cleanup);
+
+it("removes collapsed groups from keyboard navigation without unmounting their items", () => {
+  const { container } = render(
+    <CmSidebar
+      standalone
+      autoCollapse={false}
+      groups={[
+        {
+          id: "first",
+          label: "First group",
+          defaultOpen: true,
+          items: [
+            { id: "one", label: "One" },
+            { id: "two", label: "Two" },
+          ],
+        },
+        {
+          id: "second",
+          label: "Second group",
+          items: [
+            { id: "three", label: "Three" },
+            { id: "four", label: "Four" },
+          ],
+        },
+      ]}
+    />,
+  );
+  const panels = container.querySelectorAll<HTMLElement>(".cm-sidebar__group-items");
+  expect(panels[0].inert).toBe(false);
+  expect(panels[1].inert).toBe(true);
+  fireEvent.click(screen.getByRole("button", { name: "Second group", exact: true }));
+  expect(panels[0].inert).toBe(true);
+  expect(panels[1].inert).toBe(false);
+  expect(screen.getByText("One")).toBeInTheDocument();
+});
 
 const groups: CmSidebarGroup[] = [
   { id: "overview", label: "Visão Geral", items: [{ id: "overview", label: "Visão Geral" }] },

@@ -491,6 +491,8 @@ export function CmSidebar({
                 <div
                   ref={(element) => {
                     if (element) {
+                      // A closed group remains mounted for its animation, but cannot receive Tab.
+                      element.inert = !groupOpen;
                       groupItemsRefs.current.set(group.id, element);
                     } else {
                       groupItemsRefs.current.delete(group.id);

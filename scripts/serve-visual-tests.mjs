@@ -7,7 +7,7 @@ import { build } from "esbuild";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const outputDir = join(root, "tmp", "visual-tests");
 const host = "127.0.0.1";
-const port = 4178;
+const port = Number(process.env.CM_VISUAL_TEST_PORT ?? 4178);
 
 await import("./sync-tokens.mjs");
 await import("./generate-theme-css.mjs");
@@ -19,6 +19,7 @@ await build({
     join(root, "tests", "visual", "fixture.tsx"),
     join(root, "tests", "visual", "horizonte.fixture.tsx"),
     join(root, "tests", "visual", "responsive-feedback.fixture.tsx"),
+    join(root, "tests", "visual", "modal-focus.fixture.tsx"),
   ],
   bundle: true,
   format: "esm",
@@ -51,9 +52,11 @@ const horizonteHtml = indexHtml
 const responsiveHtml = indexHtml
   .replace("/fixture.css", "/responsive-feedback.fixture.css")
   .replace("/fixture.js", "/responsive-feedback.fixture.js");
+const modalFocusHtml = indexHtml.replace("/fixture.js", "/modal-focus.fixture.js");
 
 const files = new Map([
   ["/fixture.js", join(outputDir, "fixture.js")],
+  ["/modal-focus.fixture.js", join(outputDir, "modal-focus.fixture.js")],
   ["/fixture.js.map", join(outputDir, "fixture.js.map")],
   ["/horizonte.fixture.js", join(outputDir, "horizonte.fixture.js")],
   ["/horizonte.fixture.js.map", join(outputDir, "horizonte.fixture.js.map")],
@@ -106,6 +109,12 @@ const server = createServer(async (request, response) => {
   if (pathname === "/horizonte") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(horizonteHtml);
+    return;
+  }
+
+  if (pathname === "/modal-focus") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(modalFocusHtml);
     return;
   }
 

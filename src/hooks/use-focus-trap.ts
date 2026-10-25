@@ -17,6 +17,24 @@ type UseFocusTrapOptions = {
   returnFocus?: boolean;
 };
 
+function isTabbable(element: HTMLElement, container: HTMLElement): boolean {
+  if (element.tabIndex < 0 || element.closest('[hidden], [inert], [aria-hidden="true"]')) {
+    return false;
+  }
+  for (let current: HTMLElement | null = element; current; current = current.parentElement) {
+    const style = window.getComputedStyle(current);
+    if (
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      style.visibility === "collapse"
+    ) {
+      return false;
+    }
+    if (current === container) break;
+  }
+  return true;
+}
+
 /**
  * Confines Tab/Shift+Tab focus within `containerRef` while `enabled`, focuses
  * the first focusable element (or the container itself) on mount, and returns
@@ -32,47 +50,53 @@ export function useFocusTrap(
 ): void {
   useEffect(() => {
     if (!enabled || typeof document === "undefined") return;
-    const container = containerRef.current;
-    if (!container) return;
-
     const previouslyFocused = document.activeElement as HTMLElement | null;
+    let observer: MutationObserver | undefined;
+    let detach: (() => void) | undefined;
 
-    const getFocusable = () =>
-      Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-        (el) => !el.hasAttribute("hidden") && el.getAttribute("aria-hidden") !== "true",
-      );
-
-    const focusables = getFocusable();
-    (focusables[0] ?? container).focus({ preventScroll: true });
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
-      const items = getFocusable();
-      if (items.length === 0) {
-        event.preventDefault();
-        container.focus({ preventScroll: true });
-        return;
-      }
-
-      const first = items[0];
-      const last = items[items.length - 1];
-      const active = document.activeElement;
-
-      if (event.shiftKey) {
-        if (active === first || !container.contains(active)) {
+    const attach = () => {
+      const container = containerRef.current;
+      if (!container) return false;
+      observer?.disconnect();
+      const getFocusable = () =>
+        Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) =>
+          isTabbable(element, container),
+        );
+      const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key !== "Tab" || event.defaultPrevented) return;
+        const items = getFocusable();
+        if (items.length === 0) {
           event.preventDefault();
-          last.focus({ preventScroll: true });
+          container.focus({ preventScroll: true });
+          return;
         }
-      } else if (active === last || !container.contains(active)) {
-        event.preventDefault();
-        first.focus({ preventScroll: true });
-      }
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement as HTMLElement;
+        if (
+          event.shiftKey
+            ? active === first || !items.includes(active)
+            : active === last || !items.includes(active)
+        ) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus({ preventScroll: true });
+        }
+      };
+      container.addEventListener("keydown", onKeyDown);
+      detach = () => container.removeEventListener("keydown", onKeyDown);
+      (getFocusable()[0] ?? container).focus({ preventScroll: true });
+      return true;
     };
-
-    container.addEventListener("keydown", onKeyDown);
+    // CmPortal mounts after this effect. Observe that commit instead of polling.
+    if (!attach()) {
+      observer = new MutationObserver(attach);
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
     return () => {
-      container.removeEventListener("keydown", onKeyDown);
-      if (returnFocus && typeof previouslyFocused?.focus === "function") {
+      observer?.disconnect();
+      const initialized = Boolean(detach);
+      detach?.();
+      if (initialized && returnFocus && previouslyFocused?.isConnected) {
         previouslyFocused.focus({ preventScroll: true });
       }
     };
