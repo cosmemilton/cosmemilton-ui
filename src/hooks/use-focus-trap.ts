@@ -53,10 +53,12 @@ export function useFocusTrap(
     const previouslyFocused = document.activeElement as HTMLElement | null;
     let observer: MutationObserver | undefined;
     let detach: (() => void) | undefined;
+    let attachedContainer: HTMLElement | undefined;
 
     const attach = () => {
       const container = containerRef.current;
       if (!container) return false;
+      attachedContainer = container;
       observer?.disconnect();
       const getFocusable = () =>
         Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) =>
@@ -84,7 +86,12 @@ export function useFocusTrap(
       };
       container.addEventListener("keydown", onKeyDown);
       detach = () => container.removeEventListener("keydown", onKeyDown);
-      (getFocusable()[0] ?? container).focus({ preventScroll: true });
+      const active = document.activeElement;
+      // A portal or nested surface may already have placed focus before this
+      // deferred attachment. Preserve that explicit choice instead of stealing it.
+      if (!container.contains(active) && (active === previouslyFocused || active === document.body)) {
+        (getFocusable()[0] ?? container).focus({ preventScroll: true });
+      }
       return true;
     };
     // CmPortal mounts after this effect. Observe that commit instead of polling.
@@ -96,7 +103,9 @@ export function useFocusTrap(
       observer?.disconnect();
       const initialized = Boolean(detach);
       detach?.();
-      if (initialized && returnFocus && previouslyFocused?.isConnected) {
+      const active = document.activeElement;
+      const ownsFocus = active === document.body || attachedContainer?.contains(active);
+      if (initialized && returnFocus && ownsFocus && previouslyFocused?.isConnected) {
         previouslyFocused.focus({ preventScroll: true });
       }
     };

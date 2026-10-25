@@ -36,6 +36,10 @@ function FocusFixture() {
       ]}
     />
   );
+  const content = params.has("autofocus") ? <>
+    <input aria-label="Campo com autofocus" autoFocus />
+    <CmButton>Última ação</CmButton>
+  </> : menu;
   return (
     <CmThemeProvider
       skin="horizonte"
@@ -51,11 +55,11 @@ function FocusFixture() {
           <CmButton>Fora do menu</CmButton>
           {params.get("type") === "drawer" ? (
             <CmDrawer title="Menu de teste" open={open} onClose={() => setOpen(false)}>
-              {menu}
+              {content}
             </CmDrawer>
           ) : (
             <CmDialog portal title="Menu de teste" open={open} onClose={() => setOpen(false)}>
-              {menu}
+              {content}
             </CmDialog>
           )}
         </>

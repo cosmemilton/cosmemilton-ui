@@ -39,6 +39,20 @@ for (const [width, compact] of [
 for (const width of [393, 1440])
   for (const theme of ["cm-horizonte-light", "cm-horizonte-dark"]) {
     for (const type of ["drawer", "dialog"]) {
+      test(`${type} preserves autofocus at ${width} / ${theme}`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`/modal-focus?type=${type}&theme=${theme}&autofocus=1`);
+        const opener = page.getByRole("button", { name: "Abrir menu", exact: true });
+        await opener.click();
+        const dialog = page.getByRole("dialog", { name: "Menu de teste" });
+        await expect(dialog.getByRole("textbox", { name: "Campo com autofocus" })).toBeFocused();
+        await page.keyboard.press("Tab");
+        await expect(dialog.getByRole("button", { name: "Última ação" })).toBeFocused();
+        await page.keyboard.press("Tab");
+        await expect(dialog.getByRole("button", { name: "Fechar", exact: true })).toBeFocused();
+        await page.keyboard.press("Escape");
+        await expect(opener).toBeFocused();
+      });
       test(`${type} traps focus through collapsed sidebar groups at ${width} / ${theme}`, async ({
         page,
       }) => {

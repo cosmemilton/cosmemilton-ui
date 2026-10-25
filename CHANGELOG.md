@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.22.6
+
+### Patch Changes
+
+- Preserva o foco que um campo ou uma superfície aninhada já definiu antes da montagem tardia de um portal. Ao desmontar, não sobrescreve uma transferência explícita de foco para outra superfície.
+- Mantém Tab/Shift+Tab e retorno ao acionador dos modais; inclui regressões unitárias e de navegador em drawer/dialog, mobile/desktop e temas claro/escuro. Corrige os consumidores com foco inicial e transição entre relatório e operação no Integrador sem alterar APIs ou temas v3.
+
 ## 3.22.5
 
 ### Patch Changes

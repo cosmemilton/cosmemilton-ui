@@ -59,7 +59,36 @@ function HiddenTrap() {
   );
 }
 
+function AutofocusPortalTrap() {
+  const ref = useRef<HTMLDivElement>(null);
+  useFocusTrap(ref);
+  return <CmPortal><div ref={ref} tabIndex={-1}>
+    <button>close dialog</button>
+    <input aria-label="autofocus field" ref={(element) => element?.focus()} />
+    <button>last dialog action</button>
+  </div></CmPortal>;
+}
+
 describe("useFocusTrap", () => {
+  it("does not steal a deliberate focus handoff when the trap is disabled", () => {
+    const opener = document.createElement("button");
+    const nextDialogField = document.createElement("input");
+    document.body.append(opener, nextDialogField);
+    opener.focus();
+    const { rerender } = render(<Trap />);
+    nextDialogField.focus();
+    rerender(<Trap enabled={false} />);
+    expect(document.activeElement).toBe(nextDialogField);
+  });
+  it("preserves focus already placed by autofocus before a portal trap attaches", async () => {
+    const user = userEvent.setup();
+    const { getByLabelText, getByText } = render(<AutofocusPortalTrap />);
+    await waitFor(() => expect(document.activeElement).toBe(getByLabelText("autofocus field")));
+    await user.tab();
+    expect(document.activeElement).toBe(getByText("last dialog action"));
+    await user.tab();
+    expect(document.activeElement).toBe(getByText("close dialog"));
+  });
   it("initializes when a portal mounts the panel after the parent effect", async () => {
     const user = userEvent.setup();
     const trigger = document.createElement("button");
