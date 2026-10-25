@@ -83,13 +83,19 @@ const context = vm.createContext({
 vm.runInContext(code, context, { filename: "cm-ui.min.js" });
 
 const api = context.CmUI;
-const requiredExports = ["CmButton", "CmDialog", "CmTreeView", "CmThemeProvider"];
+const requiredExports = ["CmButton", "CmDialog", "CmTreeView", "CmThemeProvider", "CmQrCode"];
 if (!api || requiredExports.some((name) => api[name] == null)) {
   throw new Error("O bundle global não publicou a API esperada em globalThis.CmUI.");
 }
 const renderedButton = renderToStaticMarkup(React.createElement(api.CmButton, null, "Salvar"));
 if (!renderedButton.includes("<button") || !renderedButton.includes("Salvar")) {
   throw new Error("O bundle global não renderizou um componente com o React externo.");
+}
+const renderedQrCode = renderToStaticMarkup(
+  React.createElement(api.CmQrCode, { value: "https://example.com/app?origem=qr#inicio" }),
+);
+if (!renderedQrCode.includes("<svg") || !renderedQrCode.includes("<title>QR Code</title>")) {
+  throw new Error("O bundle global não renderizou o QR Code com o React externo.");
 }
 
 const [{ size: prettySize }, { size: minifiedSize }] = await Promise.all([

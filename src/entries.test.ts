@@ -34,3 +34,9 @@ it("exposes actual server-safe root exports rather than legacy proxy functions",
   expect(root.CmBox).toBe(server.CmBox);
   expect("CmButton" in root).toBe(false);
 });
+
+it("exposes CmQrCode only through the client entry", () => {
+  expect(client.CmQrCode).toBeDefined();
+  expect("CmQrCode" in server).toBe(false);
+  expect("CmQrCode" in root).toBe(false);
+});

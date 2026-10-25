@@ -49,6 +49,7 @@ export * from "./components/ui/portal.js";
 export * from "./components/ui/option-row.js";
 export * from "./components/ui/progress.js";
 export * from "./components/ui/progress-modal.js";
+export * from "./components/ui/qr-code.js";
 export * from "./components/ui/radio-group.js";
 export * from "./components/ui/ratio-bar.js";
 export * from "./components/ui/resizable.js";

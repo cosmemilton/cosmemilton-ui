@@ -58,6 +58,7 @@ export * from "./portal.js";
 export * from "./password-strength.js";
 export * from "./progress.js";
 export * from "./progress-modal.js";
+export * from "./qr-code.js";
 export * from "./radio-group.js";
 export * from "./ratio-bar.js";
 export * from "./resizable.js";

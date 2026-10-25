@@ -1,0 +1,6 @@
+/* A tinta escura e o fundo branco pertencem ao SVG: não inverter no tema escuro. */
+.cm-qr-code {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
