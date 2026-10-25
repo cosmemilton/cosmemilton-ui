@@ -12,12 +12,23 @@ com a tag `latest` e proveniência do GitHub Actions.
 
 Para preparar uma versão:
 
-1. Atualize a versão estável em `package.json`, `package-lock.json` e o changelog
-   na `main`; prereleases como `4.0.0-next.0` não são publicadas por esse fluxo.
+1. Na `main`, execute `npm run changeset:version` para consumir os changesets
+   pendentes e gerar a versão e o changelog. Sincronize o lockfile com
+   `npm install --package-lock-only --ignore-scripts` e confira os três arquivos.
+   A versão deve ser inédita e superior à tag `latest` do npm; prereleases como
+   `4.0.0-next.0` não são publicadas por esse fluxo. Um changeset pendente ainda
+   não altera a versão do pacote.
 2. Commit e push das alterações na `main`.
 3. Faça merge da `main` na `release` e push da `release`.
 4. Aguarde o workflow **CI** confirmar a versão, a tag `latest` e a integridade
    do pacote no npm. A propagação pode levar alguns minutos.
+5. Crie e envie a tag Git `vX.Y.Z` no commit da `release` cuja publicação foi
+   confirmada. A tag Git registra o código publicado; ela não substitui a
+   atualização da versão nem a publicação no npm.
+
+Somente `main` e `release` são branches permanentes. Branches de trabalho podem
+ser removidas depois de integradas ou preservadas por uma tag de versão, como
+`v3.22.3`, cuja publicação de manutenção usa a tag npm `maintenance-v3`.
 
 O secret do repositório `NPM_TOKEN` é usado apenas no passo `npm publish`. O job de
 publicação não instala dependências nem executa scripts de lifecycle. O token

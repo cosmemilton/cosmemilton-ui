@@ -13,7 +13,8 @@ gráficos, cards), formulários e overlays (dialog, drawer, popover, toast), com
 e densidade configuráveis. Possui três entry points ESM, tipos TypeScript e um bundle
 global opcional para páginas sem bundler.
 
-Esta árvore contém a V4 estável `4.0.0`. A V3 está preservada na tag `v3.22.2`.
+Esta árvore contém a V4 estável `4.1.0`. A V3 está preservada na tag `v3.22.3`,
+publicada no npm como `cosmemilton-ui@maintenance-v3`.
 A documentação V4 usa a biblioteca publicada, incluindo seus estilos, fontes,
 temas e componentes, sem CSS próprio da aplicação.
 
