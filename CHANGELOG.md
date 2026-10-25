@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.22.5
+
+### Patch Changes
+
+- Corrige a perda do primeiro clique na sidebar compactada: o hover aguarda a intenção do ponteiro e não desloca o botão durante uma pressão. Foco por teclado e acionamento explícito continuam abrindo a prévia imediatamente.
+- Inclui regressão real para compactação automática e manual em desktop, claro/escuro, com clique rápido, pressão mantida e teclado.
+
 ## 3.22.4
 
 ### Patch Changes

@@ -4,6 +4,43 @@ import { CmSidebar, type CmSidebarGroup } from "./sidebar.js";
 
 afterEach(cleanup);
 
+it("keeps a collapsed trigger stable until the pointer click opens its preview", () => {
+  const { container } = render(
+    <CmSidebar
+      standalone
+      collapsed
+      autoCollapse={false}
+      groups={[
+        {
+          id: "first",
+          label: "First",
+          defaultOpen: true,
+          items: [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+          ],
+        },
+        {
+          id: "second",
+          label: "Second",
+          items: [
+            { id: "c", label: "C" },
+            { id: "d", label: "D" },
+          ],
+        },
+      ]}
+    />,
+  );
+  fireEvent.mouseEnter(container.querySelector("aside")!);
+  expect(container.querySelector(".cm-sidebar-shell--preview")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Second", exact: true }));
+  expect(container.querySelector(".cm-sidebar-shell--preview")).not.toBeNull();
+  expect(screen.getByRole("button", { name: "Second", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+});
+
 it("removes collapsed groups from keyboard navigation without unmounting their items", () => {
   const { container } = render(
     <CmSidebar

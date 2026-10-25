@@ -5,6 +5,7 @@ import { CmButton } from "../../src/components/ui/button.js";
 import { CmDialog } from "../../src/components/ui/dialog.js";
 import { CmDrawer } from "../../src/components/ui/drawer.js";
 import { CmSidebar } from "../../src/components/ui/sidebar.js";
+import { CmAppShell } from "../../src/components/ui/app-shell.js";
 
 function FocusFixture() {
   const [open, setOpen] = useState(false);
@@ -12,7 +13,8 @@ function FocusFixture() {
   const menu = (
     <CmSidebar
       standalone
-      autoCollapse={false}
+      autoCollapse={params.get("compact") === "auto"}
+      defaultCollapsed={params.get("compact") === "manual"}
       groups={[
         {
           id: "start",
@@ -39,16 +41,24 @@ function FocusFixture() {
       skin="horizonte"
       defaultThemeName={params.get("theme") ?? "cm-horizonte-light"}
     >
-      <CmButton onClick={() => setOpen(true)}>Abrir menu</CmButton>
-      <CmButton>Fora do menu</CmButton>
-      {params.get("type") === "drawer" ? (
-        <CmDrawer title="Menu de teste" open={open} onClose={() => setOpen(false)}>
-          {menu}
-        </CmDrawer>
+      {params.get("compact") ? (
+        <CmAppShell sidebar={menu} sidebarWidth={224}>
+          <h1>Conteúdo</h1>
+        </CmAppShell>
       ) : (
-        <CmDialog portal title="Menu de teste" open={open} onClose={() => setOpen(false)}>
-          {menu}
-        </CmDialog>
+        <>
+          <CmButton onClick={() => setOpen(true)}>Abrir menu</CmButton>
+          <CmButton>Fora do menu</CmButton>
+          {params.get("type") === "drawer" ? (
+            <CmDrawer title="Menu de teste" open={open} onClose={() => setOpen(false)}>
+              {menu}
+            </CmDrawer>
+          ) : (
+            <CmDialog portal title="Menu de teste" open={open} onClose={() => setOpen(false)}>
+              {menu}
+            </CmDialog>
+          )}
+        </>
       )}
     </CmThemeProvider>
   );

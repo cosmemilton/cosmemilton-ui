@@ -33,6 +33,7 @@ export type {
 
 const defaultAutoCollapseBelow = 1180;
 const previewCloseDelay = 700;
+const previewHoverDelay = 150;
 const selectionCloseDelay = 1300;
 
 function useAutoCollapsed(enabled: boolean, breakpoint: number) {
@@ -230,6 +231,20 @@ export function CmSidebar({
     clearPreviewTimer();
     setSidebarPreviewOpen(true);
   }, [clearPreviewTimer, isCollapsed]);
+
+  const openSidebarPreviewFromHover = useCallback(() => {
+    if (!isCollapsed) return;
+    clearPreviewTimer();
+    previewTimerRef.current = window.setTimeout(() => {
+      setSidebarPreviewOpen(true);
+      previewTimerRef.current = null;
+    }, previewHoverDelay);
+  }, [clearPreviewTimer, isCollapsed]);
+
+  function handleSidebarFocus(event: FocusEvent<HTMLElement>) {
+    // A pointer press must reach its trigger before expansion can move that trigger.
+    if (event.target.matches(":focus-visible")) openSidebarPreview();
+  }
 
   const closeSidebarPreview = useCallback(
     (delay = previewCloseDelay) => {
@@ -430,9 +445,10 @@ export function CmSidebar({
           sidebarClassName,
         )}
         aria-label={navLabel}
-        onMouseEnter={openSidebarPreview}
+        onMouseEnter={openSidebarPreviewFromHover}
+        onPointerDown={clearPreviewTimer}
         onMouseLeave={() => closeSidebarPreview()}
-        onFocus={openSidebarPreview}
+        onFocus={handleSidebarFocus}
         onBlur={handleSidebarBlur}
       >
         {brandContent}
