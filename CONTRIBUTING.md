@@ -1,6 +1,6 @@
-# Contributing to cosmemilton-ui
+# Contributing to @cosmemilton/ui
 
-Thanks for your interest in improving **cosmemilton-ui**! This guide covers the local
+Thanks for your interest in improving **@cosmemilton/ui**! This guide covers the local
 workflow and the conventions we follow.
 
 ## Getting started

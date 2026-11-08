@@ -7,8 +7,8 @@ exige CSS da aplicação nem depende do PrimeReact.
 ```tsx
 "use client";
 
-import { CmMegaMenu } from "cosmemilton-ui/client";
-import { CmIcon } from "cosmemilton-ui/server";
+import { CmMegaMenu } from "@cosmemilton/ui/client";
+import { CmIcon } from "@cosmemilton/ui/server";
 
 export function Navigation() {
   return (
@@ -75,8 +75,8 @@ um modal, cuidar do filtro ou posicionar a lista.
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CmMegaMenuSearch } from "cosmemilton-ui/client";
-import { CmIcon } from "cosmemilton-ui/server";
+import { CmMegaMenuSearch } from "@cosmemilton/ui/client";
+import { CmIcon } from "@cosmemilton/ui/server";
 
 export function ComponentSearch() {
   const router = useRouter();

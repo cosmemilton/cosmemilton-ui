@@ -1,4 +1,4 @@
-<!-- Thanks for contributing to cosmemilton-ui! -->
+<!-- Thanks for contributing to @cosmemilton/ui! -->
 
 ## Summary
 

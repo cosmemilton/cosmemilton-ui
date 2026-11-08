@@ -32,7 +32,7 @@ ser removidas depois de integradas ou preservadas por uma tag de versão, como
 
 O secret do repositório `NPM_TOKEN` é usado apenas no passo `npm publish`. O job de
 publicação não instala dependências nem executa scripts de lifecycle. O token
-precisa permitir publicação de `cosmemilton-ui` e atender aos requisitos de 2FA
+precisa permitir publicação de `@cosmemilton/ui` e atender aos requisitos de 2FA
 da conta npm.
 
 Executar novamente o workflow para a mesma versão e o mesmo pacote não republica

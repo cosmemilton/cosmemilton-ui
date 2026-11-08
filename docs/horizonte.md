@@ -7,8 +7,8 @@ o tema ativo: `cm-v4-light` (Claro), `cm-v4-dark` (Escuro) ou `cm-v4-aurora` (Au
 ## Ativação
 
 ```tsx
-import "cosmemilton-ui/styles.css";
-import { CmThemeProvider, useCmTheme } from "cosmemilton-ui/theme";
+import "@cosmemilton/ui/styles.css";
+import { CmThemeProvider, useCmTheme } from "@cosmemilton/ui/theme";
 
 export function App() {
   return (

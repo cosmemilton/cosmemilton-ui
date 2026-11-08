@@ -1,7 +1,7 @@
-# Icons in cosmemilton-ui
+# Icons in @cosmemilton/ui
 
-cosmemilton-ui does **not** lock you into a single icon library. An icon set is a
-product decision, and no single set covers every product. So cosmemilton-ui ships **one
+@cosmemilton/ui does **not** lock you into a single icon library. An icon set is a
+product decision, and no single set covers every product. So @cosmemilton/ui ships **one
 sensible default** and treats every other icon source as **optional** — bring
 whatever fits your project.
 
@@ -19,7 +19,7 @@ sets (Material Symbols, MDI, Phosphor, Lucide, Heroicons, and more) addressed by
 name, loaded on demand:
 
 ```tsx
-import { CmIcon } from "cosmemilton-ui/server";
+import { CmIcon } from "@cosmemilton/ui/server";
 
 <CmIcon name="material-symbols:store-outline" />
 <CmIcon name="mdi:truck-delivery-outline" />
@@ -35,7 +35,7 @@ npm install @iconify/react
 ```
 
 If you never use `CmIcon`, it stays out of your bundle. One caveat: the
-`cosmemilton-ui/client` entry references `CmIcon` internally (through
+`@cosmemilton/ui/client` entry references `CmIcon` internally (through
 `CmSelect`'s `showOptionIcons`), so this promise relies on tree-shaking. In
 environments without a tree-shaking bundler (e.g. importing `/client` directly
 in Node), install `@iconify/react` alongside it. v4 will change
@@ -46,14 +46,14 @@ in Node), install `@iconify/react` alongside it. v4 will change
 The original CM monogram is bundled and renders locally through `CmIcon`:
 
 ```tsx
-import { CmIcon } from "cosmemilton-ui/server";
+import { CmIcon } from "@cosmemilton/ui/server";
 
-<CmIcon name="cm:ui" size={24} title="cosmemilton-ui" />;
+<CmIcon name="cm:ui" size={24} title="@cosmemilton/ui" />;
 ```
 
 The symbol inherits the current text color. For standalone use, the package
-exports `cosmemilton-ui/brand-mark.svg` (transparent mark) and
-`cosmemilton-ui/brand.svg` (white mark on an indigo tile, suitable for a favicon).
+exports `@cosmemilton/ui/brand-mark.svg` (transparent mark) and
+`@cosmemilton/ui/brand.svg` (white mark on an indigo tile, suitable for a favicon).
 Both SVGs are generated from the same geometry as the component.
 
 ## Optional: bring your own icons
@@ -62,7 +62,7 @@ Every component that takes an icon accepts a plain `ReactNode`, so you can pass
 an icon from any library — or your own SVG — directly:
 
 ```tsx
-import { CmButton } from "cosmemilton-ui/client";
+import { CmButton } from "@cosmemilton/ui/client";
 
 // lucide-react (already available)
 import { Download } from "lucide-react";
@@ -88,7 +88,7 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 </CmButton>;
 ```
 
-None of these (other than `lucide-react`) are dependencies of cosmemilton-ui — install
+None of these (other than `lucide-react`) are dependencies of @cosmemilton/ui — install
 only what you use.
 
 ## Summary

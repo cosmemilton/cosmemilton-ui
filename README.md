@@ -1,13 +1,17 @@
-# cosmemilton-ui
+# @cosmemilton/ui
+
+## Migração para o escopo @cosmemilton
+
+O pacote passa a ser instalado como `@cosmemilton/ui`. Atualize os imports e os caminhos CSS para o novo nome. As versões publicadas com os nomes antigos permanecem disponíveis; esta migração não remove nem deprecia esses pacotes.
 
 > Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.
 
-[![npm](https://img.shields.io/npm/v/cosmemilton-ui.svg)](https://www.npmjs.com/package/cosmemilton-ui)
+[![npm](https://img.shields.io/npm/v/@cosmemilton/ui.svg)](https://www.npmjs.com/package/@cosmemilton/ui)
 [![CI](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/cosmemilton/cosmemilton-ui/actions/workflows/ci.yml)
 [![license: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE)
 ![types: included](https://img.shields.io/badge/types-included-blue.svg)
 
-`cosmemilton-ui` é uma biblioteca de componentes para painéis, back-offices e dashboards:
+`@cosmemilton/ui` é uma biblioteca de componentes para painéis, back-offices e dashboards:
 navegação (sidebar, menus, breadcrumb), exibição de dados (data-table, tree-view,
 gráficos, cards), formulários e overlays (dialog, drawer, popover, toast), com temas
 e densidade configuráveis. Possui três entry points ESM, tipos TypeScript e um bundle
@@ -37,13 +41,13 @@ estilo ou CSS inline próprios.
 ## Instalação
 
 ```bash
-npm install cosmemilton-ui@4 react react-dom
+npm install @cosmemilton/ui@4 react react-dom
 ```
 
 `next`, `@iconify/react` e `leaflet` são _peers_ **opcionais** (`leaflet` só é
-necessário para o `CmMap`, importado do entry dedicado `cosmemilton-ui/map`).
+necessário para o `CmMap`, importado do entry dedicado `@cosmemilton/ui/map`).
 
-> **Nota:** o entry `cosmemilton-ui/client` referencia `CmIcon` internamente (via
+> **Nota:** o entry `@cosmemilton/ui/client` referencia `CmIcon` internamente (via
 > `CmSelect`). Com um bundler com tree-shaking (Next, Vite, webpack) isso não traz
 > `@iconify/react` para o seu bundle se você não usar `CmIcon`/`showOptionIcons`;
 > **sem** tree-shaking (ex.: `import()` direto em Node), instale `@iconify/react`
@@ -56,8 +60,8 @@ O CSS já inclui os tokens de todos os temas embutidos — nenhum setup de tema 
 necessário para renderizar componentes estilizados (tema padrão `cm-v4-light`):
 
 ```tsx
-import "cosmemilton-ui/styles.css";
-import { CmButton } from "cosmemilton-ui/client";
+import "@cosmemilton/ui/styles.css";
+import { CmButton } from "@cosmemilton/ui/client";
 
 export function Example() {
   return <CmButton>Salvar</CmButton>;
@@ -71,14 +75,14 @@ expõe `window.CmUI`; o CSS continua sendo carregado separadamente. Fixe uma ver
 lugar de `VERSION` para ter builds reproduzíveis:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/cosmemilton-ui@VERSION/styles.min.css" />
+<link rel="stylesheet" href="https://unpkg.com/@cosmemilton/ui@VERSION/styles.min.css" />
 
 <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script
   crossorigin
   src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
 ></script>
-<script src="https://unpkg.com/cosmemilton-ui@VERSION"></script>
+<script src="https://unpkg.com/@cosmemilton/ui@VERSION"></script>
 
 <div id="root"></div>
 <script>
@@ -89,7 +93,7 @@ lugar de `VERSION` para ter builds reproduzíveis:
 ```
 
 O mesmo arquivo pode ser referenciado explicitamente por
-`cosmemilton-ui@VERSION/dist/cm-ui.min.js`. Esse bundle não inclui React nem ReactDOM,
+`@cosmemilton/ui@VERSION/dist/cm-ui.min.js`. Esse bundle não inclui React nem ReactDOM,
 evitando cópias duplicadas; os entry points ESM existentes continuam inalterados.
 
 Para **trocar de tema** (e lembrar a escolha do usuário sem flash no SSR), adicione o
@@ -97,8 +101,8 @@ Para **trocar de tema** (e lembrar a escolha do usuário sem flash no SSR), adic
 
 ```tsx
 // app/layout.tsx
-import "cosmemilton-ui/styles.css";
-import { CmThemeScript } from "cosmemilton-ui/theme";
+import "@cosmemilton/ui/styles.css";
+import { CmThemeScript } from "@cosmemilton/ui/theme";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -125,20 +129,20 @@ Qualquer tema embutido também pode ser fixado sem JavaScript:
 
 | Import                          | Conteúdo                                                                                                              |
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `cosmemilton-ui`                | Exports reais do entry `/server`, com os mesmos tipos e referências.                                                  |
-| `cosmemilton-ui/client`         | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
-| `cosmemilton-ui/server`         | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
-| `cosmemilton-ui/theme`          | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
-| `cosmemilton-ui/map`            | `CmMap` (wrapper de Leaflet). Entry separado para o peer opcional `leaflet` não entrar no grafo do `/client`.         |
-| `cosmemilton-ui/map.css`        | CSS e imagens do Leaflet distribuídos pela biblioteca para o `CmMap`.                                                 |
-| `cosmemilton-ui/styles.css`     | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
-| `cosmemilton-ui/components.css` | CSS **sem o reset global** — para adoção incremental em apps existentes (o estilo da página continua do app).         |
+| `@cosmemilton/ui`                | Exports reais do entry `/server`, com os mesmos tipos e referências.                                                  |
+| `@cosmemilton/ui/client`         | Componentes interativos (cada arquivo declara `"use client"`). Use no App Router quando precisar de interatividade.   |
+| `@cosmemilton/ui/server`         | Componentes _server-safe_ (sem `"use client"` na cadeia). Use em React Server Components e layouts.                   |
+| `@cosmemilton/ui/theme`          | Tokens, temas, `CmThemeProvider`, `CmThemeToggle` e `CmThemeScript` (este _server-safe_, evita flash de tema no SSR). |
+| `@cosmemilton/ui/map`            | `CmMap` (wrapper de Leaflet). Entry separado para o peer opcional `leaflet` não entrar no grafo do `/client`.         |
+| `@cosmemilton/ui/map.css`        | CSS e imagens do Leaflet distribuídos pela biblioteca para o `CmMap`.                                                 |
+| `@cosmemilton/ui/styles.css`     | CSS publicado. Importe **uma vez** na aplicação.                                                                      |
+| `@cosmemilton/ui/components.css` | CSS **sem o reset global** — para adoção incremental em apps existentes (o estilo da página continua do app).         |
 
 Componentes de layout/texto server-safe usados com frequência dentro de Client
 Components — `CmBox`, `CmStack`, `CmRow`, `CmCol`, `CmContainer`, `CmText`,
 `CmTopbar`, `CmForm` e `CmField` — são exportados **nos dois entries** (`/client`
 e `/server`), então um arquivo `"use client"` pode importar tudo de
-`cosmemilton-ui/client`.
+`@cosmemilton/ui/client`.
 
 Ambos também existem minificados (`styles.min.css`, `components.min.css`). Todo o CSS
 é publicado dentro de `@layer cm.reset, cm.tokens, cm.components` — qualquer CSS seu
@@ -161,13 +165,13 @@ npm install leaflet
 
 ```tsx
 // app/layout.tsx
-import "cosmemilton-ui/styles.css";
-import "cosmemilton-ui/map.css";
+import "@cosmemilton/ui/styles.css";
+import "@cosmemilton/ui/map.css";
 ```
 
 ```tsx
 "use client";
-import { CmMap } from "cosmemilton-ui/map";
+import { CmMap } from "@cosmemilton/ui/map";
 
 <CmMap
   markers={[{ id: 1, position: { lat: -23.55, lng: -46.63 }, label: "Imóvel A", tone: "success" }]}
@@ -183,13 +187,13 @@ O componente carrega o Leaflet dinamicamente só no cliente (SSR-safe, sem
 
 ## React puro (Vite/CRA)
 
-`cosmemilton-ui` não exige Next em runtime. Importar o CSS basta para renderizar; o
+`@cosmemilton/ui` não exige Next em runtime. Importar o CSS basta para renderizar; o
 provider de tema é necessário apenas para troca de tema em runtime (`CmThemeToggle`,
 `useCmTheme`, persistência em `localStorage`, temas custom):
 
 ```tsx
-import "cosmemilton-ui/styles.css";
-import { CmThemeProvider } from "cosmemilton-ui/theme";
+import "@cosmemilton/ui/styles.css";
+import { CmThemeProvider } from "@cosmemilton/ui/theme";
 import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(
@@ -232,7 +236,7 @@ A documentação publicada da V3 continua em
 - React `>=18.2 || 19` (e React DOM na mesma faixa)
 - Node `>=18`
 - Next `>=15` — opcional (App Router / RSC)
-- Leaflet `>=1.9` — opcional (apenas para `cosmemilton-ui/map`)
+- Leaflet `>=1.9` — opcional (apenas para `@cosmemilton/ui/map`)
 
 ## Contribuindo
 
