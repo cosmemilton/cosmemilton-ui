@@ -5,7 +5,7 @@ centralizar o título sobre o grupo de botões. A mesma configuração pode ser 
 em todas as listagens, independentemente do tema ou da quantidade de ações.
 
 ```tsx
-import { CmDataTableActions, type CmDataTableColumn } from "cosmemilton-ui/client";
+import { CmDataTableActions, type CmDataTableColumn } from "@cosmemilton/ui/client";
 
 const columns: CmDataTableColumn<Cliente>[] = [
   // Outras colunas…
