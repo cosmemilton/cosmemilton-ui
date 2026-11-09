@@ -3,6 +3,8 @@ name: Publish v3 maintenance
 on:
   push:
     branches: [fix/v3-theme-storage-prefix]
+  pull_request:
+    branches: [fix/v3-theme-storage-prefix]
   workflow_dispatch:
 
 permissions:

@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.22.8
+
+### Patch Changes
+
+- Corrige confirmações por toast: ações, duração persistente, processamento, Escape e restauração de foco, incluindo StrictMode e diálogos aninhados (#6).
+- Completa o isolamento de preferências por instalação com eventos de armazenamento e proteção de valores controlados/SSR (#8).
+- Mantém a renderização rica de opções e seleção com label textual acessível e busca por digitação (#10).
+- Mantém o pacote legado cosmemilton-ui e a tag maintenance-v3; não altera @cosmemilton/ui nem a linha v4.
+
+## 3.22.7
+
+- Versão já existente no npm, com renderizadores ricos do CmSelect. Preservada sem republicação; esta manutenção conserva esse recurso.
+
 ## 3.22.6
 
 ### Patch Changes

@@ -165,4 +165,123 @@ describe("CmSelect", () => {
     const root = container.querySelector<HTMLElement>(".cm-select");
     expect(root).toHaveStyle({ width: "6.5rem", minWidth: "6.5rem", flex: "0 0 6.5rem" });
   });
+
+  it("renders rich options and selection while keeping the textual accessible option name", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(
+      <ControlledSelect
+        onChangeSpy={onChangeSpy}
+        name="country"
+        renderOption={(option) => (
+          <>
+            {option.label}
+            <span>12 registros</span>
+          </>
+        )}
+        renderSelected={(option) => (
+          <>
+            {option.label}
+            <span>12 selecionados</span>
+          </>
+        )}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "País" });
+    await user.click(trigger);
+    const portugal = screen.getByRole("option", { name: "Portugal", exact: true });
+    expect(portugal).toHaveTextContent("12 registros");
+    await user.click(within(portugal).getByText("12 registros"));
+    expect(onChangeSpy).toHaveBeenCalledExactlyOnceWith("pt");
+    expect(trigger).toHaveTextContent("Portugal12 selecionados");
+    expect(trigger).toHaveFocus();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(document.querySelector('input[name="country"]')).toHaveValue("pt");
+    await user.click(trigger);
+    expect(screen.getByRole("option", { name: "Portugal", exact: true })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("keeps ArrowUp, ArrowDown, Enter and Escape working with custom content", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(
+      <ControlledSelect
+        onChangeSpy={onChangeSpy}
+        renderOption={(option) => (
+          <span>
+            {option.label} <b>42</b>
+          </span>
+        )}
+        renderSelected={(option) => <strong>{option.label}</strong>}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "País" });
+    trigger.focus();
+    await user.keyboard("{ArrowUp}");
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Estados Unidos" }).id,
+    );
+    await user.keyboard("{ArrowUp}{ArrowUp}{ArrowDown}{Enter}");
+    expect(onChangeSpy).toHaveBeenCalledExactlyOnceWith("pt");
+    expect(trigger).toHaveTextContent("Portugal");
+    expect(trigger).toHaveFocus();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    await user.keyboard("{ArrowDown}{ArrowDown}{Escape}");
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(trigger).toHaveTextContent("Portugal");
+    expect(trigger).toHaveFocus();
+    expect(trigger).not.toHaveAttribute("aria-activedescendant");
+  });
+
+  it("searches textual labels even when renderers replace the displayed text", async () => {
+    const user = userEvent.setup();
+    const onChangeSpy = vi.fn();
+    render(
+      <ControlledSelect
+        onChangeSpy={onChangeSpy}
+        renderOption={() => <span>99 itens</span>}
+        renderSelected={() => (
+          <span>
+            Selecionado <b>99</b>
+          </span>
+        )}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "País" });
+    trigger.focus();
+    await user.keyboard("port");
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Portugal", exact: true }).id,
+    );
+    await user.keyboard("{Enter}");
+    expect(onChangeSpy).toHaveBeenCalledExactlyOnceWith("pt");
+    expect(trigger).toHaveTextContent("Selecionado 99");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("retains string renderSelected compatibility and honors empty ReactNode results", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <ControlledSelect initialValue="br" renderSelected={(option) => option.label.slice(0, 2)} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveTextContent("Br");
+    rerender(
+      <ControlledSelect initialValue="br" renderSelected={() => null} renderOption={() => null} />,
+    );
+    expect(screen.getByRole("combobox").querySelector(".cm-select__value")).toBeEmptyDOMElement();
+    await user.click(screen.getByRole("combobox"));
+    expect(
+      screen
+        .getByRole("option", { name: "Portugal", exact: true })
+        .querySelector(".cm-select__option-label"),
+    ).toBeEmptyDOMElement();
+  });
 });
