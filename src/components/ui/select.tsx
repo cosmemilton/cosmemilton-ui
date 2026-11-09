@@ -43,8 +43,10 @@ export type CmSelectProps = {
   clearLabel?: string;
   onClear?: () => void;
   density?: CmDensity;
-  /** Customiza o texto exibido no gatilho após a seleção. O dropdown sempre exibe o label completo. */
-  renderSelected?: (option: SelectOption) => string;
+  /** Conteúdo visual da opção, sem elementos interativos. O label continua sendo usado na busca e no nome acessível. */
+  renderOption?: (option: SelectOption) => ReactNode;
+  /** Conteúdo visual exibido no gatilho após a seleção, sem elementos interativos. */
+  renderSelected?: (option: SelectOption) => ReactNode;
 };
 
 export function CmSelect({
@@ -72,6 +74,7 @@ export function CmSelect({
   form,
   onClear,
   renderSelected,
+  renderOption,
 }: CmSelectProps) {
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -91,6 +94,7 @@ export function CmSelect({
     (optValue: string) => {
       onChange(optValue);
       setOpen(false);
+      triggerRef.current?.focus();
     },
     [onChange],
   );
@@ -256,6 +260,8 @@ export function CmSelect({
                   role="option"
                   tabIndex={-1}
                   aria-selected={isSelected}
+                  aria-label={option.label}
+                  onMouseDown={(event) => event.preventDefault()}
                   onClick={() => handleSelect(option.value)}
                   className={cn(
                     "cm-select__option",
@@ -265,7 +271,9 @@ export function CmSelect({
                   {...getOptionProps(index)}
                 >
                   {showOptionIcons && option.icon && <CmIcon name={option.icon} size={16} />}
-                  <span className="cm-select__option-label">{option.label}</span>
+                  <span className="cm-select__option-label">
+                    {renderOption ? renderOption(option) : option.label}
+                  </span>
                   {isSelected && <Check className="cm-select__check" />}
                 </CmButton>
               );

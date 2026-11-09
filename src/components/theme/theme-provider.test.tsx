@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
 import { CmThemeProvider, useCmTheme } from "./theme-provider.js";
 import { defaultTheme } from "../../lib/theme/index.js";
@@ -237,4 +238,76 @@ describe("appearance storage namespaces", () => {
     await user.click(screen.getByText("compact"));
     expect(screen.getByRole("status")).toHaveTextContent("cm-dark:compact:surface");
   });
+});
+
+describe("appearance storage events", () => {
+  function change(key: string, value: string | null, storageArea = localStorage) {
+    if (value === null) storageArea.removeItem(key);
+    else storageArea.setItem(key, value);
+    act(() =>
+      window.dispatchEvent(new StorageEvent("storage", { key, newValue: value, storageArea })),
+    );
+  }
+
+  it("updates all preferences only for the active namespace", () => {
+    const { rerender } = render(
+      <CmThemeProvider storagePrefix="a:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    change("b:cm-theme", "cm-dark");
+    change("a:cm-theme", "cm-dark", sessionStorage);
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:default:surface");
+    change("a:cm-density", "compact");
+    change("a:cm-invert-header", "true");
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:compact:inverted");
+    change("a:cm-chrome", "surface");
+    change("a:cm-theme", "cm-dark");
+    expect(screen.getByRole("status")).toHaveTextContent("cm-dark:compact:surface");
+    rerender(
+      <CmThemeProvider storagePrefix="b:">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    change("a:cm-theme", "cm-midnight");
+    expect(screen.getByRole("status")).toHaveTextContent("cm-dark:default:surface");
+    change("b:cm-theme", null);
+    change("b:cm-density", "invalid");
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:default:surface");
+  });
+
+  it("resets after storage clear and preserves controlled preferences", () => {
+    render(
+      <CmThemeProvider density="comfortable" chrome="inverted">
+        <Preferences />
+      </CmThemeProvider>,
+    );
+    change("cm-density", "compact");
+    change("cm-chrome", "surface");
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:comfortable:inverted");
+    change("cm-theme", "cm-dark");
+    localStorage.clear();
+    act(() =>
+      window.dispatchEvent(new StorageEvent("storage", { key: null, storageArea: localStorage })),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("cm-neutral:comfortable:inverted");
+  });
+});
+
+it("server-renders without reading or writing storage", () => {
+  const read = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+    throw new Error("SSR storage");
+  });
+  const write = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw new Error("SSR storage");
+  });
+  expect(
+    renderToString(
+      <CmThemeProvider storagePrefix="server:">
+        <Preferences />
+      </CmThemeProvider>,
+    ),
+  ).toContain("cm-neutral:default:surface");
+  expect(read).not.toHaveBeenCalled();
+  expect(write).not.toHaveBeenCalled();
 });

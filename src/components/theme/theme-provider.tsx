@@ -165,6 +165,54 @@ export function CmThemeProvider({
     storagePrefix,
   ]);
 
+  // Storage events are delivered to other documents on the same origin.
+  // Ignore other installations (and sessionStorage), including after a prefix switch.
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      try {
+        if (event.storageArea && event.storageArea !== window.localStorage) return;
+      } catch {
+        return;
+      }
+      const key = event.key;
+      const matches = (name: string) => key === null || key === storagePrefix + name;
+      if (matches(LOCAL_STORAGE_KEY)) {
+        const stored = key === null ? null : event.newValue;
+        setThemeName(stored && themeRegistry[stored] ? stored : fallbackTheme.name);
+      }
+      if (!density && matches(LOCAL_STORAGE_DENSITY)) {
+        const stored = key === null ? null : event.newValue;
+        setUncontrolledDensity(
+          stored === "default" || stored === "comfortable" || stored === "compact"
+            ? stored
+            : defaultDensity,
+        );
+      }
+      if (!chrome && (matches(LOCAL_STORAGE_CHROME) || matches(LOCAL_STORAGE_INVERT_HEADER))) {
+        const stored = key === null ? null : readPreference(LOCAL_STORAGE_CHROME);
+        const invert = key === null ? null : readPreference(LOCAL_STORAGE_INVERT_HEADER);
+        setUncontrolledChrome(
+          stored === "surface" || stored === "inverted"
+            ? stored
+            : invert === "true"
+              ? "inverted"
+              : defaultChrome,
+        );
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [
+    storagePrefix,
+    themeRegistry,
+    fallbackTheme.name,
+    density,
+    chrome,
+    defaultDensity,
+    defaultChrome,
+    readPreference,
+  ]);
+
   const theme = useMemo<ThemeConfig>(
     () =>
       loadedPrefix === storagePrefix ? (themeRegistry[themeName] ?? fallbackTheme) : fallbackTheme,

@@ -37,3 +37,25 @@
   transform: translateX(-50%);
   align-items: center;
 }
+
+/* Flexible content must not overflow a narrow viewport with fiscal keys/UUIDs. */
+.cm-toast__content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.cm-toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.cm-toast__actions > * {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { CmTabs, CmTabsList, CmTabsTrigger, CmTabsContent } from "../../src/components/ui/tabs.js";
 import {
   CmToastProvider,
+  CmToastNotice,
   useCmToast,
   type CmToastPosition,
 } from "../../src/components/ui/toast.js";
@@ -26,8 +27,39 @@ const positions: CmToastPosition[] = [
 
 function ToastControls() {
   const { toast } = useCmToast();
+  const [confirm, setConfirm] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [calls, setCalls] = useState(0);
   return (
     <div className="responsive-actions">
+      <button onClick={() => setConfirm(true)}>Abrir confirmação</button>
+      <output aria-label="Envios">{calls}</output>
+      {confirm && (
+        <CmToastNotice
+          title="Confirmar operação"
+          description={
+            "12345678901234567890123456789012345678901234 " + "123e4567-e89b-12d3-a456-426614174000"
+          }
+          duration={0}
+          autoFocus
+          processing={processing}
+          onDismiss={() => setConfirm(false)}
+          action={
+            <>
+              <button
+                onClick={() => {
+                  setProcessing(true);
+                  setCalls((n) => n + 1);
+                }}
+              >
+                Confirmar
+              </button>
+              <button onClick={() => setConfirm(false)}>Continuar editando</button>
+            </>
+          }
+        />
+      )}
+
       <button
         onClick={() =>
           toast(
