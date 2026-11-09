@@ -366,3 +366,29 @@ it("calls the latest dismissal callback once even before a queued render", () =>
   expect(latest).toHaveBeenCalledTimes(1);
   expect(screen.queryByRole("alert")).toBeNull();
 });
+
+it("keeps the controller context stable while a consumer renders notice actions", () => {
+  const rendered = vi.fn();
+  function Confirmation() {
+    useCmToast();
+    rendered();
+    const [processing, setProcessing] = useState(false);
+    return (
+      <CmToastNotice
+        description="Confirmar registro"
+        duration={0}
+        processing={processing}
+        action={<button onClick={() => setProcessing(true)}>Executar uma vez</button>}
+      />
+    );
+  }
+  render(
+    <CmToastProvider>
+      <Confirmation />
+    </CmToastProvider>,
+  );
+  expect(rendered).toHaveBeenCalledTimes(1);
+  fireEvent.click(screen.getByRole("button", { name: "Executar uma vez" }));
+  expect(screen.getByRole("button", { name: "Executar uma vez" })).toBeDisabled();
+  expect(rendered).toHaveBeenCalledTimes(2);
+});

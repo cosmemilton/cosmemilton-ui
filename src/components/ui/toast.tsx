@@ -7,6 +7,8 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -92,7 +94,8 @@ export function CmToastNotice({ description, ...options }: CmToastNoticeProps) {
     };
   }, [message, description, toast, remove]);
 
-  useEffect(() => {
+  // Commit processing before the browser can dispatch another activation.
+  useLayoutEffect(() => {
     if (id.current !== null) {
       update(id.current, {
         ...latest.current,
@@ -356,8 +359,13 @@ export function CmToastProvider({ children, position = "bottom-right" }: CmToast
     return id;
   }, []);
 
+  const context = useMemo(
+    () => ({ toast, update, dismiss, remove }),
+    [toast, update, dismiss, remove],
+  );
+
   return (
-    <ToastContext.Provider value={{ toast, update, dismiss, remove }}>
+    <ToastContext.Provider value={context}>
       {children}
       {mounted &&
         createPortal(
