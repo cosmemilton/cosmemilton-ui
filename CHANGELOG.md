@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.2.0
+
+### Minor Changes
+
+- 3235369: Adiciona a skin opcional Aurora Ops para os três temas da V4 e novos props para
+  formatar variações em `CmMetricCard` e incluir controles no cabeçalho de
+  `CmChartFrame`, `CmLineChart` e `CmBarChart`.
+
+  A busca no cabeçalho ganha largura responsiva, e o `CmUserMenu` permite
+  navegar pelas ações com setas e retornar ao botão com Escape.
+
+- 643577a: Adiciona variantes de fundo sólido e degradê ao `CmCard` e versões tingida,
+  sólida e em degradê ao `CmMetricCard`. As variantes usam os tons do tema ativo.
+
 ## 4.1.0
 
 ### Minor Changes
