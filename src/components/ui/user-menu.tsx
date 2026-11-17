@@ -129,10 +129,10 @@ export function CmUserMenu({
         isSlim && "cm-user-menu__popover--slim",
         menuClassName,
       )}
-      dismissOnEscape={isSlim}
       header={header}
       items={items}
-      trigger={({ open, toggle, ref }) => (
+      keyboardNavigation
+      trigger={({ open, toggle, ref, onKeyDown }) => (
         <CmButton
           ref={ref}
           size={resolvedSize}
@@ -156,6 +156,7 @@ export function CmUserMenu({
             ) : undefined
           }
           onClick={toggle}
+          onKeyDown={onKeyDown}
         >
           <CmAvatar
             src={user.imageUrl}

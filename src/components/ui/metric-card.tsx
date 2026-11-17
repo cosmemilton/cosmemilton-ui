@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils.js";
 import { cmDensityClass, type CmDensity, type CmTone } from "./types.js";
 
 export type CmMetricCardAccent = "none" | "left" | "top";
+export type CmMetricCardVariant = "surface" | "soft" | "solid" | "gradient";
 
 export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title: ReactNode;
@@ -18,14 +19,17 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   meta?: ReactNode;
   footer?: ReactNode;
   tone?: CmTone;
+  variant?: CmMetricCardVariant;
   accent?: CmMetricCardAccent;
   density?: CmDensity;
   interactive?: boolean;
   loading?: boolean;
-  /** Indicador de variação (delta). `value` em %, sinal define cor/seta. */
+  /** Indicador de variação (delta). O sinal de `value` define a cor e a seta. */
   trend?: {
     value: number;
     label: string;
+    /** Texto do valor sem a seta. Por padrão, exibe o valor absoluto seguido de "%". */
+    formattedValue?: string;
   };
 };
 
@@ -48,6 +52,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
     tone = "default",
     trend,
     value,
+    variant = "surface",
     ...props
   },
   ref,
@@ -70,6 +75,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
       className={cn(
         "cm-metric-card",
         `cm-metric-card--tone-${tone}`,
+        variant !== "surface" && `cm-metric-card--${variant}`,
         accent !== "none" && `cm-metric-card--accent-${accent}`,
         clickable && "cm-metric-card--interactive",
         loading && "cm-metric-card--loading",
@@ -103,7 +109,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
             )}
           >
             {trend.value > 0 ? "↑ " : trend.value < 0 ? "↓ " : ""}
-            {Math.abs(trend.value)}%
+            {trend.formattedValue ?? `${Math.abs(trend.value)}%`}
           </span>
           <span className="cm-metric-card__trend-label">{trend.label}</span>
         </div>

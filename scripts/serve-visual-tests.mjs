@@ -18,6 +18,7 @@ await build({
   entryPoints: [
     join(root, "tests", "visual", "fixture.tsx"),
     join(root, "tests", "visual", "horizonte.fixture.tsx"),
+    join(root, "tests", "visual", "aurora-ops.fixture.tsx"),
     join(root, "tests", "visual", "responsive-feedback.fixture.tsx"),
     join(root, "tests", "visual", "command.fixture.tsx"),
     join(root, "tests", "visual", "button-tones.fixture.tsx"),
@@ -51,6 +52,10 @@ const horizonteHtml = indexHtml
   .replace("/fixture.css", "/horizonte.fixture.css")
   .replace("/fixture.js", "/horizonte.fixture.js");
 
+const auroraOpsHtml = indexHtml
+  .replace("/fixture.css", "/aurora-ops.fixture.css")
+  .replace("/fixture.js", "/aurora-ops.fixture.js");
+
 const responsiveHtml = indexHtml
   .replace("/fixture.css", "/responsive-feedback.fixture.css")
   .replace("/fixture.js", "/responsive-feedback.fixture.js");
@@ -74,6 +79,9 @@ const files = new Map([
   ["/horizonte.fixture.js", join(outputDir, "horizonte.fixture.js")],
   ["/horizonte.fixture.js.map", join(outputDir, "horizonte.fixture.js.map")],
   ["/horizonte.fixture.css", join(root, "tests", "visual", "horizonte.fixture.css")],
+  ["/aurora-ops.fixture.js", join(outputDir, "aurora-ops.fixture.js")],
+  ["/aurora-ops.fixture.js.map", join(outputDir, "aurora-ops.fixture.js.map")],
+  ["/aurora-ops.fixture.css", join(root, "tests", "visual", "aurora-ops.fixture.css")],
   ["/styles.css", join(root, "dist", "styles.css")],
   ["/components.css", join(root, "dist", "components.css")],
   ["/responsive-feedback.fixture.js", join(outputDir, "responsive-feedback.fixture.js")],
@@ -122,6 +130,12 @@ const server = createServer(async (request, response) => {
   if (pathname === "/horizonte") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(horizonteHtml);
+    return;
+  }
+
+  if (pathname === "/aurora-ops") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(auroraOpsHtml);
     return;
   }
 

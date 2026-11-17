@@ -1,0 +1,47 @@
+.aurora-ops-fixture {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2.1vw, 1.5rem);
+  max-width: 83rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  margin-inline: auto;
+}
+
+.aurora-ops-fixture__metrics,
+.aurora-ops-fixture__reports {
+  display: grid;
+  gap: inherit;
+}
+
+.aurora-ops-fixture__metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.aurora-ops-fixture__reports {
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+}
+
+.aurora-ops-fixture__goal {
+  display: grid;
+  align-content: center;
+  min-height: 100%;
+  gap: 0.75rem;
+}
+
+@media (max-width: 1120px) {
+  .aurora-ops-fixture__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .aurora-ops-fixture__reports {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  .aurora-ops-fixture__metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
