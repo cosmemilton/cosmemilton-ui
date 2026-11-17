@@ -216,6 +216,9 @@ A [skin Aurora Ops](docs/aurora-ops.md) aplica o mesmo acabamento de dashboard
 aos menus, cartões, indicadores, gráficos, tabelas e controles da biblioteca.
 Ative-a com `skin="aurora-ops"` junto de qualquer tema V4.
 
+Use [cartões coloridos](docs/cards.md) com `variant="soft"`, `"solid"` ou
+`"gradient"` e escolha um tom do tema ativo com `tone`.
+
 O `CmDataTable` oferece [rolagem horizontal nativa](docs/data-table-scroll.md)
 restrita às colunas, com filtros e paginação separados, e
 [alinhamento compartilhado de ações](docs/data-table-actions.md).

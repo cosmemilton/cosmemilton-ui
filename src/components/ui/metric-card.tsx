@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils.js";
 import { cmDensityClass, type CmDensity, type CmTone } from "./types.js";
 
 export type CmMetricCardAccent = "none" | "left" | "top";
+export type CmMetricCardVariant = "surface" | "soft" | "solid" | "gradient";
 
 export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title: ReactNode;
@@ -18,6 +19,7 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   meta?: ReactNode;
   footer?: ReactNode;
   tone?: CmTone;
+  variant?: CmMetricCardVariant;
   accent?: CmMetricCardAccent;
   density?: CmDensity;
   interactive?: boolean;
@@ -50,6 +52,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
     tone = "default",
     trend,
     value,
+    variant = "surface",
     ...props
   },
   ref,
@@ -72,6 +75,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
       className={cn(
         "cm-metric-card",
         `cm-metric-card--tone-${tone}`,
+        variant !== "surface" && `cm-metric-card--${variant}`,
         accent !== "none" && `cm-metric-card--accent-${accent}`,
         clickable && "cm-metric-card--interactive",
         loading && "cm-metric-card--loading",

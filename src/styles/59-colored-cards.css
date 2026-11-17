@@ -1,0 +1,158 @@
+/* Filled cards use the existing tone pairs without replacing the theme of their children. */
+:is(.cm-card--solid, .cm-card--gradient) {
+  --_cm-filled-card-tone: var(--cm-card-tone);
+  --_cm-filled-card-foreground: var(--cm-card-tone-fg);
+}
+
+.cm-metric-card:is(.cm-metric-card--solid, .cm-metric-card--gradient) {
+  --_cm-filled-card-tone: var(--cm-metric-card-tone);
+  --_cm-filled-card-foreground: var(--color-primary-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-secondary {
+  --_cm-filled-card-foreground: var(--color-secondary-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-accent {
+  --_cm-filled-card-foreground: var(--color-accent-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-success {
+  --_cm-filled-card-foreground: var(--color-success-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-warning {
+  --_cm-filled-card-foreground: var(--color-warning-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-danger {
+  --_cm-filled-card-foreground: var(--color-danger-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient).cm-metric-card--tone-info {
+  --_cm-filled-card-foreground: var(--color-info-foreground);
+}
+
+:is(.cm-card--solid, .cm-card--gradient, .cm-metric-card--solid, .cm-metric-card--gradient) {
+  --_cm-filled-card-divider: color-mix(in srgb, var(--_cm-filled-card-foreground) 24%, transparent);
+  border-color: var(--_cm-filled-card-tone);
+  background-color: var(--_cm-filled-card-tone);
+  color: var(--_cm-filled-card-foreground);
+}
+
+:is(.cm-card--gradient, .cm-metric-card--gradient) {
+  background-image: linear-gradient(
+    135deg,
+    var(--_cm-filled-card-tone),
+    color-mix(in srgb, var(--_cm-filled-card-tone) 76%, var(--color-card-foreground))
+  );
+}
+
+.cm-metric-card--soft {
+  border-color: color-mix(in srgb, var(--cm-metric-card-tone) 30%, var(--color-border));
+  background-color: color-mix(in srgb, var(--cm-metric-card-tone) 8%, var(--color-card));
+}
+
+.cm-metric-card--soft > .cm-metric-card__header > .cm-metric-card__icon {
+  background-color: color-mix(in srgb, var(--cm-metric-card-tone) 12%, var(--color-card));
+  color: color-mix(in srgb, var(--cm-metric-card-tone) 87%, var(--color-card-foreground));
+}
+
+:is(.cm-card--solid, .cm-card--gradient) > :is(.cm-card__header, .cm-card__footer) {
+  border-color: var(--_cm-filled-card-divider);
+  background: transparent;
+}
+
+:is(.cm-card--solid, .cm-card--gradient) > .cm-card__cover {
+  border-bottom: 1px solid var(--_cm-filled-card-divider);
+  background: transparent;
+}
+
+/* Default and muted text in a card slot use the surface's paired ink. */
+:is(.cm-card--solid, .cm-card--gradient) > :is(.cm-text--default, .cm-text--muted, .cm-text--inverse),
+:is(.cm-card--solid, .cm-card--gradient)
+  > :where(.cm-card__header, .cm-card__body, .cm-card__footer, .cm-card__cover)
+  > :is(.cm-text--default, .cm-text--muted, .cm-text--inverse) {
+  color: inherit;
+}
+
+:is(.cm-card--solid, .cm-card--gradient) > :is(.cm-link--default, .cm-link--quiet),
+:is(.cm-card--solid, .cm-card--gradient)
+  > :where(.cm-card__header, .cm-card__body, .cm-card__footer, .cm-card__cover)
+  > :is(.cm-link--default, .cm-link--quiet) {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+:is(.cm-card--solid, .cm-card--gradient) > :is(.cm-link--default, .cm-link--quiet):hover,
+:is(.cm-card--solid, .cm-card--gradient)
+  > :where(.cm-card__header, .cm-card__body, .cm-card__footer, .cm-card__cover)
+  > :is(.cm-link--default, .cm-link--quiet):hover {
+  text-decoration-thickness: 2px;
+}
+
+:is(.cm-card--solid, .cm-card--gradient, .cm-metric-card--solid, .cm-metric-card--gradient):is(
+    .cm-card--accent-top,
+    .cm-card--accent-left,
+    .cm-metric-card--accent-top,
+    .cm-metric-card--accent-left
+  )::before {
+  background-color: var(--_cm-filled-card-divider);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient)
+  > :where(.cm-metric-card__header, .cm-metric-card__body, .cm-metric-card__footer, .cm-metric-card__trend)
+  > :is(.cm-metric-card__title, .cm-metric-card__value, .cm-metric-card__description, .cm-metric-card__meta, .cm-metric-card__trend-label) {
+  color: var(--_cm-filled-card-foreground);
+}
+
+:is(.cm-metric-card--solid, .cm-metric-card--gradient) > .cm-metric-card__header > .cm-metric-card__icon {
+  flex: none;
+  background: color-mix(in srgb, var(--_cm-filled-card-foreground) 10%, transparent);
+  color: var(--_cm-filled-card-foreground);
+}
+
+/* Semantic trends keep their original meaning across all card tones. */
+:is(.cm-metric-card--soft, .cm-metric-card--solid, .cm-metric-card--gradient) > .cm-metric-card__trend {
+  flex-wrap: wrap;
+  gap: 0.25rem 0.375rem;
+}
+
+:is(.cm-metric-card--soft, .cm-metric-card--solid, .cm-metric-card--gradient)
+  > .cm-metric-card__trend
+  > .cm-metric-card__trend-value {
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-muted);
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+:is(.cm-metric-card--soft, .cm-metric-card--solid, .cm-metric-card--gradient)
+  > .cm-metric-card__trend
+  > .cm-metric-card__trend-value--positive {
+  background-color: color-mix(in srgb, var(--color-success) 12%, var(--color-card));
+  color: var(--color-success);
+}
+
+:is(.cm-metric-card--soft, .cm-metric-card--solid, .cm-metric-card--gradient)
+  > .cm-metric-card__trend
+  > .cm-metric-card__trend-value--negative {
+  background-color: color-mix(in srgb, var(--color-danger) 12%, var(--color-card));
+  color: var(--color-danger);
+}
+
+:is(.cm-card--solid, .cm-card--gradient, .cm-metric-card--solid, .cm-metric-card--gradient):is(
+    .cm-card--interactive,
+    .cm-metric-card--interactive
+  ):hover {
+  border-color: color-mix(in srgb, var(--_cm-filled-card-foreground) 38%, var(--_cm-filled-card-tone));
+}
+
+:is(.cm-card--solid, .cm-card--gradient, .cm-metric-card--soft, .cm-metric-card--solid, .cm-metric-card--gradient):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 3px;
+  box-shadow: var(--shadow-md);
+}

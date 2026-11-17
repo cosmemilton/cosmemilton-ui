@@ -5,6 +5,8 @@ Os temas Claro, Escuro e Aurora fornecem as cores. A skin define a
 apresentação dos menus, barras de topo, botões, cartões, indicadores,
 molduras de gráficos, tabelas, badges, progresso e linhas do tempo.
 
+As [variantes de cartões coloridos](cards.md) também podem ser usadas com Aurora Ops.
+
 ```tsx
 import "@cosmemilton/ui/styles.css";
 import { CmThemeProvider } from "@cosmemilton/ui/theme";
