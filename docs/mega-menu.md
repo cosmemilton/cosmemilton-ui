@@ -123,6 +123,23 @@ do componente em itens sem `href`.
 painel. O ref aponta para o input real. A busca não bloqueia a rolagem nem prende
 o foco.
 
+### Busca na barra superior
+
+Na aparência `aurora-ops`, coloque `CmMegaMenuSearch` diretamente no slot
+`center` de `CmTopbar`. `layout="start"` dá à busca a largura disponível entre
+os outros slots, até `36rem`. Em telas de até `640px`, `mobileLayout="stack"`
+coloca a busca em uma linha com toda a largura disponível.
+
+```tsx
+<CmTopbar
+  title="Painel"
+  layout="start"
+  centerAlign="start"
+  mobileLayout="stack"
+  center={<CmMegaMenuSearch aria-label="Buscar no painel" groups={groups} keyboardShortcut="k" />}
+/>
+```
+
 ## Teclado
 
 - No menu, Enter/Espaço alternam o painel e as setas abrem ou percorrem os links.

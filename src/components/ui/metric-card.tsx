@@ -22,10 +22,12 @@ export type CmMetricCardProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   density?: CmDensity;
   interactive?: boolean;
   loading?: boolean;
-  /** Indicador de variação (delta). `value` em %, sinal define cor/seta. */
+  /** Indicador de variação (delta). O sinal de `value` define a cor e a seta. */
   trend?: {
     value: number;
     label: string;
+    /** Texto do valor sem a seta. Por padrão, exibe o valor absoluto seguido de "%". */
+    formattedValue?: string;
   };
 };
 
@@ -103,7 +105,7 @@ export const CmMetricCard = forwardRef<HTMLDivElement, CmMetricCardProps>(functi
             )}
           >
             {trend.value > 0 ? "↑ " : trend.value < 0 ? "↓ " : ""}
-            {Math.abs(trend.value)}%
+            {trend.formattedValue ?? `${Math.abs(trend.value)}%`}
           </span>
           <span className="cm-metric-card__trend-label">{trend.label}</span>
         </div>

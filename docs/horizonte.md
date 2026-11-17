@@ -30,7 +30,7 @@ function Toggle() {
 }
 ```
 
-`skin` aceita `"classic" | "horizonte"` e é controlada pela aplicação. Seu padrão
+`skin` aceita `"classic" | "horizonte" | "aurora-ops"` e é controlada pela aplicação. Seu padrão
 é `classic`; não é restaurada do armazenamento. `useCmTheme().skin` permite consultar
 a aparência ativa. O provider aplica `data-cm-skin` no elemento `html`, incluindo
 componentes que renderizam portais diretamente no `body`.

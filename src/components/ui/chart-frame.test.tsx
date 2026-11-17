@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { CmChartFrame } from "./chart-frame.js";
 
 describe("CmChartFrame", () => {
@@ -40,6 +41,20 @@ describe("CmChartFrame", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent("Buscando");
     expect(screen.queryByText("chart")).not.toBeInTheDocument();
+  });
+
+  it("keeps header actions reachable while the chart loads", async () => {
+    render(
+      <CmChartFrame
+        title="Receita"
+        loading
+        actions={<button type="button">Alterar período</button>}
+      />,
+    );
+
+    await userEvent.tab();
+    expect(screen.getByRole("button", { name: "Alterar período" })).toHaveFocus();
+    expect(screen.getByRole("status")).toHaveTextContent("Carregando dados");
   });
 
   it("renders empty state", () => {

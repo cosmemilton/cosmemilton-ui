@@ -21,7 +21,7 @@ import type { CmDensity } from "../ui/types.js";
 
 export type CmThemeChrome = "surface" | "inverted";
 /** Component appearance. Explicit opt-in keeps existing applications unchanged. */
-export type CmThemeSkin = "classic" | "horizonte";
+export type CmThemeSkin = "classic" | "horizonte" | "aurora-ops";
 
 type ThemeContextValue = {
   theme: ThemeConfig;

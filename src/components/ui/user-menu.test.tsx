@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CmUserMenu } from "./user-menu.js";
 
@@ -137,16 +137,83 @@ describe("CmUserMenu", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("closes slim on Escape from an item and restores focus to its trigger", async () => {
+  it.each(["default", "compact", "slim"] as const)(
+    "moves focus into the %s menu and restores focus on Escape",
+    async (presentation) => {
+      const actor = userEvent.setup();
+      render(<CmUserMenu user={user} items={items} presentation={presentation} />);
+      const trigger = screen.getByRole("button", { name: "Ana Beatriz, Administradora" });
+      trigger.focus();
+      await actor.keyboard("{Enter}");
+      expect(screen.getByRole("menuitem", { name: "Minha conta" })).toHaveFocus();
+      await actor.keyboard("{Escape}");
+      expect(screen.queryByRole("menu")).toBeNull();
+      expect(trigger).toHaveFocus();
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+
+  it("opens with ArrowDown and moves among enabled items with arrows, Home and End", async () => {
     const actor = userEvent.setup();
-    render(<CmUserMenu user={user} items={items} presentation="slim" />);
+    render(
+      <CmUserMenu
+        user={user}
+        items={[
+          { id: "unavailable", label: "Indisponível", disabled: true },
+          ...items,
+          { type: "separator", id: "separator" },
+          { id: "logout", label: "Sair" },
+        ]}
+      />,
+    );
     const trigger = screen.getByRole("button", { name: "Ana Beatriz, Administradora" });
-    await actor.click(trigger);
-    screen.getByRole("menuitem", { name: "Minha conta" }).focus();
-    await actor.keyboard("{Escape}");
+    trigger.focus();
+    await actor.keyboard("{ArrowDown}");
+    const first = screen.getByRole("menuitem", { name: "Minha conta" });
+    const last = screen.getByRole("menuitem", { name: "Sair" });
+    expect(first).toHaveFocus();
+    await actor.keyboard("{ArrowUp}");
+    expect(last).toHaveFocus();
+    await actor.keyboard("{ArrowDown}");
+    expect(first).toHaveFocus();
+    await actor.keyboard("{End}");
+    expect(last).toHaveFocus();
+    await actor.keyboard("{Home}");
+    expect(first).toHaveFocus();
+  });
+
+  it.each([false, true])(
+    "closes on Tab with shiftKey=%s and lets native traversal continue from the trigger",
+    async (shiftKey) => {
+      const actor = userEvent.setup();
+      render(<CmUserMenu user={user} items={items} />);
+      const trigger = screen.getByRole("button", { name: "Ana Beatriz, Administradora" });
+      await actor.click(trigger);
+      const account = screen.getByRole("menuitem", { name: "Minha conta" });
+      expect(account).toHaveFocus();
+      expect(fireEvent.keyDown(account, { key: "Tab", shiftKey })).toBe(true);
+      expect(screen.queryByRole("menu")).toBeNull();
+      expect(trigger).toHaveFocus();
+    },
+  );
+
+  it("restores trigger focus before selecting and preserves focus set by the action", async () => {
+    const actor = userEvent.setup();
+    const select = vi.fn(() => {
+      expect(screen.getByRole("button", { name: "Ana Beatriz, Administradora" })).toHaveFocus();
+      screen.getByRole("textbox", { name: "Nome" }).focus();
+    });
+    render(
+      <>
+        <CmUserMenu user={user} items={[{ ...items[0], onSelect: select }]} />
+        <input aria-label="Nome" />
+      </>,
+    );
+    await actor.click(screen.getByRole("button", { name: "Ana Beatriz, Administradora" }));
+    await actor.keyboard("{Enter}");
+    expect(select).toHaveBeenCalledOnce();
     expect(screen.queryByRole("menu")).toBeNull();
-    expect(trigger).toHaveFocus();
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("textbox", { name: "Nome" })).toHaveFocus();
   });
 
   it("closes slim on an outside click without selecting an item", async () => {
