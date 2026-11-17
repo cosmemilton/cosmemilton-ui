@@ -6,10 +6,30 @@
   color: var(--color-foreground);
 }
 
-.cm-chart-frame__header {
+.cm-chart-frame__header,
+.cm-chart-frame__heading {
   display: grid;
   min-width: 0;
   gap: 0.125rem;
+}
+
+.cm-chart-frame__header--with-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-sm, 0.5rem) var(--space-lg, 1rem);
+}
+
+.cm-chart-frame__heading {
+  flex: 1 1 10rem;
+}
+
+.cm-chart-frame__actions {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: var(--space-sm, 0.5rem);
+  margin-inline-start: auto;
 }
 
 .cm-chart-frame__title {

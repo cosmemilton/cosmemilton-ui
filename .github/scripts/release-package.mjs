@@ -24,7 +24,7 @@ function integrity(path) {
 }
 
 function validateVersion(pkg) {
-  assert(pkg.name === "cosmemilton-ui", "Unexpected package name.");
+  assert(pkg.name === "@cosmemilton/ui", "Unexpected package name.");
   assert(stableVersion.test(pkg.version), "The release branch publishes stable versions only.");
   assert(pkg.private !== true, "A private package cannot be published.");
   const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
@@ -85,7 +85,7 @@ function pack() {
 function artifact() {
   const metadata = JSON.parse(readFileSync(join(outputDirectory, "release.json"), "utf8"));
   assert(
-    metadata.name === "cosmemilton-ui" && stableVersion.test(metadata.version),
+    metadata.name === "@cosmemilton/ui" && stableVersion.test(metadata.version),
     "Invalid release artifact metadata.",
   );
   assert(

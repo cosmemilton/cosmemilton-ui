@@ -33,7 +33,7 @@ pelo `CmDataTable` como nome acessível. Quando não há esse título ou se usa 
 nome mesmo quando não há rolagem.
 
 ```tsx
-import { CmDataTable } from "cosmemilton-ui/client";
+import { CmDataTable } from "@cosmemilton/ui/client";
 
 <CmDataTable
   columns={columns}

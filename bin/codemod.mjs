@@ -18,8 +18,8 @@ async function getManifest() {
 }
 
 function processFileContent(content, manifest) {
-  // Pattern to match: import { CmButton, CmText as Text } from "cosmemilton-ui";
-  const importRegex = /import\s+\{([^}]+)\}\s+from\s+["']cosmemilton-ui["'];?/g;
+  // Pattern to match: import { CmButton, CmText as Text } from "@cosmemilton/ui";
+  const importRegex = /import\s+\{([^}]+)\}\s+from\s+["'](?:cosmemilton-ui|@cosmemilton\/ui)["'];?/g;
   
   let modified = false;
   const newContent = content.replace(importRegex, (match, importsStr) => {
@@ -54,16 +54,16 @@ function processFileContent(content, manifest) {
 
     const newImports = [];
     if (categorized.client.length > 0) {
-      newImports.push(`import { ${categorized.client.join(', ')} } from "cosmemilton-ui/client";`);
+      newImports.push(`import { ${categorized.client.join(', ')} } from "@cosmemilton/ui/client";`);
     }
     if (categorized.server.length > 0) {
-      newImports.push(`import { ${categorized.server.join(', ')} } from "cosmemilton-ui/server";`);
+      newImports.push(`import { ${categorized.server.join(', ')} } from "@cosmemilton/ui/server";`);
     }
     if (categorized.theme.length > 0) {
-      newImports.push(`import { ${categorized.theme.join(', ')} } from "cosmemilton-ui/theme";`);
+      newImports.push(`import { ${categorized.theme.join(', ')} } from "@cosmemilton/ui/theme";`);
     }
     if (categorized.unknown.length > 0) {
-      newImports.push(`import { ${categorized.unknown.join(', ')} } from "cosmemilton-ui"; // FIXME: Componentes desconhecidos no manifesto`);
+      newImports.push(`import { ${categorized.unknown.join(', ')} } from "@cosmemilton/ui"; // FIXME: Componentes desconhecidos no manifesto`);
     }
 
     modified = true;

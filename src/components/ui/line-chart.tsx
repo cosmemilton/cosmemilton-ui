@@ -28,6 +28,7 @@ export type CmLineChartProps = {
   frameClassName?: string;
   title?: ReactNode;
   description?: ReactNode;
+  actions?: ReactNode;
   loading?: boolean;
   loadingMessage?: ReactNode;
   loadingState?: ReactNode;
@@ -61,6 +62,7 @@ export function CmLineChart({
   frameClassName,
   title,
   description,
+  actions,
   loading = false,
   loadingMessage,
   loadingState,
@@ -160,6 +162,7 @@ export function CmLineChart({
       className={frameClassName}
       title={title}
       description={description}
+      actions={actions}
       height={height}
       loading={loading}
       loadingMessage={loadingMessage}
@@ -199,7 +202,10 @@ export function CmLineChart({
                     fill="currentColor"
                     className="cm-line-chart__label"
                   >
-                    {textValue(valueFormat ? valueFormat(line.value) : formatValue(line.value), formatValue(line.value))}
+                    {textValue(
+                      valueFormat ? valueFormat(line.value) : formatValue(line.value),
+                      formatValue(line.value),
+                    )}
                   </text>
                 )}
               </g>

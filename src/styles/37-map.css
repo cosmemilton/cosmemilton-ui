@@ -1,4 +1,4 @@
-/* CmMap — wrapper fino de Leaflet (entry dedicado cosmemilton-ui/map).
+/* CmMap — wrapper fino de Leaflet (entry dedicado @cosmemilton/ui/map).
    Este parcial NÃO substitui o CSS do Leaflet (importe "leaflet/dist/leaflet.css");
    ele só integra o mapa ao tema: pins tonais, popup/controles com tokens e
    escurecimento dos tiles quando o tema resolve para dark. */

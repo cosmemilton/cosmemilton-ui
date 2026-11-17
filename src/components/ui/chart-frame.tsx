@@ -28,6 +28,8 @@ export type CmChartAccessibleTable = {
 export type CmChartFrameProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title?: ReactNode;
   description?: ReactNode;
+  /** Controls for the chart header, such as a period selector. */
+  actions?: ReactNode;
   height?: string | number;
   loading?: boolean;
   loadingMessage?: ReactNode;
@@ -53,6 +55,7 @@ function sizeValue(value: string | number | undefined) {
 }
 
 export function CmChartFrame({
+  actions,
   children,
   className,
   description,
@@ -74,9 +77,18 @@ export function CmChartFrame({
     "--cm-chart-frame-height": sizeValue(height),
     ...style,
   };
-  const hasHeader = title !== undefined || description !== undefined;
+  const hasHeading = title !== undefined || description !== undefined;
+  const hasActions = actions != null && actions !== false;
   const hasLegend = legend !== undefined && legend.length > 0;
   const shouldRenderTable = showAccessibleTable && table && table.rows.length > 0;
+  const heading = (
+    <>
+      {title !== undefined ? <div className="cm-chart-frame__title">{title}</div> : null}
+      {description !== undefined ? (
+        <div className="cm-chart-frame__description">{description}</div>
+      ) : null}
+    </>
+  );
 
   return (
     <div
@@ -86,27 +98,34 @@ export function CmChartFrame({
       data-cm-chart-frame-height={height !== undefined ? "" : undefined}
       {...props}
     >
-      {hasHeader ? (
-        <div className="cm-chart-frame__header">
-          {title !== undefined ? <div className="cm-chart-frame__title">{title}</div> : null}
-          {description !== undefined ? (
-            <div className="cm-chart-frame__description">{description}</div>
-          ) : null}
+      {hasHeading || hasActions ? (
+        <div
+          className={cn(
+            "cm-chart-frame__header",
+            hasActions && "cm-chart-frame__header--with-actions",
+          )}
+        >
+          {hasActions ? (
+            <>
+              {hasHeading ? <div className="cm-chart-frame__heading">{heading}</div> : null}
+              <div className="cm-chart-frame__actions">{actions}</div>
+            </>
+          ) : (
+            heading
+          )}
         </div>
       ) : null}
 
       <div className="cm-chart-frame__body">
-        {loading ? (
-          loadingState ?? (
-            <div className="cm-chart-frame__state" role="status">
-              {loadingMessage}
-            </div>
-          )
-        ) : empty ? (
-          emptyState ?? <div className="cm-chart-frame__state">{emptyMessage}</div>
-        ) : (
-          children
-        )}
+        {loading
+          ? (loadingState ?? (
+              <div className="cm-chart-frame__state" role="status">
+                {loadingMessage}
+              </div>
+            ))
+          : empty
+            ? (emptyState ?? <div className="cm-chart-frame__state">{emptyMessage}</div>)
+            : children}
       </div>
 
       {!loading && !empty && hasLegend ? (

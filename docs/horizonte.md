@@ -7,8 +7,8 @@ o tema ativo: `cm-v4-light` (Claro), `cm-v4-dark` (Escuro) ou `cm-v4-aurora` (Au
 ## Ativação
 
 ```tsx
-import "cosmemilton-ui/styles.css";
-import { CmThemeProvider, useCmTheme } from "cosmemilton-ui/theme";
+import "@cosmemilton/ui/styles.css";
+import { CmThemeProvider, useCmTheme } from "@cosmemilton/ui/theme";
 
 export function App() {
   return (
@@ -30,7 +30,7 @@ function Toggle() {
 }
 ```
 
-`skin` aceita `"classic" | "horizonte"` e é controlada pela aplicação. Seu padrão
+`skin` aceita `"classic" | "horizonte" | "aurora-ops"` e é controlada pela aplicação. Seu padrão
 é `classic`; não é restaurada do armazenamento. `useCmTheme().skin` permite consultar
 a aparência ativa. O provider aplica `data-cm-skin` no elemento `html`, incluindo
 componentes que renderizam portais diretamente no `body`.

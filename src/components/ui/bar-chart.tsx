@@ -27,6 +27,7 @@ export type CmBarChartProps = {
   frameClassName?: string;
   title?: ReactNode;
   description?: ReactNode;
+  actions?: ReactNode;
   loading?: boolean;
   loadingMessage?: ReactNode;
   loadingState?: ReactNode;
@@ -57,6 +58,7 @@ export function CmBarChart({
   frameClassName,
   title,
   description,
+  actions,
   loading = false,
   loadingMessage,
   loadingState,
@@ -123,6 +125,7 @@ export function CmBarChart({
         className={frameClassName}
         title={title}
         description={description}
+        actions={actions}
         height={frameHeight}
         loading={loading}
         loadingMessage={loadingMessage}
@@ -163,6 +166,7 @@ export function CmBarChart({
       className={frameClassName}
       title={title}
       description={description}
+      actions={actions}
       height={frameHeight}
       loading={loading}
       loadingMessage={loadingMessage}

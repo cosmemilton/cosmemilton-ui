@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils.js";
 import { cmVariants } from "../../lib/variants.js";
 import { cmDensityClass, type CmDensity, type CmSpacing, type CmTone } from "./types.js";
 
-type CardVariant = "surface" | "soft" | "outline" | "ghost";
+export type CmCardVariant = "surface" | "soft" | "outline" | "ghost" | "solid" | "gradient";
 type CardPadding = Exclude<CmSpacing, "xs">;
 type CardTone = CmTone;
 
@@ -13,7 +13,7 @@ export type CmCardProps = HTMLAttributes<HTMLDivElement> & {
   padding?: CardPadding;
   bodyPadding?: CardPadding;
   elevated?: boolean;
-  variant?: CardVariant;
+  variant?: CmCardVariant;
   tone?: CardTone;
   interactive?: boolean;
   accent?: "none" | "top" | "left";
@@ -39,6 +39,8 @@ const cardVariants = cmVariants({
       soft: "cm-card--soft",
       outline: "cm-card--outline",
       ghost: "cm-card--ghost",
+      solid: "cm-card--solid",
+      gradient: "cm-card--gradient",
     },
     tone: {
       default: "cm-card--tone-default",

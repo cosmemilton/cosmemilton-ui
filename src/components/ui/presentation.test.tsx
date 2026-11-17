@@ -61,12 +61,12 @@ describe("public presentation primitives", () => {
           Build with components
         </CmText>
         <CmText as="code" family="mono" wrap="anywhere">
-          cosmemilton-ui/server
+          @cosmemilton/ui/server
         </CmText>
       </>,
     );
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Build with components");
-    expect(screen.getByText("cosmemilton-ui/server").tagName).toBe("CODE");
+    expect(screen.getByText("@cosmemilton/ui/server").tagName).toBe("CODE");
     expect(screen.getByRole("heading")).not.toHaveAttribute("family");
     expect(screen.getByRole("heading")).not.toHaveAttribute("wrap");
   });

@@ -1,0 +1,8 @@
+/* Shared surfaces follow the active colors, including within a CmThemeScope. */
+:where(html[data-cm-skin="aurora-ops"], html[data-cm-skin="aurora-ops"] .cm-theme-scope[data-theme]) {
+  --cm-ops-panel-radius: var(--radius-lg);
+  --cm-ops-control-radius: var(--radius-button);
+  --cm-ops-panel-border: color-mix(in srgb, var(--color-border) 72%, var(--color-card));
+  --cm-ops-panel-shadow: var(--shadow-xs);
+  --cm-ops-subtle-surface: color-mix(in srgb, var(--color-muted) 55%, var(--color-card));
+}
