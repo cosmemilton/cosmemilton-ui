@@ -223,6 +223,24 @@ O `CmDataTable` oferece [rolagem horizontal nativa](docs/data-table-scroll.md)
 restrita às colunas, com filtros e paginação separados, e
 [alinhamento compartilhado de ações](docs/data-table-actions.md).
 
+Em listagens administrativas, `CmListPanel` reúne cabeçalho, ações, filtros e
+tabela com o mesmo recuo. Use `CmDataTable` com `columns`, `data` e `rowKey`.
+Marque colunas com `sortable` e forneça `sortValue` quando o valor exibido
+estiver formatado. Defina `tableKey` para salvar as preferências de colunas e
+`renderSelectedRowDetail` para detalhar a seleção. Enter e Espaço ativam os
+cabeçalhos ordenáveis e as linhas selecionáveis. Um `footer` por coluna permite
+alinhar totais calculados pelo consumidor às colunas visíveis.
+
+`CmForm surface="plain"` aproveita a superfície do diálogo. `CmNativeInput` e
+`CmNativeSelect` compartilham o layout de campo e expõem os controles nativos
+por ref. O seletor aceita opções declarativas. `CmFormActions`
+compõe as ações no rodapé. Para dashboards, `CmMetricGrid`,
+`CmComparisonLineChart` e `CmDonutChart` recebem os indicadores e as séries
+do domínio e usam os tokens do tema ativo.
+
+Use os imports nomeados de `@cosmemilton/ui/icons` para ícones da aplicação
+que devem funcionar offline. O bundler inclui os ícones utilizados.
+
 O [MegaMenu e a busca em painel](docs/mega-menu.md) oferecem navegação e pesquisa
 por grupos, com ícones, descrições, links, ações e teclado. Os dados e os props
 definem a composição; a biblioteca fornece toda a apresentação.

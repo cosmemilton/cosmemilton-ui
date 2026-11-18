@@ -819,6 +819,14 @@
   box-shadow: var(--shadow-md)
 }
 
+.cm-form.cm-form--plain {
+  padding: 0;
+  border: 0;
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 .cm-form__header,
 .cm-form__body {
   display: flex;

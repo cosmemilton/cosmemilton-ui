@@ -42,9 +42,18 @@ export const CmBreadcrumb = forwardRef<HTMLElement, CmBreadcrumbProps>(function 
                 </a>
               )
             ) : (
-              <span className={cn(isLast && "cm-breadcrumb__current")}>{item.label}</span>
+              <span
+                aria-current={isLast ? "page" : undefined}
+                className={cn(isLast && "cm-breadcrumb__current")}
+              >
+                {item.label}
+              </span>
             )}
-            {!isLast ? <span className="cm-breadcrumb__separator">/</span> : null}
+            {!isLast ? (
+              <span aria-hidden="true" className="cm-breadcrumb__separator">
+                /
+              </span>
+            ) : null}
           </span>
         );
       })}

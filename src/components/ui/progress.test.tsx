@@ -17,6 +17,22 @@ describe("CmProgress", () => {
     expect(screen.getByText("CPU")).toHaveClass("cm-progress__label");
   });
 
+  it.each([
+    ["xs", "4px"],
+    ["sm", "8px"],
+    ["md", "12px"],
+    ["lg", "16px"],
+    [6.5, "6.5px"],
+  ] as const)("applies thickness %s to the native bar", (barThickness, height) => {
+    render(<CmProgress value={40} barThickness={barThickness} />);
+    expect(screen.getByRole("progressbar")).toHaveStyle({ height });
+  });
+
+  it.each([undefined, 0, -3, NaN, Infinity])("uses the skin thickness for %s", (barThickness) => {
+    render(<CmProgress value={40} barThickness={barThickness} />);
+    expect(screen.getByRole("progressbar").style.height).toBe("");
+  });
+
   it("keeps the label accessible-only when srOnlyLabel is set", () => {
     render(<CmProgress value={60} label="CPU" srOnlyLabel />);
     // Name still exposed to assistive tech…

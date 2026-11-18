@@ -290,8 +290,7 @@ html[data-cm-skin="horizonte"] .cm-tree-view__search-icon { z-index: 1; pointer-
 html[data-cm-skin="horizonte"] .cm-tree-view__search-clear { z-index: 1; }
 
 /* Navigation colors follow the active V4 palette; geometry remains opt-in. */
-html[data-cm-skin="horizonte"] .cm-app-shell { --cm-app-shell-sidebar-width: 224px; }
-html[data-cm-skin="horizonte"] .cm-sidebar-shell { --cm-sidebar-expanded-width: 224px; }
+html[data-cm-skin="horizonte"] { --cm-sidebar-base-width: 224px; }
 html[data-cm-skin="horizonte"] .cm-app-shell__sidebar { background: var(--cm-horizonte-nav-background); border-color: var(--cm-horizonte-nav-line); }
 
 html[data-cm-skin="horizonte"] .cm-sidebar {

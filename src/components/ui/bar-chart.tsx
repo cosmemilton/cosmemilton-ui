@@ -6,9 +6,11 @@ import { cn } from "../../lib/utils.js";
 import {
   CmChartFrame,
   cmChartColor,
+  type CmChartFrameProps,
   type CmChartLegendItem,
   type CmChartTone,
 } from "./chart-frame.js";
+import { cmBarThicknessPixels, type CmBarThickness } from "./types.js";
 
 export type CmBarChartDataPoint = {
   label: string;
@@ -17,10 +19,12 @@ export type CmBarChartDataPoint = {
   tone?: CmChartTone;
 };
 
-export type CmBarChartProps = {
+export type CmBarChartProps = Pick<CmChartFrameProps, "legendLayout" | "legendPosition"> & {
   data: CmBarChartDataPoint[];
   height?: number;
   orientation?: "vertical" | "horizontal";
+  /** Espessura de cada barra horizontal. Quando omitida, segue o tema. */
+  barThickness?: CmBarThickness;
   showValues?: boolean;
   showGrid?: boolean;
   className?: string;
@@ -52,6 +56,7 @@ export function CmBarChart({
   data,
   height,
   orientation = "vertical",
+  barThickness,
   showValues = true,
   showGrid = true,
   className,
@@ -65,6 +70,8 @@ export function CmBarChart({
   emptyMessage,
   emptyState,
   legend,
+  legendLayout,
+  legendPosition,
   valueFormat,
   tooltipFormat,
   accessibleTableLabel,
@@ -120,6 +127,7 @@ export function CmBarChart({
   }
 
   if (orientation === "horizontal") {
+    const trackHeight = cmBarThicknessPixels(barThickness);
     return (
       <CmChartFrame
         className={frameClassName}
@@ -134,6 +142,8 @@ export function CmBarChart({
         emptyMessage={emptyMessage}
         emptyState={emptyState}
         legend={resolvedLegend}
+        legendLayout={legendLayout}
+        legendPosition={legendPosition}
         table={table}
         showAccessibleTable={showAccessibleTable}
       >
@@ -144,7 +154,7 @@ export function CmBarChart({
                 <span className="cm-bar-chart__label">{bar.label}</span>
                 {showValues && <span className="cm-bar-chart__value">{renderedValue(bar)}</span>}
               </div>
-              <div className="cm-bar-chart__track">
+              <div className="cm-bar-chart__track" style={{ height: trackHeight }}>
                 <div
                   className="cm-bar-chart__fill cm-bar-chart__fill--horizontal"
                   title={tooltipFormat?.(bar)}
@@ -175,6 +185,8 @@ export function CmBarChart({
       emptyMessage={emptyMessage}
       emptyState={emptyState}
       legend={resolvedLegend}
+      legendLayout={legendLayout}
+      legendPosition={legendPosition}
       table={table}
       showAccessibleTable={showAccessibleTable}
     >

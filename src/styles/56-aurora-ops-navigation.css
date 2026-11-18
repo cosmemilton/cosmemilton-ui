@@ -1,5 +1,5 @@
-html[data-cm-skin="aurora-ops"] .cm-app-shell {
-  --cm-app-shell-sidebar-width: 15.5rem;
+html[data-cm-skin="aurora-ops"] {
+  --cm-sidebar-base-width: 15.5rem;
 }
 
 html[data-cm-skin="aurora-ops"] .cm-app-shell--chrome-surface
@@ -34,10 +34,6 @@ html[data-cm-skin="aurora-ops"] .cm-topbar__title {
 
 html[data-cm-skin="aurora-ops"] .cm-topbar__section {
   gap: 0.625rem;
-}
-
-html[data-cm-skin="aurora-ops"] .cm-sidebar-shell:where(:not(.cm-app-shell__sidebar *, .cm-app-shell__mobile-drawer *)) {
-  --cm-sidebar-expanded-width: 15.5rem;
 }
 
 html[data-cm-skin="aurora-ops"] .cm-sidebar {

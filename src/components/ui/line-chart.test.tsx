@@ -9,6 +9,16 @@ const data = [
 ];
 
 describe("CmLineChart", () => {
+  it("permite alternar entre a curva padrão e os segmentos lineares", () => {
+    const { container, rerender } = render(<CmLineChart data={data} />);
+    const stroke = () => container.querySelector("path[stroke]")!.getAttribute("d");
+    expect(stroke()).toContain("C");
+    rerender(<CmLineChart data={data} curve="linear" />);
+    expect(stroke()).toContain("L");
+    expect(stroke()).not.toContain("C");
+    expect(container.querySelector("path[opacity]")?.getAttribute("d")).toContain(stroke());
+  });
+
   it("renders frame metadata, legend and accessible table", () => {
     render(
       <CmLineChart

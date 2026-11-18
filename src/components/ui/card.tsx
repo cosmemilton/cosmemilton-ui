@@ -4,6 +4,7 @@ import { cmVariants } from "../../lib/variants.js";
 import { cmDensityClass, type CmDensity, type CmSpacing, type CmTone } from "./types.js";
 
 export type CmCardVariant = "surface" | "soft" | "outline" | "ghost" | "solid" | "gradient";
+export type CmCardPattern = "none" | "orbits" | "connections" | "bricks" | "puzzle";
 type CardPadding = Exclude<CmSpacing, "xs">;
 type CardTone = CmTone;
 
@@ -14,12 +15,16 @@ export type CmCardProps = HTMLAttributes<HTMLDivElement> & {
   bodyPadding?: CardPadding;
   elevated?: boolean;
   variant?: CmCardVariant;
+  /** Decorative texture painted behind the card content. */
+  pattern?: CmCardPattern;
   tone?: CardTone;
   interactive?: boolean;
   accent?: "none" | "top" | "left";
   cover?: boolean | ReactNode;
   coverHeight?: string;
   header?: ReactNode;
+  /** Compact inset panel beside the body, stacked below it on narrow cards. */
+  aside?: ReactNode;
   footer?: ReactNode;
   density?: CmDensity;
 };
@@ -58,6 +63,7 @@ const cardVariants = cmVariants({
 
 export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
   {
+    aside,
     bodyPadding,
     children,
     className,
@@ -67,6 +73,7 @@ export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
     footer,
     header,
     variant = "surface",
+    pattern = "none",
     tone = "default",
     interactive = false,
     accent = "none",
@@ -78,7 +85,8 @@ export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
   ref,
 ) {
   const hasCover = Boolean(cover);
-  const hasStructuredContent = Boolean(header || footer || hasCover);
+  const hasAside = aside != null && aside !== false;
+  const hasStructuredContent = Boolean(header || footer || hasCover || hasAside);
   const resolvedBodyPadding = bodyPadding ?? padding;
 
   return (
@@ -86,6 +94,8 @@ export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
       ref={ref}
       className={cn(
         cardVariants({ variant, tone }),
+        pattern !== "none" && `cm-card--patterned cm-card--pattern-${pattern}`,
+        hasAside && "cm-card--with-aside",
         elevated ? "cm-card--elevated" : "cm-card--flat",
         interactive && "cm-card--interactive",
         accent !== "none" && `cm-card--accent-${accent}`,
@@ -105,7 +115,17 @@ export const CmCard = forwardRef<HTMLDivElement, CmCardProps>(function CmCard(
         <>
           {hasCover ? <div className="cm-card__cover">{cover === true ? null : cover}</div> : null}
           {header ? <div className="cm-card__header">{header}</div> : null}
-          {children ? (
+          {hasAside ? (
+            <div
+              className={cn(
+                "cm-card__body cm-card__body--with-aside",
+                paddingMap[resolvedBodyPadding],
+              )}
+            >
+              <div className="cm-card__main">{children}</div>
+              <div className="cm-card__aside">{aside}</div>
+            </div>
+          ) : children ? (
             <div className={cn("cm-card__body", paddingMap[resolvedBodyPadding])}>{children}</div>
           ) : null}
           {footer ? <div className="cm-card__footer">{footer}</div> : null}

@@ -381,12 +381,14 @@ export function CmDataTable<T>({
                     </CmButton>
                   </th>
                 )}
-                {visibleColumns.map((column, colIndex) => {
+                {visibleColumns.map((column) => {
                   const isSortable = !!column.sortable;
-                  const isActive = sortKey === column.key;
+                  const isActive = isSortable && sortKey === column.key;
+                  const HeaderContent = isSortable ? "button" : "span";
                   return (
                     <th
-                      key={colIndex}
+                      key={column.key}
+                      scope="col"
                       className={cn(
                         "cm-data-table__header",
                         (!column.align || column.align === "left") && "cm-data-table__cell--left",
@@ -404,7 +406,8 @@ export function CmDataTable<T>({
                           : undefined
                       }
                     >
-                      <span
+                      <HeaderContent
+                        type={isSortable ? "button" : undefined}
                         className={cn(
                           "cm-data-table__header-content",
                           column.align === "center" && "cm-data-table__header-content--center",
@@ -415,14 +418,17 @@ export function CmDataTable<T>({
                         {isSortable &&
                           (isActive ? (
                             sortDirection === "asc" ? (
-                              <ArrowUp className="cm-data-table__sort-icon" />
+                              <ArrowUp aria-hidden="true" className="cm-data-table__sort-icon" />
                             ) : (
-                              <ArrowDown className="cm-data-table__sort-icon" />
+                              <ArrowDown aria-hidden="true" className="cm-data-table__sort-icon" />
                             )
                           ) : (
-                            <ArrowUpDown className="cm-data-table__sort-icon cm-data-table__sort-icon--inactive" />
+                            <ArrowUpDown
+                              aria-hidden="true"
+                              className="cm-data-table__sort-icon cm-data-table__sort-icon--inactive"
+                            />
                           ))}
-                      </span>
+                      </HeaderContent>
                     </th>
                   );
                 })}
@@ -436,6 +442,7 @@ export function CmDataTable<T>({
                   <tr
                     key={key}
                     data-selected={isSelected || undefined}
+                    aria-current={isSelected || undefined}
                     className={cn(
                       "cm-data-table__row",
                       zebra && !isSelected && rowIndex % 2 === 1 && "cm-data-table__row--zebra",
@@ -443,7 +450,35 @@ export function CmDataTable<T>({
                       onRowClick && "cm-data-table__row--clickable",
                       isSelected && "cm-data-table__row--selected",
                     )}
-                    onClick={onRowClick ? () => onRowClick(row) : undefined}
+                    tabIndex={onRowClick ? 0 : undefined}
+                    onClick={
+                      onRowClick
+                        ? (event) => {
+                            const target = event.target;
+                            if (
+                              target instanceof Element &&
+                              target.closest(
+                                'button, a[href], input, select, textarea, label, summary, [contenteditable="true"], [role="button"], [role="link"], [role="checkbox"], [role="switch"]',
+                              )
+                            )
+                              return;
+                            onRowClick(row);
+                          }
+                        : undefined
+                    }
+                    onKeyDown={
+                      onRowClick
+                        ? (event) => {
+                            if (
+                              event.target !== event.currentTarget ||
+                              (event.key !== "Enter" && event.key !== " ")
+                            )
+                              return;
+                            event.preventDefault();
+                            onRowClick(row);
+                          }
+                        : undefined
+                    }
                   >
                     {hasColumnToggle && <td className="cm-data-table__toggle-spacer" />}
                     {visibleColumns.map((column, colIndex) => (
@@ -466,6 +501,29 @@ export function CmDataTable<T>({
                 );
               })}
             </tbody>
+            {visibleColumns.some((column) => column.footer != null) && (
+              <tfoot className="cm-data-table__footer">
+                <tr>
+                  {hasColumnToggle && <td className="cm-data-table__toggle-spacer" />}
+                  {visibleColumns.map((column) => {
+                    const isRowHeader = column.key === columns[0]?.key && column.footer != null;
+                    const Cell = isRowHeader ? "th" : "td";
+                    return (
+                      <Cell
+                        key={column.key}
+                        scope={isRowHeader ? "row" : undefined}
+                        className={cn(
+                          "cm-data-table__cell",
+                          `cm-data-table__cell--${column.align ?? "left"}`,
+                        )}
+                      >
+                        {column.footer}
+                      </Cell>
+                    );
+                  })}
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>

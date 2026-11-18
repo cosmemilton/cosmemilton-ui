@@ -4,7 +4,15 @@ import { cmVariants } from "../../lib/variants.js";
 import type { CmSize } from "./types.js";
 
 type TextSize = CmSize | "2xl" | "3xl" | "display-sm" | "display";
-type TextTone = "default" | "muted" | "danger" | "success" | "warning" | "primary" | "inverse";
+type TextTone =
+  | "default"
+  | "muted"
+  | "danger"
+  | "success"
+  | "warning"
+  | "primary"
+  | "inverse"
+  | "inherit";
 type TextWeight = "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black";
 type TextVariant = "default" | "modalTabDescription";
 type TextSpacing = "none" | "compact" | "normal" | "relaxed";
@@ -54,6 +62,7 @@ const textVariants = cmVariants({
       warning: "cm-text--warning",
       primary: "cm-text--primary",
       inverse: "cm-text--inverse",
+      inherit: "cm-text--inherit",
     },
     weight: {
       normal: "cm-text--normal",
