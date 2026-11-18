@@ -467,6 +467,15 @@
   align-self: start;
 }
 
+.cm-sidebar-shell--standalone.cm-sidebar-shell--preview {
+  z-index: var(--z-docked, 30);
+  overflow: visible;
+}
+
+.cm-sidebar-shell--standalone.cm-sidebar-shell--preview > .cm-sidebar {
+  border-radius: inherit;
+}
+
 .cm-sidebar-shell--preview .cm-sidebar {
   z-index: 3;
   width: var(--cm-sidebar-expanded-width);

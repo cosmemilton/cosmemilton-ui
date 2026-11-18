@@ -94,11 +94,13 @@ function AuroraOpsFixture() {
     <CmAppShell
       data-testid="aurora-ops-fixture"
       data-fixture-skin={skin}
+      chrome={params.get("chrome") === "glass" ? "glass" : "surface"}
       sidebarWidth={232}
       collapsedSidebarWidth={64}
       skipLinkLabel="Ir para o conteúdo"
       sidebar={({ closeMobileSidebar }) => (
         <CmSidebar
+          standalone
           autoCollapse={false}
           brand={{ title: "Aurora Ops", icon: <Sparkles size={18} aria-hidden="true" /> }}
           navLabel="Seções do dashboard"

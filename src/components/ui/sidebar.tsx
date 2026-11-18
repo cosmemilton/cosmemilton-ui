@@ -153,6 +153,7 @@ export function CmSidebar({
     null,
   );
   const sidebarRef = useRef<HTMLElement | null>(null);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
   const footerRef = useRef<HTMLDivElement | null>(null);
   const groupItemsRefs = useRef(new Map<string, HTMLDivElement>());
@@ -339,6 +340,8 @@ export function CmSidebar({
       return;
     }
 
+    // Ao fixar pela marca, ela deixa de ser um botão. Mantenha o foco no controle de recolhimento.
+    if (manualCollapsed) toggleRef.current?.focus({ preventScroll: true });
     setCollapsed(!manualCollapsed);
   }
 
@@ -375,7 +378,8 @@ export function CmSidebar({
           className="cm-sidebar__brand-icon-button"
           aria-label={brand?.iconLabel ?? "Abrir menu lateral"}
           title={brand?.iconLabel ?? "Abrir menu lateral"}
-          onClick={openSidebarPreview}
+          aria-expanded={sidebarPreviewOpen}
+          onClick={toggleSidebarState}
         >
           <span
             className={cn(
@@ -408,6 +412,7 @@ export function CmSidebar({
         <CmButton
           unstyled
           type="button"
+          ref={toggleRef}
           className="cm-sidebar__toggle"
           aria-label={manualCollapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
           title={manualCollapsed ? "Expandir menu lateral" : "Recolher menu lateral"}

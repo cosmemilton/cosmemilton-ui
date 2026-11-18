@@ -1875,8 +1875,14 @@
   color: var(--color-card-foreground);
   border-color: var(--surface-glass-border);
 }
-.cm-app-shell--chrome-glass .cm-sidebar,
-.cm-app-shell--chrome-glass .cm-sidebar-shell { background: transparent; }
+/* Extend the glass behind the preview without widening the collapsed grid track.
+   The sidebar itself draws the border at the outer edge of the preview. */
+.cm-app-shell--chrome-glass > .cm-app-shell__sidebar:has(.cm-sidebar-shell--preview) {
+  width: max-content;
+  border-right: 0;
+}
+.cm-app-shell--chrome-glass > :where(.cm-app-shell__sidebar, .cm-app-shell__mobile-layer)
+  :is(.cm-sidebar, .cm-sidebar-shell) { background: transparent; }
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .cm-app-shell--chrome-glass .cm-app-shell__sidebar,
   .cm-app-shell--chrome-glass .cm-app-shell__mobile-drawer {
