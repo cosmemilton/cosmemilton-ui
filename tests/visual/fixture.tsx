@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Package } from "lucide-react";
 import { addIcon } from "@iconify/react";
 
-import { CmButton, CmCombobox, CmInput, CmSelect, CmSwitch } from "../../src/client.js";
+import { CmButton, CmCombobox, CmInput, CmSelect, CmSidebar, CmSwitch } from "../../src/client.js";
 import { CmIcon } from "../../src/server.js";
 
 addIcon("visual:sparkles", {
@@ -289,7 +289,38 @@ function SwitchFixture() {
   );
 }
 
+function StandaloneSidebarFixture() {
+  const items = Array.from({ length: 16 }, (_, i) => ({
+    id: String(i + 1),
+    label: `Página ${i + 1}`,
+    href: `#pagina-${i + 1}`,
+  }));
+
+  return (
+    <div style={{ display: "flex" }}>
+      <CmSidebar
+        standalone
+        brand={{ title: "Acme Admin" }}
+        width={280}
+        minHeight={360}
+        groupItemsMaxHeight={120}
+        groups={[
+          { id: "pages", label: "Páginas", items },
+          { id: "help", label: "Ajuda", direct: true, items: [{ id: "help", label: "Ajuda" }] },
+        ]}
+      />
+      <main style={{ position: "relative", flex: 1 }}>
+        <button type="button">Conteúdo</button>
+      </main>
+    </div>
+  );
+}
+
 function App() {
+  if (new URLSearchParams(location.search).get("fixture") === "sidebar") {
+    return <StandaloneSidebarFixture />;
+  }
+
   return (
     <main className="visual-page">
       <ControlsFixture />
