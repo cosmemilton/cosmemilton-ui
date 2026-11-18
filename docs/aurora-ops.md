@@ -35,6 +35,14 @@ colocar controles, como um seletor de período, ao lado do título. As ações
 continuam acessíveis enquanto os dados carregam. A área dos controles se ajusta
 ao espaço disponível.
 
+No `CmPageHeader`, agrupe o seletor e a ação em um `CmRow align="end" gap="sm" wrap` dentro de `actions`. O campo usa a largura do conteúdo nessa área. Os controles ficam na mesma linha enquanto couberem, inclusive com o rótulo visível.
+
+Para comparar duas séries com unidades diferentes, use `CmComparisonLineChart` com `curve="smooth"` e `legendPosition="header"`. Defina `area: true` no eixo da série que deve receber preenchimento. A curva passa pelos valores originais e é interrompida onde há dados ausentes. A opção `xLabels="responsive"` mostra mais datas quando o gráfico dispõe de espaço.
+
+Use `CmDonutChart variant="segmented" legendLayout="list"` para exibir um anel com intervalos entre as fatias e percentuais alinhados à direita. Para etapas de um pipeline, use `CmBarChart orientation="horizontal"`, informe `tone` em cada item e habilite `legend` para mostrar a legenda gerada pelos próprios dados.
+
+Em `CmProgress` e em `CmBarChart orientation="horizontal"`, use `barThickness` para ajustar a espessura das barras. Os aliases `xs`, `sm`, `md` e `lg` correspondem a 4, 8, 12 e 16 px. Também é possível informar um número positivo em pixels, como `barThickness={6}`. No pipeline do Aurora, `barThickness="sm"` exibe as cinco etapas com barras de 8 px. Ao omitir a prop, o componente usa a espessura padrão do tema.
+
 Combine `CmTopbar` com [`CmMegaMenuSearch`](mega-menu.md#busca-na-barra-superior)
 para uma busca larga no desktop. No celular, a busca ocupa uma linha inteira
 abaixo dos controles do cabeçalho. O `CmUserMenu` aceita navegação por setas,

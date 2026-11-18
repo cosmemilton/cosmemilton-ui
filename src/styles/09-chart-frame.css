@@ -1,5 +1,6 @@
 /* CmChartFrame: shared shell for dashboard charts. */
 .cm-chart-frame {
+  --cm-chart-primary-soft: color-mix(in srgb, var(--color-primary) 74%, var(--color-card));
   display: grid;
   min-width: 0;
   gap: var(--space-sm, 0.5rem);
@@ -102,4 +103,41 @@
   color: var(--color-foreground);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+
+.cm-chart-frame__header > .cm-chart-frame__legend {
+  max-width: 100%;
+  align-self: center;
+}
+
+.cm-chart-frame__legend[data-layout="list"] {
+  display: grid;
+  align-content: start;
+  gap: 0;
+}
+
+.cm-chart-frame__legend[data-layout="list"] .cm-chart-frame__legend-item {
+  padding-block: var(--space-xs, .25rem);
+  overflow-wrap: anywhere;
+}
+
+.cm-chart-frame__legend[data-layout="list"] .cm-chart-frame__legend-item + .cm-chart-frame__legend-item {
+  border-block-start: 1px solid var(--color-border);
+}
+
+.cm-chart-frame__legend[data-layout="list"] .cm-chart-frame__legend-value {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
+.cm-chart-frame__legend-swatch:is([data-marker="line"], [data-marker="dashed"]) {
+  width: 1rem;
+  height: 0;
+  border-radius: 0;
+  background: transparent;
+  border-block-start: 2px solid var(--cm-chart-legend-color);
+}
+
+.cm-chart-frame__legend-swatch[data-marker="dashed"] {
+  border-block-start-style: dashed;
 }

@@ -34,6 +34,33 @@ describe("CmBarChart", () => {
     expect(screen.getByText("Sem vendas")).toBeInTheDocument();
   });
 
+  it("sizes the horizontal tracks independently of the frame and data values", () => {
+    const { container, rerender } = render(
+      <CmBarChart data={data} orientation="horizontal" height={200} barThickness="xs" />,
+    );
+    const tracks = container.querySelectorAll<HTMLElement>(".cm-bar-chart__track");
+    expect(tracks).toHaveLength(data.length);
+    for (const track of tracks) expect(track).toHaveStyle({ height: "4px" });
+    expect(container.querySelector(".cm-chart-frame")).toHaveStyle({
+      "--cm-chart-frame-height": "200px",
+    });
+    expect(container.querySelector(".cm-bar-chart__fill")).toHaveStyle({ width: "100%" });
+
+    rerender(<CmBarChart data={data} orientation="horizontal" barThickness={6.5} />);
+    expect(tracks[0]).toHaveStyle({ height: "6.5px" });
+
+    rerender(<CmBarChart data={data} orientation="horizontal" />);
+    expect(tracks[0].style.height).toBe("");
+  });
+
+  it("preserves the vertical chart dimensions when barThickness is supplied", () => {
+    const { container } = render(<CmBarChart data={data} height={200} barThickness="xs" />);
+    expect(container.querySelector(".cm-bar-chart--vertical")).toHaveStyle({ height: "200px" });
+    expect(container.querySelector(".cm-bar-chart__fill--vertical")).toHaveStyle({
+      height: "100%",
+    });
+  });
+
   it("keeps className on the chart element and frameClassName on the frame", () => {
     const { container } = render(
       <CmBarChart data={data} className="chart-extra" frameClassName="frame-extra" />,

@@ -1,6 +1,6 @@
 {
   "name": "@cosmemilton/ui",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Componentes React para sistemas administrativos — ESM para RSC/Next/Vite e bundle global para uso direto no navegador.",
   "author": "Cosme Milton <milton.cosme@gmail.com>",
   "license": "ISC",
@@ -57,6 +57,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "default": "./dist/server.js"
+    },
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js",
+      "default": "./dist/icons.js"
     },
     "./theme": {
       "types": "./dist/theme.d.ts",

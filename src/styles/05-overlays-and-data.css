@@ -1396,6 +1396,21 @@
   font-variant-numeric: tabular-nums;
 }
 
+.cm-progress--inherit {
+  --color-foreground: currentColor;
+  --color-muted-foreground: currentColor;
+  --color-primary: currentColor;
+  --color-muted: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.cm-progress--inherit .cm-progress__bar {
+  appearance: none;
+}
+
+.cm-progress--inherit .cm-progress__bar::-webkit-progress-bar {
+  background: transparent;
+}
+
 .cm-command__search {
   position: relative;
   flex-shrink: 0;

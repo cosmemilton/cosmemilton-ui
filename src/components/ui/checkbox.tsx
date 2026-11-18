@@ -39,6 +39,7 @@ export const CmCheckbox = forwardRef<HTMLInputElement, CmCheckboxProps>(
             {...props}
           />
           <span
+            aria-hidden="true"
             className={cn(
               "cm-checkbox__box",
               isInputSuffix ? "cm-checkbox__box--suffix" : "cm-checkbox__box--default",

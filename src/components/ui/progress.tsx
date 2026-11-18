@@ -2,6 +2,9 @@
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
+import { cmBarThicknessPixels, type CmBarThickness } from "./types.js";
+
+export type { CmBarThickness } from "./types.js";
 
 export type CmProgressValueContext = {
   value: number;
@@ -14,6 +17,10 @@ export type CmProgressValueContext = {
 };
 
 export type CmProgressProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** Inherit the surrounding ink for the label, value and fill on colored surfaces. */
+  tone?: "primary" | "inherit";
+  /** Espessura da barra. Quando omitida, segue o tema. */
+  barThickness?: CmBarThickness;
   /** Valor atual. */
   value: number;
   /** Limite inferior do intervalo. Padrão `0`. */
@@ -35,12 +42,14 @@ const clamp = (value: number, lower: number, upper: number) =>
 
 export const CmProgress = forwardRef<HTMLDivElement, CmProgressProps>(function CmProgress(
   {
+    barThickness,
     className,
     label,
     max = 100,
     min = 0,
     showValue = false,
     srOnlyLabel = false,
+    tone = "primary",
     value,
     valueFormat,
     "aria-label": ariaLabel,
@@ -66,7 +75,11 @@ export const CmProgress = forwardRef<HTMLDivElement, CmProgressProps>(function C
   const hasHeader = showLabel || showValue;
 
   return (
-    <div ref={ref} className={cn("cm-progress", className)} {...rest}>
+    <div
+      ref={ref}
+      className={cn("cm-progress", tone === "inherit" && "cm-progress--inherit", className)}
+      {...rest}
+    >
       {hasHeader ? (
         // O nome/valor acessível já são expostos pelo <progress>; o cabeçalho é
         // apenas a representação visual, então fica oculto para leitores de tela.
@@ -80,6 +93,7 @@ export const CmProgress = forwardRef<HTMLDivElement, CmProgressProps>(function C
         max={nativeMax}
         aria-label={accessibleName}
         className="cm-progress__bar"
+        style={{ height: cmBarThicknessPixels(barThickness) }}
       />
     </div>
   );

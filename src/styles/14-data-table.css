@@ -73,6 +73,23 @@
   color: var(--color-foreground)
 }
 
+button.cm-data-table__header-content {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer
+}
+
+button.cm-data-table__header-content:focus-visible,
+.cm-data-table__row--clickable:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px
+}
+
 .cm-data-table__body {
   background: var(--color-card);
   color: var(--color-card-foreground, var(--color-foreground))
@@ -157,7 +174,9 @@
 .cm-data-table-detail-layout {
   --cm-data-table-detail-gap: 1rem;
   --cm-data-table-detail-panel-width: 280px;
+  container: cm-data-table-detail / inline-size;
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   align-items: stretch;
   gap: var(--cm-data-table-detail-gap)
@@ -166,7 +185,7 @@
 .cm-data-table-detail__table-wrap {
   position: relative;
   min-width: 0;
-  flex: 1 1 auto
+  flex: 1 1 0
 }
 
 .cm-data-table-detail__panel {
@@ -241,16 +260,11 @@
   box-shadow: inset 4px 0 4px -2px rgb(0 0 0 / .25)
 }
 
-@media (max-width: 768px) {
-  .cm-data-table-detail-layout {
-    flex-direction: column;
-    gap: 1rem
-  }
-
+@container cm-data-table-detail (max-width: 48rem) {
   .cm-data-table-detail__table-wrap,
   .cm-data-table-detail__panel {
     width: 100%;
-    flex-basis: auto
+    flex: 0 0 100%
   }
 
   .cm-data-table-detail__tab,
