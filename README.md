@@ -238,6 +238,9 @@ compõe as ações no rodapé. Para dashboards, `CmMetricGrid`,
 `CmComparisonLineChart` e `CmDonutChart` recebem os indicadores e as séries
 do domínio e usam os tokens do tema ativo.
 
+Use os imports nomeados de `@cosmemilton/ui/icons` para ícones da aplicação
+que devem funcionar offline. O bundler inclui os ícones utilizados.
+
 O [MegaMenu e a busca em painel](docs/mega-menu.md) oferecem navegação e pesquisa
 por grupos, com ícones, descrições, links, ações e teclado. Os dados e os props
 definem a composição; a biblioteca fornece toda a apresentação.
