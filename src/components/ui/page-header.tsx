@@ -11,6 +11,8 @@ export type CmPageHeaderProps = HTMLAttributes<HTMLElement> & {
   actions?: ReactNode;
   density?: CmDensity;
   align?: "start" | "center";
+  /** Wrap actions onto their own line when the content and actions no longer fit. */
+  layout?: "default" | "wrap";
 };
 
 export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(function CmPageHeader(
@@ -22,6 +24,7 @@ export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(function 
     description,
     eyebrow,
     icon,
+    layout = "default",
     meta,
     title,
     ...props
@@ -33,6 +36,7 @@ export const CmPageHeader = forwardRef<HTMLElement, CmPageHeaderProps>(function 
       ref={ref}
       className={cn(
         "cm-page-header",
+        layout === "wrap" && "cm-page-header--wrap",
         `cm-page-header--align-${align}`,
         cmDensityClass(density),
         className,

@@ -73,6 +73,23 @@
   color: var(--color-foreground)
 }
 
+button.cm-data-table__header-content {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer
+}
+
+button.cm-data-table__header-content:focus-visible,
+.cm-data-table__row--clickable:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px
+}
+
 .cm-data-table__body {
   background: var(--color-card);
   color: var(--color-card-foreground, var(--color-foreground))

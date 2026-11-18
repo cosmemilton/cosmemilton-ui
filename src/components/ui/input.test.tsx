@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { CmInput } from "./input.js";
 import { CmButton } from "./button.js";
@@ -7,6 +8,15 @@ import { CmButton } from "./button.js";
 afterEach(cleanup);
 
 describe("CmInput", () => {
+  it("preserves pasted signs for application validation when numeric is explicitly false", async () => {
+    const user = userEvent.setup();
+    render(<CmInput label="Valor" inputMode="decimal" numeric={false} />);
+    const input = screen.getByRole("textbox", { name: "Valor" });
+    await user.click(input);
+    await user.paste("-25");
+    expect(input).toHaveValue("-25");
+  });
+
   it("applies a fixed width on the field root without leaking to the input element", () => {
     const { container } = render(<CmInput label="CEP" width={120} />);
     const root = container.querySelector<HTMLElement>(".cm-input");

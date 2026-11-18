@@ -6,6 +6,8 @@ export type CmDataTableColumn<T> = {
   key: string;
   header: string;
   render?: (row: T) => ReactNode;
+  /** Precomputed aggregate or label, shown in the footer with its own column. */
+  footer?: ReactNode;
   /** Alinha cabeçalho, conteúdo e CmDataTableActions renderizado diretamente na célula. */
   align?: "left" | "center" | "right";
   headerClassName?: string;

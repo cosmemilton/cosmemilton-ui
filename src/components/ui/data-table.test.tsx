@@ -4,6 +4,7 @@ import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { CmDataTable, CmDataTableActions, type CmDataTableColumn } from "./data-table.js";
+import { CmThemeProvider } from "../theme/theme-provider.js";
 
 type Person = { id: string; name: string; age: number };
 
@@ -27,8 +28,24 @@ function renderTable(props: Partial<Parameters<typeof CmDataTable<Person>>[0]> =
       pagination={false}
       {...props}
     />,
+    { wrapper: CmThemeProvider },
   );
 }
+
+it("keeps the declared totals with their visible columns", () => {
+  const { container } = renderTable({
+    tableKey: "footer-columns",
+    columns: [
+      { key: "name", header: "Name", footer: "Total", hideable: false },
+      { key: "id", header: "ID", defaultHidden: true, footer: "hidden sum" },
+      { key: "age", header: "Age", footer: 0, align: "right" },
+    ],
+  });
+  const footer = container.querySelector("tfoot")!;
+  expect(within(footer).getByRole("rowheader", { name: "Total" })).toBeInTheDocument();
+  expect(within(footer).getByText("0")).toHaveClass("cm-data-table__cell--right");
+  expect(within(footer).queryByText("hidden sum")).toBeNull();
+});
 
 function bodyRowNames(): string[] {
   const [, body] = screen.getAllByRole("rowgroup"); // [thead, tbody]
@@ -50,6 +67,17 @@ describe("CmDataTable", () => {
     renderTable();
     expect(screen.getByText("Charlie")).toBeInTheDocument();
     expect(screen.getByText("30 yrs")).toBeInTheDocument();
+  });
+
+  it("keeps column checkbox names independent of the decorative tick", async () => {
+    const user = userEvent.setup();
+    renderTable({ tableKey: "accessible-column-options" });
+    await user.click(screen.getByRole("button", { name: "Configurar colunas" }));
+    const option = screen.getByRole("checkbox", { name: "Name" });
+    expect(option).toBeChecked();
+    await user.click(option);
+    expect(screen.getByRole("checkbox", { name: "Name" })).not.toBeChecked();
+    await user.click(screen.getByRole("button", { name: "Restaurar padrão" }));
   });
 
   it("shows the empty state when there is no data", () => {
@@ -80,6 +108,48 @@ describe("CmDataTable", () => {
     await user.click(nameHeader);
     expect(nameHeader).toHaveAttribute("aria-sort", "descending");
     expect(bodyRowNames()).toEqual(["Charlie", "Bob", "Alice"]);
+  });
+
+  it("sorts with Enter and Space while keeping focus on the header button", async () => {
+    const user = userEvent.setup();
+    renderTable();
+    const header = screen.getByRole("columnheader", { name: "Name" });
+    const button = within(header).getByRole("button", { name: "Name" });
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(header).toHaveAttribute("aria-sort", "ascending");
+    expect(bodyRowNames()).toEqual(["Alice", "Bob", "Charlie"]);
+    await user.keyboard(" ");
+    expect(header).toHaveAttribute("aria-sort", "descending");
+    expect(button).toHaveFocus();
+    expect(bodyRowNames()).toEqual(["Charlie", "Bob", "Alice"]);
+  });
+
+  it("activates focused rows by keyboard and keeps nested actions independent", async () => {
+    const user = userEvent.setup();
+    const onRowClick = vi.fn();
+    const onEdit = vi.fn();
+    renderTable({
+      columns: [
+        ...columns,
+        { key: "action", header: "Action", render: () => <button onClick={onEdit}>Edit</button> },
+      ],
+      onRowClick,
+    });
+    const row = screen.getByRole("row", { name: /Charlie/ });
+    row.focus();
+    await user.keyboard("{Enter}");
+    await user.keyboard(" ");
+    expect(onRowClick).toHaveBeenCalledTimes(2);
+    expect(onRowClick).toHaveBeenLastCalledWith(data[0]);
+    const edit = within(row).getByRole("button", { name: "Edit" });
+    await user.tab();
+    expect(edit).toHaveFocus();
+    await user.keyboard("{Enter}");
+    await user.click(edit);
+    expect(onEdit).toHaveBeenCalledTimes(2);
+    expect(onRowClick).toHaveBeenCalledTimes(2);
   });
 
   describe("action alignment", () => {
@@ -154,6 +224,7 @@ describe("CmDataTable", () => {
       renderTable({ rowKey: "id", selectedRowKey: "2" });
       const aliceRow = screen.getByText("Alice").closest("tr");
       expect(aliceRow).toHaveAttribute("data-selected");
+      expect(aliceRow).toHaveAttribute("aria-current", "true");
       expect(screen.getByText("Charlie").closest("tr")).not.toHaveAttribute("data-selected");
     });
 

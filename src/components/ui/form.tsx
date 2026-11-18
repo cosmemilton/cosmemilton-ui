@@ -13,6 +13,8 @@ export type CmFormProps = FormHTMLAttributes<HTMLFormElement> & {
   description?: ReactNode;
   actions?: ReactNode;
   layout?: "stack" | "grid";
+  /** Plain uses the enclosing dialog or card as the form surface. */
+  surface?: "card" | "plain";
   columns?: CmResponsiveNumber;
   gap?: string | number;
   density?: CmDensity;
@@ -36,6 +38,7 @@ export const CmForm = forwardRef<HTMLFormElement, CmFormProps>(function CmForm(
     description,
     gap,
     layout = "stack",
+    surface = "card",
     style,
     title,
     ...props
@@ -58,6 +61,7 @@ export const CmForm = forwardRef<HTMLFormElement, CmFormProps>(function CmForm(
       ref={ref}
       className={cn(
         "cm-form",
+        surface === "plain" && "cm-form--plain",
         `cm-form--layout-${layout}`,
         `cm-form--actions-${actionsAlign}`,
         cmDensityClass(density),

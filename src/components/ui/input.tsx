@@ -50,6 +50,7 @@ function resolveNumericMode(
   inputMode: CmInputProps["inputMode"],
 ) {
   if (numeric === true) return "decimal";
+  if (numeric === false) return undefined;
   if (numeric) return numeric;
   if (inputMode === "numeric") return "integer";
   if (inputMode === "decimal") return "decimal";

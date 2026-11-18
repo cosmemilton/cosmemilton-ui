@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils.js";
 import { cmDensityClass, cmSizeValue, type CmDensity } from "./types.js";
 
 type CmTopbarTone = "surface" | "brand" | "transparent" | "glass";
-type CmTopbarLayout = "balanced" | "start";
+type CmTopbarLayout = "balanced" | "start" | "search";
 type CmTopbarMobileLayout = "stack" | "inline";
 type CmTopbarSectionAlign = "start" | "center" | "end" | "stretch";
 
@@ -16,7 +16,7 @@ export type CmTopbarProps = HTMLAttributes<HTMLElement> & {
   title?: ReactNode;
   density?: CmDensity;
   tone?: CmTopbarTone;
-  /** Balanced centers the middle slot; start gives it the remaining available width. */
+  /** Search centers a bounded search slot and reflows navigation when the shell narrows. */
   layout?: CmTopbarLayout;
   mobileLayout?: CmTopbarMobileLayout;
   startAlign?: CmTopbarSectionAlign;
