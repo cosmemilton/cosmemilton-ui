@@ -24,6 +24,18 @@ export type CmFeedbackTone = "default" | CmStatusTone;
 
 export type CmSize = "xs" | "sm" | "md" | "lg" | "xl";
 
+/** Espessura da barra em pixels de CSS. Os tamanhos xs, sm, md e lg valem 4, 8, 12 e 16. */
+export type CmBarThickness = Exclude<CmSize, "xl"> | number;
+
+const barThicknessPixels = { xs: 4, sm: 8, md: 12, lg: 16 };
+
+export function cmBarThicknessPixels(thickness: CmBarThickness | undefined) {
+  if (typeof thickness === "number") {
+    return Number.isFinite(thickness) && thickness > 0 ? thickness : undefined;
+  }
+  return thickness === undefined ? undefined : barThicknessPixels[thickness];
+}
+
 export type CmDialogSize = "sm" | "md" | "lg" | "xl" | "2xl";
 
 export type CmSpacing = "none" | "xs" | "sm" | "md" | "lg";

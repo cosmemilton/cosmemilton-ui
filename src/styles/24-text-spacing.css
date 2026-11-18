@@ -13,3 +13,4 @@
 .cm-text--wrap-balance { text-wrap: balance; }
 .cm-text--wrap-pretty { text-wrap: pretty; }
 .cm-text--wrap-anywhere { overflow-wrap: anywhere; }
+.cm-text--inherit { color: inherit; }

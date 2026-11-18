@@ -1,11 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
+import { chartLinePath, type CmLineChartCurve } from "./chart-line-path.js";
+export type { CmLineChartCurve } from "./chart-line-path.js";
 import type { ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import {
   CmChartFrame,
   cmChartColor,
+  type CmChartFrameProps,
   type CmChartLegendItem,
   type CmChartTone,
 } from "./chart-frame.js";
@@ -17,8 +20,10 @@ export type CmLineChartDataPoint = {
 
 export type CmLineChartTone = Exclude<CmChartTone, "default">;
 
-export type CmLineChartProps = {
+export type CmLineChartProps = Pick<CmChartFrameProps, "legendLayout" | "legendPosition"> & {
   data: CmLineChartDataPoint[];
+  /** Interpolation between observations. Defaults to smooth on the single-series chart. */
+  curve?: CmLineChartCurve;
   height?: number;
   tone?: CmLineChartTone;
   color?: string;
@@ -53,6 +58,7 @@ function textValue(value: ReactNode, fallback: string) {
 
 export function CmLineChart({
   data,
+  curve = "smooth",
   height = 200,
   tone = "primary",
   color,
@@ -69,6 +75,8 @@ export function CmLineChart({
   emptyMessage,
   emptyState,
   legend,
+  legendLayout,
+  legendPosition,
   valueFormat,
   tooltipFormat,
   accessibleTableLabel,
@@ -137,19 +145,7 @@ export function CmLineChart({
     return { points: pts, gridLines: grid };
   }, [data, chartW, chartH, padLeft, padTop]);
 
-  const pathD = useMemo(() => {
-    if (points.length < 2) return "";
-
-    let path = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      const prev = points[i - 1];
-      const curr = points[i];
-      const cpX1 = prev.x + (curr.x - prev.x) / 2;
-      const cpX2 = prev.x + (curr.x - prev.x) / 2;
-      path += ` C ${cpX1} ${prev.y}, ${cpX2} ${curr.y}, ${curr.x} ${curr.y}`;
-    }
-    return path;
-  }, [points]);
+  const pathD = useMemo(() => chartLinePath(points, curve), [points, curve]);
 
   const areaPath = useMemo(() => {
     if (points.length < 2) return "";
@@ -171,6 +167,8 @@ export function CmLineChart({
       emptyMessage={emptyMessage}
       emptyState={emptyState}
       legend={resolvedLegend}
+      legendLayout={legendLayout}
+      legendPosition={legendPosition}
       table={table}
       showAccessibleTable={showAccessibleTable}
     >

@@ -1,6 +1,14 @@
 "use client";
 
-import { useMemo, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import {
+  useId,
+  useMemo,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
+import { chartLinePath, type CmLineChartCurve } from "./chart-line-path.js";
 import {
   CmChartFrame,
   cmChartColor,
@@ -24,6 +32,10 @@ export type CmComparisonLineAxis = {
   color?: string;
   valueFormat?: (value: number) => string;
   tickFormat?: (value: number) => string;
+  /** Desired bounds. The range expands to include zero and all finite observations. */
+  domain?: readonly [number, number];
+  /** Fills this series down to its own zero line. */
+  area?: boolean;
 };
 
 export type CmComparisonLineChartProps = Omit<
@@ -33,6 +45,9 @@ export type CmComparisonLineChartProps = Omit<
   data: readonly CmComparisonLinePoint[];
   leftAxis: CmComparisonLineAxis;
   rightAxis: CmComparisonLineAxis;
+  curve?: CmLineChartCurve;
+  /** Shows up to eight original labels when the chart has room. */
+  xLabels?: "compact" | "responsive";
   height?: number;
   accessibleTableLabel?: ReactNode;
 };
@@ -52,9 +67,14 @@ function lineSeries(
   data: readonly CmComparisonLinePoint[],
   key: "left" | "right",
   axis: CmComparisonLineAxis,
+  curve: CmLineChartCurve,
 ) {
   let min = 0;
   let max = 0;
+  if (axis.domain && axis.domain.every(Number.isFinite) && axis.domain[0] < axis.domain[1]) {
+    min = Math.min(min, axis.domain[0]);
+    max = Math.max(max, axis.domain[1]);
+  }
   for (const point of data) {
     const value = point[key];
     if (valid(value)) {
@@ -64,28 +84,58 @@ function lineSeries(
   }
   const range = max - min || 1;
   const color = axis.color ?? cmChartColor(axis.tone ?? (key === "left" ? "primary" : "info"));
-  let connected = false;
-  const points = data.map((point, index) => {
-    const value = point[key];
-    if (!valid(value)) {
-      connected = false;
-      return null;
+  const baseline = 100 * (1 + min / range);
+  const lines: string[] = [];
+  const areas: string[] = [];
+  let run: { x: number; y: number }[] = [];
+  function finishRun() {
+    if (!run.length) return;
+    const line = chartLinePath(run, curve);
+    lines.push(line);
+    if (axis.area && run.length > 1) {
+      areas.push(`${line} L${run[run.length - 1].x} ${baseline} L${run[0].x} ${baseline} Z`);
     }
-    const x = data.length > 1 ? (index * 100) / (data.length - 1) : 50;
-    const y = 100 * (1 - (value - min) / range);
-    const command = connected ? "L" : "M";
-    connected = true;
-    return { x, y, command };
+    run = [];
+  }
+  data.forEach((point, index) => {
+    const value = point[key];
+    if (valid(value)) {
+      const x = data.length > 1 ? (index * 100) / (data.length - 1) : 50;
+      run.push({ x, y: 100 * (1 - (value - min) / range) });
+    } else {
+      finishRun();
+    }
   });
-  const path = points
-    .map((point, i) => {
-      if (!point) return "";
-      const command = `${point.command}${point.x} ${point.y}`;
-      return point.command === "M" && !points[i + 1] ? `${command}l0 0` : command;
-    })
-    .join(" ");
+  finishRun();
   const tickFormat = axis.tickFormat ?? axis.valueFormat ?? number.format;
-  return { color, path, ticks: ticks.map((t) => tickFormat(min + range * t)) };
+  return {
+    color,
+    path: lines.join(" "),
+    area: areas.join(" "),
+    ticks: ticks.map((t) => tickFormat(min + range * t)),
+  };
+}
+
+function xAxisLabels(data: readonly CmComparisonLinePoint[], responsive: boolean) {
+  if (!data.length) return [];
+  const last = data.length - 1;
+  const middle = Math.floor(last / 2);
+  const indices = new Set([0, middle, last]);
+  if (responsive) {
+    const count = Math.min(data.length, 8);
+    for (let i = 1; i < count - 1; i++) {
+      const index = Math.round((i * last) / (count - 1));
+      // Keep one midpoint shared with the compact layout.
+      indices.add(i === Math.floor((count - 1) / 2) ? middle : index);
+    }
+  }
+  return Array.from(indices)
+    .sort((a, b) => a - b)
+    .map((index) => ({
+      point: data[index],
+      position: last ? (index / last) * 100 : 50,
+      compact: index === 0 || index === middle || index === last,
+    }));
 }
 
 /** Compara duas séries em unidades próprias no mesmo eixo temporal ou categórico. */
@@ -93,16 +143,24 @@ export function CmComparisonLineChart({
   data,
   leftAxis,
   rightAxis,
+  curve = "linear",
+  xLabels = "compact",
   height = 192,
   accessibleTableLabel,
   ...frame
 }: CmComparisonLineChartProps) {
+  const gradientId = useId();
   const [cursor, setCursor] = useState(0);
   const [inspecting, setInspecting] = useState(false);
   const index = Math.max(0, Math.min(data.length - 1, cursor));
   const point = data[index];
-  const left = useMemo(() => lineSeries(data, "left", leftAxis), [data, leftAxis]);
-  const right = useMemo(() => lineSeries(data, "right", rightAxis), [data, rightAxis]);
+  const left = useMemo(() => lineSeries(data, "left", leftAxis, curve), [data, leftAxis, curve]);
+  const right = useMemo(
+    () => lineSeries(data, "right", rightAxis, curve),
+    [data, rightAxis, curve],
+  );
+  const labels = useMemo(() => xAxisLabels(data, xLabels === "responsive"), [data, xLabels]);
+  const lineMarkers = frame.legendPosition === "header";
   const rows = useMemo(
     () =>
       data.map((row) => ({
@@ -152,8 +210,8 @@ export function CmComparisonLineChart({
       {...frame}
       empty={!data.some((row) => valid(row.left) || valid(row.right))}
       legend={[
-        { label: leftAxis.label, color: left.color },
-        { label: rightAxis.label, color: right.color },
+        { label: leftAxis.label, color: left.color, marker: lineMarkers ? "line" : "dot" },
+        { label: rightAxis.label, color: right.color, marker: lineMarkers ? "dashed" : "dot" },
       ]}
       table={{
         caption: accessibleTableLabel ?? frame.title ?? label,
@@ -191,6 +249,27 @@ export function CmComparisonLineChart({
           onKeyDown={inspectKey}
         >
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {[left, right].map(
+              (series, i) =>
+                series.area && (
+                  <g key={i}>
+                    <defs>
+                      <linearGradient
+                        id={`${gradientId}-${i}`}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                        gradientUnits="objectBoundingBox"
+                      >
+                        <stop offset="0" stopColor={series.color} stopOpacity=".22" />
+                        <stop offset="1" stopColor={series.color} stopOpacity=".035" />
+                      </linearGradient>
+                    </defs>
+                    <path d={series.area} fill={`url(#${gradientId}-${i})`} />
+                  </g>
+                ),
+            )}
             {ticks.map((tick) => (
               <line
                 key={tick}
@@ -252,9 +331,11 @@ export function CmComparisonLineChart({
           ))}
         </div>
         <div className="cm-comparison-chart__labels" aria-hidden="true">
-          <span>{data[0]?.label}</span>
-          {data.length > 2 && <span>{data[Math.floor((data.length - 1) / 2)].label}</span>}
-          {data.length > 1 && <span>{data[data.length - 1].label}</span>}
+          {labels.map(({ point, position, compact }) => (
+            <span key={point.id} style={{ left: `${position}%` }} data-compact={compact}>
+              {point.label}
+            </span>
+          ))}
         </div>
       </div>
     </CmChartFrame>

@@ -27,6 +27,7 @@ export * from "./components/ui/metric-card.js";
 export * from "./components/ui/metric-grid.js";
 export * from "./components/ui/page.js";
 export * from "./components/ui/page-header.js";
+export * from "./components/ui/panel.js";
 export * from "./components/ui/password-strength.js";
 export * from "./components/ui/section-header.js";
 export * from "./components/ui/separator.js";

@@ -384,8 +384,19 @@
   box-shadow: var(--shadow-sm);
 }
 
+:root {
+  --cm-sidebar-base-width: 286px;
+  --cm-sidebar-default-width: var(--cm-sidebar-base-width);
+}
+
+@media (width > 860px) {
+  :root {
+    --cm-sidebar-default-width: calc(var(--cm-sidebar-base-width) + 24px);
+  }
+}
+
 .cm-sidebar-shell {
-  --cm-sidebar-expanded-width: 286px;
+  --cm-sidebar-expanded-width: var(--cm-sidebar-default-width);
   --cm-sidebar-collapsed-width: 64px;
   --cm-sidebar-current-width: var(--cm-sidebar-expanded-width);
   --cm-sidebar-min-height: 32rem;

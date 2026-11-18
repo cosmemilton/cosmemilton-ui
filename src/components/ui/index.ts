@@ -32,6 +32,7 @@ export * from "./native-select.js";
 export * from "./native-input.js";
 export * from "./form-actions.js";
 export * from "./list-panel.js";
+export * from "./panel.js";
 export * from "./metric-grid.js";
 export * from "./form.js";
 export * from "./grid.js";

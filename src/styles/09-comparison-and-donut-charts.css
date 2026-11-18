@@ -1,4 +1,5 @@
 .cm-comparison-chart {
+  container: cm-comparison / inline-size;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr) max-content;
   gap: var(--space-xs) var(--space-sm);
@@ -17,7 +18,23 @@
   flex-direction: column;
   text-align: end;
 }
-.cm-comparison-chart__labels { grid-column: 2; }
+.cm-comparison-chart__labels {
+  position: relative;
+  grid-column: 2;
+  line-height: 1.25;
+  min-height: 1.25em;
+}
+.cm-comparison-chart__labels span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.cm-comparison-chart__labels span:first-child:not(:only-child) { transform: none; }
+.cm-comparison-chart__labels span:last-child:not(:only-child) { transform: translateX(-100%); }
+.cm-comparison-chart__labels [data-compact="false"] { display: none; }
+@container cm-comparison (min-width: 36rem) {
+  .cm-comparison-chart__labels [data-compact="false"] { display: inline; }
+}
 .cm-comparison-chart__plot {
   position: relative;
   min-width: 0;
@@ -57,6 +74,12 @@
   container-type: inline-size;
 }
 .cm-donut-chart svg { display: block; width: 100%; height: 100%; }
+.cm-chart-frame__body:has(.cm-donut-chart[data-variant="segmented"]) {
+  display: grid;
+  align-items: center;
+  min-height: 0;
+  padding-block: var(--space-xs);
+}
 .cm-donut-chart__center {
   position: absolute;
   inset: 18%;

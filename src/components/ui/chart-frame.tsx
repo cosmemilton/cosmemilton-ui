@@ -2,7 +2,7 @@ import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/utils.js";
 import type { CmTone } from "./types.js";
 
-export type CmChartTone = CmTone;
+export type CmChartTone = CmTone | "primary-soft";
 
 export type CmChartLegendItem = {
   id?: string;
@@ -10,6 +10,7 @@ export type CmChartLegendItem = {
   value?: ReactNode;
   tone?: CmChartTone;
   color?: string;
+  marker?: "dot" | "line" | "dashed";
 };
 
 export type CmChartTableColumn = {
@@ -38,6 +39,8 @@ export type CmChartFrameProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & 
   emptyMessage?: ReactNode;
   emptyState?: ReactNode;
   legend?: CmChartLegendItem[];
+  legendPosition?: "header" | "footer" | "none";
+  legendLayout?: "inline" | "list";
   table?: CmChartAccessibleTable;
   showAccessibleTable?: boolean;
 };
@@ -46,6 +49,7 @@ type ChartFrameStyle = CSSProperties & Partial<Record<`--${string}`, string | nu
 
 export function cmChartColor(tone: CmChartTone = "primary") {
   if (tone === "default") return "var(--color-primary)";
+  if (tone === "primary-soft") return "var(--cm-chart-primary-soft)";
   return `var(--color-${tone})`;
 }
 
@@ -64,6 +68,8 @@ export function CmChartFrame({
   emptyState,
   height,
   legend,
+  legendPosition = "footer",
+  legendLayout = "inline",
   loading = false,
   loadingMessage = "Carregando dados...",
   loadingState,
@@ -79,7 +85,8 @@ export function CmChartFrame({
   };
   const hasHeading = title !== undefined || description !== undefined;
   const hasActions = actions != null && actions !== false;
-  const hasLegend = legend !== undefined && legend.length > 0;
+  const hasLegend = !loading && !empty && legendPosition !== "none" && legend && legend.length > 0;
+  const headerLegend = hasLegend && legendPosition === "header";
   const shouldRenderTable = showAccessibleTable && table && table.rows.length > 0;
   const heading = (
     <>
@@ -89,6 +96,29 @@ export function CmChartFrame({
       ) : null}
     </>
   );
+  const legendList = hasLegend ? (
+    <ul className="cm-chart-frame__legend" data-layout={legendLayout} aria-label="Legenda">
+      {legend.map((item, index) => (
+        <li
+          key={item.id ?? index}
+          className="cm-chart-frame__legend-item"
+          style={
+            { "--cm-chart-legend-color": item.color ?? cmChartColor(item.tone) } as ChartFrameStyle
+          }
+        >
+          <span
+            className="cm-chart-frame__legend-swatch"
+            data-marker={item.marker}
+            aria-hidden="true"
+          />
+          <span className="cm-chart-frame__legend-label">{item.label}</span>
+          {item.value !== undefined && (
+            <span className="cm-chart-frame__legend-value">{item.value}</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  ) : null;
 
   return (
     <div
@@ -98,21 +128,16 @@ export function CmChartFrame({
       data-cm-chart-frame-height={height !== undefined ? "" : undefined}
       {...props}
     >
-      {hasHeading || hasActions ? (
+      {hasHeading || hasActions || headerLegend ? (
         <div
           className={cn(
             "cm-chart-frame__header",
-            hasActions && "cm-chart-frame__header--with-actions",
+            (hasActions || headerLegend) && "cm-chart-frame__header--with-actions",
           )}
         >
-          {hasActions ? (
-            <>
-              {hasHeading ? <div className="cm-chart-frame__heading">{heading}</div> : null}
-              <div className="cm-chart-frame__actions">{actions}</div>
-            </>
-          ) : (
-            heading
-          )}
+          {hasHeading && <div className="cm-chart-frame__heading">{heading}</div>}
+          {headerLegend && legendList}
+          {hasActions && <div className="cm-chart-frame__actions">{actions}</div>}
         </div>
       ) : null}
 
@@ -128,26 +153,7 @@ export function CmChartFrame({
             : children}
       </div>
 
-      {!loading && !empty && hasLegend ? (
-        <ul className="cm-chart-frame__legend" aria-label="Legenda">
-          {legend.map((item, index) => {
-            const color = item.color ?? cmChartColor(item.tone);
-            return (
-              <li
-                key={item.id ?? index}
-                className="cm-chart-frame__legend-item"
-                style={{ "--cm-chart-legend-color": color } as ChartFrameStyle}
-              >
-                <span className="cm-chart-frame__legend-swatch" aria-hidden="true" />
-                <span className="cm-chart-frame__legend-label">{item.label}</span>
-                {item.value !== undefined ? (
-                  <span className="cm-chart-frame__legend-value">{item.value}</span>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
+      {legendPosition === "footer" && legendList}
 
       {!loading && !empty && shouldRenderTable ? (
         <table className="cm-sr-only cm-chart-frame__table">

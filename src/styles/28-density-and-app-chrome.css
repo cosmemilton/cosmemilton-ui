@@ -75,7 +75,7 @@
 }
 
 .cm-app-shell {
-  --cm-app-shell-sidebar-width: 286px;
+  --cm-app-shell-sidebar-width: var(--cm-sidebar-default-width);
   --cm-app-shell-sidebar-collapsed-width: 64px;
   --cm-app-shell-current-sidebar-width: var(--cm-app-shell-sidebar-width);
   display: grid;

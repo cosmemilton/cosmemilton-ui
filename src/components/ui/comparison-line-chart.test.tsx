@@ -12,6 +12,37 @@ const data = [
 ];
 
 describe("CmComparisonLineChart", () => {
+  it("mantém as lacunas e os pontos isolados ao suavizar e preencher uma série", () => {
+    const { container } = render(
+      <CmComparisonLineChart
+        {...axes}
+        leftAxis={{ ...axes.leftAxis, area: true, domain: [-10, 10] }}
+        curve="smooth"
+        legendPosition="header"
+        xLabels="responsive"
+        data={[0, 10, null, -5, null, -10, 8, 4].map((left, index) => ({
+          id: String(index),
+          label: `Dia ${index + 1}`,
+          left,
+          right: null,
+        }))}
+      />,
+    );
+    const line = container.querySelector("svg path[stroke]")!.getAttribute("d")!;
+    expect(line.match(/M/g)).toHaveLength(3);
+    expect(line.match(/C/g)).toHaveLength(3);
+    expect(line).toContain("l0 0");
+    const area = container.querySelector('svg path[fill^="url"]')!.getAttribute("d")!;
+    expect(area.match(/50 Z/g)).toHaveLength(2);
+    expect(container.querySelector(".cm-comparison-chart__labels")!.children).toHaveLength(8);
+    const legend = screen.getByRole("list", { name: "Legenda" });
+    expect(legend.closest(".cm-chart-frame__header")).toBeInTheDocument();
+    expect(legend.querySelector('[data-marker="dashed"]')).toBeInTheDocument();
+    const slider = screen.getByRole("slider");
+    fireEvent.keyDown(slider, { key: "End" });
+    expect(slider).toHaveAttribute("aria-valuetext", "Dia 8 · Receita: R$ 4 · Pedidos: —");
+  });
+
   it("usa escalas independentes e expõe as unidades na tabela e no cursor de teclado", () => {
     const { container } = render(
       <CmComparisonLineChart {...axes} data={data} accessibleTableLabel="Comparativo" />,
