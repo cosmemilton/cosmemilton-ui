@@ -1,0 +1,510 @@
+.cm-auth {
+  --cm-auth-gutter: clamp(1rem, 4vw, 3.5rem);
+  --cm-auth-border: color-mix(in srgb, var(--color-border) 74%, var(--color-card));
+  --cm-auth-field-surface: color-mix(in srgb, var(--color-background) 38%, var(--color-card));
+  --cm-auth-stage: var(--color-background);
+  --cm-auth-stage-accent: color-mix(in srgb, var(--color-primary) 12%, var(--cm-auth-stage));
+  --cm-auth-photo-scrim: var(--color-background);
+  --cm-auth-action-end: color-mix(in srgb, var(--color-primary) 82%, var(--color-secondary));
+  position: relative;
+  isolation: isolate;
+  min-block-size: 100svh;
+  gap: 0;
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+
+@supports (color: light-dark(white, black)) {
+  .cm-auth {
+    --cm-auth-stage: light-dark(var(--color-background), color-mix(in srgb, #080c20 84%, var(--color-background)));
+    --cm-auth-stage-accent: light-dark(
+      color-mix(in srgb, var(--color-primary) 12%, var(--cm-auth-stage)),
+      color-mix(in srgb, #242c59 77%, var(--color-primary))
+    );
+    --cm-auth-photo-scrim: light-dark(var(--color-background), #090e26);
+  }
+}
+
+.cm-auth--centered {
+  background:
+    radial-gradient(ellipse at 18% 16%, color-mix(in srgb, var(--color-primary) 14%, transparent), transparent 54%),
+    radial-gradient(ellipse at 90% 85%, color-mix(in srgb, var(--color-secondary) 12%, transparent), transparent 48%),
+    var(--color-background);
+}
+
+.cm-auth--centered:not(.cm-auth--with-background)::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(to right, var(--cm-auth-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cm-auth-border) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+  mask-image: linear-gradient(135deg, rgb(0 0 0 / 52%), transparent 65%);
+}
+
+.cm-auth--with-background {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--cm-auth-photo-scrim) 68%, transparent),
+      color-mix(in srgb, var(--cm-auth-photo-scrim) 18%, transparent) 43%,
+      color-mix(in srgb, var(--cm-auth-photo-scrim) 56%, transparent)
+    ),
+    var(--cm-auth-background-image, none) center / cover no-repeat,
+    var(--cm-auth-stage);
+}
+
+.cm-auth .cm-auth__workspace {
+  flex: 1;
+  min-inline-size: 0;
+  gap: 0;
+}
+
+.cm-auth .cm-auth__header {
+  padding: clamp(1rem, 2.8vh, 2.25rem) var(--cm-auth-gutter);
+}
+
+.cm-auth .cm-auth__brand-mark,
+.cm-auth .cm-auth__title-icon {
+  display: grid;
+  flex: none;
+  place-content: center;
+  place-items: center;
+}
+
+.cm-auth .cm-auth__brand-mark {
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border-radius: 0.7rem;
+  color: var(--color-primary-foreground);
+  background: var(--color-primary);
+  box-shadow: 0 0.35rem 0.85rem -0.35rem color-mix(in srgb, var(--color-primary) 60%, transparent);
+}
+
+.cm-auth .cm-auth__switch,
+.cm-auth .cm-auth__theme-menu.cm-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.35rem;
+  min-block-size: 2.5rem;
+  border: 1px solid var(--cm-auth-border);
+  border-radius: var(--radius-full);
+  color: var(--color-foreground);
+  background: var(--color-card);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.cm-auth .cm-auth__switch {
+  padding-inline: 0.7rem;
+}
+
+.cm-auth .cm-auth__theme-menu.cm-button {
+  justify-content: center;
+  inline-size: 2.5rem;
+  padding-inline: 0;
+}
+
+.cm-auth :is(.cm-auth__switch, .cm-auth__theme-menu.cm-button):hover {
+  border-color: var(--color-input);
+  color: var(--color-primary);
+  background: var(--color-muted);
+}
+
+.cm-auth--centered.cm-auth--with-background .cm-auth__header {
+  color: var(--color-foreground);
+  color: light-dark(var(--color-foreground), #fbfaff);
+}
+
+.cm-auth--centered.cm-auth--with-background .cm-auth__brand .cm-text {
+  color: inherit;
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--cm-auth-photo-scrim) 80%, transparent);
+}
+
+.cm-auth--centered.cm-auth--with-background .cm-auth__header :is(.cm-auth__brand-mark, .cm-auth__switch, .cm-auth__theme-menu.cm-button) {
+  border: 1px solid var(--surface-glass-border, var(--cm-auth-border));
+  border-color: light-dark(var(--surface-glass-border, var(--cm-auth-border)), rgb(236 239 255 / 33%));
+  color: inherit;
+  background: var(--surface-glass, var(--color-card));
+  background: light-dark(var(--surface-glass, var(--color-card)), rgb(21 29 60 / 77%));
+}
+
+.cm-auth--centered.cm-auth--with-background .cm-auth__header :is(.cm-auth__switch, .cm-auth__theme-menu.cm-button):hover {
+  border-color: var(--color-input);
+  border-color: light-dark(var(--color-input), #e2e5ff);
+  background: var(--color-muted);
+  background: light-dark(var(--color-muted), #293357);
+}
+
+.cm-auth--centered.cm-auth--with-background .cm-auth__header :is(.cm-auth__switch, .cm-auth__theme-menu.cm-button):focus-visible {
+  outline-color: var(--color-ring);
+  outline-color: light-dark(var(--color-ring), #dce4ff);
+}
+
+.cm-auth .cm-auth__content {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: clamp(1.5rem, 4vh, 3.5rem) var(--cm-auth-gutter) clamp(2.25rem, 8vh, 6rem);
+}
+
+.cm-auth .cm-auth__panel {
+  inline-size: min(100%, 28rem);
+  padding: clamp(1.25rem, 5.8vw, 2.5rem);
+  border: 1px solid var(--cm-auth-border);
+  border-radius: calc(var(--radius-xl) + 0.3rem);
+  color: var(--color-card-foreground);
+  background: var(--color-card);
+  box-shadow: var(--shadow-lg);
+}
+
+.cm-auth--glass .cm-auth__panel {
+  padding-block: clamp(1.5rem, 5.65svh, 3.375rem);
+  border-color: var(--surface-glass-border, var(--cm-auth-border));
+  box-shadow: inset 0 1px color-mix(in srgb, var(--color-card-foreground) 10%, transparent), var(--shadow-lg);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .cm-auth--glass .cm-auth__panel {
+    background:
+      radial-gradient(ellipse at 8% 0%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 60%),
+      var(--surface-glass, var(--color-card));
+    backdrop-filter: blur(var(--surface-glass-blur, 1rem));
+  }
+}
+
+.cm-auth .cm-auth__title-icon {
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  margin-block-end: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-card));
+  border-radius: var(--radius-lg);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-card));
+}
+
+.cm-auth .cm-auth__eyebrow {
+  color: var(--color-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cm-auth .cm-auth__title {
+  margin: 0;
+  color: var(--color-card-foreground);
+  font-size: clamp(1.7rem, 4.5vw, 2.32rem);
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.cm-auth .cm-auth-form {
+  min-inline-size: 0;
+}
+
+.cm-auth .cm-auth-form .cm-input__control {
+  font-size: 1rem;
+}
+
+.cm-auth .cm-auth-form .cm-floating-field__control:has(input[aria-invalid='true']) {
+  border-color: var(--color-danger);
+}
+
+.cm-auth .cm-auth__password-toggle.cm-button {
+  min-block-size: 2.375rem;
+  padding-inline: 0.55rem;
+  color: var(--color-muted-foreground);
+  font-weight: 650;
+}
+
+.cm-auth .cm-auth__form-links {
+  margin-block-start: -0.3rem;
+}
+
+.cm-auth .cm-auth__form-links a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 1.75rem;
+}
+
+.cm-auth .cm-auth__footer {
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--cm-auth-border);
+}
+
+.cm-auth :is(.cm-auth-link, .cm-auth__footer a) {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 56%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.cm-auth :is(.cm-auth-link, .cm-auth__footer a):hover {
+  text-decoration-color: currentColor;
+}
+
+.cm-auth .cm-auth__footer a {
+  display: inline-block;
+}
+
+.cm-auth :is(a, .cm-auth__theme-menu.cm-button):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 3px;
+}
+
+.cm-auth .cm-auth__submit.cm-button {
+  min-block-size: 3.125rem;
+}
+
+.cm-auth .cm-auth__field-label {
+  color: var(--color-card-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+.cm-auth .cm-auth__demo-hint {
+  color: var(--color-muted-foreground);
+}
+
+.cm-auth .cm-auth__demo-hint code {
+  color: var(--color-card-foreground);
+  font-size: 0.9em;
+}
+
+.cm-auth--glass .cm-auth-form .cm-form__body {
+  gap: clamp(1.125rem, 2.65svh, 1.625rem);
+}
+
+.cm-auth--glass .cm-auth-form .cm-floating-field {
+  --cm-floating-control-height: 3.25rem;
+  --cm-field-autofill-bg: var(--cm-auth-field-surface);
+}
+
+.cm-auth--glass .cm-auth-form .cm-floating-field--unlabeled {
+  padding-block-start: 0;
+}
+
+.cm-auth--glass .cm-auth-form .cm-floating-field__control {
+  min-block-size: calc(var(--cm-floating-control-height) + 2px);
+  padding-inline: 0.85rem;
+  padding-block: 0;
+  border: 1px solid var(--color-input);
+  border-radius: 0.8rem;
+  background: var(--cm-auth-field-surface);
+}
+
+.cm-auth--glass .cm-auth-form .cm-floating-field__control:focus-within {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.cm-auth--glass .cm-auth__demo-action.cm-button {
+  min-block-size: 3.125rem;
+  border-radius: 0.8rem;
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__content {
+  padding-block: 1.125rem clamp(2.125rem, 8vh, 6rem);
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__panel {
+  inline-size: min(100%, 29rem);
+  gap: 1.5rem;
+  padding-inline: clamp(1.375rem, 5.1vw, 2.625rem);
+  border-radius: 1.75rem;
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__title {
+  font-size: clamp(1.875rem, 5vw, 2.4rem);
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__form-links a {
+  min-block-size: 2rem;
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__submit.cm-button {
+  --cm-ops-control-radius: 0.8rem;
+  border-radius: var(--cm-ops-control-radius);
+}
+
+.cm-auth--centered.cm-auth--glass :is(.cm-auth__demo-hint, .cm-auth__footer) {
+  text-align: center;
+}
+
+.cm-auth--centered.cm-auth--glass .cm-auth__footer {
+  padding-block-start: 1.125rem;
+}
+
+.cm-auth--split {
+  overflow: clip;
+}
+
+.cm-auth--split.cm-auth--glass:not(.cm-auth--with-background) {
+  background:
+    radial-gradient(ellipse at 20% 60%, var(--cm-auth-stage-accent), transparent 63%),
+    radial-gradient(ellipse at 86% 10%, color-mix(in srgb, var(--cm-auth-stage-accent) 38%, var(--cm-auth-stage)), transparent 53%),
+    var(--cm-auth-stage);
+}
+
+.cm-auth--split.cm-auth--glass .cm-auth__panel {
+  inline-size: min(100%, 25rem);
+  gap: clamp(1.125rem, 1.7vw, 1.625rem);
+  padding-block: clamp(1.75rem, 7.4svh, 4.5rem);
+  padding-inline: clamp(1.125rem, 2.1vw, 2rem);
+  border-radius: clamp(1.15rem, 1.85vw, 1.75rem);
+}
+
+.cm-auth--split .cm-auth__content {
+  padding: clamp(1.25rem, 5vh, 3rem) var(--cm-auth-gutter) clamp(0.75rem, 5vh, 2.25rem);
+}
+
+.cm-auth--split .cm-auth__header {
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0;
+}
+
+.cm-auth--split .cm-auth__brand {
+  gap: 0.45rem;
+}
+
+.cm-auth--split .cm-auth__brand .cm-text {
+  font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+  white-space: nowrap;
+}
+
+.cm-auth--split .cm-auth__brand-mark {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 0.65rem;
+}
+
+.cm-auth--split .cm-auth__switch {
+  gap: 0.3rem;
+  min-block-size: 2.125rem;
+  padding-inline: 0.55rem;
+  font-size: 0.75rem;
+}
+
+.cm-auth--split .cm-auth__switch svg {
+  inline-size: 0.75rem;
+}
+
+.cm-auth--split .cm-auth__title {
+  font-size: clamp(1.7rem, 2.78vw, 2.6rem);
+  letter-spacing: -0.055em;
+}
+
+.cm-auth--split.cm-auth--glass .cm-auth-form .cm-floating-field__control {
+  padding-inline: 0.5rem;
+  border-radius: 0.65rem;
+}
+
+.cm-auth--split .cm-auth__form-links a {
+  font-size: 0.8125rem;
+}
+
+.cm-auth--split.cm-auth--glass .cm-auth__submit.cm-button {
+  min-block-size: 2.85rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 0.65rem;
+  color: var(--color-primary-foreground);
+  background: linear-gradient(108deg, var(--color-primary), var(--cm-auth-action-end));
+  box-shadow: 0 0.7rem 1.5rem -0.9rem color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+
+.cm-auth--split.cm-auth--glass .cm-auth__submit.cm-button:not(:disabled):hover {
+  background: linear-gradient(108deg, var(--cm-auth-action-end), var(--color-primary));
+}
+
+.cm-auth--split .cm-auth__demo-hint {
+  font-size: 0.75rem;
+}
+
+.cm-auth--split .cm-auth__footer {
+  padding-block-start: 0.65rem;
+}
+
+.cm-auth--split .cm-auth__theme-menu.cm-button {
+  inline-size: 2.125rem;
+  min-block-size: 2.125rem;
+}
+
+.cm-auth .cm-auth__illustration {
+  min-block-size: clamp(15rem, 60vw, 27rem);
+  background:
+    var(--cm-auth-artwork-image, none) center / cover no-repeat,
+    radial-gradient(ellipse at 25% 40%, color-mix(in srgb, var(--color-primary) 37%, transparent), transparent 65%);
+  mask-image: linear-gradient(to top, #000 77%, transparent);
+}
+
+@media (max-width: 24rem) {
+  .cm-auth .cm-auth__header {
+    gap: 0.35rem;
+  }
+
+  .cm-auth .cm-auth__switch {
+    padding-inline: 0.55rem;
+  }
+
+  .cm-auth .cm-auth__form-links a {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .cm-auth--split {
+    display: grid;
+    grid-template-areas: 'illustration workspace';
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  }
+
+  .cm-auth--split .cm-auth__workspace {
+    grid-area: workspace;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cm-auth--split .cm-auth__content {
+    padding-block: clamp(1rem, 3.5vh, 2.35rem);
+    padding-inline: clamp(0.4rem, 0.9vw, 1rem) clamp(1.25rem, 2.65vw, 3.5rem);
+  }
+
+  .cm-auth--split .cm-auth__illustration {
+    grid-area: illustration;
+    min-block-size: 0;
+    background-position: left center;
+    mask-image: linear-gradient(to right, #000 86%, transparent);
+  }
+}
+
+@media (min-width: 64rem) and (max-width: 74.999rem) {
+  .cm-auth--split .cm-auth__content {
+    padding-inline-end: 1rem;
+  }
+
+  .cm-auth--split.cm-auth--glass .cm-auth__panel {
+    padding-inline: 0.9rem;
+  }
+
+  .cm-auth--split .cm-auth__switch {
+    padding-inline: 0.375rem;
+  }
+
+  .cm-auth--split .cm-auth__form-links {
+    column-gap: 0.25rem;
+  }
+
+  .cm-auth--split .cm-auth__form-links a {
+    font-size: 0.75rem;
+  }
+}

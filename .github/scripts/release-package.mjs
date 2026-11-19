@@ -9,6 +9,7 @@ import { setTimeout } from "node:timers";
 const registry = "https://registry.npmjs.org";
 const outputDirectory = "release-output";
 const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+const auroraVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-aurora\.(0|[1-9]\d*)$/;
 const command = process.argv[2];
 
 function assert(condition, message) {
@@ -23,20 +24,27 @@ function integrity(path) {
   return `sha512-${createHash("sha512").update(readFileSync(path)).digest("base64")}`;
 }
 
+function releaseTag(version) {
+  if (stableVersion.test(version)) return "latest";
+  if (auroraVersion.test(version)) return "aurora";
+  throw new Error("Use a stable version or a prerelease ending with -aurora.N.");
+}
+
 function validateVersion(pkg) {
   assert(pkg.name === "@cosmemilton/ui", "Unexpected package name.");
-  assert(stableVersion.test(pkg.version), "The release branch publishes stable versions only.");
+  const tag = releaseTag(pkg.version);
   assert(pkg.private !== true, "A private package cannot be published.");
   const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
   assert(
     lock.version === pkg.version && lock.packages[""].version === pkg.version,
     "Package and lockfile versions differ.",
   );
+  return tag;
 }
 
 function pack() {
   const pkg = JSON.parse(readFileSync("package.json", "utf8"));
-  if (process.env.GITHUB_EVENT_NAME !== "pull_request") validateVersion(pkg);
+  const tag = process.env.GITHUB_EVENT_NAME === "pull_request" ? null : validateVersion(pkg);
   mkdirSync(outputDirectory, { recursive: true });
   const [packed] = JSON.parse(
     execFileSync(
@@ -70,6 +78,7 @@ function pack() {
   const metadata = {
     name: pkg.name,
     version: pkg.version,
+    tag,
     tarball,
     integrity: integrity(join(outputDirectory, tarball)),
   };
@@ -78,14 +87,14 @@ function pack() {
     "Packed artifact integrity differs from npm metadata.",
   );
   writeFileSync(join(outputDirectory, "release.json"), `${JSON.stringify(metadata, null, 2)}\n`);
-  for (const key of ["name", "version", "tarball"]) output(key, metadata[key]);
+  for (const key of ["name", "version", "tag", "tarball"]) output(key, metadata[key]);
   console.log(`Validated ${metadata.name}@${metadata.version}: ${files.size} packaged files.`);
 }
 
 function artifact() {
   const metadata = JSON.parse(readFileSync(join(outputDirectory, "release.json"), "utf8"));
   assert(
-    metadata.name === "@cosmemilton/ui" && stableVersion.test(metadata.version),
+    metadata.name === "@cosmemilton/ui" && metadata.tag === releaseTag(metadata.version),
     "Invalid release artifact metadata.",
   );
   assert(
@@ -129,10 +138,16 @@ function view(spec, ...fields) {
   );
 }
 
+function versionParts(version) {
+  const [base, prerelease] = version.split("-aurora.");
+  const parts = base.split(".").map(Number);
+  return prerelease === undefined ? parts : [...parts, Number(prerelease)];
+}
+
 function compareVersions(left, right) {
-  const a = left.split(".").map(Number);
-  const b = right.split(".").map(Number);
-  for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] - b[i];
+  const a = versionParts(left);
+  const b = versionParts(right);
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i];
   return 0;
 }
 
@@ -150,11 +165,11 @@ function inspect() {
     );
     return;
   }
-  const latest = view(metadata.name, "dist-tags.latest");
+  const current = view(metadata.name, "dist-tags")?.[metadata.tag] ?? null;
   assert(
-    latest === null ||
-      (stableVersion.test(latest) && compareVersions(metadata.version, latest) > 0),
-    "The release version must be newer than npm's latest stable version.",
+    current === null ||
+      (releaseTag(current) === metadata.tag && compareVersions(metadata.version, current) > 0),
+    "The release version must be newer than the current version on its npm tag.",
   );
   output("publish", "true");
   console.log(`${metadata.name}@${metadata.version} is unpublished and ready for publication.`);
@@ -165,14 +180,14 @@ async function confirm() {
   // npm processing and CDN propagation can exceed five minutes after an accepted publication.
   for (let attempt = 1; attempt <= 60; attempt++) {
     const published = view(`${metadata.name}@${metadata.version}`, "version", "dist.integrity");
-    const latest = published ? view(metadata.name, "dist-tags.latest") : null;
+    const current = published ? view(metadata.name, "dist-tags")?.[metadata.tag] : null;
     if (
       published?.version === metadata.version &&
       published["dist.integrity"] === metadata.integrity &&
-      latest === metadata.version
+      current === metadata.version
     ) {
       console.log(
-        `Confirmed ${metadata.name}@${metadata.version}, latest tag and tarball integrity on npm.`,
+        `Confirmed ${metadata.name}@${metadata.version}, ${metadata.tag} tag and tarball integrity on npm.`,
       );
       return;
     }

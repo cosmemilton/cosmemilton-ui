@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.3.2-aurora.0
+
+- Adiciona o `CmAuthLayout` com layouts centralizado e dividido, opção de painel
+  translúcido, imagens personalizáveis e estilos para os três temas da V4.
+
 ## 4.3.1
 
 ### Patch Changes

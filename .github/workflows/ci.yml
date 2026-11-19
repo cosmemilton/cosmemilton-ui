@@ -24,6 +24,7 @@ jobs:
     outputs:
       name: ${{ steps.pack.outputs.name }}
       version: ${{ steps.pack.outputs.version }}
+      tag: ${{ steps.pack.outputs.tag }}
       tarball: ${{ steps.pack.outputs.tarball }}
     steps:
       - name: Checkout
@@ -37,7 +38,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Validate stable release version
+      - name: Validate release version and tag
         if: github.event_name != 'pull_request'
         run: node .github/scripts/release-package.mjs version
 
@@ -150,13 +151,14 @@ jobs:
         if: steps.registry.outputs.publish == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RELEASE_TAG: ${{ needs.verify.outputs.tag }}
           RELEASE_TARBALL: ${{ needs.verify.outputs.tarball }}
         run: |
           if [ -z "$NODE_AUTH_TOKEN" ]; then
             echo "NPM_TOKEN is required to publish."
             exit 1
           fi
-          npm publish "./release-output/$RELEASE_TARBALL" --ignore-scripts --access public --tag latest --provenance
+          npm publish "./release-output/$RELEASE_TARBALL" --ignore-scripts --access public --tag "$RELEASE_TAG" --provenance
 
       - name: Confirm npm registry propagation
         if: steps.registry.outputs.publish == 'true'
@@ -166,10 +168,11 @@ jobs:
         env:
           PACKAGE_NAME: ${{ needs.verify.outputs.name }}
           PACKAGE_VERSION: ${{ needs.verify.outputs.version }}
+          PACKAGE_TAG: ${{ needs.verify.outputs.tag }}
           PUBLISHED_NOW: ${{ steps.registry.outputs.publish }}
         run: |
           if [ "$PUBLISHED_NOW" = "true" ]; then
-            echo "Published and confirmed: $PACKAGE_NAME@$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"
+            echo "Published and confirmed on the $PACKAGE_TAG tag: $PACKAGE_NAME@$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "Already published with identical integrity: $PACKAGE_NAME@$PACKAGE_VERSION" >> "$GITHUB_STEP_SUMMARY"
           fi

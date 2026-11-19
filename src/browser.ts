@@ -12,6 +12,7 @@ export * from "./client.js";
 
 // --- adições server-safe (server.ts, menos os módulos compartilhados acima) ---
 export * from "./components/theme/theme-script.js";
+export * from "./components/ui/auth-layout.js";
 export * from "./components/ui/badge.js";
 export * from "./components/ui/breadcrumb.js";
 export * from "./components/ui/button-group.js";

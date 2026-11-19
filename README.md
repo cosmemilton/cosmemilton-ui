@@ -216,6 +216,8 @@ A [skin Aurora Ops](docs/aurora-ops.md) aplica o mesmo acabamento de dashboard
 aos menus, cartões, indicadores, gráficos, tabelas e controles da biblioteca.
 Ative-a com `skin="aurora-ops"` junto de qualquer tema V4.
 
+Use [CmAuthLayout](docs/auth-layout.md) para compor telas de acesso e recuperação com painel centralizado ou arte ao lado.
+
 Use [cartões coloridos](docs/cards.md) com `variant="soft"`, `"solid"` ou
 `"gradient"` e escolha um tom do tema ativo com `tone`.
 
