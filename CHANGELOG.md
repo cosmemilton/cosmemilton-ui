@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.3.2-aurora.1
+
+- Mantém os resultados visíveis quando um filtro reduz o número de páginas do
+  `CmDataTable` com paginação local.
+
 ## 4.3.2-aurora.0
 
 - Adiciona o `CmAuthLayout` com layouts centralizado e dividido, opção de painel

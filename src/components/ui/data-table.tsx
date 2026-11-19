@@ -178,7 +178,9 @@ export function CmDataTable<T>({
 
   const totalCount = manualPagination ? (totalRows ?? sortedData.length) : sortedData.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / rowsPerPage));
-  const indexOfLastItem = currentPage * rowsPerPage;
+  const visiblePage =
+    pagination && !manualPagination ? Math.min(Math.max(currentPage, 1), totalPages) : currentPage;
+  const indexOfLastItem = visiblePage * rowsPerPage;
   const indexOfFirstItem = indexOfLastItem - rowsPerPage;
   // Em paginação server-side, `data` já é a página corrente; não recortamos.
   const currentData =
@@ -554,7 +556,7 @@ export function CmDataTable<T>({
             </div>
             <CmPagination
               mode="compact"
-              page={currentPage}
+              page={visiblePage}
               totalPages={totalPages}
               onChange={setCurrentPage}
               nextLabel="Próxima"

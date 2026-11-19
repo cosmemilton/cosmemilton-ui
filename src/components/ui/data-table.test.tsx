@@ -235,6 +235,20 @@ describe("CmDataTable", () => {
     });
   });
 
+  it("shows matching rows when client-side filtering removes the current page", async () => {
+    const user = userEvent.setup();
+    const { rerender } = renderTable({ pagination: true, rowsPerPage: 2 });
+    await user.click(screen.getByRole("button", { name: "Próxima" }));
+    expect(bodyRowNames()).toEqual(["Bob"]);
+
+    rerender(
+      <CmDataTable columns={columns} data={data.slice(0, 2)} rowKey="id" rowsPerPage={2} />,
+    );
+
+    expect(bodyRowNames()).toEqual(["Charlie", "Alice"]);
+    expect(screen.getByText("1-2 de 2")).toBeInTheDocument();
+  });
+
   describe("server-side mode", () => {
     it("does not reorder rows with manualSorting, only emits onSortChange", async () => {
       const user = userEvent.setup();
