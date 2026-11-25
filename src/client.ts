@@ -82,3 +82,5 @@ export * from "./components/ui/table.js";
 export * from "./components/ui/workbench.js";
 export * from "./components/ui/disclosure.js";
 export * from "./components/theme/theme-scope.js";
+export * from "./components/ui/change-history.js";
+export * from "./components/ui/saved-views.js";
