@@ -40,3 +40,11 @@ it("exposes CmQrCode only through the client entry", () => {
   expect("CmQrCode" in server).toBe(false);
   expect("CmQrCode" in root).toBe(false);
 });
+
+it("exports the administrative workspace UI from the proper entry points", () => {
+  expect(root.CmChangeHistory).toBe(server.CmChangeHistory);
+  expect(client.CmChangeHistory).toBe(server.CmChangeHistory);
+  expect(client.CmSavedViews).toBeDefined();
+  expect("CmSavedViews" in root).toBe(false);
+  expect("CmSavedViews" in server).toBe(false);
+});
