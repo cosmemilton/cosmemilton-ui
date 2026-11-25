@@ -1,0 +1,97 @@
+.workspace-demo {
+  min-height: 100vh;
+  padding: clamp(14px, 3vw, 40px);
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+.workspace-demo__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block-end: 24px;
+  color: var(--color-primary);
+}
+.workspace-demo__layout,
+.workspace-demo__editor {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+}
+.workspace-demo__layout {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.45fr);
+}
+.workspace-demo__editor {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-block-start: 24px;
+}
+.workspace-demo__card {
+  min-width: 0;
+  border-radius: 16px;
+  padding: clamp(16px, 2vw, 28px);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+.workspace-demo__card h1,
+.workspace-demo__card h2,
+.workspace-demo__subtitle {
+  margin: 0 0 12px;
+}
+.workspace-demo__filters,
+.workspace-demo__editor form {
+  display: flex;
+  gap: 12px;
+}
+.workspace-demo__filters {
+  flex-wrap: wrap;
+  align-items: center;
+  margin-block: 16px;
+}
+.workspace-demo__filters label {
+  white-space: nowrap;
+}
+.workspace-demo__editor form {
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+}
+.workspace-demo__editor form > button {
+  align-self: start;
+}
+.workspace-demo__history {
+  min-width: 0;
+  border-inline-start: 1px solid var(--color-border);
+  padding-inline-start: 18px;
+}
+.workspace-demo__link {
+  text-align: start;
+  background: none;
+  border: 0;
+  font: inherit;
+  padding: 2px 0;
+  cursor: pointer;
+  color: var(--color-primary);
+}
+.workspace-demo__link[aria-pressed="true"] {
+  font-weight: 700;
+  text-decoration: underline;
+}
+@media (max-width: 980px) {
+  .workspace-demo__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 580px) {
+  .workspace-demo__editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspace-demo__history {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+    border-block-start: 1px solid var(--color-border);
+    padding-block-start: 16px;
+  }
+}
+
+.workspace-demo__amount {
+  white-space: nowrap;
+}

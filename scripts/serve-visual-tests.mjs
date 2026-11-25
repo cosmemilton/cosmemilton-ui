@@ -23,6 +23,7 @@ await build({
     join(root, "tests", "visual", "command.fixture.tsx"),
     join(root, "tests", "visual", "button-tones.fixture.tsx"),
     join(root, "tests", "visual", "mega-menu.fixture.tsx"),
+    join(root, "tests", "visual", "customer-workspace.fixture.tsx"),
   ],
   bundle: true,
   format: "esm",
@@ -67,7 +68,16 @@ const commandHtml = indexHtml
 const buttonTonesHtml = commandHtml.replace("/command.fixture.js", "/button-tones.fixture.js");
 const megaMenuHtml = commandHtml.replace("/command.fixture.js", "/mega-menu.fixture.js");
 
+const customerWorkspaceHtml = indexHtml
+  .replace("/fixture.css", "/customer-workspace.fixture.css")
+  .replace("/fixture.js", "/customer-workspace.fixture.js");
+
 const files = new Map([
+  ["/customer-workspace.fixture.js", join(outputDir, "customer-workspace.fixture.js")],
+  [
+    "/customer-workspace.fixture.css",
+    join(root, "tests", "visual", "customer-workspace.fixture.css"),
+  ],
   ["/mega-menu.fixture.js", join(outputDir, "mega-menu.fixture.js")],
   ["/mega-menu.fixture.js.map", join(outputDir, "mega-menu.fixture.js.map")],
   ["/button-tones.fixture.js", join(outputDir, "button-tones.fixture.js")],
@@ -139,6 +149,11 @@ const server = createServer(async (request, response) => {
     return;
   }
 
+  if (pathname === "/customer-workspace") {
+    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    response.end(customerWorkspaceHtml);
+    return;
+  }
   if (pathname === "/command") {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     response.end(commandHtml);

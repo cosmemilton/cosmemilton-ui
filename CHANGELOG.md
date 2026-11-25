@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.0
+
+- Adiciona o `CmChangeHistory` para exibir alterações de cadastro com autor, data e valores anteriores e novos.
+- Adiciona o `CmSavedViews` para salvar e reaplicar configurações de listagem, como filtros, colunas e ordenação, com persistência controlada pela aplicação.
+- Inclui no canal estável o `CmAuthLayout` e a correção de paginação com filtros que estavam no canal Aurora.
+
 ## 4.3.2-aurora.1
 
 - Mantém os resultados visíveis quando um filtro reduz o número de páginas do

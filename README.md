@@ -38,6 +38,11 @@ Os três temas V4 são `cm-v4-light` (Claro), `cm-v4-dark` (Escuro) e
 pré-visualizações isoladas. A documentação demonstra essas APIs sem folhas de
 estilo ou CSS inline próprios.
 
+### Fluxos administrativos
+
+- [`CmChangeHistory`](docs/customer-workspace.md#cmchangehistory): histórico somente leitura com autor, data e valores antes/depois. Disponível em `@cosmemilton/ui`, `/server` e `/client`.
+- [`CmSavedViews`](docs/customer-workspace.md#cmsavedviews): salva e restaura filtros, colunas e ordenação como uma única visão. Disponível em `@cosmemilton/ui/client`.
+
 ## Instalação
 
 ```bash
